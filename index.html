@@ -1182,6 +1182,8 @@ function chartCtx(R){
   return ctx;
 }
 
+function hasJong(s){var c=s.charCodeAt(s.length-1);return c>=0xAC00&&c<=0xD7A3&&((c-0xAC00)%28)!==0;}
+function josaP(s,pair){return hasJong(s)?pair[0]:pair[1];}
 function eko(i){return EL_KO[i]+'('+EL_HAN[i]+')';}
 function tagEl(i){return '<b style="color:'+elColor(i)+'">'+eko(i)+'</b>';}
 
@@ -1189,7 +1191,7 @@ function tagEl(i){return '<b style="color:'+elColor(i)+'">'+eko(i)+'</b>';}
 function secNae(R,c,input,name){
   var dm=DM_DEEP[R.dStem], ilju=ILJU[R.dIdx], st=STRENGTH_TXT[R.strength];
   var h='';
-  h+='<p class="rb-p">일간 <b>'+STEM_HAN[R.dStem]+'('+STEM_KO[R.dStem]+')</b>은 '+DAY_MASTER[R.dStem][0]+'의 기운이에요. 여기에 일지 <b>'+BR_HAN[R.dBranch]+'('+BR_KO[R.dBranch]+')</b>가 앉아 <b>'+ilju[0]+'</b> 같은 결이 만들어졌어요. '+st.out+'</p>';
+  h+='<p class="rb-p">일간 <b>'+STEM_HAN[R.dStem]+'('+STEM_KO[R.dStem]+')</b>'+josaP(STEM_KO[R.dStem],'은는')+' '+DAY_MASTER[R.dStem][0]+'의 기운이에요. 여기에 일지 <b>'+BR_HAN[R.dBranch]+'('+BR_KO[R.dBranch]+')</b>'+josaP(BR_KO[R.dBranch],'이가')+' 앉아 <b>'+ilju[0]+'</b> 같은 결이 만들어졌어요. '+st.out+'</p>';
 
   h+='<h4 class="rb-h">겉으로 보이는 나</h4>';
   h+='<p class="rb-p">'+dm.out;
@@ -1277,7 +1279,7 @@ function secLove(R,c,input,name){
   var starEl = (input.gender==='f')?c.gwanEl:c.jaeEl;
   var starName = (input.gender==='f')?'관성(官星)':'재성(財星)';
   var h='';
-  h+='<p class="rb-p">배우자궁은 일지예요. 이 사주는 일지에 <b>'+BR_HAN[R.dBranch]+'('+BR_KO[R.dBranch]+')</b>가 앉아 있어서, 가장 가까이 마주 앉을 사람의 결을 여기서 읽습니다. 인연의 결은 <b>'+SPOUSE[R.dBranch]+'</b> 쪽이에요.</p>';
+  h+='<p class="rb-p">배우자궁은 일지예요. 이 사주는 일지에 <b>'+BR_HAN[R.dBranch]+'('+BR_KO[R.dBranch]+')</b>'+josaP(BR_KO[R.dBranch],'이가')+' 앉아 있어서, 가장 가까이 마주 앉을 사람의 결을 여기서 읽습니다. 인연의 결은 <b>'+SPOUSE[R.dBranch]+'</b> 쪽이에요.</p>';
 
   h+='<h4 class="rb-h">끌리는 사람과 끌리는 이유</h4>';
   h+='<p class="rb-p">'+rel+'<br><br>'+(input.gender==='f'?'여성 사주에서는 ':'남성 사주에서는 ')+starName+'이 배우자를 보는 창이에요. 이 사주의 '+starName+'은 <b>'+eko(starEl)+'</b>의 기운으로 놓여 있어서, '+EL_KO[starEl]+'의 결을 가진 <b>'+EL_PERSON[starEl]+'</b>에게 특히 눈이 가요. 화려함보다 <b>생활의 결이 맞는지</b>를 훨씬 중요하게 봅니다.</p>';
@@ -1387,7 +1389,7 @@ function secHealth(R,c,input,name){
   h+='<p class="rb-p">'+eko(R.dayEl)+' 기운은 '+d.organ+'에 대응해요. 그래서 이 사람의 컨디션은 <b>'+d.part+'</b> 쪽에서 먼저 티가 나요. 하루를 길게 쓰면 이 부위가 먼저 뻐근해지거나 굳는 식이에요.</p>';
 
   h+='<h4 class="rb-h">약해지기 쉬운 곳</h4>';
-  h+='<p class="rb-p">가장 얇은 기운은 <b>'+eko(c.leastI)+'</b>입니다. 이 기운이 부족하면 <b>'+w.part+'</b>이 먼저 약해져요. '+w.under+'</p>';
+  h+='<p class="rb-p">가장 얇은 기운은 <b>'+eko(c.leastI)+'</b>입니다. 이 기운이 부족하면 <b>'+w.part+'</b>'+josaP(w.part,'이가')+' 먼저 약해져요. '+w.under+'</p>';
   h+='<p class="rb-p">반대로 가장 두터운 '+eko(c.mostI)+' 기운은 과열될 때 문제가 돼요. '+o.part+' 쪽이 과하게 긴장하거나 건조해지는 식이에요. 넘치는 기운은 <b>덜어내는 쪽</b>으로 관리하세요 — '+EL_KO[c.mostI]+'의 기운을 밖으로 내보내는 운동이나 활동이 약이 돼요.</p>';
 
   h+='<h4 class="rb-h">계절 리듬</h4>';
