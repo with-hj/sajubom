@@ -5,3 +5,7 @@
 - `index.html` — 앱 전체 (HTML/CSS/JS 단일 파일)
 - `assets/character-main.png` — 월하당 캐릭터 일러스트
 - `assets/bg-pattern.png` — 동양풍 배경 패턴
+- `assets/og-image.png` — 카카오톡·SNS 공유 카드 (1200×630)
+- `assets/icon.png` — 파비콘·애플 터치 아이콘 (180×180)
+
+유료 풀 리포트는 6개 장(내면·오행개운·연애·재물·건강·대운)으로 구성되며, 테마(종합/연애·궁합/재물·직업)에 따라 장 순서와 인트로가 달라집니다.
