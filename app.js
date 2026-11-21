@@ -390,23 +390,78 @@ function renderResult(R,input){
   if(input.ctx&&input.ctx.partnerErr) h+='<p style="color:#c94228">'+esc(input.ctx.partnerErr)+' — 내 사주만 읽었습니다.</p>';
   h+='</div>';
 
+  /* ---------- 2장 무료 + 3장부터 흐림 결제 게이트 ---------- */
+  var FREE=2, freeH='', lockH='', lockChars=0;
   for(var i=0;i<chapters.length;i++){
     var ch=chapters[i], body='';
     try{ body=ch.body(R,c,input,name); }catch(ex){ body='<p class="hint">이 장은 준비 중입니다.</p>'; if(window.console) console.error(ch.title,ex); }
-    h+='<section class="ch fade-in"><div class="ch-hd"><span class="ch-no">'+pad2(i+1)+'</span>'+
+    var sec='<section class="ch fade-in"><div class="ch-hd"><span class="ch-no">'+pad2(i+1)+'</span>'+
        '<div class="ch-t"><h3>'+ch.title+'</h3><div class="ch-s">'+ch.sub+'</div></div></div>'+
        '<div class="ch-bd">'+body+'</div></section>';
+    if(i<FREE) freeH+=sec;
+    else { lockH+=sec; lockChars+=body.replace(/<[^>]*>/g,'').replace(/\s+/g,'').length; }
+  }
+  if(freeH) h+='<div class="free-flag"><b>무료로 읽는 '+FREE+'장</b> · 사주 원국과 첫 풀이</div>'+freeH;
+  if(lockH){
+    var pwInfo={total:chapters.length,chars:lockChars,tab:T.name};
+    h+='<div class="pw-wrap" id="pwWrap">'+
+       '<div class="pw-locked" id="pwLocked">'+lockH+'</div>'+
+       '<div class="pw-veil" id="pwVeil"><div class="pw-card" id="pwCard"></div></div></div>';
+    window.__pwInfo=pwInfo;
   }
   h+='<div class="panel" style="margin-top:18px;text-align:center">'+
-     '<h3 style="font-size:17px">여기까지가 '+esc(T.name)+'의 결입니다</h3>'+
+     '<h3 style="font-size:17px">'+(lockH?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
      '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <b>69,900원</b>입니다.</p>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 이어서 풀면 <b>인생사주 리포트</b> 104쪽이 됩니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
   $('#resultView').innerHTML=h;
+  if($('#pwWrap')&&window.__pwInfo) bindPaywall(window.__pwInfo);
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });
   try{ var rv=$('#resultView'); var y=rv.getBoundingClientRect().top+window.pageYOffset-146; window.scrollTo({top:y,behavior:'smooth'}); }catch(e){}
 }
+/* ---------- 결제 게이트(테스트) : 2장까지 무료, 3장부터 흐림 ---------- */
+function pwBuyMarkup(info){
+  return '<div class="pw-price">9,900원 · 전체 풀이</div>'+
+    '<h3>여기서부터 전체 풀이가<br>이어집니다</h3>'+
+    '<p>3장부터 '+info.total+'장까지 <b>약 '+Number(info.chars).toLocaleString('ko-KR')+'자</b>가 더 있습니다.<br>'+esc(info.tab)+'의 나머지 결을 이어서 읽어보세요.</p>'+
+    '<button type="button" class="btn btn-gold btn-block" id="pwBuy">9,900원 결제하고 전체 풀이 보기</button>'+
+    '<p class="pw-note">테스트 사이트입니다 — 결제 없이 전체 풀이가 열립니다</p>';
+}
+function pwConfirmMarkup(){
+  return '<div class="pw-price">테스트 결제 · 9,900원</div>'+
+    '<h3>결제 없이 열어볼까요?</h3>'+
+    '<p>지금은 PG 연동 전 테스트 사이트입니다. <b>실제 결제는 이루어지지 않습니다.</b> 확인을 누르면 나머지 풀이가 바로 열립니다.</p>'+
+    '<button type="button" class="btn btn-gold btn-block" id="pwDo">결제 없이 전체 풀이 열기</button>'+
+    '<button type="button" class="pw-x" id="pwCancel">취소</button>';
+}
+function bindPaywall(info){
+  var card=$('#pwCard'); if(!card) return;
+  card.innerHTML=pwBuyMarkup(info);
+  card.addEventListener('click',function(e){
+    var t=e.target.closest('button'); if(!t) return;
+    if(t.id==='pwBuy'){
+      card.innerHTML=pwConfirmMarkup();
+    } else if(t.id==='pwDo'){
+      unlockReading();
+    } else if(t.id==='pwCancel'){
+      card.innerHTML=pwBuyMarkup(info);
+    }
+  });
+}
+function unlockReading(){
+  var locked=$('#pwLocked'), veil=$('#pwVeil'), wrap=$('#pwWrap');
+  if(locked) locked.classList.add('open');
+  if(veil&&veil.parentNode) veil.parentNode.removeChild(veil);
+  if(wrap&&!$('.pw-open-flag')){
+    var flag=document.createElement('div');
+    flag.className='pw-open-flag';
+    flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · 테스트 결제 9,900원';
+    wrap.parentNode.insertBefore(flag,wrap);
+  }
+  try{ if(wrap) wrap.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+}
+
 function solarNote(R,input){
   var nm=(input&&input.regionName)||'';
   if(nm==='출생지 모름') return '출생지 미상 — 보정 없이 계산했습니다';
@@ -545,6 +600,26 @@ function entryToInput(o){
     hasTime:!!o.hasTime,hourIndex:o.hourIndex||0,gender:o.gender||'f',tsoff:o.tsoff||0,regionName:o.regionName||'',
     theme:'general',tab:'life',ctx:{marry:o.marry||'single',kid:o.kid||'none',stage:o.stage||'',question:o.q||''}};
 }
+function bindToc(host){
+  $$('.toc-r[data-goto]',host).forEach(function(row){
+    var go=function(e){
+      if(e&&e.preventDefault) e.preventDefault();
+      var t=host.querySelector('#book-p'+row.getAttribute('data-goto'));
+      if(!t) return;
+      var sc=row.closest('.sheet')||null;
+      if(sc&&sc.scrollHeight>sc.clientHeight+2){
+        var hd=sc.querySelector('.sheet-hd');
+        var off=(hd?hd.getBoundingClientRect().height:0)+8;
+        var top=t.getBoundingClientRect().top-sc.getBoundingClientRect().top+sc.scrollTop-off;
+        try{ sc.scrollTo({top:Math.max(0,top),behavior:'smooth'}); }catch(e2){ sc.scrollTop=Math.max(0,top); }
+      } else {
+        try{ t.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e2){ t.scrollIntoView(); }
+      }
+    };
+    row.addEventListener('click',go);
+    row.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ go(e); } });
+  });
+}
 function openBook(o){
   if(!o) return;
   var inp=entryToInput(o);
@@ -559,6 +634,7 @@ function openBook(o){
     try{
       var res=window.BOOK.build(R,inp,o.name);
       host.innerHTML=res.html;
+      bindToc(host);
       if(window.BOOK&&window.BOOK.fit){
         window.BOOK.fit(host);
         if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ window.BOOK.fit(host); });

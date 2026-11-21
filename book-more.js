@@ -329,7 +329,7 @@ function signPages(){
     '<tr><td class="k">용신</td><td>'+elK(c.yongEl)+'</td></tr>'+
     '<tr><td class="k">현재 대운</td><td>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세 · '+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</td></tr>'+
     '<tr><td class="k">발행일</td><td>'+today.getFullYear()+'.'+n2(today.getMonth()+1)+'.'+n2(today.getDate())+'</td></tr></table>'+
-    '<p>위 원국과 대운은 입력된 생년월일·시간·지역을 기준으로 계산되었습니다. 생년월일이 다르거나 시간이 추정이라면 책자의 1장과 9장을 우선 확인하시고, 필요한 경우 재발행을 요청하세요.</p>'+
+    '<p>위 원국과 대운은 입력된 생년월일·시간·지역을 기준으로 계산되었습니다. 생년월일이 다르거나 시간이 추정이라면 책자의 1장(총평)과 15장(평생 대운)을 우선 확인하시고, 필요한 경우 재발행을 요청하세요.</p>'+
     '<div class="sign"><div class="row"><span>검수</span><span class="sig">天靈堂</span></div><div class="row"><span>판독</span><span>사주명리 기반 참고 해석</span></div><div class="row"><span>문의</span><span>with-hj@users.noreply.github.com</span></div></div>',{spread:true}));
   push(page('20 / REVIEW',secLabel('20','CLOSING · 맺음말')+'<h1>이 책을 덮으며</h1>'+
     '<p class="lead">사주는 바꿀 수 없지만, 어느 쪽으로 기울여 살지는 매일 정할 수 있습니다.</p>'+

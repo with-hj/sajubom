@@ -1228,7 +1228,7 @@ function newYearBlock(R,c,input,name){
   else if(diff===0) rel='내 일지와 같은 글자가 다시 들어오는 해예요. 미뤄둔 일이 다시 올라오고, 같은 선택을 반복할 기회도 함께 와요.';
   else if(diff===4||diff===8) rel='내 일지와 어울리는 <b>합(合)</b>의 해라 사람을 통해 일이 풀려요. 혼자 밀기보다 누군가를 통해 움직이면 빨라요.';
   else rel='내 일지와 크게 부딪히지 않는 해예요. 판이 급하게 바뀌기보다 정한 방향으로 쌓아가기 좋습니다.';
-  var h='<div class="rb-special"><div class="sh"><i>新年</i>'+yy+'년 · '+STEM_HAN[s]+BR_HAN[b]+'년의 문</div>';
+  var h='<div class="rb-special"><div class="sh"><i>新年</i> '+yy+'년 · '+STEM_HAN[s]+BR_HAN[b]+'년의 문</div>';
   h+='<p>'+yy+'년은 <b>'+STEM_HAN[s]+BR_HAN[b]+'('+STEM_KO[s]+BR_KO[b]+')</b>년, '+name+' 님에게 <b>'+g+'</b>의 기운이 들어오는 해예요. '+SEUN_DEEP[g]+'</p>';
   h+='<p>'+rel+'</p>';
   h+='<p>'+SEUN_EL[BR_EL[b]]+'</p>';

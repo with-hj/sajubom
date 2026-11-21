@@ -80,6 +80,32 @@ function chapter(key,no,title,sub){
 function secLabel(no,label){ return '<div class="sec-label"><span>'+no+'</span>'+label+'</div>'; }
 function callout(title,body){ return '<div class="callout"><div class="ct">'+title+'</div>'+body+'</div>'; }
 
+/* ---------------- 시기 계산 : 특정 십성이 세운·대운·달로 들어오는 자리 ---------------- */
+function seunStarsOf(R,grp,n){
+  var out=[], y0=(R.seun&&R.seun[0])?R.seun[0].year:new Date().getFullYear();
+  for(var i=0;i<(n||6);i++){
+    var y=y0+i, idx=S.mod(y-4,60), g=S.tenGod(R.dStem,idx%10);
+    if(S.GOD_GROUP[g]===grp) out.push({y:y,g:g,s:idx%10,b:idx%12,age:y-R.y,rel:S.monthTag(S.branchRel(R.dBranch,idx%12))});
+  }
+  return out;
+}
+function monthStarsOf(R,grp,n){
+  var out=[], now=new Date(), y=now.getFullYear(), m=now.getMonth()+1;
+  for(var i=0;i<(n||14);i++){
+    var mp=S.monthPillarOf(y,m), g=S.tenGod(R.dStem,mp.stem), tag=S.monthTag(S.branchRel(R.dBranch,mp.branch));
+    if(S.GOD_GROUP[g]===grp||tag==='합') out.push({y:y,m:m,g:g,s:mp.stem,b:mp.branch,tag:tag,star:S.GOD_GROUP[g]===grp});
+    m++; if(m>12){m=1;y++;}
+  }
+  return out;
+}
+function daeunStarsOf(R,grp){
+  var out=[];
+  R.daeun.forEach(function(d,i){ var g=S.tenGod(R.dStem,d.idx%10); if(S.GOD_GROUP[g]===grp) out.push({i:i,from:d.from,to:d.to,g:g,s:d.idx%10,b:d.idx%12,cur:i===R.curDaeun}); });
+  return out;
+}
+function seunTxt(o){ return '<b>'+o.y+'년('+S.STEM_HAN[o.s]+S.BR_HAN[o.b]+' · '+o.g+', '+o.age+'세)</b>'; }
+function monthTxt(o){ return '<b>'+o.y+'년 '+o.m+'월('+S.STEM_HAN[o.s]+S.BR_HAN[o.b]+' · '+o.g+(o.tag==='합'?' · 일지와 합':'')+')</b>'; }
+
 /* ---------------- 표지 ---------------- */
 function coverPage(){
   var R=B.R;
@@ -104,8 +130,8 @@ function introPage(){
    '<h1>당신의 여덟 글자를<br><span class="accent">한 사람의 설계도로</span></h1>'+
    '<p class="lead">사주는 미래를 정해둔 예언이 아닙니다. 태어난 순간의 하늘을 여덟 글자로 적어둔 <b>기록</b>이고, 그 기록은 ‘어떤 조건에서 이 사람이 가장 잘 자라는가’를 알려줍니다.</p>'+
    '<p>'+esc(B.name)+' 님의 원국은 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주입니다. 일간 '+stemS(R.dStem)+'은 '+S.DAY_MASTER[R.dStem][0]+'의 결이고, 가장 두터운 기운은 '+elS(c.mostI)+', 가장 얇은 기운은 '+elS(c.leastI)+'입니다. 이 책은 그 여덟 글자 위에 평생의 대운과 5년의 세운, 12개월의 달력을 얹어 한 사람의 인생 전체를 한 권으로 엮었습니다.</p>'+
-   '<p>이 책을 읽는 방법은 간단합니다. 1장에서 원국을 확인하고, 2장에서 네 기둥을 한 칸씩 읽으세요. 3장부터 8장은 삶의 영역별 해설이고, 9장부터는 시간의 지도입니다. 급하면 9장(대운)과 11장(2027년 달력)부터 펼치셔도 좋습니다.</p>'+
-   '<p>읽는 동안 세 가지 질문을 마음에 두시면 좋습니다. “나는 어떤 조건에서 힘이 나는가”, “나는 어떤 상황에서 먼저 지치는가”, “지금 내가 미루고 있는 결정은 무엇인가”. 이 책의 스물한 장은 모두 이 세 질문에 서로 다른 각도에서 답하는 글입니다. 그래서 한 번에 다 읽지 않아도 괜찮습니다. 마음에 걸리는 장부터 펼치세요.</p>'+
+   '<p>이 책을 읽는 방법은 간단합니다. 1장 총평에서 여덟 글자의 요약을 먼저 보고, 2장에서 원국을, 7장에서 네 기둥을 한 칸씩 읽으세요. 8장부터 14장은 삶의 영역별 해설이고, 15장부터는 시간의 지도입니다. 급하면 15장(평생 대운)과 17장(2027년 월력)부터 펼치셔도 좋습니다.</p>'+
+   '<p>읽는 동안 세 가지 질문을 마음에 두시면 좋습니다. “나는 어떤 조건에서 힘이 나는가”, “나는 어떤 상황에서 먼저 지치는가”, “지금 내가 미루고 있는 결정은 무엇인가”. 이 책의 모든 장은 모두 이 세 질문에 서로 다른 각도에서 답하는 글입니다. 그래서 한 번에 다 읽지 않아도 괜찮습니다. 마음에 걸리는 장부터 펼치세요.</p>'+
    callout('이 책을 읽는 태도','<p>여기 적힌 문장은 정답이 아니라 <b>질문</b>입니다. “내가 왜 이 자리에서 지치는지”, “왜 같은 관계를 반복하는지”에 대한 하나의 설명으로 읽어주세요. 맞지 않는 문장은 넘기시면 됩니다.</p>')+
    '<p class="small">※ 본 책자는 사주명리 상징을 생활의 언어로 옮긴 참고 해석입니다. 의학적 진단, 법률·투자 판단을 대신하지 않습니다.</p>';
   push(page('PROLOGUE',body,{spread:true}));
@@ -114,11 +140,11 @@ function introPage(){
 /* ---------------- 목차 ---------------- */
 function tocPages(){
   var rows=B.chapters.map(function(ch){
-    return '<div class="toc-r"><span class="n">'+ch.no+'</span><span class="t">'+ch.title+'</span><span class="d"></span><span class="p">__TOC_'+ch.key+'__</span></div>';
+    return '<div class="toc-r" data-goto="'+ch.page+'" role="link" tabindex="0"><span class="n">'+ch.no+'</span><span class="t">'+ch.title+'</span><span class="d"></span><span class="p">__TOC_'+ch.key+'__</span></div>';
   });
   var half=Math.ceil(rows.length/2);
   push(page('CONTENTS 01','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이 책의 지도</h1><div class="toc-list">'+rows.slice(0,half).join('')+'</div>',{spread:true}));
-  push(page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div><p class="note">쪽수는 인쇄 기준입니다. PDF 뷰어에서는 페이지 번호로 바로 이동할 수 있습니다.</p>',{spread:true}));
+  push(page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div>',{spread:true}));
 }
 
 /* ---------------- 1장 요약 ---------------- */
@@ -402,6 +428,16 @@ function moneyPages(){
 }
 
 /* ---------------- 7장 커리어 ---------------- */
+function careerWindow(R){
+  var ds=daeunStarsOf(R,'관성');
+  if(!ds.length) return '이 사주는 관성이 대운으로 뚜렷하게 들어오지 않아, 자리보다 결과로 평가받는 곳에서 빨리 인정받습니다. 직함을 기다리기보다 남길 수 있는 결과를 먼저 만드세요.';
+  var cur=null;
+  for(var i=0;i<ds.length;i++){ if(ds[i].to>=R.age){ cur=ds[i]; break; } }
+  var h='관성이 대운으로 들어오는 10년에 조직에서의 평가가 달라집니다. 이 사주는 '+ds.map(function(d){return '<b>'+d.from+'~'+d.to+'세('+d.g+')</b>';}).join(', ')+'이 그 구간입니다. ';
+  h+=cur?('그중 가장 가까운 문은 <b>'+cur.from+'~'+cur.to+'세</b>'+(cur.cur?' — 지금 지나는 중입니다. 이 10년 안에 직함·자격·계약 중 하나를 확보해두면 다음 대운에 그것이 자리가 됩니다.':'입니다. 그 전에 결과를 문서로 남겨두면 문이 열릴 때 바로 쓰입니다.')):'지금 이후로는 그 구간이 뚜렷하지 않아, 자격과 기록으로 실력을 대신 쌓는 편이 낫습니다.';
+  return h;
+}
+
 function careerPages(){
   chapter('career','11','일과 커리어','천직·이직·조건');
   var R=B.R,c=B.c;
@@ -410,7 +446,7 @@ function careerPages(){
     '<table><tr><th>일간</th><th>결이 맞는 분야</th></tr><tr><td class="k">'+stemS(R.dStem)+'</td><td>'+S.CAREER[R.dayEl].join(' · ')+'</td></tr></table>'+
     '<h3>일하는 방식</h3><p>'+(S.WORK_MODE[c.topGrp]||'역할이 분명할 때 가장 오래 갑니다.')+'</p>'+
     '<h3>이 사주가 일에서 지치는 순간</h3><p>'+S.DM_DEEP[R.dStem].drain+' 이 감각이 2주 이상 이어지면 그것은 게으름이 아니라 <b>자리의 문제</b>입니다.</p>'+
-    '<h3>인정받는 시기</h3><p>관성이 대운으로 들어오는 10년에 조직에서의 평가가 달라집니다. 아래 대운 표에서 <b>관성</b>이 걸린 구간을 먼저 보세요.</p>',{spread:true}));
+    '<h3>인정받는 시기</h3><p>'+careerWindow(R)+'</p>',{spread:true}));
   var gy=[];
   for(var i=0;i<R.seun.length;i++){ var g=S.tenGod(R.dStem,R.seun[i].idx%10); if(S.GOD_GROUP[g]==='관성') gy.push(R.seun[i].year+'년('+g+')'); }
   push(page('11 / CAREER',secLabel('11','CAREER · 일 2')+'<h1>옮길까,<br><span class="accent">남을까</span></h1>'+
@@ -474,6 +510,32 @@ function lovePages(){
 }
 function C_marry(){ return (B.input.ctx&&B.input.ctx.marry)==='married'; }
 
+/* ---------------- 시기 계산 : 자녀성(임신의 문)을 실제 연·월로 ---------------- */
+function pregWindow(R,c){
+  var female=(B.input.gender!=='m');
+  var grp=female?'식상':'관성';
+  var ys=seunStarsOf(R,grp,6), ms=monthStarsOf(R,grp,14), ds=daeunStarsOf(R,grp);
+  var cur=R.daeun[R.curDaeun], curG=S.tenGod(R.dStem,cur.idx%10), curGrp=S.GOD_GROUP[curG];
+  var cy=new Date().getFullYear(), nextY=null;
+  for(var i=0;i<ys.length;i++){ if(ys[i].y>cy){ nextY=ys[i]; break; } }
+  var h='<h3>시기의 문</h3>';
+  h+='<p>아이를 부르는 별은 <b>'+grp+'</b>입니다. '+(female?'여성 사주에서 자녀성인 식상은 내 몸에서 만들어 밖으로 내보내는 기운이라, 이 별이 세운에 서는 해에 임신과 출산의 리듬이 가장 자연스러워집니다.':'남성 사주에서 자녀성인 관성은 내가 맡아 책임지는 기운이라, 이 별이 세운에 서는 해에 아이를 맞을 자리가 정돈됩니다.')+'</p>';
+  if(ys.length){
+    h+='<p>이 원국에서 '+grp+'이 세운으로 다시 서는 해는 '+ys.slice(0,3).map(seunTxt).join(', ')+'입니다. '+
+      (nextY?('그중 <b>'+nextY.y+'년</b>이 실제로 준비를 맞춰볼 수 있는 문입니다.'):('앞으로 6년 중에서는 <b>'+ys[ys.length-1].y+'년</b>이 문이 열리는 때입니다.'))+
+      ' 지금 대운은 <b>'+cur.from+'~'+cur.to+'세 · '+curG+'</b>이라 '+(curGrp===grp?'이 10년이 이미 자녀성을 데리고 있습니다. 그래서 세운이 그 문을 두드리는 해가 더 또렷하게 느껴집니다.':'아이의 일이 생활의 중심으로 올라오기까지 한 박자 걸립니다. 그래서 '+(nextY?(nextY.y+'년을 기준으로'):'다음 대운을 기준으로')+' 6개월 전부터 몸을 세워두는 쪽이 효율적입니다.')+'</p>';
+  } else {
+    h+='<p>앞으로 6년(2026~2031)에는 '+grp+'이 세운으로 직접 서지 않습니다. 이럴 때는 대운이 문을 엽니다. '+
+      (ds.length?('이 사주에서 '+grp+'이 걸린 대운은 '+ds.map(function(d){return '<b>'+d.from+'~'+d.to+'세('+d.g+')</b>';}).join(', ')+'이고, 지금은 '+cur.from+'~'+cur.to+'세 · '+curG+'입니다.'):'이 사주는 '+grp+'이 대운에도 뚜렷하게 걸리지 않아, 몸과 생활의 리듬으로 시기를 만드는 편이 맞습니다.')+'</p>';
+  }
+  if(ms.length){
+    h+='<p>달까지 좁히면 '+ms.slice(0,4).map(monthTxt).join(', ')+'입니다. '+
+      (ms.some(function(o){return o.tag==='합';})?'일지와 합이 걸리는 달은 배우자궁의 문도 함께 열리는 때라, 부부의 일정을 비워두기 좋습니다.':'자녀성이 걸린 달은 몸이 밖으로 향하는 때라, 검사와 상담을 이 달에 맞춰 잡아두면 좋습니다.')+
+      ' 검사와 상담은 '+(nextY?(nextY.y+'년 문을 기준으로'):'문이 열리는 해를 기준으로')+' 6개월 전에 마치고, 그 3개월은 일정을 20% 비워두세요. 이 사주는 몸보다 <b>일정</b>에서 먼저 지치기 때문입니다.</p>';
+  }
+  return h;
+}
+
 /* ---------------- 9장 가족·자녀 ---------------- */
 function familyPages(){
   chapter('family','13','가족과 자녀','자녀성·관계·10년');
@@ -493,7 +555,7 @@ function familyPages(){
     push(page('13 / FAMILY',secLabel('13','PREGNANCY · 임신 준비')+'<h1>아이를 맞는<br><span class="accent">때와 몸</span></h1>'+
       '<p class="lead">이 사주는 화(火) '+x.f+' · 수(水) '+x.w+'의 구조입니다. '+(x.f>=x.w+2?'열이 먼저 오르는 사주라 <b>몸을 식히는 시간</b>이 중요합니다.':(x.w>=x.f+2?'물이 강해 몸이 차기 쉬운 사주라 <b>몸을 데우는 시간</b>이 중요합니다.':'물과 불이 고른 편이라 계절에 따라 흔들립니다.'))+'</p>'+
       '<ul><li>잠드는 시간을 먼저 고정하기 — 이 사주는 수면이 흐트러지면 열이 먼저 오릅니다</li><li>'+S.EL_DEEP[c.yongEl].food+' 쪽으로 식사 한 끼 바꾸기</li><li>'+S.EL_DEEP[c.yongEl].habit+'</li></ul>'+
-      '<h3>시기의 문</h3><p>임신의 문은 자녀성이 세운으로 들어오는 해에 열립니다. 이 책 10장(대운)과 11장(세운)에서 <b>'+((B.input.gender==='f')?'식상':'관성')+'</b>이 걸린 해를 확인하세요.</p>'+
+      pregWindow(R,c)+
       '<h3>명리와 의학의 경계</h3><p>사주는 몸의 리듬과 시기를 보여줄 뿐 임신 가능성이나 건강을 진단하지 않습니다. 실제 계획은 산부인과 상담과 검사 결과를 먼저 두세요.</p>'+
       callout('준비의 순서','<p>잠 → 식사 → 움직임 → 마음. 이 순서를 바꾸면 같은 노력이 두 배로 남습니다. 특히 이 사주는 <b>혼자 다 감당하려는 습관</b>이 있어, 한 가지는 반드시 배우자에게 맡기세요.</p>'),{spread:true}));
   } else {
@@ -555,16 +617,18 @@ function fitPages(host){
     if(p.classList.contains('cover')) continue;
     /* 폰에서 미리보기·인쇄해도 A4 조판이 같아지도록, 잠깐 인쇄 지면(210mm × 295mm)으로 재어 본다 */
     p.style.width='210mm';p.style.height='295mm';p.style.maxHeight='295mm';p.style.minHeight='295mm';
-    p.style.padding='15mm 14.5mm 18mm';
     p.style.removeProperty('--fs');
-    var fs=17, guard=0;
-    while(p.scrollHeight>p.clientHeight+1 && guard<20){
-      fs-=0.3; guard++;
+    var bd=p.querySelector('.pg-bd');
+    var fs=15.5, guard=0;
+    while(bd && (bd.scrollHeight>bd.clientHeight+1) && fs>10.6 && guard<40){
+      fs-=0.25; guard++;
       p.style.setProperty('--fs',fs.toFixed(2)+'px');
     }
+    /* 본문이 아무리 줄여도 한 장을 넘으면 잘라내지 않고 클립 영역을 푼다 */
+    if(bd && bd.scrollHeight>bd.clientHeight+1) bd.style.overflow='visible';
+    else if(bd) bd.style.removeProperty('overflow');
     p.style.removeProperty('width');p.style.removeProperty('height');
     p.style.removeProperty('max-height');p.style.removeProperty('min-height');
-    p.style.removeProperty('padding');
   }
 }
 
@@ -581,14 +645,17 @@ B.build=function(R,input,name){
   var html=B.pages.join('');
   var total=B.pages.length;
   html=html.replace('__TOT__',String(total));
-  /* 목차 */
+  /* 목차 — 줄을 누르면 그 장으로 이동(웹·모달 미리보기). 인쇄 지면에는 영향 없음 */
   var rows=B.chapters.map(function(ch){
-    return '<div class="toc-r"><span class="n">'+ch.no+'</span><span class="t">'+ch.title+'</span><span class="d"></span><span class="p">'+n2(ch.page)+'</span></div>';
+    return '<div class="toc-r" data-goto="'+ch.page+'" role="link" tabindex="0"><span class="n">'+ch.no+'</span><span class="t">'+ch.title+'</span><span class="d"></span><span class="p">'+n2(ch.page)+'</span></div>';
   });
   var half=Math.ceil(rows.length/2);
   var t1=page('CONTENTS 01','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이 책의 지도</h1><div class="toc-list">'+rows.slice(0,half).join('')+'</div>',{spread:true});
-  var t2=page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div><p class="note">쪽수는 인쇄 기준입니다.</p>',{spread:true});
+  var t2=page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div>',{spread:true});
   html=html.replace('__TOC1__',t1).replace('__TOC2__',t2);
+  /* 각 지면에 목차 이동용 앵커 id 부여 (순서 = B.pages 순서) */
+  var pi=0;
+  html=html.replace(/<section class="pg/g,function(m){ pi++; return '<section id="book-p'+pi+'" class="pg'; });
   /* 쪽번호 — 표지 다음부터 순서대로 */
   var pn=1;
   html=html.replace(/<span class="pn">[^<]*<\/span>/g,function(){ pn++; return '<span class="pn">'+n2(pn)+' / '+total+'</span>'; });

@@ -10,30 +10,33 @@
 #wl2-book>.pg{
   position:relative;width:210mm;height:295mm;min-height:295mm;max-height:295mm;margin:0 auto 10mm;
   background:linear-gradient(180deg,#FBF8F2 0%,#F6F1E7 34%,#F6F1E7 100%);
-  padding:15mm 14.5mm 18mm;color:var(--b-ink);
+  padding:14mm 14.5mm 11mm;color:var(--b-ink);
   font-family:'Nanum Myeongjo','Noto Serif KR','Apple SD Gothic Neo',serif;
-  --fs:17px; --lh:1.95;
+  --fs:15.5px; --lh:1.9;
   font-size:var(--fs);line-height:var(--lh);letter-spacing:-.003em;
   box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;
   display:flex;flex-direction:column;
+  scroll-margin-top:70px;
 }
 .pg *{word-break:keep-all}
 .pg-hd{
+  flex:0 0 auto;
   display:flex;align-items:center;justify-content:space-between;
-  border-top:1.2px solid var(--b-orange);padding-top:7px;margin-bottom:11mm;
+  border-top:1.2px solid var(--b-orange);padding-top:7px;margin-bottom:8mm;
   font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   font-size:8.6px;letter-spacing:.24em;color:#8A7C68;text-transform:uppercase;
 }
 .pg-hd .l{color:#9A8B74}
 .pg-hd .r{color:var(--b-orange);letter-spacing:.14em}
+/* 푸터는 절대배치하지 않고 흐름 안에서 맨 아래에 앉힌다 → 본문과 절대 겹치지 않음 */
 .pg-ft{
-  position:absolute;left:16mm;right:16mm;bottom:9mm;
+  position:static;flex:0 0 auto;margin-top:auto;padding-top:4px;
   display:flex;justify-content:space-between;align-items:center;
-  border-top:1px solid var(--b-line);padding-top:5px;
+  border-top:1px solid var(--b-line);
   font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   font-size:8px;letter-spacing:.14em;color:#9C8E7A;
 }
-.pg-bd{flex:1;display:flex;flex-direction:column}
+.pg-bd{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .pg-bd.spread{justify-content:space-between}
 .sec-label{
   font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
@@ -42,23 +45,23 @@
 }
 .sec-label:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(224,100,42,.45),rgba(224,100,42,0))}
 .pg h1{
-  font-size:31px;line-height:1.42;color:var(--b-navy);font-weight:800;margin:0 0 7mm;letter-spacing:-.02em;
+  font-size:calc(var(--fs) * 1.84);line-height:1.4;color:var(--b-navy);font-weight:800;margin:0 0 6mm;letter-spacing:-.02em;
 }
 .pg h1 .accent{color:var(--b-orange)}
 .pg h2{
-  font-size:22px;line-height:1.5;color:var(--b-navy);font-weight:800;margin:0 0 4mm;letter-spacing:-.01em;
+  font-size:calc(var(--fs) * 1.34);line-height:1.48;color:var(--b-navy);font-weight:800;margin:0 0 3.4mm;letter-spacing:-.01em;
 }
 .pg h3{
-  font-size:17.6px;line-height:1.6;color:var(--b-navy);font-weight:800;margin:7mm 0 2mm;
+  font-size:calc(var(--fs) * 1.08);line-height:1.55;color:var(--b-navy);font-weight:800;margin:5.4mm 0 1.8mm;
   padding-left:9px;border-left:3px solid var(--b-orange);
 }
-.pg p{margin:0 0 3.8mm;font-size:var(--fs);line-height:var(--lh);color:#232A36}
+.pg p{margin:0 0 3.4mm;font-size:var(--fs);line-height:var(--lh);color:#232A36}
 .pg p.lead{font-size:calc(var(--fs) * 1.05);line-height:calc(var(--lh) + .02);color:#2A3140}
 .pg p.small{font-size:calc(var(--fs) * .86);line-height:1.85;color:var(--b-mute)}
 .pg b{color:#141A26;font-weight:800}
 .pg em{font-style:normal;color:var(--b-orange);font-weight:700}
 .pg ul{margin:0 0 4mm;padding:0;list-style:none}
-.pg ul li{position:relative;padding-left:15px;margin-bottom:2.4mm;font-size:calc(var(--fs) * .96);line-height:1.9}
+.pg ul li{position:relative;padding-left:15px;margin-bottom:2.1mm;font-size:calc(var(--fs) * .96);line-height:1.85}
 .pg ul li:before{content:'';position:absolute;left:1px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--b-orange);opacity:.75}
 .pg ol{margin:0 0 4mm;padding-left:0;list-style:none;counter-reset:ol}
 .pg ol li{position:relative;padding-left:24px;margin-bottom:3mm;counter-increment:ol;font-size:calc(var(--fs) * .96);line-height:1.9}
@@ -68,13 +71,13 @@
 }
 .callout{
   background:var(--b-cream2);border-left:3px solid var(--b-orange);
-  border-radius:0 6px 6px 0;padding:4mm 5mm;margin:5mm 0;
+  border-radius:0 6px 6px 0;padding:3.4mm 4.6mm;margin:4.2mm 0;
 }
 .callout .ct{
   font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   font-size:9.4px;letter-spacing:.16em;color:var(--b-orange);font-weight:700;margin-bottom:1.6mm;
 }
-.callout p{margin:0;font-size:calc(var(--fs) * .96);line-height:1.9}
+.callout p{margin:0;font-size:calc(var(--fs) * .96);line-height:1.85}
 .callout p+p{margin-top:2mm}
 .note{font-size:calc(var(--fs) * .82);line-height:1.8;color:var(--b-mute);border-top:1px solid var(--b-line);padding-top:2.4mm;margin-top:3mm}
 .tag{
@@ -92,7 +95,7 @@
   font-size:calc(var(--fs) * .74);letter-spacing:.1em;color:#7C6E5A;font-weight:700;
   border-bottom:1.2px solid var(--b-line);padding:2mm 2mm;
 }
-.pg table td{border-bottom:1px solid rgba(221,208,184,.75);padding:2.2mm 2mm;vertical-align:top;line-height:1.7;color:#2A3040}
+.pg table td{border-bottom:1px solid rgba(221,208,184,.75);padding:1.9mm 2mm;vertical-align:top;line-height:1.65;color:#2A3040}
 .pg table td.k{font-weight:800;color:var(--b-navy);white-space:nowrap}
 .pg table tr.total td{border-top:1.2px solid var(--b-line);border-bottom:0;font-weight:800;color:var(--b-navy)}
 
@@ -101,8 +104,8 @@
 .chart4 .c{border:1px solid var(--b-line);border-radius:6px;background:rgba(255,255,255,.55);padding:3mm 2mm;text-align:center}
 .chart4 .c .lab{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;font-size:9px;letter-spacing:.16em;color:#8C7D66;margin-bottom:1.6mm}
 .chart4 .c .god{font-size:10px;color:#6E6353;height:14px}
-.chart4 .c .st{font-family:'Nanum Myeongjo',serif;font-size:26px;line-height:1.15;color:var(--b-navy);font-weight:700}
-.chart4 .c .ko{font-size:9.5px;color:#8C7D66;margin-bottom:1.2mm}
+.chart4 .c .st{font-family:'Nanum Myeongjo',serif;font-size:calc(var(--fs) * 1.6);line-height:1.15;color:var(--b-navy);font-weight:700}
+.chart4 .c .ko{font-size:calc(var(--fs) * .62);color:#8C7D66;margin-bottom:1.2mm}
 .chart4 .c.me{background:rgba(224,100,42,.07);border-color:rgba(224,100,42,.45)}
 .chart4 .c.me .lab{color:var(--b-orange)}
 
@@ -154,7 +157,8 @@
 
 /* 목차 */
 .toc-list{column-count:1;margin-top:2mm}
-.toc-r{display:flex;align-items:baseline;gap:3mm;padding:2.3mm 0;border-bottom:1px dotted rgba(221,208,184,.9);font-size:calc(var(--fs) * .9)}
+.toc-r{display:flex;align-items:baseline;gap:3mm;padding:2.3mm 0;border-bottom:1px dotted rgba(221,208,184,.9);font-size:calc(var(--fs) * .9);cursor:pointer;transition:.15s}
+@media screen{.toc-r:hover .t,.toc-r:active .t{color:var(--b-orange)}}
 .toc-r .n{font-family:-apple-system,sans-serif;font-size:10.5px;color:var(--b-orange);font-weight:800;min-width:9mm}
 .toc-r .t{font-weight:700;color:var(--b-navy)}
 .toc-r .d{flex:1;border-bottom:1px dotted #D8CBB4;transform:translateY(-2px)}
@@ -209,8 +213,8 @@
   .elrow .v{color:#4E453A}
 }
 @media screen and (max-width:820px){
-  #wl2-book>.pg{width:100%;height:auto;max-height:none;min-height:auto;padding:22px 18px 30px;border-radius:12px;font-size:15px}
-  #wl2-book>.pg.cover{height:295mm;max-height:none}
+  #wl2-book>.pg{width:100%;height:auto;max-height:none;min-height:auto;padding:20px 18px 16px;border-radius:12px;font-size:var(--fs,15px)}
+  #wl2-book>.pg.cover{height:295mm;max-height:none;padding:0}
   .pg h1{font-size:24px}
   .mgrid{grid-template-columns:1fr}
   .chart4{grid-template-columns:repeat(4,1fr)}
