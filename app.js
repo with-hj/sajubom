@@ -96,7 +96,9 @@ function init(){
   bindChips('#marryChips',function(b){return {m:b.getAttribute('data-m')};},function(v){ state.marry=v.m; });
   bindChips('#kidChips',function(b){return {c:b.getAttribute('data-c')};},function(v){ state.kid=v.c; });
   bindChips('#lzGender',function(b){return {g:b.getAttribute('data-g')};},function(v){ state.pg=v.g; });
-  bindChips('#lzCal',function(b){return {cal:b.getAttribute('data-cal')};},function(v){ state.pcal=v.cal; });
+  bindChips('#lzCal',function(b){return {cal:b.getAttribute('data-cal')};},function(v){
+    state.pcal=v.cal; var lr=$('#lzLeapRow'); if(lr) lr.style.display=(v.cal==='lunar')?'flex':'none';
+  });
   bindChips('#lzStage',function(b){return {s:b.getAttribute('data-s')};},function(v){ state.stage=v.s; });
   bindChips('#lzMarry',function(b){return {m:b.getAttribute('data-m')};},function(v){ state.marry=v.m; });
   bindChips('#lzChild',function(b){return {c:b.getAttribute('data-c')};},function(v){ state.kid=v.c; });
@@ -468,7 +470,12 @@ function initPdf(){
   var q=$('#lz-q');
   q.addEventListener('input',function(){ $('#lz-qcount').textContent=q.value.length; });
   form.addEventListener('submit',function(e){ e.preventDefault(); submitPdf(); });
-  $('#lz-leapRow').style.display='none';
+  var lr=$('#lzLeapRow'); if(lr) lr.style.display='none';
+  if($('#lz-y')) fillYears($('#lz-y'),1920,'연도');
+  if($('#lz-m')) fillMonths($('#lz-m'),true);
+  if($('#lz-d')) fillDays($('#lz-d'),true);
+  if($('#lz-hour')) fillHours($('#lz-hour'),true);
+  if($('#lz-region')) fillRegions($('#lz-region'));
 }
 function gotoPdf(n){
   if(n===4&&!buildPdfSummary()) return;
