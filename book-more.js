@@ -150,7 +150,7 @@ function seunPages(){
       var mp=S.monthPillarOf(y,m), mg=S.tenGod(R.dStem,mp.stem);
       var mrel=S.branchRel(R.dBranch,mp.branch), mtag=S.monthTag(mrel);
       if(mtag==='합'||mtag==='충'){
-        mrows+='<tr><td class="k">'+m+'월</td><td>'+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+' · '+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(S.MONTH_TIP.general[S.GOD_GROUP[mg]]||'')+'</td></tr>';
+        mrows+='<tr><td class="k">'+m+'월</td><td>'+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+' · '+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(((S.MONTH_TIPS.general||{})[S.GOD_GROUP[mg]]||[])[0]||'')+'</td></tr>';
       }
     }
     push(page('16 / SEWOON',secLabel('16','SEWOON · '+y+' 네 영역')+'<h2>'+y+'년, 영역별로</h2>'+
@@ -188,7 +188,7 @@ function monthPages(){
   for(var m=1;m<=12;m++){
     var mp=S.monthPillarOf(2027,m), g=S.tenGod(R.dStem,mp.stem), grp=S.GOD_GROUP[g];
     var rel=S.branchRel(R.dBranch,mp.branch), tag=S.monthTag(rel);
-    var tip=(S.MONTH_TIP.general[grp]||''), rt=S.MONTH_REL_TIP[tag]||'';
+    var tip=(((S.MONTH_TIPS.general||{})[grp]||[])[0]||''), rt=(((S.MONTH_REL_TIPS||{})[tag]||[])[0]||'');
     var F=SEUN_FIELD[g]||SEUN_FIELD['비겁'];
     var wk=WEEK[g]||WEEK['비겁'];
     push(page('17 / 2027',secLabel('17','2027 MONTHLY · '+m+'월')+'<h1><span class="accent">2027년 '+m+'월</span><br>'+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+' · '+g+'</h1>'+
