@@ -1,5 +1,4 @@
-/* 천령당 — 임신·자녀 : 임신운 · 태교/출산 · 자녀 사주 · 엄마아빠 궁합
-   ※ 임신운에는 아이 공부·학교 이야기를 넣지 않습니다. */
+/* 천령당 — 임신·자녀 : 임신·출산운 · 자녀 사주 · 엄마아빠 궁합 */
 (function(){
 'use strict';
 var C=window.CH, S=C.S;
@@ -270,22 +269,18 @@ function pa6(R,c,input,name){
 }
 
 window.CTP.baby={
-  pregnancy:[
+  /* 임신운 + 태교·출산 → 임신·출산운 (한 탭으로 합침) */
+  birth:[
     {han:'孕',title:'임신이 열리는 해',sub:'자녀성이 들어오는 때',body:pg1},
     {han:'水火',title:'물과 불의 균형',sub:'몸이 먼저 알리는 신호',body:pg2},
     {han:'合',title:'부부의 합',sub:'준비는 두 사람의 생활',body:pg3},
     {han:'慎',title:'조심할 달',sub:'비워두어야 하는 시기',body:pg4},
     {han:'備',title:'준비의 순서',sub:'잠 → 식사 → 움직임',body:pg5},
-    {han:'醫',title:'명리와 의학',sub:'경계와 역할',body:pg6},
-    {han:'月',title:'12개월의 몸',sub:'달별 흐름',body:pg7}
-  ],
-  taegyo:[
     {han:'胎',title:'태교의 결',sub:'배 속 아이의 기운',body:tg1},
     {han:'時',title:'출산의 흐름',sub:'문이 열리는 달',body:tg2},
     {han:'後',title:'산후 회복',sub:'잠과 온기',body:tg3},
     {han:'家',title:'가족의 역할',sub:'다시 짜이는 분담',body:tg4},
-    {han:'名',title:'이름과 기운',sub:'무엇을 보고 정할까',body:tg5},
-    {han:'月',title:'6개월의 가족',sub:'달별 흐름',body:tg6}
+    {han:'月',title:'12개월의 몸',sub:'달별 흐름',body:pg7}
   ],
   child:[
     {han:'性',title:'아이의 기질',sub:'타고난 결',body:ch1},

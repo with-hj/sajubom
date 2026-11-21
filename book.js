@@ -85,7 +85,7 @@ function coverPage(){
   var R=B.R;
   return '<section class="pg cover"><div class="art" style="background-image:url(./assets/cover-art.jpg)"></div><div class="veil"></div>'+
     '<div class="inner"><div><div class="seal">天</div><div class="brand">天靈堂</div>'+
-    '<div class="han">인생설계서</div><div class="sub">LIFE DESIGN REPORT · 88장+</div></div>'+
+    '<div class="han">인생설계서</div><div class="sub">LIFE DESIGN REPORT</div></div>'+
     '<div class="box"><div class="nm">'+esc(B.name)+'</div>'+
     '<div class="d">'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+(R.hasTime?' · '+hourText(R):' · 시간 모름')+'<br>'+
     S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 · '+S.ILJU[R.dIdx][0]+'</div></div>'+
@@ -104,6 +104,7 @@ function introPage(){
    '<p class="lead">사주는 미래를 정해둔 예언이 아닙니다. 태어난 순간의 하늘을 여덟 글자로 적어둔 <b>기록</b>이고, 그 기록은 ‘어떤 조건에서 이 사람이 가장 잘 자라는가’를 알려줍니다.</p>'+
    '<p>'+esc(B.name)+' 님의 원국은 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주입니다. 일간 '+stemS(R.dStem)+'은 '+S.DAY_MASTER[R.dStem][0]+'의 결이고, 가장 두터운 기운은 '+elS(c.mostI)+', 가장 얇은 기운은 '+elS(c.leastI)+'입니다. 이 책은 그 여덟 글자 위에 30년의 대운과 5년의 세운, 12개월의 달력을 얹어 한 권의 설계도로 엮었습니다.</p>'+
    '<p>이 책을 읽는 방법은 간단합니다. 1장에서 원국을 확인하고, 2장에서 네 기둥을 한 칸씩 읽으세요. 3장부터 8장은 삶의 영역별 해설이고, 9장부터는 시간의 지도입니다. 급하면 9장(대운)과 11장(2027년 달력)부터 펼치셔도 좋습니다.</p>'+
+   '<p>읽는 동안 세 가지 질문을 마음에 두시면 좋습니다. “나는 어떤 조건에서 힘이 나는가”, “나는 어떤 상황에서 먼저 지치는가”, “지금 내가 미루고 있는 결정은 무엇인가”. 이 책의 스물한 장은 모두 이 세 질문에 서로 다른 각도에서 답하는 글입니다. 그래서 한 번에 다 읽지 않아도 괜찮습니다. 마음에 걸리는 장부터 펼치세요.</p>'+
    callout('이 책을 읽는 태도','<p>여기 적힌 문장은 정답이 아니라 <b>질문</b>입니다. “내가 왜 이 자리에서 지치는지”, “왜 같은 관계를 반복하는지”에 대한 하나의 설명으로 읽어주세요. 맞지 않는 문장은 넘기시면 됩니다.</p>')+
    '<p class="small">※ 본 책자는 사주명리 상징을 생활의 언어로 옮긴 참고 해석입니다. 의학적 진단, 법률·투자 판단을 대신하지 않습니다.</p>';
   push(page('PROLOGUE',body,{spread:true}));
@@ -199,9 +200,10 @@ function godPage(){
     var n=c.grp[k];
     h+='<tr><td class="k">'+k+'</td><td>'+n+'</td><td>'+role[k]+'</td><td style="font-size:12px">'+(n>=3?'두터움 — 이 기운이 삶의 중심':(n===0?'비어 있음 — 의식적으로 채워야':'고른 편'))+'</td></tr>';
   });
-  h+='</table><table><tr><th>십성</th><th>개수</th><th>의미</th></tr>';
-  S.GODS.forEach(function(g){ if(c.gc[g]>0) h+='<tr><td class="k">'+g+'</td><td>'+c.gc[g]+'</td><td style="font-size:12px">'+S.GOD_DEEP[g]+'</td></tr>'; });
   h+='</table>';
+  var h2='<table><tr><th>십성</th><th>개수</th><th>의미</th></tr>';
+  S.GODS.forEach(function(g){ if(c.gc[g]>0) h2+='<tr><td class="k">'+g+'</td><td>'+c.gc[g]+'</td><td>'+S.GOD_DEEP[g]+'</td></tr>'; });
+  h2+='</table>';
   var body=secLabel('04','TEN GODS · 십성')+
    '<h1>무엇으로 이루어진 <span class="accent">사람인가</span></h1>'+
    '<p class="lead">십성은 일간과 다른 글자의 관계를 열 가지로 나눈 이름입니다. 재료를 알면 “이 사람이 어떤 상황에서 힘을 내고 어디서 지치는지”가 보입니다.</p>'+h+
@@ -209,6 +211,12 @@ function godPage(){
    callout('십성 사용법','<p>이 사주는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>이 쓰이는 자리에서 오래 갑니다. 반대로 '+c.topGrp+'이 무시당하는 자리에 오래 있으면 능력과 별개로 몸이 먼저 지칩니다. 그 감각이 들면 자리를 바꿀 신호로 보세요.</p>');
   chapter('tenGods','04','십성 · 재료','열 가지 별의 구조');
   push(page('04 / TEN GODS',body,{spread:true}));
+  var body2=secLabel('04','TEN GODS · 십성 상세')+
+   '<h2>이 사주에 실제로 있는<br><span class="accent">열 가지 별</span></h2>'+
+   '<p>아래 표는 이 원국에 실제로 들어 있는 십성만 골라, 각각이 생활에서 어떻게 드러나는지 적은 것입니다. 개수는 천간과 지지에 있는 글자를 함께 센 값이라, 같은 별이 두 개 세 개면 그 결이 반복해서 나타납니다.</p>'+h2+
+   '<p>표를 읽을 때는 개수가 많은 별부터 보세요. 세 개 이상이면 그 기운이 삶의 기본값이 되고, 하나도 없으면 반대로 <b>의식적으로 채워야 하는 자리</b>가 됩니다. 없는 것은 약점이 아니라 방향입니다.</p>'+
+   '<p class="note">※ 십성은 사람을 평가하는 등급이 아니라, 기운이 움직이는 방식을 부르는 이름입니다.</p>';
+  push(page('04 / TEN GODS',body2,{spread:true}));
 }
 
 function salsPage(){
@@ -537,6 +545,23 @@ function healthPages(){
 
 B.coreSections=[summaryPage,introPage,tocPages,chartPage,elPage,godPage,salsPage,strengthPage,pillarPages,personalityPages,relationPages,moneyPages,careerPages,lovePages,familyPages,healthPages];
 
+/* ---------------- 모바일 가독성 : A4 한 장에 맞춰 본문 크기 미세 조정 ---------------- */
+function fitPages(host){
+  if(!host) return;
+  var A4=297*96/25.4; /* 1122.5px */
+  var pages=host.querySelectorAll('.pg');
+  for(var i=0;i<pages.length;i++){
+    var p=pages[i];
+    if(p.classList.contains('cover')) continue;
+    p.style.removeProperty('--fs');
+    var fs=17, guard=0;
+    while(p.getBoundingClientRect().height>A4+3 && guard<16){
+      fs-=0.35; guard++;
+      p.style.setProperty('--fs',fs.toFixed(2)+'px');
+    }
+  }
+}
+
 /* ---------------- build ---------------- */
 B.build=function(R,input,name){
   B.pages=[];B.chapters=[];B.R=R;B.c=S.chartCtx(R);B.input=input;B.name=name||'고객';
@@ -563,4 +588,5 @@ B.build=function(R,input,name){
   html=html.replace(/<span class="pn">[^<]*<\/span>/g,function(){ pn++; return '<span class="pn">'+n2(pn)+' / '+total+'</span>'; });
   return {html:html,pages:total};
 };
+B.fit=fitPages;
 })();

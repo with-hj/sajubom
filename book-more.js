@@ -323,7 +323,7 @@ function signPages(){
     '<tr><td class="k">이름</td><td>'+esc(B.name)+'</td></tr>'+
     '<tr><td class="k">생년월일</td><td>'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' ('+(B.input.cal==='lunar'?'음력':'양력')+')</td></tr>'+
     '<tr><td class="k">태어난 시간</td><td>'+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시 무렵':'시간 미상')+'</td></tr>'+
-    '<tr><td class="k">출생 지역</td><td>'+(R.solarAdj?(R.solarAdj.region+' · 진태양시 '+(R.solarAdj.off>0?'+':'')+R.solarAdj.off+'분 보정'):(B.input.regionName||'보정 없음'))+'</td></tr>'+
+    '<tr><td class="k">출생 지역</td><td>'+(R.solarAdj?R.solarAdj.region+' 출생 — 시주 보정 반영':((B.input.regionName&&B.input.regionName!=='출생지 모름')?B.input.regionName:'출생지 미상 — 보정 없음'))+'</td></tr>'+
     '<tr><td class="k">원국</td><td>'+S.STEM_HAN[R.yIdx%10]+S.BR_HAN[R.yIdx%12]+' · '+S.STEM_HAN[R.mIdx%10]+S.BR_HAN[R.mIdx%12]+' · '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+(R.hIdxP!=null?' · '+S.STEM_HAN[R.hIdxP%10]+S.BR_HAN[R.hIdxP%12]:'')+'</td></tr>'+
     '<tr><td class="k">일간</td><td>'+stemS(R.dStem)+' · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+'</td></tr>'+
     '<tr><td class="k">용신</td><td>'+elK(c.yongEl)+'</td></tr>'+
@@ -362,11 +362,22 @@ function appendPages(){
   push(page('21 / APPENDIX',secLabel('21','APPENDIX · 이용 안내')+'<h1>이 책에 대하여</h1>'+
     '<p class="lead">이 책자는 천령당(天靈堂)이 사주명리 상징을 생활의 언어로 옮겨 만든 참고 해석입니다.</p>'+
     '<ul><li>수록 범위 — 원국·오행·십성·십이운성·신살·격국, 8개 삶의 영역, 30년 대운 9구간, 2027~2031 세운, 2027년 월력, 개운 처방, 맞춤 질문 답변</li>'+
-    '<li>계산 방식 — 년주는 입춘, 월주는 절기, 일주는 1900년 1월 1일 갑술일 기준, 시주는 오자둔법. 출생 지역의 경도 차이는 진태양시로 보정했습니다.</li>'+
+    '<li>계산 방식 — 년주는 입춘, 월주는 절기, 일주는 1900년 1월 1일 갑술일 기준, 시주는 오자둔법. 출생 지역의 경도 차이는 시주 계산에 반영했습니다.</li>'+
     '<li>주의 — 의학적 진단, 법률·투자 판단, 결혼·이혼 등 중대한 결정의 근거로 사용할 수 없습니다.</li>'+
     '<li>재발행 — 생년월일·시간·지역이 달라지면 같은 책을 다시 만들 수 있습니다.</li></ul>'+
     '<p class="note">天靈堂 · 천령당 · 2026 · with-hj@users.noreply.github.com</p>'+
     callout('기록','<p>이 책의 원국은 '+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시':'시간 미상')+' · '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 기준입니다.</p>'),{spread:true}));
+  var d=S.EL_DEEP[c.yongEl];
+  chapter('appendix2','22','서른 날의 실천','관찰·이행·경계·재독');
+  push(page('22 / 30 DAYS',secLabel('22','THIRTY DAYS · 실천')+'<h1>이 책을 덮은 뒤,<br><span class="accent">서른 번의 선택</span></h1>'+
+    '<p class="lead">사주는 바뀌지 않습니다. 바뀌는 것은 매일 어느 쪽으로 조금씩 기우는가입니다. 이 책에서 읽은 결론을 마음이 아니라 <b>습관</b>에 옮기는 서른 날의 순서를 적어둡니다.</p>'+
+    '<h3>1주 — 관찰</h3><p>이번 주에는 아무것도 바꾸지 않습니다. 대신 아침에 눈뜨자마자 몸의 상태를 세 단어로 적고, 저녁에 “오늘 에너지가 가장 오래 간 시간”을 한 줄로 남기세요. 이 사주는 느낌을 말로 옮길 때 스스로를 조금 다르게 읽습니다. 기록이 쌓이면 그것이 교정이 됩니다.</p>'+
+    '<h3>2주 — 하나만 바꾸기</h3><p>필요한 기운은 '+S.EL_KO[c.yongEl]+'입니다. 색은 '+d.color+', 방위는 '+d.dir+'. 새로 사지 말고 있던 것의 자리를 옮기는 것으로 시작하세요 — '+d.space+'. 식탁에는 '+d.food+'를 한 번 올려보고, 몸이 어떻게 반응하는지만 확인하면 충분합니다.</p>'+
+    '<h3>3주 — 경계 세우기</h3><p>이 사주의 중심별인 '+c.topGodInGrp+'은 힘이 되는 동시에 과해지기 쉬운 자리입니다. 이번 주에는 거절 한 번, 결정 미루기 한 번을 일부러 해보세요. 미루는 연습은 게으름이 아니라 판단의 정확도를 올리는 일입니다.</p>'+
+    '<h3>4주 — 다시 읽기</h3><p>1주에 적은 세 단어를 다시 펼쳐보세요. 같은 조건에서 몸이 편해졌다면 그 선택이 이 사주에 맞는 것이고, 오히려 무거워졌다면 다른 장을 다시 읽을 때입니다. 서른 날이 지나면 3장(오행)과 6장(격국·용신)을 다시 펼쳐 보시길 권합니다. 처음 읽을 때와 다르게 읽히는 문장이 반드시 있습니다.</p>'+
+    '<p class="note">※ 이 부록은 명리 상징을 생활 습관으로 옮긴 제안입니다. 질병의 진단·치료를 대신하지 않습니다.</p>',{spread:true}));
+
+
 }
 
 M.sections=function(){

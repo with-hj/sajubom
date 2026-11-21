@@ -19,7 +19,8 @@ var REGIONS=[
  {k:'jeju',name:'제주',off:-34},
  {k:'tokyo',name:'일본(도쿄)',off:0},
  {k:'beijing',name:'중국(베이징)',off:-14},
- {k:'abroad',name:'해외(현지 표준시 그대로)',off:0}
+ {k:'abroad',name:'해외(현지 표준시 그대로)',off:0},
+ {k:'unknown',name:'출생지 모름',off:0,unknown:true}
 ];
 var HOURS=['자시','축시','인시','묘시','진시','사시','오시','미시','신시','유시','술시','해시'];
 function hourLabel(i){ var h=i*2; return pad2(h)+':30 ('+HOURS[i]+')'; }
@@ -53,7 +54,7 @@ function fillHours(sel,withEmpty){
   sel.innerHTML=h;
 }
 function fillRegions(sel){
-  sel.innerHTML=REGIONS.map(function(r){return '<option value="'+r.k+'">'+r.name+(r.off?' ('+(r.off>0?'+':'')+r.off+'분)':' (보정 없음)')+'</option>';}).join('');
+  sel.innerHTML=REGIONS.map(function(r){return '<option value="'+r.k+'">'+r.name+'</option>';}).join('');
 }
 function regionOf(k){
   for(var i=0;i<REGIONS.length;i++) if(REGIONS[i].k===k) return REGIONS[i];
@@ -70,7 +71,7 @@ function syncDays(ys,ms,ds){
 /* ---------------- 초기화 ---------------- */
 function init(){
   /* 연·월·일 */
-  [['ff-y','ff-m','ff-d'],['by','bm','bd'],['py','pm','pd'],['lz-y','lz-m','lz-d']].forEach(function(ids){
+  [['by','bm','bd'],['py','pm','pd'],['lz-y','lz-m','lz-d']].forEach(function(ids){
     var ys=$('#'+ids[0]),ms=$('#'+ids[1]),ds=$('#'+ids[2]);
     if(!ys) return;
     fillYears(ys,1920,'연도'); fillMonths(ms,true); fillDays(ds,true);
@@ -78,16 +79,15 @@ function init(){
     ms.addEventListener('change',function(){syncDays(ys,ms,ds);});
   });
   /* 시간 */
-  [['ff-hour',true],['hour',true],['phour',true],['lz-hour',true]].forEach(function(a){
+  [['hour',true],['phour',true],['lz-hour',true]].forEach(function(a){
     var el=$('#'+a[0]); if(el) fillHours(el,a[1]);
   });
   /* 지역 */
-  ['ff-region','region','pregion','lz-region'].forEach(function(id){ var el=$('#'+id); if(el) fillRegions(el); });
+  ['region','pregion','lz-region'].forEach(function(id){ var el=$('#'+id); if(el) fillRegions(el); });
 
   /* 히어로 배경 */
   var art=$('.hero-art'); if(art) art.style.backgroundImage='url(./assets/hero-art.jpg)';
 
-  bindChips('#ff-gender',function(b){ return {g:b.getAttribute('data-g')}; },function(v){ });
   bindChips('#calChips',function(b){return {cal:b.getAttribute('data-cal')};},function(v){
     state.cal=v.cal; $('#leapRow').style.display=(v.cal==='lunar')?'flex':'none';
   });
@@ -102,6 +102,7 @@ function init(){
   bindChips('#lzStage',function(b){return {s:b.getAttribute('data-s')};},function(v){ state.stage=v.s; });
   bindChips('#lzMarry',function(b){return {m:b.getAttribute('data-m')};},function(v){ state.marry=v.m; });
   bindChips('#lzChild',function(b){return {c:b.getAttribute('data-c')};},function(v){ state.kid=v.c; });
+  bindChips('#pGenderChips',function(b){return {p:b.getAttribute('data-pg')};},function(v){ state.pg=v.p; });
 
   /* 상대 정보 스위치 */
   var sw=$('#ctxSwitch');
@@ -111,13 +112,11 @@ function init(){
     $('#ctxBody').classList.toggle('on',state.ctx);
   });
   /* 모름 체크 */
-  [['ff-notime','ff-hour'],['notime','hour'],['pnotime','phour'],['lz-notime','lz-hour']].forEach(function(a){
+  [['notime','hour'],['pnotime','phour'],['lz-notime','lz-hour']].forEach(function(a){
     var c=$('#'+a[0]),s=$('#'+a[1]);
     if(!c||!s) return;
     c.addEventListener('change',function(){ s.disabled=c.checked; if(c.checked) s.value=''; });
   });
-  /* 무료 운세 */
-  $('#ff-go').addEventListener('click',freeFortune);
   /* 트랙 */
   $$('.track-btn').forEach(function(b){
     b.addEventListener('click',function(){ setTrack(b.getAttribute('data-track')); });
@@ -150,8 +149,6 @@ function init(){
   });
   $('#pdfPrint').addEventListener('click',function(){ window.print(); });
 
-  renderTarot();
-
   /* URL 파라미터 */
   try{
     if(/[?&]admin=1/.test(location.search)) openAdmin();
@@ -172,118 +169,10 @@ function bindChips(sel,get,on){
   if(btns.length) on(get(btns[0]));
 }
 
-/* ---------------- 무료 : 오늘의 운세 ---------------- */
-function readFree(){
-  var y=parseInt($('#ff-y').value,10), m=parseInt($('#ff-m').value,10), d=parseInt($('#ff-d').value,10);
-  if(!y||!m||!d) return {err:'생년월일을 골라주세요'};
-  var noTime=$('#ff-notime').checked, hv=$('#ff-hour').value;
-  if(!noTime&&hv==='') return {err:'태어난 시간을 고르거나 ‘모름’을 체크해 주세요'};
-  var reg=regionOf($('#ff-region').value);
-  var g=$('#ff-gender .chip.on'); g=g?g.getAttribute('data-g'):'f';
-  return {y:y,m:m,d:d,hasTime:!noTime,hourIndex:noTime?0:parseInt(hv,10),gender:g,
-    tsoff:noTime?0:reg.off,regionName:reg.name,regionKey:reg.k,name:'',theme:'general',tab:'today',ctx:{}};
-}
-function freeFortune(){
-  var inp=readFree();
-  if(inp.err){ $('#ff-result').innerHTML='<p class="err">'+inp.err+'</p>'; return; }
-  var R=S.computeSaju(inp), c=S.chartCtx(R);
-  var now=new Date();
-  var tIdx=S.mod(10+(S.jdn(now.getFullYear(),now.getMonth()+1,now.getDate())-S.jdn(1900,1,1)),60);
-  var ts=tIdx%10, tb=tIdx%12, g=S.tenGod(R.dStem,ts), grp=S.GOD_GROUP[g];
-  var diff=S.mod(tb-R.dBranch,12);
-  var rel = diff===6?'내 일지와 부딪히는 날입니다. 말이 날카로워지기 쉬우니 중요한 대화는 오전으로 미루세요.'
-    : diff===0?'내 일지와 같은 기운이 도는 날입니다. 평소의 습관이 그대로 드러나니, 반복하고 싶지 않은 행동을 한 번만 참아보세요.'
-    : (diff===4||diff===8)?'내 일지와 어울리는 날입니다. 사람을 통한 일이 잘 풀리니 미뤄둔 연락을 오늘 해보세요.'
-    : '내 일지와 크게 부딪히지 않는 날입니다. 무난하게 흐르니 하던 일을 이어가세요.';
-  var tip=S.TODAY_TIP[grp]||S.TODAY_TIP['비겁'], d=S.EL_DEEP[c.yongEl];
-  var h='<div class="f-card fade-in">';
-  h+='<div class="f-date">'+(now.getMonth()+1)+'월 '+now.getDate()+'일 · '+S.STEM_HAN[ts]+S.BR_HAN[tb]+'일</div>';
-  h+='<div class="f-big"><div class="g">'+g+'</div><div class="t">오늘 내게 지나가는 기운<b>'+S.SEUN_KEY[g]+' — '+S.EL_KO[S.BR_EL[tb]]+'('+S.EL_HAN[S.BR_EL[tb]]+')의 기운</b></div></div>';
-  h+='<div class="f-line"><span class="fk">오늘의 결</span><span class="fv">'+rel+'</span></div>';
-  h+='<div class="f-line"><span class="fk">하면 좋은 일</span><span class="fv">'+tip[0]+'</span></div>';
-  h+='<div class="f-line"><span class="fk">피할 일</span><span class="fv">'+tip[1]+'</span></div>';
-  h+='<div class="f-line"><span class="fk">행운</span><span class="fv">'+d.color+' · '+d.dir+' · 숫자 '+(S.EL_NUM?S.EL_NUM[c.yongEl]:'')+'</span></div>';
-  h+='<div class="f-line"><span class="fk">한 줄</span><span class="fv">'+(S.EL_DEEP[c.yongEl].habit)+' — 오늘의 균형은 여기서 옵니다.</span></div>';
-  h+='</div>';
-  $('#ff-result').innerHTML=h;
-}
-
-/* ---------------- 무료 : 오늘의 타로 ---------------- */
-var TAROT=[
- {no:'00',mk:'☼',name:'바보',kw:['시작','자유','가벼움'],msg:'오늘은 계획을 조금 내려놓아도 좋은 날입니다. 완벽하게 준비된 다음은 오지 않습니다. 작은 한 걸음을 먼저 떼어보세요.',tip:'익숙한 길 대신 한 블록 돌아가 보기'},
- {no:'01',mk:'✦',name:'마법사',kw:['의지','표현','시작'],msg:'말과 손이 함께 움직이면 오늘의 일은 풀립니다. 하고 싶은 것을 한 문장으로 적어 누군가에게 말해보세요.',tip:'미뤄둔 제안 하나 보내기'},
- {no:'02',mk:'☾',name:'여사제',kw:['직관','침묵','기다림'],msg:'답이 보이지 않을 때는 더 보지 않아도 됩니다. 오늘은 판단보다 관찰이 낫습니다. 조용히 듣는 자리를 먼저 만드세요.',tip:'질문 하나를 열어두고 하루 뒤에 결론'},
- {no:'03',mk:'❀',name:'여황제',kw:['풍요','돌봄','몸'],msg:'오늘은 몸을 먼저 챙기는 날입니다. 잘 먹고 잘 쉬는 것이 그대로 운이 됩니다. 누군가를 돌보기 전에 나부터.',tip:'따뜻한 한 끼와 20분 산책'},
- {no:'04',mk:'♜',name:'황제',kw:['질서','기준','책임'],msg:'오늘은 규칙을 세우면 힘이 생깁니다. 미뤄둔 결정을 하나 정하고, 그 기준을 글로 남기세요.',tip:'할 일 셋만 적어 순서 정하기'},
- {no:'05',mk:'✧',name:'교황',kw:['배움','조언','전통'],msg:'오늘은 물어보는 쪽이 이깁니다. 혼자 결론 내리지 말고 이미 해본 사람의 말을 들으세요.',tip:'한 사람에게 조언 구하기'},
- {no:'06',mk:'♡',name:'연인',kw:['선택','끌림','관계'],msg:'오늘은 마음이 가는 쪽을 인정하는 날입니다. 머리로 계산한 답보다 마음이 먼저 움직이는 쪽을 보세요.',tip:'좋아하는 것을 한 가지 말로 표현'},
- {no:'07',mk:'⚔',name:'전차',kw:['전진','의지','속도'],msg:'오늘은 미루던 일에 시동을 걸기 좋습니다. 방향이 반쯤 맞다면 일단 움직이고, 가면서 고치세요.',tip:'가장 미룬 일을 15분만 시작'},
- {no:'08',mk:'⛨',name:'힘',kw:['인내','부드러움','용기'],msg:'오늘은 세게 밀지 말고 오래 버티는 쪽이 이깁니다. 감정이 올라오면 한 박자 늦춰 말하세요.',tip:'화가 나면 30분 뒤에 답하기'},
- {no:'09',mk:'☖',name:'은둔자',kw:['고요','정리','혼자'],msg:'오늘은 혼자 있는 시간이 약입니다. 사람을 만나는 약속을 하나 줄이고, 생각을 정리하는 데 쓰세요.',tip:'저녁 30분 화면 없이 있기'},
- {no:'10',mk:'◎',name:'운명의 수레',kw:['전환','흐름','기회'],msg:'오늘은 흐름이 바뀌는 날입니다. 갑자기 생긴 일이 오히려 문이 될 수 있으니, 계획이 틀어져도 화내지 마세요.',tip:'예정에 없던 제안에 한 번 답해보기'},
- {no:'11',mk:'⚖',name:'정의',kw:['균형','공정','판단'],msg:'오늘은 미뤄둔 판단을 내리기 좋습니다. 감정과 사실을 나눠 적으면 답이 보입니다.',tip:'결정의 이유를 세 줄로 적기'},
- {no:'12',mk:'⏳',name:'매달린 사람',kw:['멈춤','관점','기다림'],msg:'오늘은 결정을 미루는 것이 답입니다. 같은 문제를 다른 각도에서 보면 보이지 않던 것이 보입니다.',tip:'문제를 한 문장으로 바꿔보기'},
- {no:'13',mk:'☠',name:'죽음',kw:['끝','정리','새로움'],msg:'오늘은 정리하는 날입니다. 끝내야 할 것을 끝내면 새 것이 들어올 자리가 생깁니다.',tip:'버릴 것 세 가지 정리'},
- {no:'14',mk:'♒',name:'절제',kw:['조율','중용','회복'],msg:'오늘은 과하지 않게가 답입니다. 먹고 마시고 말하는 것 모두 한 걸음씩 줄이면 몸이 편해집니다.',tip:'오늘 한 번은 “괜찮아요”라고 말하기'},
- {no:'15',mk:'⛧',name:'악마',kw:['집착','유혹','패턴'],msg:'오늘은 끊고 싶은 습관이 올라오는 날입니다. 참는 것보다 자리를 피하는 쪽이 쉽습니다.',tip:'유혹이 오는 자리를 미리 피하기'},
- {no:'16',mk:'⚡',name:'탑',kw:['변화','충격','해방'],msg:'오늘은 예상 밖의 일이 생길 수 있습니다. 무너진 것이 잘못된 것이 아니라, 오래된 것이었다는 신호입니다.',tip:'계획이 틀어지면 10분 멈추기'},
- {no:'17',mk:'☄',name:'별',kw:['희망','회복','치유'],msg:'오늘은 마음이 조금 밝아지는 날입니다. 작은 기대를 하나 정해두면 하루가 그것을 향해 흐릅니다.',tip:'올해 이루고 싶은 것 한 가지 적기'},
- {no:'18',mk:'☽',name:'달',kw:['불안','상상','무의식'],msg:'오늘은 이유 없이 기분이 가라앉을 수 있습니다. 그 감정을 사실로 믿지 말고, 잠을 먼저 챙기세요.',tip:'잠들기 전 오늘 좋았던 일 하나'},
- {no:'19',mk:'☀',name:'태양',kw:['기쁨','성취','드러남'],msg:'오늘은 잘 풀리는 날입니다. 숨기지 말고 드러내세요. 인정받을 일이 있다면 먼저 말해도 좋습니다.',tip:'잘한 일을 한 사람에게 알리기'},
- {no:'20',mk:'⚱',name:'심판',kw:['부름','재회','결산'],msg:'오늘은 오래된 것이 다시 떠오르는 날입니다. 연락이 오거나 생각이 나면, 답은 짧게 하세요.',tip:'미뤄둔 답장 하나 보내기'},
- {no:'21',mk:'✺',name:'세계',kw:['완성','마무리','확장'],msg:'오늘은 마무리에 좋은 날입니다. 끝내면 다음 판이 열립니다. 미완성으로 둔 하나를 오늘 끝내세요.',tip:'99% 남은 일 하나 끝내기'}
-];
-function tarotRng(seed){
-  var x=Math.sin(seed)*10000; return x-Math.floor(x);
-}
-function renderTarot(){
-  var stage=$('#tt-stage'); if(!stage) return;
-  var now=new Date();
-  var dayKey=now.getFullYear()*10000+(now.getMonth()+1)*100+now.getDate();
-  var idxs=[];
-  for(var i=0;i<3;i++){
-    var n=Math.floor(tarotRng(dayKey+i*37)*TAROT.length)%TAROT.length;
-    while(idxs.indexOf(n)>=0) n=(n+1)%TAROT.length;
-    idxs.push(n);
-  }
-  stage.innerHTML=idxs.map(function(n,i){
-    var t=TAROT[n];
-    return '<button type="button" class="tcard" data-pick="'+i+'" aria-label="카드 '+(i+1)+'">'+
-      '<span class="inner"><span class="face back"><span class="bk">天</span><span class="bl">天靈堂</span></span>'+
-      '<span class="face front"><span class="no">'+t.no+'</span><span class="mk">'+t.mk+'</span><span class="nm">'+t.name+'</span></span></span></button>';
-  }).join('');
-  $$('.tcard',stage).forEach(function(b){
-    b.addEventListener('click',function(){ pickTarot(idxs,parseInt(b.getAttribute('data-pick'),10),b,dayKey); });
-  });
-  $('#tt-result').innerHTML='';
-  $('#tt-hint').style.display='block';
-  /* 오늘 이미 뽑았으면 복원 */
-  try{
-    var saved=JSON.parse(localStorage.getItem('cl_tarot_'+dayKey)||'null');
-    if(saved!=null&&saved>=0){
-      var btn=$$('.tcard',stage)[saved];
-      if(btn) pickTarot(idxs,saved,btn,dayKey,true);
-    }
-  }catch(e){}
-}
-function pickTarot(idxs,pick,btn,dayKey,restore){
-  var t=TAROT[idxs[pick]];
-  $$('.tcard').forEach(function(x){ x.classList.remove('picked'); });
-  btn.classList.add('flip','picked');
-  var msg=t.msg;
-  if(!restore){ try{ localStorage.setItem('cl_tarot_'+dayKey,String(pick)); }catch(e){} }
-  $('#tt-hint').style.display='none';
-  $('#tt-result').innerHTML='<div class="tarot-read fade-in"><div class="tr-h"><span class="no">CARD '+t.no+'</span><h4>'+t.name+'</h4></div>'+
-    '<div class="kw">'+t.kw.map(function(k){return '<span>'+k+'</span>';}).join('')+'</div>'+
-    '<p>'+msg+'</p>'+
-    '<div class="ch-key"><b>오늘의 행운 팁</b><span>'+t.tip+'</span></div>'+
-    '<p class="hint" style="margin-top:10px">카드는 하루에 한 번. 내일 자정에 다시 섞입니다.</p></div>';
-}
-
 /* ---------------- 트랙 ---------------- */
 function setTrack(t){
   $$('.track-btn').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-track')===t); });
-  ['read','today','life'].forEach(function(k){
+  ['read','life'].forEach(function(k){
     var el=$('#track-'+k); if(el) el.classList.toggle('on',k===t);
   });
   try{
@@ -321,8 +210,7 @@ function openTheme(key,silent){
     b.classList.toggle('on',on);
     b.setAttribute('aria-selected',on?'true':'false');
   });
-  var c=th.ctx==='partner'||th.ctx==='baby';
-  $('#ctxDivider').style.display=c?'block':'none';
+  var c=!!fieldsFor(key,state.tab).ctx;
   $('#ctxBlock').style.display=c?'block':'none';
   renderTabs();
   if(!silent){
@@ -347,19 +235,50 @@ function renderTabs(){
   });
   updatePanelCopy();
 }
+/* 탭마다 실제로 의미 있는 입력만 보여줍니다 */
+var THEME_FIELDS={
+  general:{stage:1,marry:1,kid:1,ctx:0},
+  love:{stage:0,marry:1,kid:0,ctx:'partner'},
+  marriage:{stage:0,marry:1,kid:0,ctx:'partner'},
+  wealth:{stage:1,marry:0,kid:0,ctx:0}
+};
+function fieldsFor(theme,tab){
+  if(theme==='baby'){
+    if(tab==='child') return {stage:0,marry:0,kid:0,ctx:'child'};
+    if(tab==='parent') return {stage:0,marry:1,kid:0,ctx:'partner'};
+    return {stage:0,marry:1,kid:1,ctx:0};
+  }
+  return THEME_FIELDS[theme]||THEME_FIELDS.general;
+}
+function setCtxLabel(t,s){
+  var tt=$('#ctxSwitch').parentNode.querySelector('.ct-t');
+  var ts=$('#ctxSwitch').parentNode.querySelector('.ct-s');
+  if(tt) tt.textContent=t; if(ts) ts.textContent=s;
+}
+function applyFields(){
+  var f=fieldsFor(state.theme,state.tab);
+  state.fields=f;
+  var st=$('#stageField'), mf=$('#marryField'), kf=$('#kidField');
+  if(st) st.style.display=f.stage?'block':'none';
+  if(mf) mf.style.display=f.marry?'block':'none';
+  if(kf) kf.style.display=f.kid?'block':'none';
+  var cb=$('#ctxBlock');
+  if(cb) cb.style.display=f.ctx?'block':'none';
+  var gf=$('#pGenderField');
+  if(gf) gf.style.display=(f.ctx==='child')?'block':'none';
+  var lb=$('#pBirthLabel');
+  if(lb) lb.textContent=(f.ctx==='child')?'아이 생년월일':'상대방 생년월일';
+  if(f.ctx==='child') setCtxLabel('아이 정보','아이의 생년월일을 넣으면 그 아이의 원국으로 읽습니다');
+  else if(f.ctx==='partner'&&state.theme==='baby') setCtxLabel('배우자 정보','배우자의 생년월일을 넣으면 두 사람 결과 아이의 자리를 함께 봅니다');
+  else setCtxLabel('상대방 정보','상대의 생년월일을 넣으면 두 사람 글자를 함께 읽습니다');
+}
 function updatePanelCopy(){
   var T=CT.TABS[state.tab];
-  $('#pf-title').textContent=T.name+' — 내 사주 입력';
+  $('#pf-title').textContent=T.formTitle||(T.name+' — 내 사주 입력');
   $('#pf-note').textContent=T.note||'';
   var tn=$('#v-tab-note');
   if(tn) tn.innerHTML='<b>'+esc(T.name)+'</b> · '+esc(T.tag||'');
-  if(state.theme==='baby'&&state.tab!=='pregnancy'&&state.tab!=='taegyo'){
-    $('#ctxSwitch').parentNode.querySelector('.ct-t').textContent='아이 정보';
-    $('#ctxSwitch').parentNode.querySelector('.ct-s').textContent='아이의 생년월일을 넣으면 그 아이의 원국으로 읽습니다';
-  } else {
-    $('#ctxSwitch').parentNode.querySelector('.ct-t').textContent='상대방 정보';
-    $('#ctxSwitch').parentNode.querySelector('.ct-s').textContent='상대의 생년월일을 넣으면 두 사람 글자를 함께 읽습니다';
-  }
+  applyFields();
 }
 
 /* ---------------- 폼 읽기 ---------------- */
@@ -380,15 +299,16 @@ function readForm(){
   var reg=regionOf($('#region').value);
   var gender=$('#genderChips .chip.on'); gender=gender?gender.getAttribute('data-g'):'f';
   var c={stage:state.stage,marry:state.marry,kid:state.kid,partner:null,partnerErr:null};
-  var th=CT.THEMES[state.theme];
-  if((th.ctx==='partner'||th.ctx==='baby')&&state.ctx){
+  var f=state.fields||fieldsFor(state.theme,state.tab);
+  if(f.ctx&&state.ctx){
     var py=parseInt($('#py').value,10),pm=parseInt($('#pm').value,10),pd=parseInt($('#pd').value,10);
     if(py&&pm&&pd){
       var preg=regionOf($('#pregion').value), pNo=$('#pnotime').checked, pHv=$('#phour').value;
+      var pgEl=$('#pGenderChips .chip.on');
       c.partner={y:py,m:pm,d:pd,hasTime:!pNo&&pHv!=='',hourIndex:(!pNo&&pHv!=='')?parseInt(pHv,10):0,
-        gender:th.ctx==='baby'?'m':'m',tsoff:(!pNo&&pHv!=='')?preg.off:0,regionName:preg.name};
+        gender:pgEl?pgEl.getAttribute('data-pg'):(state.pg||'m'),tsoff:(!pNo&&pHv!=='')?preg.off:0,regionName:preg.name};
     } else if(py||pm||pd){
-      c.partnerErr='상대방 생년월일을 모두 골라주세요';
+      c.partnerErr=(f.ctx==='child'?'아이 생년월일을 모두 골라주세요':'상대방 생년월일을 모두 골라주세요');
     }
   }
   return {y:solar.y,m:solar.m,d:solar.d,hasTime:!noTime,hourIndex:noTime?0:parseInt(hv,10),
@@ -467,8 +387,8 @@ function renderResult(R,input){
   }
   h+='<div class="panel" style="margin-top:18px;text-align:center">'+
      '<h3 style="font-size:18px">여기까지가 '+esc(T.name)+'의 결입니다</h3>'+
-     '<p class="ph" style="margin-bottom:14px">같은 주제를 88장 인생설계서에서는 30년 대운과 12개월 달력까지 이어서 풉니다.</p>'+
-     '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생설계서 88장 보기</button></div>';
+     '<p class="ph" style="margin-bottom:14px">같은 주제를 인생 설계 리포트에서는 30년 대운과 12개월 달력까지 이어서 풉니다.</p>'+
+     '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생 설계 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
   $('#resultView').innerHTML=h;
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });
@@ -476,10 +396,9 @@ function renderResult(R,input){
 }
 function solarNote(R){
   var a=R.solarAdj;
-  if(!a) return '진태양시 보정 없음';
-  var from=Math.floor(a.from), fm=Math.round((a.from-from)*60);
-  var to=Math.floor(a.to), tm=Math.round((a.to-to)*60);
-  return a.region+' 진태양시 '+(a.off>0?'+':'')+a.off+'분 보정 적용 ('+pad2(from)+':'+pad2(fm)+' → '+pad2(to)+':'+pad2(tm)+')';
+  if(!a) return '선택하신 출생지 기준으로 시주를 보정했습니다';
+  if(a.off===0&&(!a.region||a.region==='출생지 모름')) return '출생지 미상 — 보정 없이 계산했습니다';
+  return a.region+' 출생 기준으로 시주를 보정했습니다';
 }
 
 /* ---------------- PDF 신청 ---------------- */
@@ -523,13 +442,21 @@ function readPdfBase(){
     hasTime:!noTime,hourIndex:noTime?0:parseInt(hv,10),gender:g,tsoff:noTime?0:reg.off,
     regionName:reg.name,regionKey:reg.k};
 }
+function chipLabel(box,attr,map){
+  var b=$(box+' .chip.on');
+  if(!b) return '-';
+  var k=b.getAttribute(attr);
+  return map[k]||b.textContent.trim();
+}
 function buildPdfSummary(){
   var b=readPdfBase();
   if(b.err){ $('#lz-err4').textContent=b.err; $('#lz-err4').hidden=false; return false; }
   var q=($('#lz-q').value||'').trim();
-  var marry=$('#lzMarry .chip.on'), kid=$('#lzChild .chip.on');
+  var marryMap={single:'미혼',dating:'연애 중',married:'기혼',etc:'말하고 싶지 않음'};
+  var kidMap={none:'없음',plan:'계획 중',have:'있음'};
+  var stageMap={'':'선택 안 함',student:'학생',job:'취업 준비',work:'직장 생활',own:'사업·프리랜서',home:'가정·육아',rest:'쉬는 중'};
   var h='<b>'+esc(b.name)+'</b> · '+b.y+'.'+pad2(b.m)+'.'+pad2(b.d)+' '+(b.hasTime?hourLabel(b.hourIndex):'시간 모름')+' · '+(b.gender==='f'?'여성':'남성')+' · '+b.regionName+
-    '<br>결혼 '+((marry&&marry.getAttribute('data-m'))||'-')+' · 자녀 '+((kid&&kid.getAttribute('data-c'))||'-')+
+    '<br>현재 상황 '+chipLabel('#lzStage','data-s',stageMap)+' · 결혼 '+chipLabel('#lzMarry','data-m',marryMap)+' · 자녀 '+chipLabel('#lzChild','data-c',kidMap)+
     (q?'<br>질문 — '+esc(q):'<br>질문 — 없음(기본 구성)');
   $('#lz-summary').innerHTML=h;
   return true;
@@ -617,6 +544,11 @@ function openBook(o){
     try{
       var res=window.BOOK.build(R,inp,o.name);
       host.innerHTML=res.html;
+      if(window.BOOK&&window.BOOK.fit){
+        window.BOOK.fit(host);
+        if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ window.BOOK.fit(host); });
+        setTimeout(function(){ window.BOOK.fit(host); },900);
+      }
       $('#admBookMeta').innerHTML='<b style="color:#ecd6a6">'+esc(o.name)+'</b> · '+o.date+' · '+(o.hasTime?hourLabel(o.hourIndex):'시간 모름')+' · '+
         'A4 '+res.pages+'장 · 원국 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주';
     }catch(ex){
