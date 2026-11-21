@@ -237,7 +237,7 @@ function renderTabs(){
   var th=CT.THEMES[state.theme], box=$('#subtabs');
   box.innerHTML=th.tabs.map(function(k){
     var T=CT.TABS[k];
-    return '<button type="button" class="subtab'+(k===state.tab?' on':'')+'" role="tab" data-tab="'+k+'">'+(k===state.tab?'<span class="dot"></span>':'')+T.name+'</button>';
+    return '<button type="button" class="subtab'+(k===state.tab?' on':'')+'" role="tab" data-tab="'+k+'">'+(k===state.tab?'<span class="dot"></span>':'')+'<span class="tx">'+T.name+'</span></button>';
   }).join('');
   $$('.subtab',box).forEach(function(b){
     b.addEventListener('click',function(){
@@ -412,7 +412,7 @@ function renderResult(R,input){
   h+='<div class="panel" style="margin-top:18px;text-align:center">'+
      '<h3 style="font-size:17px">'+(lockH?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
      '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <b>69,900원</b>입니다.</p>'+
-     '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 이어서 풀면 <b>인생사주 리포트</b> 104쪽이 됩니다.</p>'+
+     '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
   $('#resultView').innerHTML=h;
@@ -423,10 +423,10 @@ function renderResult(R,input){
 /* ---------- 결제 게이트(테스트) : 2장까지 무료, 3장부터 흐림 ---------- */
 function pwBuyMarkup(info){
   return '<div class="pw-price">9,900원 · 전체 풀이</div>'+
-    '<h3>여기서부터 전체 풀이가<br>이어집니다</h3>'+
-    '<p>3장부터 '+info.total+'장까지 <b>약 '+Number(info.chars).toLocaleString('ko-KR')+'자</b>가 더 있습니다.<br>'+esc(info.tab)+'의 나머지 결을 이어서 읽어보세요.</p>'+
+    '<h3>여기서부터 전체 풀이가<br>펼쳐집니다</h3>'+
+    '<p>이어지는 전체 풀이에서<br>'+esc(info.tab)+'의 나머지 결을 더 깊이 읽어보세요.</p>'+
     '<button type="button" class="btn btn-gold btn-block" id="pwBuy">9,900원 결제하고 전체 풀이 보기</button>'+
-    '<p class="pw-note">테스트 사이트입니다 — 결제 없이 전체 풀이가 열립니다</p>';
+    '<p class="pw-note">테스트 사이트 — 결제 없이 전체 풀이가 열립니다</p>';
 }
 function pwConfirmMarkup(){
   return '<div class="pw-price">테스트 결제 · 9,900원</div>'+
