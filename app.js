@@ -196,7 +196,7 @@ function freeFortune(){
   var tip=S.TODAY_TIP[grp]||S.TODAY_TIP['비겁'], d=S.EL_DEEP[c.yongEl];
   var h='<div class="f-card fade-in">';
   h+='<div class="f-date">'+(now.getMonth()+1)+'월 '+now.getDate()+'일 · '+S.STEM_HAN[ts]+S.BR_HAN[tb]+'일</div>';
-  h+='<div class="f-big"><div class="g">'+g+'</div><div class="t">오늘 내게 지나가는 기운<b>'+S.SEUN_KEY[g]+' · '+(S.SEUN_EL[S.BR_EL[tb]]||'').split('.')[0]+'</b></div></div>';
+  h+='<div class="f-big"><div class="g">'+g+'</div><div class="t">오늘 내게 지나가는 기운<b>'+S.SEUN_KEY[g]+' — '+S.EL_KO[S.BR_EL[tb]]+'('+S.EL_HAN[S.BR_EL[tb]]+')의 기운</b></div></div>';
   h+='<div class="f-line"><span class="fk">오늘의 결</span><span class="fv">'+rel+'</span></div>';
   h+='<div class="f-line"><span class="fk">하면 좋은 일</span><span class="fv">'+tip[0]+'</span></div>';
   h+='<div class="f-line"><span class="fk">피할 일</span><span class="fv">'+tip[1]+'</span></div>';
@@ -312,7 +312,7 @@ function openTheme(key){
   $('#ctxDivider').style.display=c?'block':'none';
   $('#ctxBlock').style.display=c?'block':'none';
   renderTabs();
-  try{ $('#themeView').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+  try{ var tv=$('#themeView'); var ty=tv.getBoundingClientRect().top+window.pageYOffset-128; window.scrollTo({top:ty,behavior:'smooth'}); }catch(e){}
 }
 function renderTabs(){
   var th=CT.THEMES[state.theme], box=$('#subtabs');
@@ -451,7 +451,7 @@ function renderResult(R,input){
   h=h.replace(/당신 님/g,'당신');
   $('#resultView').innerHTML=h;
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });
-  try{ $('#resultView').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+  try{ var rv=$('#resultView'); var y=rv.getBoundingClientRect().top+window.pageYOffset-146; window.scrollTo({top:y,behavior:'smooth'}); }catch(e){}
 }
 function solarNote(R){
   var a=R.solarAdj;
