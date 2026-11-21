@@ -297,7 +297,7 @@ function renderThemes(){
     var on=(state.theme||'general')===k;
     h+='<button type="button" class="tp-card'+(on?' on':'')+'" data-theme="'+k+'" role="tab" aria-selected="'+(on?'true':'false')+'">'+
       '<span class="thumb"><img src="./assets/themes-web/t-'+(th.img||k)+'.jpg" alt="'+esc(th.name)+' 일러스트" width="240" height="240" loading="lazy"></span>'+
-      '<span class="tx"><b>'+esc(th.short||th.name)+'</b><i>'+th.han+'</i></span></button>';
+      '<span class="tx"><b>'+esc(th.short||th.name).replace(/\n/g,'<br>')+'</b><i>'+th.han+'</i></span></button>';
   }
   box.innerHTML=h;
   $$('.tp-card',box).forEach(function(b){

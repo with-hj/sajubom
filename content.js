@@ -121,9 +121,9 @@ window.CH={P:P,H:H,UL:UL,K:K,elB:elB,stemB:stemB,brB:brB,n2:n2,ctx:ctx,marryOf:m
 var THEMES={
   general:{name:'종합운세',short:'종합운세',han:'總',img:'general',tagline:'한 해의 흐름부터 타고난 그릇까지, 큰 그림을 먼저',
     tabs:['newyear','life','daeunflow']},
-  love:{name:'썸 · 연애 · 재회',short:'썸·연애 재회',han:'緣',img:'love',tagline:'마음이 오가는 속도를 여덟 글자로 읽어요',
+  love:{name:'썸 · 연애 · 재회',short:'썸·연애\n재회',han:'緣',img:'love',tagline:'마음이 오가는 속도를 여덟 글자로 읽어요',
     tabs:['sseom','reunion','pattern'],ctx:'partner'},
-  marriage:{name:'궁합 · 결혼 · 이혼',short:'궁합·결혼 이혼',han:'婚',img:'marriage',tagline:'함께 앉을 사람인지, 언제 앉을 시기인지',
+  marriage:{name:'궁합 · 결혼 · 이혼',short:'궁합·결혼\n이혼',han:'婚',img:'marriage',tagline:'함께 앉을 사람인지, 언제 앉을 시기인지',
     tabs:['couple','wedding','divorce'],ctx:'partner'},
   baby:{name:'임신 · 자녀',short:'임신·자녀',han:'孕',img:'baby',tagline:'아이를 맞는 때와 그 아이의 결을',
     tabs:['pregnancy','taegyo','child','parent'],ctx:'baby',
