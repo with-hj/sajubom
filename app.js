@@ -127,9 +127,11 @@ function init(){
   });
   /* 테마 */
   renderThemes();
-  $('#backThemes').addEventListener('click',function(){
+  var bk=$('#backThemes');
+  if(bk) bk.addEventListener('click',function(){
     $('#themeView').classList.remove('on'); $('#themeListView').classList.add('on');
   });
+  openTheme('general',true);
   $('#sajuForm').addEventListener('submit',onSubmit);
   /* PDF 신청 */
   initPdf();
@@ -281,8 +283,9 @@ function pickTarot(idxs,pick,btn,dayKey,restore){
 /* ---------------- 트랙 ---------------- */
 function setTrack(t){
   $$('.track-btn').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-track')===t); });
-  $('#track-read').classList.toggle('on',t==='read');
-  $('#track-life').classList.toggle('on',t==='life');
+  ['read','today','life'].forEach(function(k){
+    var el=$('#track-'+k); if(el) el.classList.toggle('on',k===t);
+  });
   try{ $('#tracks').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
 }
 
@@ -291,28 +294,40 @@ function renderThemes(){
   var box=$('#themeList'), h='';
   for(var k in CT.THEMES){
     var th=CT.THEMES[k];
-    h+='<button type="button" class="theme-card" data-theme="'+k+'"><span class="han">'+th.han+'</span>'+
-      '<span class="tt"><b>'+th.name+'</b><span>'+th.tagline+' · '+th.tabs.length+'개 탭</span></span><span class="go">›</span></button>';
+    var on=(state.theme||'general')===k;
+    h+='<button type="button" class="tp-card'+(on?' on':'')+'" data-theme="'+k+'" role="tab" aria-selected="'+(on?'true':'false')+'">'+
+      '<span class="thumb"><img src="./assets/themes-web/t-'+(th.img||k)+'.jpg" alt="'+esc(th.name)+' 일러스트" width="240" height="240" loading="lazy"></span>'+
+      '<span class="tx"><b>'+esc(th.short||th.name)+'</b><i>'+th.han+'</i></span></button>';
   }
   box.innerHTML=h;
-  $$('.theme-card',box).forEach(function(b){
+  $$('.tp-card',box).forEach(function(b){
     b.addEventListener('click',function(){ openTheme(b.getAttribute('data-theme')); });
   });
 }
-function openTheme(key){
-  state.theme=key; state.tab=CT.THEMES[key].tabs[0];
-  var th=CT.THEMES[key];
+function openTheme(key,silent){
+  var th=CT.THEMES[key]; if(!th) return;
+  state.theme=key; state.tab=th.tabs[0];
   $('#v-theme-han').textContent=th.han;
   $('#v-theme-name').textContent=th.name;
   $('#v-theme-tag').textContent=th.tagline;
-  $('#themeListView').classList.remove('on');
-  $('#themeView').classList.add('on');
-  $('#resultView').innerHTML='';
+  var bi=$('#v-banner-img');
+  if(bi){ bi.setAttribute('src','./assets/themes-web/'+(th.img||key)+'.jpg'); bi.setAttribute('alt',th.name+' 일러스트'); }
+  $$('.tp-card').forEach(function(b){
+    var on=b.getAttribute('data-theme')===key;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-selected',on?'true':'false');
+  });
   var c=th.ctx==='partner'||th.ctx==='baby';
   $('#ctxDivider').style.display=c?'block':'none';
   $('#ctxBlock').style.display=c?'block':'none';
   renderTabs();
-  try{ var tv=$('#themeView'); var ty=tv.getBoundingClientRect().top+window.pageYOffset-128; window.scrollTo({top:ty,behavior:'smooth'}); }catch(e){}
+  if(!silent){
+    try{
+      var tv=$('.v8-tpanel')||$('#themeView');
+      var ty=tv.getBoundingClientRect().top+window.pageYOffset-140;
+      window.scrollTo({top:ty,behavior:'smooth'});
+    }catch(e){}
+  }
 }
 function renderTabs(){
   var th=CT.THEMES[state.theme], box=$('#subtabs');
@@ -332,6 +347,8 @@ function updatePanelCopy(){
   var T=CT.TABS[state.tab];
   $('#pf-title').textContent=T.name+' — 내 사주 입력';
   $('#pf-note').textContent=T.note||'';
+  var tn=$('#v-tab-note');
+  if(tn) tn.innerHTML='<b>'+esc(T.name)+'</b> · '+esc(T.tag||'');
   if(state.theme==='baby'&&state.tab!=='pregnancy'&&state.tab!=='taegyo'){
     $('#ctxSwitch').parentNode.querySelector('.ct-t').textContent='아이 정보';
     $('#ctxSwitch').parentNode.querySelector('.ct-s').textContent='아이의 생년월일을 넣으면 그 아이의 원국으로 읽습니다';

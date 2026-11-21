@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
-<title>천령당 · 여덟 글자에 새겨진 하늘의 뜻</title>
-<meta name="description" content="천령당(天靈堂) — 오늘의 운세와 오늘의 타로점은 무료로, 5대 테마 심층 풀이와 88장 인생설계서까지. 사주팔자와 오행, 대운의 흐름을 깊이 읽어드립니다.">
-<meta name="theme-color" content="#141210">
+<title>천령당 · 궁금한 물음 하나로 나의 계절을 읽다</title>
+<meta name="description" content="천령당(天靈堂) — 달빛 아래, 당신의 여덟 글자. 종합운세·썸연애재회·궁합결혼·임신자녀·재물직업 다섯 가지 주제로 사주팔자와 오행, 대운의 흐름을 읽습니다. 오늘의 운세와 타로는 무료.">
+<meta name="theme-color" content="#0A1421">
 <meta name="author" content="천령당 天靈堂">
 <link rel="canonical" href="https://with-hj.github.io/wolhadang-saju/">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="천령당">
 <meta property="og:url" content="https://with-hj.github.io/wolhadang-saju/">
-<meta property="og:title" content="천령당 · 여덟 글자에 새겨진 하늘의 뜻">
+<meta property="og:title" content="천령당 · 궁금한 물음 하나로 나의 계절을 읽다">
 <meta property="og:description" content="오늘의 운세·오늘의 타로는 무료로. 5대 테마 심층 풀이와 88장 인생설계서까지, 천령당에서.">
 <meta property="og:image" content="https://with-hj.github.io/wolhadang-saju/assets/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -22,7 +22,7 @@
 <meta property="og:image:alt" content="천령당 天靈堂 사주명리">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="천령당 · 여덟 글자에 새겨진 하늘의 뜻">
+<meta name="twitter:title" content="천령당 · 궁금한 물음 하나로 나의 계절을 읽다">
 <meta name="twitter:description" content="오늘의 운세·오늘의 타로는 무료로. 5대 테마 심층 풀이와 88장 인생설계서까지.">
 <meta name="twitter:image" content="https://with-hj.github.io/wolhadang-saju/assets/og-image.jpg">
 
@@ -32,8 +32,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=13">
-<link rel="stylesheet" href="./book.css?v=13">
+<link rel="stylesheet" href="./styles.css?v=14">
+<link rel="stylesheet" href="./book.css?v=14">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 </head>
 <body>
@@ -53,122 +53,50 @@
 
 <main id="top">
 
-  <!-- ================= 히어로 ================= -->
-  <section class="hero">
-    <div class="hero-art" aria-hidden="true"></div>
-    <div class="wrap">
-      <span class="kicker">天靈堂 · 四柱命理</span>
-      <h1>여덟 글자에 새겨진<em>하늘의 뜻을 읽다</em></h1>
-      <p class="sub">타고난 결을 먼저 알고, 문이 열리는 때를 함께 봅니다.<br>오늘의 운세와 타로는 무료로.</p>
-      <div class="hero-cta">
-        <a class="btn btn-gold" href="#free">오늘의 운세 보기</a>
-        <a class="btn btn-ghost" href="#tracks" data-goto-track="life">88장 인생설계서</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 무료 : 오늘의 운세 / 타로 ================= -->
-  <section class="sec sec-paper" id="free">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="no">오늘의 결</span>
-        <h2>먼저, 오늘 하루부터</h2>
-        <p>생년월일만 넣으면 오늘의 기운과 카드 한 장이 바로 열립니다.</p>
-      </div>
-
-      <div class="free-grid">
-        <!-- 오늘의 운세 -->
-        <article class="free-card open" id="freeFortune">
-          <div class="fc-top">
-            <span class="fc-ico">日</span>
-            <div>
-              <h3>오늘의 운세</h3>
-              <p class="fc-sub">오늘의 일진과 내 여덟 글자가 만나는 자리</p>
-            </div>
-          </div>
-          <div class="fc-body">
-            <div class="field">
-              <span class="lb">생년월일</span>
-              <div class="row">
-                <select id="ff-y" aria-label="태어난 해"></select>
-                <select id="ff-m" aria-label="태어난 달"></select>
-                <select id="ff-d" aria-label="태어난 일"></select>
-              </div>
-            </div>
-            <div class="field">
-              <span class="lb">태어난 시간 <span>몰라도 괜찮아요</span></span>
-              <div class="row">
-                <select id="ff-hour" aria-label="태어난 시간"></select>
-                <label class="chk" style="flex:0 0 auto"><input type="checkbox" id="ff-notime"> 모름</label>
-              </div>
-            </div>
-            <div class="field">
-              <span class="lb">성별</span>
-              <div class="chips" id="ff-gender">
-                <button type="button" class="chip on" data-g="f">여성</button>
-                <button type="button" class="chip" data-g="m">남성</button>
-              </div>
-            </div>
-            <div class="field">
-              <span class="lb">출생 지역 <span>진태양시 보정</span></span>
-              <select id="ff-region"></select>
-            </div>
-            <button type="button" class="btn btn-verm btn-block" id="ff-go">오늘의 운세 보기</button>
-            <div id="ff-result"></div>
-          </div>
-        </article>
-
-        <!-- 오늘의 타로 -->
-        <article class="free-card open" id="freeTarot">
-          <div class="fc-top">
-            <span class="fc-ico">☾</span>
-            <div>
-              <h3>오늘의 타로점</h3>
-              <p class="fc-sub">세 장 중 한 장을 골라 오늘의 카드를 열어보세요</p>
-            </div>
-          </div>
-          <div class="fc-body">
-            <div class="tarot-stage" id="tt-stage"></div>
-            <p class="hint" id="tt-hint">마음이 가는 카드 한 장을 눌러주세요. 카드는 오늘 하루 동안 그대로 남습니다.</p>
-            <div id="tt-result"></div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <!-- ================= 트랙 전환 ================= -->
   <div class="tracks" id="tracks">
     <div class="wrap">
       <button type="button" class="track-btn on" data-track="read">
         <small>바로 보는</small><b>5대 테마 운세</b>
       </button>
+      <button type="button" class="track-btn" data-track="today">
+        <small>무료</small><b>오늘의 운세·타로</b>
+      </button>
       <button type="button" class="track-btn" data-track="life">
-        <small>깊이 보는</small><b>📜 인생설계서 88장</b>
+        <small>깊이 보는</small><b>📜 인생설계 PDF</b>
       </button>
     </div>
   </div>
 
   <!-- ================= 트랙1 : 5대 테마 ================= -->
-  <section class="sec sec-paper screen on" id="track-read">
-    <div class="wrap">
-      <div id="themeListView">
-        <div class="sec-head">
-          <span class="no">五大主題</span>
-          <h2>지금 가장 궁금한 하나</h2>
-          <p>주제를 고르면 세부 탭이 열립니다. 탭마다 읽는 순서와 내용이 다릅니다.</p>
-        </div>
-        <div class="theme-grid" id="themeList"></div>
+  <section class="v8-screen screen on" id="track-read">
+    <div class="v8-sky" aria-hidden="true"></div>
+    <div class="wrap v8-wrap">
+
+      <div class="v8-hero">
+        <div class="v8-eyebrow">달빛 아래, 당신의 여덟 글자</div>
+        <h1>궁금한 물음 하나로<br><em>나의 계절</em>을 읽다</h1>
+        <p class="v8-lede">다섯 가지 주제 중 하나를 고르면,<br>그 자리에서 여덟 글자를 펼쳐 읽어드립니다.</p>
       </div>
 
-      <div id="themeView" class="screen">
-        <button type="button" class="btn btn-line btn-sm" id="backThemes" style="margin-bottom:12px">← 주제 다시 고르기</button>
-        <div class="res-head" style="margin-top:0">
-          <div class="rh-t" id="v-theme-han">緣</div>
-          <h2 id="v-theme-name">썸 · 연애 · 재회</h2>
-          <p class="rh-s" id="v-theme-tag"></p>
+      <div id="themeListView" class="on">
+        <div class="v8-pick" id="themeList" role="tablist" aria-label="운세 테마 선택"></div>
+      </div>
+
+      <div id="themeView" class="screen on">
+        <div class="v8-tpanel">
+          <div class="v8-banner">
+            <img id="v-banner-img" src="./assets/themes-web/general.jpg" alt="종합운세 일러스트" width="900" height="506">
+            <div class="v8-veil"></div>
+            <div class="v8-bcopy">
+              <span class="v8-han" id="v-theme-han">總</span>
+              <h2 id="v-theme-name">종합운세</h2>
+              <p id="v-theme-tag"></p>
+            </div>
+          </div>
+          <div class="v8-tabs" id="subtabs" role="tablist" aria-label="세부 탭"></div>
+          <p class="v8-tnote" id="v-tab-note"></p>
         </div>
-        <div class="subtabs" id="subtabs" role="tablist"></div>
 
         <div class="panel" id="panelForm">
           <h3 id="pf-title">내 사주 입력</h3>
@@ -281,10 +209,85 @@
     </div>
   </section>
 
-  <!-- ================= 트랙2 : 인생설계서 ================= -->
+  <!-- ================= 트랙2 : 오늘의 운세 · 타로 (무료) ================= -->
+  <section class="v8-screen screen" id="track-today">
+    <div class="v8-sky" aria-hidden="true"></div>
+    <div class="wrap v8-wrap">
+      <div class="v8-hero">
+        <div class="v8-eyebrow">오늘의 결 · 무료</div>
+        <h1>먼저, <em>오늘 하루</em>부터</h1>
+        <p class="v8-lede">생년월일만 넣으면 오늘의 기운과<br>카드 한 장이 바로 열립니다.</p>
+      </div>
+
+      <div class="v8-sheet">
+        <div class="free-grid">
+          <!-- 오늘의 운세 -->
+          <article class="free-card open" id="freeFortune">
+            <div class="fc-top">
+              <span class="fc-ico">日</span>
+              <div>
+                <h3>오늘의 운세</h3>
+                <p class="fc-sub">오늘의 일진과 내 여덟 글자가 만나는 자리</p>
+              </div>
+            </div>
+            <div class="fc-body">
+              <div class="field">
+                <span class="lb">생년월일</span>
+                <div class="row">
+                  <select id="ff-y" aria-label="태어난 해"></select>
+                  <select id="ff-m" aria-label="태어난 달"></select>
+                  <select id="ff-d" aria-label="태어난 일"></select>
+                </div>
+              </div>
+              <div class="field">
+                <span class="lb">태어난 시간 <span>몰라도 괜찮아요</span></span>
+                <div class="row">
+                  <select id="ff-hour" aria-label="태어난 시간"></select>
+                  <label class="chk" style="flex:0 0 auto"><input type="checkbox" id="ff-notime"> 모름</label>
+                </div>
+              </div>
+              <div class="field">
+                <span class="lb">성별</span>
+                <div class="chips" id="ff-gender">
+                  <button type="button" class="chip on" data-g="f">여성</button>
+                  <button type="button" class="chip" data-g="m">남성</button>
+                </div>
+              </div>
+              <div class="field">
+                <span class="lb">출생 지역 <span>진태양시 보정</span></span>
+                <select id="ff-region"></select>
+              </div>
+              <button type="button" class="btn btn-verm btn-block" id="ff-go">오늘의 운세 보기</button>
+              <div id="ff-result"></div>
+            </div>
+          </article>
+
+          <!-- 오늘의 타로 -->
+          <article class="free-card open" id="freeTarot">
+            <div class="fc-top">
+              <span class="fc-ico">☾</span>
+              <div>
+                <h3>오늘의 타로점</h3>
+                <p class="fc-sub">세 장 중 한 장을 골라 오늘의 카드를 열어보세요</p>
+              </div>
+            </div>
+            <div class="fc-body">
+              <div class="tarot-stage" id="tt-stage"></div>
+              <p class="hint" id="tt-hint">마음이 가는 카드 한 장을 눌러주세요. 카드는 오늘 하루 동안 그대로 남습니다.</p>
+              <div id="tt-result"></div>
+            </div>
+          </article>
+        </div>
+        <p class="v8-sheet-note">오늘의 운세와 타로는 무료입니다. 생년월일은 이 기기에만 남습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 트랙3 : 인생설계서 ================= -->
   <section class="sec sec-paper screen" id="track-life">
     <div class="wrap">
       <div class="pdf-hero">
+        <div class="pdf-cover"><img src="./assets/cover-art.jpg" alt="천령당 인생설계서 표지" width="1240" height="1680"></div>
         <div class="bd">天靈堂 · LIFE DESIGN REPORT</div>
         <h2>88장 <em>인생설계서</em></h2>
         <p>한 장의 운세가 아니라, 앞으로 30년을 설계하는 책자형 PDF입니다.</p>
@@ -487,15 +490,15 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=13"></script>
-<script src="./content.js?v=13"></script>
-<script src="./content-general.js?v=13"></script>
-<script src="./content-love.js?v=13"></script>
-<script src="./content-marriage.js?v=13"></script>
-<script src="./content-baby.js?v=13"></script>
-<script src="./content-wealth.js?v=13"></script>
-<script src="./book.js?v=13"></script>
-<script src="./book-more.js?v=13"></script>
-<script src="./app.js?v=13"></script>
+<script src="./engine.js?v=14"></script>
+<script src="./content.js?v=14"></script>
+<script src="./content-general.js?v=14"></script>
+<script src="./content-love.js?v=14"></script>
+<script src="./content-marriage.js?v=14"></script>
+<script src="./content-baby.js?v=14"></script>
+<script src="./content-wealth.js?v=14"></script>
+<script src="./book.js?v=14"></script>
+<script src="./book-more.js?v=14"></script>
+<script src="./app.js?v=14"></script>
 </body>
 </html>
