@@ -10,11 +10,12 @@
 </style>
 </head>
 <body>
-<iframe id="ph" src="./index.html?v=14"></iframe>
+<iframe id="ph"></iframe>
 <script>
 (function(){
   var q=new URLSearchParams(location.search);
   var f=document.getElementById('ph');
+  f.src='./index.html?v='+Date.now();
   var w=+(q.get('w')||390), h=+(q.get('h')||844), y=+(q.get('y')||0), z=+(q.get('z')||1);
   f.style.width=w+'px'; f.style.height=h+'px';
   if(z!==1){ f.style.transform='scale('+z+')'; f.style.transformOrigin='top left'; }
