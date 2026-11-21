@@ -281,6 +281,7 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .v8-sheet{margin:18px 0 0;background:var(--paper);border-radius:22px 22px 14px 14px;padding:16px 13px 14px;
   box-shadow:0 22px 44px rgba(0,0,0,.45)}
 .v8-sheet .free-card{background:#fffdf8}
+.v8-sheet .free-card .fc-top{align-items:flex-start}
 .v8-sheet-note{margin:12px 2px 0;font-size:12px;color:var(--mute2);text-align:center;line-height:1.6}
 
 /* ---------- 입력 폼 카드 ---------- */

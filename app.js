@@ -286,7 +286,11 @@ function setTrack(t){
   ['read','today','life'].forEach(function(k){
     var el=$('#track-'+k); if(el) el.classList.toggle('on',k===t);
   });
-  try{ $('#tracks').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+  try{
+    var sec=$('#track-'+t);
+    var ty=sec?sec.getBoundingClientRect().top+window.pageYOffset-122:0;
+    window.scrollTo({top:ty<0?0:ty,behavior:'smooth'});
+  }catch(e){}
 }
 
 /* ---------------- 테마 · 탭 ---------------- */
