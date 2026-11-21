@@ -172,11 +172,19 @@ var TABS={
     note:'창업 적성, 아이템의 방향, 시작 시기를 봐요.'}
 };
 
-/* 챕터 조립 */
+/* 챕터 조립 : 테마 본문 뒤에 심화 장(content-deep.js)을 붙입니다 */
 function chaptersOf(tab){
   var th=TABS[tab].theme;
   var part=window.CTP[th]||{};
-  return part[tab]||[];
+  var list=(part[tab]||[]).slice();
+  var deep=(window.DEEP&&window.DEEP.chapters)?window.DEEP.chapters(tab):[];
+  if(deep.length){
+    var at=list.length, last=-1;
+    for(var i=0;i<list.length;i++){ if(/개월/.test(list[i].title)) last=i; }
+    if(last>=0&&last>=list.length-2) at=last;
+    for(var j=0;j<deep.length;j++) list.splice(at+j,0,deep[j]);
+  }
+  return list;
 }
 
 window.CT={

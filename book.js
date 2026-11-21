@@ -1,5 +1,5 @@
 /* =====================================================================
-   천령당 인생설계서 (88장+) — 책자 생성기
+   천령당 인생사주 리포트 (104쪽) — 책자 생성기
    A4 · 크림 배경 · 네이비 제목 · 오렌지 라벨
    ===================================================================== */
 (function(){
@@ -69,9 +69,9 @@ function salsOf(R){
 /* ---------------- 페이지 조립 ---------------- */
 function page(label,body,opt){
   opt=opt||{};
-  return '<section class="pg"><div class="pg-hd"><span class="l">天靈堂 · LIFE DESIGN REPORT</span><span class="r">'+label+'</span></div>'+
+  return '<section class="pg"><div class="pg-hd"><span class="l">天靈堂 · LIFE SAJU REPORT</span><span class="r">'+label+'</span></div>'+
     '<div class="pg-bd'+(opt.spread?' spread':'')+'">'+body+'</div>'+
-    '<div class="pg-ft"><span>天靈堂 · 인생설계서</span><span class="pn">__PN__</span></div></section>';
+    '<div class="pg-ft"><span>天靈堂 · 인생사주 리포트</span><span class="pn">__PN__</span></div></section>';
 }
 function push(html){ B.pages.push(html); }
 function chapter(key,no,title,sub){
@@ -85,7 +85,7 @@ function coverPage(){
   var R=B.R;
   return '<section class="pg cover"><div class="art" style="background-image:url(./assets/cover-art.jpg)"></div><div class="veil"></div><div class="frame"><i></i></div>'+
     '<div class="inner"><div><div class="seal">天</div><div class="cover-brand">天靈堂</div>'+
-    '<div class="han">인생설계서</div><div class="rule"></div><div class="sub">LIFE DESIGN REPORT</div></div>'+
+    '<div class="han">인생사주 리포트</div><div class="rule"></div><div class="sub">PREMIUM LIFE REPORT</div></div>'+
     '<div class="epi"><span class="orn"></span><p>여덟 글자에 새겨진 하늘의 뜻을<br>한 사람의 설계도로 옮겼습니다</p></div>'+
     '<div class="box"><div class="nm">'+esc(B.name)+'</div>'+
     '<div class="d">'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+(R.hasTime?' · '+hourText(R):' · 시간 모름')+'<br>'+
@@ -103,7 +103,7 @@ function introPage(){
   var body=secLabel('PROLOGUE','발간에 부쳐')+
    '<h1>당신의 여덟 글자를<br><span class="accent">한 사람의 설계도로</span></h1>'+
    '<p class="lead">사주는 미래를 정해둔 예언이 아닙니다. 태어난 순간의 하늘을 여덟 글자로 적어둔 <b>기록</b>이고, 그 기록은 ‘어떤 조건에서 이 사람이 가장 잘 자라는가’를 알려줍니다.</p>'+
-   '<p>'+esc(B.name)+' 님의 원국은 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주입니다. 일간 '+stemS(R.dStem)+'은 '+S.DAY_MASTER[R.dStem][0]+'의 결이고, 가장 두터운 기운은 '+elS(c.mostI)+', 가장 얇은 기운은 '+elS(c.leastI)+'입니다. 이 책은 그 여덟 글자 위에 30년의 대운과 5년의 세운, 12개월의 달력을 얹어 한 권의 설계도로 엮었습니다.</p>'+
+   '<p>'+esc(B.name)+' 님의 원국은 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주입니다. 일간 '+stemS(R.dStem)+'은 '+S.DAY_MASTER[R.dStem][0]+'의 결이고, 가장 두터운 기운은 '+elS(c.mostI)+', 가장 얇은 기운은 '+elS(c.leastI)+'입니다. 이 책은 그 여덟 글자 위에 평생의 대운과 5년의 세운, 12개월의 달력을 얹어 한 사람의 인생 전체를 한 권으로 엮었습니다.</p>'+
    '<p>이 책을 읽는 방법은 간단합니다. 1장에서 원국을 확인하고, 2장에서 네 기둥을 한 칸씩 읽으세요. 3장부터 8장은 삶의 영역별 해설이고, 9장부터는 시간의 지도입니다. 급하면 9장(대운)과 11장(2027년 달력)부터 펼치셔도 좋습니다.</p>'+
    '<p>읽는 동안 세 가지 질문을 마음에 두시면 좋습니다. “나는 어떤 조건에서 힘이 나는가”, “나는 어떤 상황에서 먼저 지치는가”, “지금 내가 미루고 있는 결정은 무엇인가”. 이 책의 스물한 장은 모두 이 세 질문에 서로 다른 각도에서 답하는 글입니다. 그래서 한 번에 다 읽지 않아도 괜찮습니다. 마음에 걸리는 장부터 펼치세요.</p>'+
    callout('이 책을 읽는 태도','<p>여기 적힌 문장은 정답이 아니라 <b>질문</b>입니다. “내가 왜 이 자리에서 지치는지”, “왜 같은 관계를 반복하는지”에 대한 하나의 설명으로 읽어주세요. 맞지 않는 문장은 넘기시면 됩니다.</p>')+

@@ -124,6 +124,15 @@ function init(){
   $$('[data-goto-track]').forEach(function(a){
     a.addEventListener('click',function(){ setTimeout(function(){ setTrack(a.getAttribute('data-goto-track')); },60); });
   });
+  /* 인생사주 리포트 표지 → 구매 안내 */
+  $$('[data-life-cta]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var el=$('#life-buy');
+      if(!el) return;
+      var y=el.getBoundingClientRect().top+window.pageYOffset-110;
+      window.scrollTo({top:y<0?0:y,behavior:'smooth'});
+    });
+  });
   /* 테마 */
   renderThemes();
   var bk=$('#backThemes');
@@ -386,9 +395,10 @@ function renderResult(R,input){
        '<div class="ch-bd">'+body+'</div></section>';
   }
   h+='<div class="panel" style="margin-top:18px;text-align:center">'+
-     '<h3 style="font-size:18px">여기까지가 '+esc(T.name)+'의 결입니다</h3>'+
-     '<p class="ph" style="margin-bottom:14px">같은 주제를 인생 설계 리포트에서는 30년 대운과 12개월 달력까지 이어서 풉니다.</p>'+
-     '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생 설계 리포트 받아보기</button></div>';
+     '<h3 style="font-size:17px">여기까지가 '+esc(T.name)+'의 결입니다</h3>'+
+     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <b>69,900원</b>입니다.</p>'+
+     '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 이어서 풀면 <b>인생사주 리포트</b> 104쪽이 됩니다.</p>'+
+     '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
   $('#resultView').innerHTML=h;
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });

@@ -249,7 +249,7 @@ window.CTP.general={
     {han:'轉',title:'전환기',sub:'바뀌는 2년을 쓰는 법',body:dn4},
     {han:'擇',title:'대운으로 보는 선택',sub:'이직·창업·투자·배움',body:dn5},
     {han:'身',title:'대운과 몸',sub:'10년의 건강 리듬',body:dn6},
-    {han:'圖',title:'아홉 구간 지도',sub:'30년을 한눈에',body:dn7}
+    {han:'圖',title:'아홉 구간 지도',sub:'평생을 한눈에',body:dn7}
   ]
 };
 })();

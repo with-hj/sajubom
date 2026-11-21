@@ -1,5 +1,5 @@
 /* =====================================================================
-   천령당 인생설계서 — 시간의 지도 (30년 대운 · 5년 세운 · 2027 월력)
+   천령당 인생사주 리포트 — 시간의 지도 (평생 대운 · 5년 세운 · 12개월 월력)
    + 개운 처방 · 맞춤 질문 · 검수 서명 · 부록
    ===================================================================== */
 (function(){
@@ -14,9 +14,9 @@ function stemS(s){return S.STEM_HAN[s]+'('+S.STEM_KO[s]+')';}
 function brS(b){return S.BR_HAN[b]+'('+S.BR_KO[b]+')';}
 function page(label,body,opt){
   opt=opt||{};
-  return '<section class="pg"><div class="pg-hd"><span class="l">天靈堂 · LIFE DESIGN REPORT</span><span class="r">'+label+'</span></div>'+
+  return '<section class="pg"><div class="pg-hd"><span class="l">天靈堂 · LIFE SAJU REPORT</span><span class="r">'+label+'</span></div>'+
     '<div class="pg-bd'+(opt.spread?' spread':'')+'">'+body+'</div>'+
-    '<div class="pg-ft"><span>天靈堂 · 인생설계서</span><span class="pn">__PN__</span></div></section>';
+    '<div class="pg-ft"><span>天靈堂 · 인생사주 리포트</span><span class="pn">__PN__</span></div></section>';
 }
 function push(h){ B.pages.push(h); }
 function chapter(key,no,title,sub){ B.chapters.push({key:key,no:no,title:title,sub:sub,page:B.pages.length+1}); }
@@ -53,7 +53,7 @@ var SEUN_FIELD={
 /* ---------------- 9장 대운 ---------------- */
 function daeunIntro(){
   var R=B.R,c=B.c;
-  push(page('15 / DAEWOON',secLabel('15','DAEWOON · 30년 대운')+'<h1>10년마다 바뀌는<br><span class="accent">판의 방향</span></h1>'+
+  push(page('15 / DAEWOON',secLabel('15','DAEWOON · 평생 대운')+'<h1>10년마다 바뀌는<br><span class="accent">판의 방향</span></h1>'+
     '<p class="lead">대운은 10년 단위로 바뀌는 큰 흐름입니다. 사주의 그릇은 타고나는 것이고, 언제 그 그릇을 쓰게 되는지는 대운이 정합니다.</p>'+
     '<p>이 사주는 '+R.daeunSu+'세에 첫 대운을 시작으로 아홉 구간을 지납니다. 지금은 <b>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세</b> 구간, 그중 '+(R.age-R.daeun[R.curDaeun].from+1)+'년 차입니다.</p>'+
     '<table><tr><th>나이</th><th>간지</th><th>십성</th><th>이 10년에 남는 것</th></tr>'+
@@ -63,7 +63,7 @@ function daeunIntro(){
       h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+S.STEM_HAN[d.idx%10]+S.BR_HAN[d.idx%12]+'</td><td>'+g+'</td><td>'+keep+'</td></tr>';});return h;})()+'</table>'+
     '<p>대운이 바뀌는 실제 변화는 <b>그 전후 2년</b>에 걸쳐 옵니다. 그래서 표의 나이는 “몇 살에 딱 바뀐다”기보다 “그 무렵부터 판이 달라진다”로 읽으세요.</p>'+
     callout('대운을 읽는 순서','<p>1. 지금 구간의 십성을 확인한다. 2. 그 십성이 내 사주에서 어떤 재료인지 본다. 3. 다음 구간의 재료를 미리 준비한다. 이 세 단계면 충분합니다.</p>'),{spread:true}));
-  chapter('daeun','15','30년 대운','9구간 · 10년마다');
+  chapter('daeun','15','평생 대운','9구간 · 10년마다');
 }
 function daeunCycle(i){
   var R=B.R,c=B.c,d=R.daeun[i],g=S.tenGod(R.dStem,d.idx%10),grp=S.GOD_GROUP[g];
@@ -361,7 +361,7 @@ function appendPages(){
     '<h3>오행의 상생과 상극</h3><p>목생화 · 화생토 · 토생금 · 금생수 · 수생목 — 이 순서로 기운이 흐릅니다. 반대로 목극토 · 토극수 · 수극화 · 화극금 · 금극목은 서로를 누르는 관계입니다.</p>',{spread:true}));
   push(page('21 / APPENDIX',secLabel('21','APPENDIX · 이용 안내')+'<h1>이 책에 대하여</h1>'+
     '<p class="lead">이 책자는 천령당(天靈堂)이 사주명리 상징을 생활의 언어로 옮겨 만든 참고 해석입니다.</p>'+
-    '<ul><li>수록 범위 — 원국·오행·십성·십이운성·신살·격국, 8개 삶의 영역, 30년 대운 9구간, 2027~2031 세운, 2027년 월력, 개운 처방, 맞춤 질문 답변</li>'+
+    '<ul><li>수록 범위 — 원국·오행·십성·십이운성·신살·격국, 8개 삶의 영역, 평생 대운 9구간, 2027~2031 세운, 2027년 월력, 개운 처방, 맞춤 질문 답변</li>'+
     '<li>계산 방식 — 년주는 입춘, 월주는 절기, 일주는 1900년 1월 1일 갑술일 기준, 시주는 오자둔법. 출생 지역의 경도 차이는 시주 계산에 반영했습니다.</li>'+
     '<li>주의 — 의학적 진단, 법률·투자 판단, 결혼·이혼 등 중대한 결정의 근거로 사용할 수 없습니다.</li>'+
     '<li>재발행 — 생년월일·시간·지역이 달라지면 같은 책을 다시 만들 수 있습니다.</li></ul>'+
