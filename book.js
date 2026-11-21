@@ -320,6 +320,7 @@ function personalityPages(){
 
 /* ---------------- 5장 관계 ---------------- */
 function relationPages(){
+  chapter('relations','09','관계와 귀인','사람 사이의 방식');
   var R=B.R,c=B.c;
   push(page('09 / RELATIONS',secLabel('09','RELATIONS · 관계')+'<h1>사람 사이에서<br><span class="accent">어떤 사람인가</span></h1>'+
     '<p class="lead">이 사주의 대인관계는 <b>'+c.topGrp+'</b>을 재료로 만들어집니다. '+S.GROUP_MEAN[c.topGrp]+'</p>'+
@@ -346,11 +347,11 @@ function relationPages(){
     '<tr><td class="k">나이</td><td>'+(S.GOD_GROUP[c.topGodInGrp]==='인성'?'나보다 위인 사람':'나와 비슷하거나 아래인 사람')+'</td></tr></table>'+
     '<h3>귀인을 만나는 조건</h3><p>이 사주는 <b>설명해야 하는 자리</b>에서 귀인을 만납니다. 내 일을 말로 정리해 누군가에게 설명할 때, 그 사람이 “그거면 되겠네”라고 말해줍니다. 그래서 이 사주에게 가장 중요한 습관은 <b>기록과 설명</b>입니다.</p>'+
     callout('귀인을 기다리지 마세요','<p>귀인은 찾는 것이 아니라 <b>내가 준비된 자리</b>에 나타납니다. '+S.EL_DEEP[c.yongEl].habit+' — 이 습관이 귀인을 만나는 조건입니다.</p>'),{spread:true}));
-  chapter('relations','09','관계와 귀인','사람 사이의 방식');
 }
 
 /* ---------------- 6장 재물 ---------------- */
 function moneyPages(){
+  chapter('wealth','10','재물과 자산','그릇·새는 곳·10년');
   var R=B.R,c=B.c;
   var jeong=c.gc['정재'],pyeon=c.gc['편재'];
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물')+'<h1>돈의 그릇과<br><span class="accent">들어오는 문</span></h1>'+
@@ -389,11 +390,11 @@ function moneyPages(){
     '<tr><td class="k">연 1회</td><td>보험·연금·세금 점검</td><td>이 사주가 가장 미루는 일</td></tr></table>'+
     '<h3>공간의 처방</h3><p>'+S.EL_DEEP[c.yongEl].space+'. '+S.EL_DEEP[c.yongEl].item+' — 이 사주는 눈에 보이는 것으로 의식을 유지합니다.</p>'+
     callout('한 줄','<p>돈은 <b>한 달의 순서</b>로 지켜집니다. 많이 버는 사람이 아니라, 순서를 지키는 사람이 남깁니다.</p>'),{spread:true}));
-  chapter('wealth','10','재물과 자산','그릇·새는 곳·10년');
 }
 
 /* ---------------- 7장 커리어 ---------------- */
 function careerPages(){
+  chapter('career','11','일과 커리어','천직·이직·조건');
   var R=B.R,c=B.c;
   push(page('11 / CAREER',secLabel('11','CAREER · 일')+'<h1>천직의<br><span class="accent">방향</span></h1>'+
     '<p class="lead">이 사주가 오래 해도 기운이 돌아오는 일은 <b>'+S.WORK_BY_GRP[c.topGrp]+'</b>입니다. '+S.GOD_DEEP[c.topGodInGrp]+'</p>'+
@@ -424,11 +425,12 @@ function careerPages(){
     '<h3>이 5년의 순서</h3><ul><li><b>1년차</b> — 실력을 정리하고 기록으로 남기기</li><li><b>2~3년차</b> — 자리 또는 이름을 하나 얻기</li><li><b>4~5년차</b> — 얻은 자리에서 사람을 만들기</li></ul>'+
     '<p>이 사주는 <b>기록</b>이 남을 때 다음 자리로 이어집니다. 머릿속에 있는 것을 문서와 말로 꺼내는 습관이 커리어의 속도를 바꿉니다.</p>'+
     callout('한 줄','<p>커리어는 재능이 아니라 <b>남긴 기록</b>으로 이어집니다.</p>'),{spread:true}));
-  chapter('career','11','일과 커리어','천직·이직·조건');
 }
 
 /* ---------------- 8장 사랑·결혼 ---------------- */
 function lovePages(){
+  var married=C_marry();
+  chapter('love','12',married?'사랑과 결혼생활':'사랑과 결혼','사랑의 결·배우자·유지');
   var R=B.R,c=B.c;
   push(page('12 / LOVE',secLabel('12','LOVE · 사랑')+'<h1>사랑할 때의<br><span class="accent">결</span></h1>'+
     '<p class="lead">이 사주는 좋아할 때 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>의 방식으로 다가갑니다. '+S.loveSignal(R,c)+'</p>'+
@@ -444,7 +446,6 @@ function lovePages(){
     '<h3>끊는 세 가지</h3><ul><li><b>사흘 규칙</b> — 흔들린 일은 사흘 뒤에 결론</li><li><b>한 문장</b> — 하고 싶은 말을 한 문장으로 적기</li><li><b>한 번</b> — 연락은 한 번만</li></ul>'+
     '<p>이 사주에게 사랑은 <b>표현의 연습</b>입니다. 마음이 커질수록 표현이 줄어드는 습관을 알아차리는 것만으로 절반이 달라집니다.</p>',{spread:true}));
   // 결혼 (context-aware)
-  var married=C_marry();
   var head=married?secLabel('12','MARRIAGE · 결혼생활')+'<h1>부부 사이의<br><span class="accent">결</span></h1>':secLabel('12','MARRIAGE · 결혼')+'<h1>결혼의 문과<br><span class="accent">조건</span></h1>';
   var lead=married?'<p class="lead">이미 결혼생활 안에 있는 사주입니다. 이 장은 배우자를 고르는 법이 아니라 <b>오래 가는 방식</b>을 다룹니다.</p>':'<p class="lead">아직 결혼 전이라면 이 장은 배우자를 고르는 기준과 시기를 다룹니다.</p>';
   var star=(B.input.gender==='f')?'관성':'재성';
@@ -461,12 +462,12 @@ function lovePages(){
     '<h3>화해의 순서</h3><ol><li>24시간은 중요한 말을 미루기</li><li>먼저 한 문장만 꺼내기</li><li>상대의 말을 끝까지 듣고 되풀이해 확인하기</li></ol>'+
     '<h3>위기의 신호</h3><p>'+S.MARR_CRISIS_BR[R.dBranch]+'</p>'+
     '<h3>회복의 처방</h3><p>'+(S.MARR_SOLUTION[c.topGrp]||'각자의 시간을 보장하고, 함께하는 시간을 정기적으로 두세요.')+'</p>',{spread:true}));
-  chapter('love','12',married?'사랑과 결혼생활':'사랑과 결혼','사랑의 결·배우자·유지');
 }
 function C_marry(){ return (B.input.ctx&&B.input.ctx.marry)==='married'; }
 
 /* ---------------- 9장 가족·자녀 ---------------- */
 function familyPages(){
+  chapter('family','13','가족과 자녀','자녀성·관계·10년');
   var R=B.R,c=B.c;
   var hasKid=(B.input.ctx&&B.input.ctx.kid)==='have';
   var cc=null; try{ cc=S.childChart(B.input); }catch(e){}
@@ -500,11 +501,11 @@ function familyPages(){
       var note={'인성':'부모·자녀와의 정이 깊어지고 돌봄이 늘어납니다.','관성':'가족의 책임과 역할이 무거워집니다.','식상':'자녀가 자기 색을 드러내고, 부모는 기다리는 법을 배웁니다.','재성':'살림의 현실(돈·집)이 중심이 됩니다.','비겁':'가족 안에서 각자의 자리를 확인하는 시기입니다.'}[grp];
       h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+g+'</td><td style="font-size:12px">'+note+'</td></tr>';});return h;})()+'</table>'+
     '<p>가족은 <b>역할</b>로 유지되고 <b>감정</b>으로 깊어집니다. 이 사주는 역할을 잘하지만 감정을 말로 옮기는 데 서툽니다. 한 달에 한 번, 가족에게 고마운 일을 한 가지씩 말해보세요.</p>',{spread:true}));
-  chapter('family','13','가족과 자녀','자녀성·관계·10년');
 }
 
 /* ---------------- 10장 건강 ---------------- */
 function healthPages(){
+  chapter('health','14','건강과 체질','체질·계절·처방');
   var R=B.R,c=B.c;
   push(page('14 / HEALTH',secLabel('14','HEALTH · 건강')+'<h1>몸의<br><span class="accent">체질</span></h1>'+
     '<p class="lead">이 사주의 일간은 '+stemS(R.dStem)+'이고, 가장 얇은 기운은 '+elK(c.leastI)+'입니다. '+S.EL_DEEP[c.leastI].under+'</p>'+
@@ -532,7 +533,6 @@ function healthPages(){
     '<tr><td class="k">계절</td><td>'+S.SEASON_RHYTHM[c.leastI][0]+'에는 일정을 20% 비워두기</td></tr></table>'+
     callout('한 줄','<p>이 사주의 몸은 <b>'+S.EL_DEEP[c.leastI].part+'</b>에서 먼저 신호를 보냅니다. 그 부위가 불편하면 다른 것을 미루고 잠부터 챙기세요.</p>')+
     '<p class="note">※ 본 장은 명리 상징을 생활 습관으로 옮긴 참고 내용입니다. 진단과 치료는 의료기관의 몫입니다.</p>',{spread:true}));
-  chapter('health','14','건강과 체질','체질·계절·처방');
 }
 
 B.coreSections=[summaryPage,introPage,tocPages,chartPage,elPage,godPage,salsPage,strengthPage,pillarPages,personalityPages,relationPages,moneyPages,careerPages,lovePages,familyPages,healthPages];
@@ -548,19 +548,19 @@ B.build=function(R,input,name){
   pillarPages();personalityPages();relationPages();moneyPages();careerPages();lovePages();familyPages();healthPages();
   if(window.BOOKM&&window.BOOKM.sections) window.BOOKM.sections();
   var html=B.pages.join('');
-  /* 쪽수 */
   var total=B.pages.length;
-  var pn=1;
   html=html.replace('__TOT__',String(total));
-  html=html.replace(/<span class="pn">__PN__<\/span>/g,function(){ pn++; return '<span class="pn">'+n2(pn)+' / '+total+'</span>'; });
   /* 목차 */
   var rows=B.chapters.map(function(ch){
     return '<div class="toc-r"><span class="n">'+ch.no+'</span><span class="t">'+ch.title+'</span><span class="d"></span><span class="p">'+n2(ch.page)+'</span></div>';
   });
   var half=Math.ceil(rows.length/2);
-  var t1=page('CONTENTS 01','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이 책의 지도</h1><div class="toc-list">'+rows.slice(0,half).join('')+'</div>',{spread:true}).replace('__PN__',n2(tocStart+1)+' / '+total);
-  var t2=page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div><p class="note">쪽수는 인쇄 기준입니다.</p>',{spread:true}).replace('__PN__',n2(tocStart+2)+' / '+total);
+  var t1=page('CONTENTS 01','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이 책의 지도</h1><div class="toc-list">'+rows.slice(0,half).join('')+'</div>',{spread:true});
+  var t2=page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div><p class="note">쪽수는 인쇄 기준입니다.</p>',{spread:true});
   html=html.replace('__TOC1__',t1).replace('__TOC2__',t2);
+  /* 쪽번호 — 표지 다음부터 순서대로 */
+  var pn=1;
+  html=html.replace(/<span class="pn">[^<]*<\/span>/g,function(){ pn++; return '<span class="pn">'+n2(pn)+' / '+total+'</span>'; });
   return {html:html,pages:total};
 };
 })();

@@ -78,7 +78,7 @@ function daeunCycle(i){
     '<div style="margin:2mm 0 4mm"><span class="tag">'+grp+'</span><span class="tag navy">'+elK(el)+'</span><span class="tag navy">지지 '+elK(brEl)+'</span><span class="tag soft">일지와 '+rel.k+'</span>'+(i===R.curDaeun?'<span class="tag">지금</span>':'')+'</div>'+
     '<h3>이 10년의 재료</h3><p>'+DAEUN_GROUP[grp]+'</p>'+
     '<p>'+S.GROUP_MEAN[grp]+' 천간 '+stemS(d.idx%10)+'은 '+S.EL_DEEP[el].over+'</p>'+
-    '<p>지지 '+brS(d.idx%12)+'는 '+S.BR_INNER[d.idx%12]+'</p>'+
+    '<p>'+S.BR_INNER[d.idx%12]+'</p>'+
     '<h3>일지와의 관계</h3><p>이 대운의 지지는 내 일지 '+brS(R.dBranch)+'와 <b>'+rel.k+'</b>입니다. '+rel.t+'</p>'+
     callout('이 10년의 한 줄','<p>'+S.GOD_KEY[g]+'의 10년 — '+({비겁:'내 이름으로 만든 것',식상:'작품과 기록',재성:'현금흐름과 자산',관성:'직함과 신뢰',인성:'실력과 사람'}[grp])+'이 남습니다.</p>'),{spread:true}));
   /* B */
@@ -183,6 +183,7 @@ var WEEK={
  '정인':['준비 — 쉬고 채우기','실행 — 배움에 집중','조정 — 도움 받기','정리 — 가르치기']
 };
 function monthPages(){
+  chapter('calendar','17','2027년 월별 달력','12개월 · 달마다의 결');
   var R=B.R,c=B.c;
   for(var m=1;m<=12;m++){
     var mp=S.monthPillarOf(2027,m), g=S.tenGod(R.dStem,mp.stem), grp=S.GOD_GROUP[g];
@@ -202,7 +203,6 @@ function monthPages(){
       '<h3>주별로</h3><ul>'+wk.map(function(w,i){return '<li><b>'+(i+1)+'주</b> — '+w+'</li>';}).join('')+'</ul>'+
       callout(m+'월의 한 줄','<p>'+tip.split('.')[0]+'. '+rt+'</p>'),{spread:true}));
   }
-  chapter('calendar','17','2027년 월별 달력','12개월 · 달마다의 결');
 }
 function name_of_month(m){
   var names=['한겨울의 문','입춘의 문','봄을 깨우는 달','싹이 트는 달','꽃이 피는 달','초여름의 달','한낮의 달','더위가 익는 달','서늘해지는 달','결실의 달','거두는 달','겨울의 문'];
@@ -211,6 +211,7 @@ function name_of_month(m){
 
 /* ---------------- 12장 개운 ---------------- */
 function remedyPages(){
+  chapter('remedy','18','개운 처방','색·생활·사람·1년');
   var R=B.R,c=B.c,d=S.EL_DEEP[c.yongEl];
   push(page('18 / REMEDY',secLabel('18','REMEDY · 개운 처방')+'<h1>색과 방위로<br><span class="accent">균형 잡기</span></h1>'+
     '<p class="lead">이 사주에 필요한 기운은 '+elK(c.yongEl)+'입니다. 개운은 큰 의식이 아니라 매일의 작은 기울기입니다.</p>'+
@@ -250,11 +251,11 @@ function remedyPages(){
     '<tr><td class="k">10~12월</td><td>거두기 — 계약·정산·검진 마무리. 다음 해 계획</td></tr></table>'+
     '<p>이 사주는 <b>시작보다 마무리</b>에서 힘이 납니다. 그래서 1분기에 비우고 4분기에 거두는 순서가 맞습니다.</p>'+
     callout('1년의 한 줄','<p>'+d.habit+' — 이 문장을 냉장고에 붙여두세요.</p>'),{spread:true}));
-  chapter('remedy','18','개운 처방','색·생활·사람·1년');
 }
 
 /* ---------------- 13장 맞춤 질문 ---------------- */
 function qaPages(){
+  chapter('qa','19','맞춤 질문 답변','300자 질문 · 네 개의 답');
   var R=B.R,c=B.c,q=(B.input.ctx&&B.input.ctx.question)||'';
   var qs=[
     {q:q||'지금 이직해도 될까요? 시기는 언제가 좋을까요?',kind:'job'},
@@ -268,7 +269,6 @@ function qaPages(){
     body+=answerFor(x.kind,R,c);
     push(page('19 / Q&A',body,{spread:true}));
   });
-  chapter('qa','19','맞춤 질문 답변','300자 질문 · 네 개의 답');
 }
 function answerFor(kind,R,c){
   var h='';
@@ -315,6 +315,7 @@ function riskyText(R,c,n){
 
 /* ---------------- 14장 검수 ---------------- */
 function signPages(){
+  chapter('review','20','검수 확인서 · 맺음말','원국 확인과 발행');
   var R=B.R,c=B.c;
   var today=new Date();
   push(page('20 / REVIEW',secLabel('20','MASTER REVIEW · 검수')+'<h1>원국 검수<br><span class="accent">확인서</span></h1>'+
@@ -337,11 +338,11 @@ function signPages(){
     '<p>세 번째는 시간입니다. 가장 힘이 실리는 10년은 <b>'+R.daeun[S.bestDaeun(R,c).i].from+'~'+R.daeun[S.bestDaeun(R,c).i].to+'세</b>입니다. 그때까지 무엇을 심어두는지가 결과를 바꿉니다.</p>'+
     callout('마지막 한 줄','<p>좋은 삶은 좋은 운에서 오지 않습니다. 좋은 <b>순서</b>에서 옵니다. 이 책이 그 순서를 정하는 데 쓰이길 바랍니다.</p>')+
     '<p style="text-align:right;margin-top:8mm;color:#6E6353">天靈堂 드림</p>',{spread:true}));
-  chapter('review','20','검수 확인서 · 맺음말','원국 확인과 발행');
 }
 
 /* ---------------- 부록 ---------------- */
 function appendPages(){
+  chapter('appendix','21','부록 · 이용 안내','운성 표와 발행 정보');
   var R=B.R,c=B.c;
   push(page('21 / APPENDIX',secLabel('21','APPENDIX · 부록')+'<h1>십이운성<br><span class="accent">한눈에</span></h1>'+
     '<table><tr><th>단계</th><th>의미</th></tr>'+
@@ -366,7 +367,6 @@ function appendPages(){
     '<li>재발행 — 생년월일·시간·지역이 달라지면 같은 책을 다시 만들 수 있습니다.</li></ul>'+
     '<p class="note">天靈堂 · 천령당 · 2026 · with-hj@users.noreply.github.com</p>'+
     callout('기록','<p>이 책의 원국은 '+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시':'시간 미상')+' · '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 기준입니다.</p>'),{spread:true}));
-  chapter('appendix','21','부록 · 이용 안내','운성 표와 발행 정보');
 }
 
 M.sections=function(){
