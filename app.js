@@ -23,7 +23,10 @@ var REGIONS=[
  {k:'unknown',name:'출생지 모름',off:0,unknown:true}
 ];
 var HOURS=['자시','축시','인시','묘시','진시','사시','오시','미시','신시','유시','술시','해시'];
-function hourLabel(i){ var h=i*2; return pad2(h)+':30 ('+HOURS[i]+')'; }
+function hourLabel(i){
+  var st=(i*2+23)%24, en=(i*2+1)%24;
+  return pad2(st)+':30~'+pad2(en)+':29 ('+HOURS[i]+')';
+}
 
 var state={
   theme:null, tab:null, gender:'f', cal:'solar', leap:false,
