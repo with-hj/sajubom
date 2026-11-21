@@ -107,7 +107,7 @@ function pg6(R,c,input,name){
   return h+K('한 줄','사주는 <b>준비의 순서</b>를 알려주고, 의학은 <b>사실</b>을 알려줍니다.');
 }
 function pg7(R,c,input,name){
-  return monthsBlock(R,c,'child',12,'앞으로 12개월, 몸과 가족의 흐름입니다.')+
+  return monthsBlock(R,c,'general',12,'앞으로 12개월, 몸과 생활의 흐름입니다.')+
     K('한 줄','몸의 계획은 합의 달에, 결정은 충의 달을 피해서.');
 }
 
@@ -144,7 +144,7 @@ function tg5(R,c,input,name){
   return h+K('한 줄','좋은 이름은 <b>부모가 부를 때 편한 이름</b>입니다.');
 }
 function tg6(R,c,input,name){
-  return monthsBlock(R,c,'child',6,'앞으로 6개월, 가족의 흐름입니다.')+
+  return monthsBlock(R,c,'general',6,'앞으로 6개월, 가족의 흐름입니다.')+
     K('한 줄','충의 달에는 큰 일정을 피하고, 합의 달에 가족 행사를 잡으세요.');
 }
 

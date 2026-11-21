@@ -448,6 +448,7 @@ function renderResult(R,input){
      '<h3 style="font-size:18px">여기까지가 '+esc(T.name)+'의 결입니다</h3>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 88장 인생설계서에서는 30년 대운과 12개월 달력까지 이어서 풉니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생설계서 88장 보기</button></div>';
+  h=h.replace(/당신 님/g,'당신');
   $('#resultView').innerHTML=h;
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });
   try{ $('#resultView').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}

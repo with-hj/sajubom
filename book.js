@@ -87,9 +87,9 @@ function coverPage(){
     '<div class="inner"><div><div class="seal">天</div><div class="brand">天靈堂</div>'+
     '<div class="han">인생설계서</div><div class="sub">LIFE DESIGN REPORT · 88장</div></div>'+
     '<div class="box"><div class="nm">'+esc(B.name)+'</div>'+
-    '<div class="d">'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hasTime?'· '+hourText(R):'· 시간 모름')+'<br>'+
+    '<div class="d">'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+(R.hasTime?' · '+hourText(R):' · 시간 모름')+'<br>'+
     S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 · '+S.ILJU[R.dIdx][0]+'</div></div>'+
-    '<div class="ft">2026 · CHEONRYEONGDANG · SEONGBUK-GU, SEOUL</div></div></section>';
+    '<div class="ft">2026 · CHEONRYEONGDANG · SEOUL · __TOT__ PAGES</div></div></section>';
 }
 function hourText(R){
   if(R.hIdxP==null) return '시간 모름';
@@ -281,7 +281,7 @@ function pillarPages(){
       '<div class="c"><div class="lab">십성</div><div class="god">'+S.GOD_GROUP[g]+'</div><div class="st" style="font-size:18px">'+g+'</div><div class="ko">'+S.GOD_KEY[g]+'</div></div>'+
       '<div class="c"><div class="lab">단계</div><div class="god">'+df.range.split(' · ')[0]+'</div><div class="st" style="font-size:17px">'+df.range.split(' · ')[1]+'</div><div class="ko">'+unsung(R.dStem,b)+'</div></div></div>'+
       '<h3>이 기둥의 결</h3><p>'+S.GOD_DEEP[g]+'</p>'+
-      '<p>지지 '+brS(b)+'는 '+S.BR_INNER[b]+' 이 기둥에서 이 글자가 놓인 자리는 '+df.range.split(' · ')[1]+'의 시기입니다. 그래서 이 시기에 '+S.GOD_KEY[g]+'의 성향이 삶의 방식으로 굳어집니다.</p>'+
+      '<p>'+S.BR_INNER[b]+' 이 기둥에서 이 글자가 놓인 자리는 '+df.range.split(' · ')[1]+'의 시기입니다. 그래서 이 시기에 '+S.GOD_KEY[g]+'의 성향이 삶의 방식으로 굳어집니다.</p>'+
       '<p>'+UNSUNG_MEAN[unsung(R.dStem,b)]+'</p>'+
       callout('이 기둥을 쓰는 법','<p>'+df.name+'는 '+S.GOD_KEY[g]+'의 자리입니다. '+S.GROUP_MEAN[S.GOD_GROUP[g]]+' 이 재료를 '+df.range.split(' · ')[1]+'에 어떻게 썼는지가 지금의 습관이 되었습니다.</p>');
     chapter(df.key,'07-'+(i+1),df.name+' · '+df.range,S.STEM_HAN[s]+S.BR_HAN[b]+' · '+g);
@@ -363,7 +363,7 @@ function moneyPages(){
     '<h3>돈을 보는 눈</h3><p>'+(c.grp['재성']>=3?'이 사주는 현실적인 계산이 빠릅니다. 다만 사람이 앞서면 계산이 흐려지니, 큰 결정은 혼자 숫자로 확인하는 시간을 두세요.':(c.grp['식상']>=3?'아이디어가 돈이 되는 구조입니다. 검증 없이 뛰어들지 말고 작은 금액으로 먼저 확인하세요.':(c.grp['인성']>=3?'공부하고 확신이 생겨야 움직입니다. 확신이 늦어 기회를 놓치지 않도록 기한을 정하세요.':(c.grp['관성']>=3?'안정형입니다. 원금과 절차를 중요하게 보고, 급한 제안에 흔들리지 않습니다.':'내 판단을 믿는 편입니다. 손실 한도를 먼저 정하는 것이 가장 중요합니다.'))))+'</p>',{spread:true}));
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 2')+'<h1>돈이 새는<br><span class="accent">세 개의 구멍</span></h1>'+
     '<p class="lead">돈은 벌이의 크기보다 <b>새는 곳</b>에서 갈립니다. 이 사주는 특히 사람과 감정에 연결된 지출에서 새기 쉽습니다.</p>'+
-    '<h3>1. 사람에게 쓰는 돈</h3><p>'+S.GROUP_MEAN[c.topGrp].split('.')[0]+'이 중심이라, 관계를 위해 계산을 포기하는 순간이 있습니다. 빌려준 돈, 함께 쓴 비용, 내가 더 낸 자리 — 이 사주는 기억은 하지만 말은 못 합니다.</p>'+
+    '<h3>1. 사람에게 쓰는 돈</h3><p>이 사주의 중심 기운은 '+c.topGrp+'입니다. '+S.GROUP_MEAN[c.topGrp]+' 그래서 관계를 위해 계산을 포기하는 순간이 있습니다. 빌려준 돈, 함께 쓴 비용, 내가 더 낸 자리 — 이 사주는 기억은 하지만 말은 못 합니다.</p>'+
     '<h3>2. 기분 전환으로 쓰는 돈</h3><p>'+S.EL_DEEP[c.leastI].under+' 가장 얇은 기운이 비면 작은 소비로 채우려 합니다. 그 소비는 한 달 뒤에 남지 않습니다.</p>'+
     '<h3>3. 미루는 돈</h3><p>이 사주는 결제·청구·정산을 미루는 습관이 있습니다. 미룬 돈은 커지지 않지만, 미룬 결정은 손실이 됩니다.</p>'+
     callout('막는 방법','<p>큰 결심보다 구조가 낫습니다. 통장을 셋으로 — 쓰는 통장, 쌓는 통장, 비상 통장. 수입이 들어온 날 <b>절반</b>을 먼저 옮기세요. '+S.EL_DEEP[c.yongEl].color+' 계열의 이름을 붙이면 의식이 유지됩니다.</p>'),{spread:true}));
@@ -371,7 +371,7 @@ function moneyPages(){
   var rows='';
   R.daeun.forEach(function(d,i){
     var g=S.tenGod(R.dStem,d.idx%10), grp=S.GOD_GROUP[g];
-    var note={'재성':'수입의 그릇이 커지는 구간. 벌이를 키우되 관리가 관건입니다.','관성':'자리가 돈을 만드는 구간. 조직·자격이 곧 재산입니다.','식상':'만든 것이 돈이 되는 구간. 기술·콘텐츠가 자산이 됩니다.','인성':'배움에 돈을 쓰는 구간. 큰 투자보다 실력을 사는 쪽이 남습니다.','비겁':'내 이름으로 버는 구간. 동업은 몫을 먼저 정하세요.'}[grp];
+    var note=({'정재':'쌓이는 돈의 구간. 저축·계약·자격처럼 남는 일이 재산이 됩니다.','편재':'큰 돈이 도는 구간. 판이 넓어지지만 씀씀이도 함께 커집니다.','비견':'내 힘으로 버는 구간. 동업은 몫을 먼저 정하세요.','겁재':'사람을 통해 버는 구간. 장부가 없으면 남지 않습니다.','식신':'좋아하는 일이 수입이 되는 구간.','상관':'재능이 돈이 되는 구간. 구설을 조심하세요.','편관':'압박이 커지는 구간. 자리를 지키는 것이 곧 돈입니다.','정관':'자리가 돈을 만드는 구간. 조직·자격이 곧 재산입니다.','편인':'혼자 깊어지는 구간. 준비에 돈을 씁니다.','정인':'배움에 돈을 쓰는 구간. 큰 투자보다 실력을 사는 쪽이 남습니다.'})[g]||'';
     rows+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+S.STEM_HAN[d.idx%10]+S.BR_HAN[d.idx%12]+' · '+g+'</td><td style="font-size:12px">'+note+'</td></tr>';
   });
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 3')+'<h1>10년마다 바뀌는<br><span class="accent">돈의 그릇</span></h1>'+
@@ -551,6 +551,7 @@ B.build=function(R,input,name){
   /* 쪽수 */
   var total=B.pages.length;
   var pn=1;
+  html=html.replace('__TOT__',String(total));
   html=html.replace(/<span class="pn">__PN__<\/span>/g,function(){ pn++; return '<span class="pn">'+n2(pn)+' / '+total+'</span>'; });
   /* 목차 */
   var rows=B.chapters.map(function(ch){
