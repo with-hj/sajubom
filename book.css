@@ -1,0 +1,189 @@
+/* =====================================================================
+   천령당 인생설계서 — A4 책자 (크림 배경 · 네이비 제목 · 오렌지 라벨)
+   ===================================================================== */
+#wl2-book{
+  --b-cream:#F6F1E7; --b-cream2:#FBF8F2; --b-navy:#1C2A4A; --b-ink:#1E2433;
+  --b-orange:#E0642A; --b-line:#DDD0B8; --b-mute:#6E6353; --b-soft:#EFE7D6;
+  color:var(--b-ink);
+}
+#wl2-book *{box-sizing:border-box}
+.pg{
+  position:relative;width:210mm;min-height:297mm;margin:0 auto 10mm;
+  background:linear-gradient(180deg,#FBF8F2 0%,#F6F1E7 34%,#F6F1E7 100%);
+  padding:17mm 16mm 19mm;color:var(--b-ink);
+  font-family:'Nanum Myeongjo','Noto Serif KR','Apple SD Gothic Neo',serif;
+  font-size:14.4px;line-height:1.86;letter-spacing:-.003em;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.pg *{word-break:keep-all}
+.pg-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1.2px solid var(--b-orange);padding-top:7px;margin-bottom:11mm;
+  font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-size:8.6px;letter-spacing:.24em;color:#8A7C68;text-transform:uppercase;
+}
+.pg-hd .l{color:#9A8B74}
+.pg-hd .r{color:var(--b-orange);letter-spacing:.14em}
+.pg-ft{
+  position:absolute;left:16mm;right:16mm;bottom:9mm;
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--b-line);padding-top:5px;
+  font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-size:8px;letter-spacing:.14em;color:#9C8E7A;
+}
+.pg-bd{flex:1;display:flex;flex-direction:column}
+.pg-bd.spread{justify-content:space-between}
+.sec-label{
+  font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-size:9.4px;letter-spacing:.2em;color:var(--b-orange);font-weight:700;margin-bottom:3mm;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-label:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(224,100,42,.45),rgba(224,100,42,0))}
+.pg h1{
+  font-size:30px;line-height:1.42;color:var(--b-navy);font-weight:800;margin:0 0 7mm;letter-spacing:-.02em;
+}
+.pg h1 .accent{color:var(--b-orange)}
+.pg h2{
+  font-size:20px;line-height:1.5;color:var(--b-navy);font-weight:800;margin:0 0 4mm;letter-spacing:-.01em;
+}
+.pg h3{
+  font-size:15.2px;line-height:1.6;color:var(--b-navy);font-weight:800;margin:7mm 0 2mm;
+  padding-left:9px;border-left:3px solid var(--b-orange);
+}
+.pg p{margin:0 0 3.6mm;font-size:14.4px;line-height:1.9;color:#232A36}
+.pg p.lead{font-size:15.2px;line-height:1.92;color:#2A3140}
+.pg p.small{font-size:12.4px;line-height:1.8;color:var(--b-mute)}
+.pg b{color:#141A26;font-weight:800}
+.pg em{font-style:normal;color:var(--b-orange);font-weight:700}
+.pg ul{margin:0 0 4mm;padding:0;list-style:none}
+.pg ul li{position:relative;padding-left:14px;margin-bottom:2.2mm;font-size:14.2px;line-height:1.85}
+.pg ul li:before{content:'';position:absolute;left:1px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--b-orange);opacity:.75}
+.pg ol{margin:0 0 4mm;padding-left:0;list-style:none;counter-reset:ol}
+.pg ol li{position:relative;padding-left:24px;margin-bottom:3mm;counter-increment:ol;font-size:14.2px;line-height:1.85}
+.pg ol li:before{
+  content:counter(ol,decimal-leading-zero);position:absolute;left:0;top:1px;
+  font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;font-size:10.5px;font-weight:800;color:var(--b-orange);letter-spacing:.02em
+}
+.callout{
+  background:var(--b-cream2);border-left:3px solid var(--b-orange);
+  border-radius:0 6px 6px 0;padding:4mm 5mm;margin:5mm 0;
+}
+.callout .ct{
+  font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-size:9.4px;letter-spacing:.16em;color:var(--b-orange);font-weight:700;margin-bottom:1.6mm;
+}
+.callout p{margin:0;font-size:13.8px;line-height:1.85}
+.callout p+p{margin-top:2mm}
+.note{font-size:11.8px;line-height:1.75;color:var(--b-mute);border-top:1px solid var(--b-line);padding-top:2.4mm;margin-top:3mm}
+.tag{
+  display:inline-block;font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;
+  font-size:10px;letter-spacing:.06em;padding:1.2mm 2.6mm;border-radius:999px;
+  background:rgba(224,100,42,.12);color:#B94D1E;font-weight:700;margin:0 1.2mm 1.4mm 0;
+}
+.tag.navy{background:rgba(28,42,74,.09);color:#31456B}
+.tag.soft{background:rgba(28,42,74,.05);color:#5C6478;font-weight:600}
+
+/* 표 */
+.pg table{width:100%;border-collapse:collapse;margin:3mm 0 5mm;font-size:12.8px}
+.pg table th{
+  text-align:left;font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-size:10px;letter-spacing:.1em;color:#7C6E5A;font-weight:700;
+  border-bottom:1.2px solid var(--b-line);padding:2mm 2mm;
+}
+.pg table td{border-bottom:1px solid rgba(221,208,184,.75);padding:2.2mm 2mm;vertical-align:top;line-height:1.7;color:#2A3040}
+.pg table td.k{font-weight:800;color:var(--b-navy);white-space:nowrap}
+.pg table tr.total td{border-top:1.2px solid var(--b-line);border-bottom:0;font-weight:800;color:var(--b-navy)}
+
+/* 원국 차트 */
+.chart4{display:grid;grid-template-columns:repeat(4,1fr);gap:2.4mm;margin:4mm 0 6mm}
+.chart4 .c{border:1px solid var(--b-line);border-radius:6px;background:rgba(255,255,255,.55);padding:3mm 2mm;text-align:center}
+.chart4 .c .lab{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;font-size:9px;letter-spacing:.16em;color:#8C7D66;margin-bottom:1.6mm}
+.chart4 .c .god{font-size:10px;color:#6E6353;height:14px}
+.chart4 .c .st{font-family:'Nanum Myeongjo',serif;font-size:26px;line-height:1.15;color:var(--b-navy);font-weight:700}
+.chart4 .c .ko{font-size:9.5px;color:#8C7D66;margin-bottom:1.2mm}
+.chart4 .c.me{background:rgba(224,100,42,.07);border-color:rgba(224,100,42,.45)}
+.chart4 .c.me .lab{color:var(--b-orange)}
+
+/* 오행 바 */
+.elrow{display:grid;grid-template-columns:14mm 1fr 16mm;align-items:center;gap:3mm;margin-bottom:2.4mm;font-size:12.4px}
+.elrow .n{font-weight:800;color:var(--b-navy)}
+.elrow .bar{height:7px;border-radius:999px;background:#E9DFCB;overflow:hidden}
+.elrow .bar i{display:block;height:100%;border-radius:999px}
+.elrow .v{text-align:right;color:#6E6353;font-size:11.4px}
+
+/* 대운 카드 */
+.dn{border:1px solid var(--b-line);border-radius:6px;padding:3.4mm 4mm;margin-bottom:3mm;background:rgba(255,255,255,.5)}
+.dn.now{border-color:rgba(224,100,42,.5);background:rgba(224,100,42,.05)}
+.dn .h{display:flex;align-items:baseline;justify-content:space-between;gap:4mm;margin-bottom:1.4mm}
+.dn .h .age{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.1em;color:var(--b-orange);font-weight:700}
+.dn .h .ttl{font-size:14.6px;font-weight:800;color:var(--b-navy)}
+.dn p{margin:0;font-size:13px;line-height:1.8;color:#2B3240}
+
+/* 월 카드 */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+.mcard{border:1px solid var(--b-line);border-radius:6px;padding:3mm 3.4mm;background:rgba(255,255,255,.5)}
+.mcard .mh{display:flex;baseline;justify-content:space-between;align-items:baseline;margin-bottom:1.4mm}
+.mcard .mh .m{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.1em;color:var(--b-orange);font-weight:800}
+.mcard .mh .s{font-size:12px;color:var(--b-navy);font-weight:800}
+.mcard p{margin:0;font-size:11.8px;line-height:1.72;color:#333A48}
+
+/* 표지 */
+.pg.cover{padding:0;background:#141210;color:#F6F1E7;display:block;overflow:hidden}
+.pg.cover .art{position:absolute;inset:0;background-size:cover;background-position:50% 38%;opacity:.72}
+.pg.cover .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.72) 0%,rgba(20,18,16,.18) 32%,rgba(20,18,16,.72) 72%,rgba(20,18,16,.96) 100%)}
+.pg.cover .inner{position:absolute;inset:0;padding:22mm 18mm;display:flex;flex-direction:column;justify-content:space-between;text-align:center}
+.pg.cover .seal{width:17mm;height:17mm;border:1.5px solid #D8B36A;border-radius:4px;margin:0 auto 6mm;display:flex;align-items:center;justify-content:center;font-size:10mm;color:#D8B36A;line-height:1}
+.pg.cover .brand{font-family:'Nanum Myeongjo',serif;font-size:15px;letter-spacing:.5em;color:#D8B36A;margin-bottom:3mm}
+.pg.cover .han{font-family:'Nanum Myeongjo',serif;font-size:40px;font-weight:800;color:#FBF8F2;line-height:1.35;letter-spacing:.04em}
+.pg.cover .sub{font-size:12px;letter-spacing:.26em;color:#C9BA9F;margin-top:4mm}
+.pg.cover .box{
+  border:1px solid rgba(216,179,106,.45);border-radius:8px;padding:6mm 7mm;margin:0 6mm;
+  background:rgba(20,18,16,.4);
+}
+.pg.cover .box .nm{font-family:'Nanum Myeongjo',serif;font-size:23px;color:#FBF8F2;font-weight:800;letter-spacing:.06em}
+.pg.cover .box .d{font-size:11.5px;color:#BFB09A;letter-spacing:.12em;margin-top:2mm;line-height:1.8}
+.pg.cover .ft{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;font-size:9px;letter-spacing:.24em;color:#9C8E7A}
+
+/* 목차 */
+.toc-list{column-count:1;margin-top:2mm}
+.toc-r{display:flex;align-items:baseline;gap:3mm;padding:2.3mm 0;border-bottom:1px dotted rgba(221,208,184,.9);font-size:13.4px}
+.toc-r .n{font-family:-apple-system,sans-serif;font-size:10.5px;color:var(--b-orange);font-weight:800;min-width:9mm}
+.toc-r .t{font-weight:700;color:var(--b-navy)}
+.toc-r .d{flex:1;border-bottom:1px dotted #D8CBB4;transform:translateY(-2px)}
+.toc-r .p{font-size:11px;color:#8C7D66}
+
+/* 장 도입 */
+.chap-open{display:flex;flex-direction:column;justify-content:center;flex:1;padding-bottom:6mm}
+.chap-open .num{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.3em;color:var(--b-orange);font-weight:800;margin-bottom:4mm}
+.chap-open h1{font-size:34px;margin-bottom:6mm}
+.chap-open .q{font-size:15.4px;line-height:1.95;color:#2F3644;max-width:150mm}
+
+/* 서명 */
+.sign{border:1px solid var(--b-line);border-radius:6px;padding:5mm;background:rgba(255,255,255,.55);margin-top:4mm}
+.sign .row{display:flex;justify-content:space-between;padding:2.2mm 0;border-bottom:1px dotted var(--b-line);font-size:12.4px}
+.sign .row:last-child{border-bottom:0}
+.sign .sig{font-family:'Nanum Myeongjo',serif;font-size:17px;color:var(--b-navy);font-weight:800;letter-spacing:.1em}
+
+/* 인쇄 */
+@media print{
+  @page{size:A4;margin:0}
+  html,body{background:#fff !important;margin:0;padding:0}
+  body>*{display:none !important}
+  #adminSheet{display:block !important;position:static !important;background:#fff !important;overflow:visible !important;inset:auto !important}
+  #adminSheet .sheet-hd,.pdf-toolbar,.adm-note,#admListView,.sheet-bd>.wrap>#admBookMeta{display:none !important}
+  #adminSheet .sheet-bd{padding:0 !important}
+  #adminSheet .wrap{padding:0 !important;max-width:none !important}
+  #admBookView{display:block !important}
+  #wl2-book{max-width:none}
+  .pg{width:210mm;height:297mm;min-height:297mm;margin:0;box-shadow:none;border-radius:0;break-after:page;page-break-after:always}
+  .pg:last-child{break-after:auto;page-break-after:auto}
+  .pg table,.callout,.dn,.mcard,.chart4{break-inside:avoid;page-break-inside:avoid}
+  .pg h2,.pg h3,.sec-label{break-after:avoid;page-break-after:avoid}
+}
+@media screen and (max-width:820px){
+  .pg{width:100%;min-height:auto;padding:22px 18px 30px;border-radius:12px;font-size:15px}
+  .pg h1{font-size:24px}
+  .mgrid{grid-template-columns:1fr}
+  .chart4{grid-template-columns:repeat(4,1fr)}
+}
