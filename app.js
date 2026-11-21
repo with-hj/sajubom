@@ -31,7 +31,7 @@ var state={
 };
 
 /* ---------------- 셀렉트 채우기 ---------------- */
-function fillYears(sel,from,to,placeholder){
+function fillYears(sel,from,placeholder){
   var h=placeholder?'<option value="">'+placeholder+'</option>':'';
   var now=new Date().getFullYear();
   for(var y=now;y>=(from||1920);y--) h+='<option value="'+y+'">'+y+'년</option>';
