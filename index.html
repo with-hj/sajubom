@@ -583,6 +583,9 @@ details.terms p{margin:9px 0 0;font-size:11.3px;line-height:1.85;color:#6B6152}
 
 </style>
 <style id="wl2-css">
+
+</style>
+<style id="wl2-css">
 /* ===== WL2:CSS BEGIN ===== */
 /* =====================================================================
    월하당 v8 — 두 갈래 탭 · 인생설계 PDF 신청 · 관리자 검수함
@@ -608,7 +611,7 @@ details.terms p{margin:9px 0 0;font-size:11.3px;line-height:1.85;color:#6B6152}
 .life-ctx .lc-top b{font-size:12.5px;letter-spacing:.16em;color:#8A7A5F;font-weight:700}
 .life-ctx .lc-top span{font-size:11px;color:#A1927A;letter-spacing:0}
 .life-ctx .lc-row{display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
-.life-ctx .lc-row em{font-style:normal;flex:0 0 42px;font-size:11px;color:#8E7E63;letter-spacing:.04em}
+.life-ctx .lc-row em{font-style:normal;flex:0 0 34px;font-size:11px;color:#8E7E63;letter-spacing:.04em}
 .chip2{padding:5px 9px;border-radius:999px;border:1px solid #DECDAE;background:#FCF7EC;
   font-size:11.5px;color:#6F6249;font-family:var(--serif);transition:.18s;line-height:1.5}
 .chip2.on{background:linear-gradient(180deg,#1B2C42,#132238);color:#F3E7CE;border-color:#1B2C42;
@@ -1025,6 +1028,8 @@ table.cal tr.best td.m::after{content:' ★';color:#A63B2C}
 
 
 
+
+
 <!-- ===== WL2:HTML BEGIN ===== -->
       <div class="modebar" data-modebar>
         <button type="button" class="mb on" data-mode="read"><span>바로 보는</span><b>5대 테마 운세</b></button>
@@ -1152,6 +1157,8 @@ table.cal tr.best td.m::after{content:' ★';color:#A63B2C}
       </div>
     </div>
   </section>
+
+
 
 
 
@@ -1429,6 +1436,8 @@ table.cal tr.best td.m::after{content:' ★';color:#A63B2C}
   <!-- ============ 화면 3 : 결과 ============ -->
   <section id="screen-result" hidden></section>
 </div>
+
+
 
 
 
@@ -5580,6 +5589,7 @@ window.__diag=function(){
 
 
 
+
 /* ===== WL2:JS BEGIN ===== */
 /* =====================================================================
    WL2 · 1 — 두 갈래 탭 전환 + 기존 트랙(5대 테마) 상황 맥락 보강
@@ -5726,7 +5736,7 @@ var WL2=(function(){
   function lifeCtxHTML(){
     return '<div class="life-ctx" id="life-ctx">'+
       '<div class="lc-top"><b>지금 상황</b><span>선택 · 풀이의 전제가 됩니다</span></div>'+
-      chipRow('marital','결혼·연애',MARITAL)+
+      chipRow('marital','결혼',MARITAL)+
       chipRow('kids','자녀',KIDS)+
       chipRow('job','직업',JOBS)+
       '<p class="lc-note">고르지 않아도 그대로 읽어드려요. 고르면 배우자·자녀가 있는 것처럼 잘못 읽지 않도록 전제를 먼저 맞춥니다.</p>'+
