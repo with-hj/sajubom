@@ -85,7 +85,7 @@ function coverPage(){
   var R=B.R;
   return '<section class="pg cover"><div class="art" style="background-image:url(./assets/cover-art.jpg)"></div><div class="veil"></div>'+
     '<div class="inner"><div><div class="seal">天</div><div class="brand">天靈堂</div>'+
-    '<div class="han">인생설계서</div><div class="sub">LIFE DESIGN REPORT · 88장</div></div>'+
+    '<div class="han">인생설계서</div><div class="sub">LIFE DESIGN REPORT · 88장+</div></div>'+
     '<div class="box"><div class="nm">'+esc(B.name)+'</div>'+
     '<div class="d">'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+(R.hasTime?' · '+hourText(R):' · 시간 모름')+'<br>'+
     S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 · '+S.ILJU[R.dIdx][0]+'</div></div>'+
@@ -304,7 +304,7 @@ function personalityPages(){
      '<h3>가까운 사람에게 특히</h3><p>'+(c.grp['비겁']>=3?'가까운 사람에게는 자존심을 숨기지 않습니다. 편하다는 뜻이지만, 상대는 그 직설이 오래 남을 수 있습니다.':'가까운 사람에게 다정하지만 문을 여는 데 시간이 걸립니다. 한 번 마음을 열면 오래갑니다.')+'</p>'},
    {t:'기운이 빠져나가는 순간',body:'<p class="lead">'+dm.drain+'</p>'+
      '<h3>지치는 조건</h3><p>이 사주의 중심 기운은 <b>'+c.topGrp+'</b>입니다. '+S.GROUP_MEAN[c.topGrp]+' 이 기운이 무시당하거나 제대로 쓰이지 못할 때, 몸과 마음이 동시에 지칩니다.</p>'+
-     '<ul><li>'+S.GROUP_MEAN[c.topGrp].split('.')[0]+'이 필요 없는 자리</li><li>설명하지 못한 채 결과만 요구받는 상황</li><li>'+S.EL_KO[c.leastI]+'의 결이 결핍된 환경 — '+S.EL_DEEP[c.leastI].part+' 쪽이 먼저 신호를 보냅니다</li></ul>'+
+     '<ul><li>'+c.topGrp+'의 결이 필요 없는 자리</li><li>설명하지 못한 채 결과만 요구받는 상황</li><li>'+S.EL_KO[c.leastI]+'의 결이 결핍된 환경 — '+S.EL_DEEP[c.leastI].part+' 쪽이 먼저 신호를 보냅니다</li></ul>'+
      '<p>이 감각이 2주 이상 이어지면 그것은 성격이 아니라 <b>환경의 문제</b>입니다. 이 사주는 참는 힘이 강해 스스로를 늦게 알아챕니다.</p>'},
    {t:'타고난 무기와 조심할 결',body:'<p class="lead">'+dm.weapon+'</p>'+
      '<p>여덟 글자에서 <b>'+c.topGrp+'</b>이 가장 두터우니, 이 무기는 결국 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>에서 나옵니다. '+S.GOD_DEEP[c.topGodInGrp]+'</p>'+
