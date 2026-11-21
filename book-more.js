@@ -136,11 +136,11 @@ function seunPages(){
   for(var k=0;k<5;k++){
     var y=2027+k, idx=S.mod(y-4,60), s=idx%10, b=idx%12, g=S.tenGod(R.dStem,s), grp=S.GOD_GROUP[g];
     var diff=S.mod(b-R.dBranch,12), rel=(diff===6?'충(沖)':(diff===0?'동일':((diff===4||diff===8)?'합(合)':'무난')));
-    var F=SEUN_FIELD[g];
+    var F=SEUN_FIELD[grp]||SEUN_FIELD['비겁'];
     push(page('16 / SEWOON',secLabel('16','SEWOON · '+y)+'<h1><span class="accent">'+y+'년</span> · '+S.STEM_HAN[s]+S.BR_HAN[b]+'</h1>'+
       '<p class="lead">'+S.SEUN_DEEP[g]+'</p>'+
       '<div style="margin:2mm 0 4mm"><span class="tag">'+g+'</span><span class="tag navy">'+grp+'</span><span class="tag navy">일지 '+rel+'</span><span class="tag soft">'+S.SEUN_KEY[g]+'</span></div>'+
-      '<h3>이 해의 기운</h3><p>'+S.SEUN_EL[b]+'</p>'+
+      '<h3>이 해의 기운</h3><p>'+S.SEUN_EL[S.BR_EL[b]]+'</p>'+
       '<p>'+S.GROUP_MEAN[grp]+' 이 해는 그 재료가 <b>세운</b>으로 한 번 더 들어오는 때입니다. 그래서 평소보다 그 영역의 일이 눈에 띄게 많아집니다.</p>'+
       '<h3>일지와의 관계</h3><p>이 해의 지지 '+brS(b)+'는 내 일지 '+brS(R.dBranch)+'와 <b>'+rel+'</b>입니다. '+
         (diff===6?'판이 바뀌는 해입니다. 이사·이직·관계 변화가 겹치기 쉬우니 큰 결정은 3개월 단위로 나눠 확인하세요.':(diff===0?'같은 기운이 다시 도는 해입니다. 미뤄둔 일이 다시 올라오고, 같은 선택을 반복할 기회도 옵니다.':((diff===4||diff===8)?'사람을 통해 일이 풀리는 해입니다. 혼자 밀기보다 누군가를 거치면 빨라집니다.':'크게 부딪히지 않는 해입니다. 정한 방향으로 쌓아가기 좋습니다.')))+'</p>',{spread:true}));
@@ -162,8 +162,8 @@ function seunPages(){
       '<h3>이 해에 눈여겨볼 달</h3>'+
       (mrows?'<table><tr><th>달</th><th>월주 · 십성</th><th>관계</th><th>할 일</th></tr>'+mrows+'</table>':'<p>이 해에는 일지와 크게 부딪히거나 어울리는 달이 뚜렷하지 않습니다. 달보다 분기의 흐름으로 보세요.</p>')+
       '<h3>이 해의 세 가지</h3><ul>'+
-      '<li><b>할 일</b> — '+({비겁:'내 이름을 걸 일 하나 시작',겁재:'함께하는 일의 몫을 문서로',식신:'만든 것을 밖으로 내놓기',상관:'말을 다듬어 발표하기',편재:'큰 지출의 한도 정하기',정재:'저축·계약 하나 끝내기',편관:'압박의 원인을 문서로 정리',정관:'자격·절차 하나 준비',편인:'배움 하나를 끝내기',정인:'도움을 받아들이기'}[g])+'</li>'+
-      '<li><b>피할 일</b> — '+({비겁:'자존심 싸움',겁재:'서류 없는 동업',식신:'편한 것만 하기',상관:'윗사람과의 감정 대화',편재:'충동 결제',정재:'큰 모험',편관:'혼자 안고 버티기',정관:'형식만 갖추기',편인:'결정 미루기',정인:'참기만 하기'}[g])+'</li>'+
+      '<li><b>할 일</b> — '+({비견:'내 이름을 걸 일 하나 시작',겁재:'함께하는 일의 몫을 문서로',식신:'만든 것을 밖으로 내놓기',상관:'말을 다듬어 발표하기',편재:'큰 지출의 한도 정하기',정재:'저축·계약 하나 끝내기',편관:'압박의 원인을 문서로 정리',정관:'자격·절차 하나 준비',편인:'배움 하나를 끝내기',정인:'도움을 받아들이기'}[g])+'</li>'+
+      '<li><b>피할 일</b> — '+({비견:'자존심 싸움',겁재:'서류 없는 동업',식신:'편한 것만 하기',상관:'윗사람과의 감정 대화',편재:'충동 결제',정재:'큰 모험',편관:'혼자 안고 버티기',정관:'형식만 갖추기',편인:'결정 미루기',정인:'참기만 하기'}[g])+'</li>'+
       '<li><b>남길 것</b> — 기록 한 줄. 이 사주는 기록이 다음 해의 문을 엽니다.</li></ul>'+
       callout(y+'년의 한 줄','<p>'+S.SEUN_KEY[g]+'의 해 — '+S.GOD_DEEP[g].split('.')[0]+'. 이 방향에 얹히는 선택이 힘을 받습니다.</p>'),{spread:true}));
   }
@@ -189,7 +189,7 @@ function monthPages(){
     var mp=S.monthPillarOf(2027,m), g=S.tenGod(R.dStem,mp.stem), grp=S.GOD_GROUP[g];
     var rel=S.branchRel(R.dBranch,mp.branch), tag=S.monthTag(rel);
     var tip=(((S.MONTH_TIPS.general||{})[grp]||[])[0]||''), rt=(((S.MONTH_REL_TIPS||{})[tag]||[])[0]||'');
-    var F=SEUN_FIELD[g]||SEUN_FIELD['비겁'];
+    var F=SEUN_FIELD[grp]||SEUN_FIELD['비겁'];
     var wk=WEEK[g]||WEEK['비겁'];
     push(page('17 / 2027',secLabel('17','2027 MONTHLY · '+m+'월')+'<h1><span class="accent">2027년 '+m+'월</span><br>'+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+' · '+g+'</h1>'+
       '<p class="lead">이 달은 '+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+'월, '+name_of_month(m)+'입니다. 십성은 <b>'+g+'</b>, 일지와의 관계는 <b>'+tag+'</b>입니다.</p>'+

@@ -426,8 +426,8 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .ft .fb{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .ft .fb .seal{width:26px;height:26px;border:1px solid var(--gold-d);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--gold)}
 .ft .fb b{font-family:var(--serif);font-size:15px;color:var(--gold-l);letter-spacing:.06em}
-.ft a{color:#a89b86;text-decoration:underline;text-underline-offset:2px}
-.ft .adm-link{margin-top:14px;display:inline-block;font-size:12px;letter-spacing:.08em;color:#7d7364}
+.ft a{color:#b9c0cc;text-decoration:underline;text-underline-offset:2px}
+.ft .adm-link{margin-top:14px;display:inline-block;font-size:12px;letter-spacing:.08em;color:#737d8e}
 
 /* ---------- 모달 · 관리자 ---------- */
 .sheet{position:fixed;inset:0;z-index:120;display:none;background:#0d1321;overflow:auto;-webkit-overflow-scrolling:touch}
