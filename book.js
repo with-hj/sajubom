@@ -83,13 +83,14 @@ function callout(title,body){ return '<div class="callout"><div class="ct">'+tit
 /* ---------------- 표지 ---------------- */
 function coverPage(){
   var R=B.R;
-  return '<section class="pg cover"><div class="art" style="background-image:url(./assets/cover-art.jpg)"></div><div class="veil"></div>'+
-    '<div class="inner"><div><div class="seal">天</div><div class="brand">天靈堂</div>'+
-    '<div class="han">인생설계서</div><div class="sub">LIFE DESIGN REPORT</div></div>'+
+  return '<section class="pg cover"><div class="art" style="background-image:url(./assets/cover-art.jpg)"></div><div class="veil"></div><div class="frame"><i></i></div>'+
+    '<div class="inner"><div><div class="seal">天</div><div class="cover-brand">天靈堂</div>'+
+    '<div class="han">인생설계서</div><div class="rule"></div><div class="sub">LIFE DESIGN REPORT</div></div>'+
+    '<div class="epi"><span class="orn"></span><p>여덟 글자에 새겨진 하늘의 뜻을<br>한 사람의 설계도로 옮겼습니다</p></div>'+
     '<div class="box"><div class="nm">'+esc(B.name)+'</div>'+
     '<div class="d">'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+(R.hasTime?' · '+hourText(R):' · 시간 모름')+'<br>'+
     S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 · '+S.ILJU[R.dIdx][0]+'</div></div>'+
-    '<div class="ft">2026 · CHEONRYEONGDANG · SEOUL · __TOT__ PAGES</div></div></section>';
+    '<div class="cover-ft">2026 · CHEONRYEONGDANG · SEOUL · __TOT__ PAGES</div></div></section>';
 }
 function hourText(R){
   if(R.hIdxP==null) return '시간 모름';
@@ -147,7 +148,7 @@ function chartPage(){
   var h='<div class="chart4">';
   cells.forEach(function(x,i){
     var ix=x[1];
-    if(ix==null){ h+='<div class="c"><div class="lab">'+x[0]+'</div><div class="god">時未知</div><div class="st" style="color:#B6A992">—</div><div class="ko">시간 모름</div><div class="st" style="color:#B6A992">—</div><div class="ko">&nbsp;</div></div>'; return; }
+    if(ix==null){ h+='<div class="c"><div class="lab">'+x[0]+'</div><div class="god">時未知</div><div class="st" style="color:#7C6E58">—</div><div class="ko">시간 모름</div><div class="st" style="color:#7C6E58">—</div><div class="ko">&nbsp;</div></div>'; return; }
     var s=ix%10,b=ix%12;
     h+='<div class="c'+(i===2?' me':'')+'"><div class="lab">'+x[0]+'</div>'+
       '<div class="god">'+(i===2?'일간':S.tenGod(R.dStem,s))+'</div>'+
@@ -548,17 +549,22 @@ B.coreSections=[summaryPage,introPage,tocPages,chartPage,elPage,godPage,salsPage
 /* ---------------- 모바일 가독성 : A4 한 장에 맞춰 본문 크기 미세 조정 ---------------- */
 function fitPages(host){
   if(!host) return;
-  var A4=297*96/25.4; /* 1122.5px */
   var pages=host.querySelectorAll('.pg');
   for(var i=0;i<pages.length;i++){
     var p=pages[i];
     if(p.classList.contains('cover')) continue;
+    /* 폰에서 미리보기·인쇄해도 A4 조판이 같아지도록, 잠깐 인쇄 지면(210mm × 295mm)으로 재어 본다 */
+    p.style.width='210mm';p.style.height='295mm';p.style.maxHeight='295mm';p.style.minHeight='295mm';
+    p.style.padding='15mm 14.5mm 18mm';
     p.style.removeProperty('--fs');
     var fs=17, guard=0;
-    while(p.getBoundingClientRect().height>A4+3 && guard<16){
-      fs-=0.35; guard++;
+    while(p.scrollHeight>p.clientHeight+1 && guard<20){
+      fs-=0.3; guard++;
       p.style.setProperty('--fs',fs.toFixed(2)+'px');
     }
+    p.style.removeProperty('width');p.style.removeProperty('height');
+    p.style.removeProperty('max-height');p.style.removeProperty('min-height');
+    p.style.removeProperty('padding');
   }
 }
 

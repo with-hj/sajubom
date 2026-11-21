@@ -350,6 +350,28 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .ch-key span{font-size:15.5px;line-height:1.8}
 .ch-bd .tbl{font-size:14px}
 .ch-bd .tbl th,.ch-bd .tbl td{padding:8px 5px}
+
+/* ---------- 12개월 흐름 : 달마다 한 장의 카드 ---------- */
+.rb-yr{
+  background:#fbf7ef;border:1px solid #e6dbc6;border-radius:12px;
+  padding:14px 15px 15px;margin:0 0 12px;
+}
+.rb-yr:last-child{margin-bottom:0}
+.rb-yr .yh{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+  margin:0 0 9px;padding-bottom:9px;border-bottom:1px solid rgba(140,120,90,.2);
+}
+.rb-yr .yh .y{font-size:14.5px;font-weight:800;letter-spacing:.02em;color:#1C2A4A;font-variant-numeric:tabular-nums}
+.rb-yr .yh b{font-family:var(--serif);font-size:15.5px;font-weight:800;color:#1C2A4A;letter-spacing:.04em}
+.rb-yr .yh .g{
+  margin-left:auto;font-size:11.5px;font-weight:700;line-height:1.5;letter-spacing:.02em;
+  color:#B94D1E;background:rgba(224,100,42,.12);border:1px solid rgba(224,100,42,.24);
+  border-radius:999px;padding:3px 9px;white-space:nowrap;
+}
+.rb-yr p{margin:0;font-size:15px;line-height:1.88;color:#2A2620}
+.rb-yr p.bn{margin-top:7px;font-size:13px;line-height:1.75;color:#6E6353}
+.ch-bd .rb-yr p{font-size:15px;margin:0}
+.ch-bd .rb-yr p+p{margin-top:7px}
 .elbar{display:flex;height:9px;border-radius:999px;overflow:hidden;margin:6px 0 10px;background:#eae0cd}
 .elbar i{display:block;height:100%}
 .el5{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
