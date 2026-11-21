@@ -266,7 +266,7 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .pillar{background:rgba(255,255,255,.045);border:1px solid rgba(216,179,106,.16);border-radius:10px;padding:8px 4px;text-align:center}
 .pillar.me{border-color:rgba(216,179,106,.5);background:rgba(216,179,106,.1)}
 .pillar .pl{font-size:10.5px;letter-spacing:.1em;color:#a4977f}
-.pillar .pg{font-size:10px;color:#8d8170;margin-top:2px;height:12px}
+.pillar .pg{font-size:10px;color:#8d8170;margin:2px 0 4px;height:13px}
 .pillar .pc{font-family:var(--serif);font-size:25px;line-height:1.25}
 .pillar .pk{font-size:10.5px;color:#9a8d78;margin-bottom:2px}
 .pillar .pe{font-size:9.5px;color:#8d8170}
