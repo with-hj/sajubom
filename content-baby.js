@@ -56,7 +56,7 @@ function pg1(R,c,input,name){
 }
 function pg2(R,c,input,name){
   var x=waterFire(R);
-  var h=H('물과 불의 균형')+'<p>'+wfText(R)+'</p>';
+  var h='<p>'+wfText(R)+'</p>';
   h+='<div class="elbar"><i style="width:'+Math.max(8,x.fp)+'%;background:'+S.EL_COLOR[1]+'"></i><i style="width:'+Math.max(8,x.wp)+'%;background:'+S.EL_COLOR[4]+'"></i></div>';
   h+='<div class="el5"><span><i style="background:'+S.EL_COLOR[1]+'"></i>화(火) '+x.f+'</span><span><i style="background:'+S.EL_COLOR[4]+'"></i>수(水) '+x.w+'</span></div>';
   h+=H('몸에서 먼저 나타나는 신호')+'<p>'+S.EL_DEEP[c.leastI].under+' 가장 얇은 기운은 '+elB(c.leastI)+'입니다. '+S.EL_DEEP[c.leastI].part+' 쪽이 먼저 피로를 알립니다.</p>';
@@ -83,14 +83,14 @@ function pg3(R,c,input,name){
   return h+K('한 줄','임신 준비는 <b>두 사람의 생활</b>을 먼저 맞추는 일입니다.');
 }
 function pg4(R,c,input,name){
-  var h=H('조심할 달')+'<p>'+risky(R,c,12)+'</p>';
+  var h=H('비워두면 좋은 달')+'<p>'+risky(R,c,12)+'</p>';
   h+='<p>특히 이 사주는 '+elB(c.leastI)+'이 얇아, '+S.SEASON_RHYTHM[c.leastI][0]+'에 몸이 먼저 지칩니다. '+S.SEASON_RHYTHM[c.leastI][1]+' 이 시기에는 일정을 비워두세요.</p>';
   h+=H('그 달에 할 일')+UL(['큰 일정·이사·여행을 잡지 않기','잠과 식사를 먼저 고정하기','몸의 신호를 기록하기 — 이 사주는 참다가 한 번에 지칩니다']);
   h+=H('피하면 좋은 것')+'<p>일지와 충하는 달의 <b>무리한 일정</b>입니다. 충은 사건이 아니라 <b>변동</b>을 뜻합니다. 변동이 큰 달에 몸의 계획까지 겹치면 회복이 늦어집니다.</p>';
   return h+K('한 줄','몸의 달력은 <b>비워두는 것</b>으로 만들어집니다.');
 }
 function pg5(R,c,input,name){
-  var h=H('준비의 순서')+'<p>이 사주는 무엇을 먼저 해야 하는지 정해두면 지킬 힘이 있습니다. 순서는 <b>잠 → 식사 → 움직임 → 마음</b>입니다.</p>';
+  var h=H('몸이 먼저 하는 일')+'<p>이 사주는 무엇을 먼저 해야 하는지 정해두면 지킬 힘이 있습니다. 순서는 <b>잠 → 식사 → 움직임 → 마음</b>입니다.</p>';
   h+='<table class="tbl"><tr><th>단계</th><th>무엇을</th><th>왜</th></tr>'+
      '<tr><td>1</td><td>잠드는 시간 고정</td><td>열이 먼저 오르는 사주라 수면이 기본</td></tr>'+
      '<tr><td>2</td><td>'+S.EL_DEEP[c.yongEl].food+'</td><td>'+S.EL_KO[c.yongEl]+' 기운을 채우는 식사</td></tr>'+
@@ -119,7 +119,7 @@ function tg1(R,c,input,name){
   return h+K('한 줄','태교는 <b>엄마의 리듬</b>입니다. 완벽한 것보다 같은 시간에 같은 것을 반복하세요.');
 }
 function tg2(R,c,input,name){
-  var h=H('출산의 흐름')+'<p>출산 시기는 아이의 사주가 정합니다. 엄마 사주에서는 <b>몸이 문을 여는 달</b>을 봅니다. '+(starMonths(R,input,12).length?('앞으로 12개월 중 <b>'+starMonths(R,input,12).map(function(o){return o.y+'.'+C.n2(o.m);}).join(', ')+'</b>이 그 문에 가깝습니다.'):'앞으로 12개월에는 그 문이 뚜렷하지 않아, 아이의 사주와 병원 일정을 먼저 보세요.')+'</p>';
+  var h=H('몸이 문을 여는 달')+'<p>출산 시기는 아이의 사주가 정합니다. 엄마 사주에서는 <b>몸이 문을 여는 달</b>을 봅니다. '+(starMonths(R,input,12).length?('앞으로 12개월 중 <b>'+starMonths(R,input,12).map(function(o){return o.y+'.'+C.n2(o.m);}).join(', ')+'</b>이 그 문에 가깝습니다.'):'앞으로 12개월에는 그 문이 뚜렷하지 않아, 아이의 사주와 병원 일정을 먼저 보세요.')+'</p>';
   h+=H('이 사주가 출산에서 조심할 것')+'<p>이 사주는 <b>'+S.EL_KO[c.leastI]+'</b>이 얇아 회복이 느린 쪽입니다. '+S.EL_DEEP[c.leastI].part+' 쪽이 먼저 피로를 알립니다. 출산 전에 <b>회복 계획</b>을 먼저 세우세요.</p>';
   h+=H('준비물보다 중요한 것')+UL(['조리된 식사 한 끼를 도와줄 사람','산후 2주 동안의 수면 확보','아이와 엄마의 일정을 대신 기억해줄 사람']);
   return h+K('한 줄','출산은 <b>한나절</b>이지만 회복은 <b>한 달</b>입니다.');
@@ -131,7 +131,7 @@ function tg3(R,c,input,name){
   return h+K('한 줄','산후 회복은 <b>잠</b>과 <b>온기</b>에서 옵니다.');
 }
 function tg4(R,c,input,name){
-  var h=H('가족의 역할')+'<p>아이가 오면 집안의 역할이 다시 짜입니다. 이 사주는 <b>'+c.topGrp+'</b>이 중심이라 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+'을 맡기 쉽습니다.</p>';
+  var h=H('다시 짜이는 분담')+'<p>아이가 오면 집안의 역할이 다시 짜입니다. 이 사주는 <b>'+c.topGrp+'</b>이 중심이라 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+'을 맡기 쉽습니다.</p>';
   h+=H('나눠야 하는 것')+UL(['밤 수유와 낮 돌봄을 나누기','집안일의 기준을 하나로 정하기','양가의 도움을 받을 범위를 정하기']);
   h+=H('이 사주가 놓치는 것')+'<p>배우자와의 대화가 아이 이야기로만 채워집니다. 한 주에 한 번은 <b>아이가 아닌 이야기</b>로 30분을 쓰세요.</p>';
   return h+K('한 줄','역할은 <b>반</b>으로, 마음은 <b>두 배</b>로.');
