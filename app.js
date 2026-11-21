@@ -370,7 +370,7 @@ function renderResult(R,input){
   h+='<div class="rh-s">'+S.ILJU[R.dIdx][0]+' — '+S.ILJU[R.dIdx][2]+'</div>';
   h+='<div class="pillars">'+pillarCells(R)+'</div>';
   var meta=S.STEM_HAN[R.dStem]+'('+S.STEM_KO[R.dStem]+') 일간 · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+' · 용신 '+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+') · 대운 '+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세';
-  h+='<div class="rh-meta">'+meta+'<br>'+R.y+'년 '+R.m+'월 '+R.d+'일 '+(input.cal==='lunar'?'음력':'양력')+' · '+(R.hasTime?solarNote(R):'시간 모름(시주 제외)')+'</div>';
+  h+='<div class="rh-meta">'+meta+'<br>'+R.y+'년 '+R.m+'월 '+R.d+'일 '+(input.cal==='lunar'?'음력':'양력')+' · '+(R.hasTime?solarNote(R,input):'시간 모름(시주 제외)')+'</div>';
   h+='</div>';
 
   h+='<div class="res-sum fade-in"><p><b>'+esc(name)+'</b> 님의 여덟 글자는 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주, 일간 '+S.STEM_HAN[R.dStem]+'('+S.STEM_KO[R.dStem]+')입니다. 오행은 <b>'+S.EL_KO[c.mostI]+'</b>이 가장 두텁고 <b>'+S.EL_KO[c.leastI]+'</b>이 가장 얇으며, 필요한 기운은 <b>'+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+')</b>입니다.</p>';
@@ -394,11 +394,13 @@ function renderResult(R,input){
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });
   try{ var rv=$('#resultView'); var y=rv.getBoundingClientRect().top+window.pageYOffset-146; window.scrollTo({top:y,behavior:'smooth'}); }catch(e){}
 }
-function solarNote(R){
+function solarNote(R,input){
+  var nm=(input&&input.regionName)||'';
+  if(nm==='출생지 모름') return '출생지 미상 — 보정 없이 계산했습니다';
   var a=R.solarAdj;
-  if(!a) return '선택하신 출생지 기준으로 시주를 보정했습니다';
-  if(a.off===0&&(!a.region||a.region==='출생지 모름')) return '출생지 미상 — 보정 없이 계산했습니다';
-  return a.region+' 출생 기준으로 시주를 보정했습니다';
+  if(!a) return nm?(nm+' 출생 — 보정 없이 계산했습니다'):'보정 없이 계산했습니다';
+  if(a.off===0) return (a.region||nm||'현지')+' 출생 — 보정 없이 계산했습니다';
+  return (a.region||nm)+' 출생 기준으로 시주를 보정했습니다';
 }
 
 /* ---------------- PDF 신청 ---------------- */
