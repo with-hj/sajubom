@@ -19,7 +19,7 @@ html{scroll-behavior:smooth}
 html,body{margin:0;padding:0}
 body{
   font-family:var(--sans); font-size:17px; line-height:1.85; color:var(--body);
-  background:var(--ink); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  background:#080f1a; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
   word-break:keep-all; overflow-wrap:break-word;
 }
 body.lock{overflow:hidden}
@@ -225,9 +225,9 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .v8-sky:after{content:'';position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(7,13,21,.52) 0%,rgba(9,18,30,.10) 30%,rgba(8,15,26,.66) 72%,#080f1a 100%)}
 .v8-wrap{position:relative;max-width:560px}
-.v8-hero{text-align:center;padding:26px 6px 0}
+.v8-hero{text-align:center;padding:30px 6px 0}
 .v8-eyebrow{font-size:11px;letter-spacing:.28em;color:#B69B62}
-.v8-hero h1{font-family:var(--serif);font-weight:700;font-size:28px;line-height:1.5;color:#F5ECDA;
+.v8-hero h1{font-family:var(--serif);font-weight:700;font-size:26px;line-height:1.5;color:#F5ECDA;
   margin:12px 0 0;letter-spacing:-.02em}
 .v8-hero h1 em{font-style:normal;color:var(--gold-l)}
 .v8-lede{margin:12px auto 0;max-width:330px;font-family:var(--serif);font-size:14px;line-height:1.88;color:#A6B4C4}
