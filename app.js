@@ -53,23 +53,24 @@ function fillDays(sel,ph){
   sel.innerHTML=h;
 }
 function fillHours(sel,withEmpty){
-  /* v49 · ‘모름’은 옆 체크박스가 맡는다. 목록(휠)에는 시간만 두고, 표시용 자리 한 칸만 숨겨 둔다 */
-  var h=withEmpty?'<option value="" hidden disabled>시간 모름</option>':'';
+  /* v49 · ‘모름’은 옆 체크박스가 맡는다. 휠에는 시간만 두고, 처음엔 잠긴 ‘시간 선택’ 안내 칸 하나 */
+  var h=withEmpty?'<option value="" disabled selected>시간 선택</option>':'';
   for(var i=0;i<12;i++) h+='<option value="'+i+'">'+hourLabel(i)+'</option>';
   sel.innerHTML=h;
-  /* 첫 칸이 disabled면 브라우저가 임의로 첫 시간(자시)을 골라버린다 → 빈 값으로 되돌린다 */
-  if(withEmpty) sel.selectedIndex=0;
 }
 function fillRegions(sel,hideUnknown){
-  /* v49 · ‘지역 모름’ 체크박스가 있는 폼에서는 목록에서 감추고, 체크했을 때 표시용으로만 쓴다 */
-  sel.innerHTML=REGIONS.map(function(r){
-    return '<option value="'+r.k+'"'+(hideUnknown&&r.unknown?' hidden disabled':'')+'>'+r.name+'</option>';
+  /* v49 · ‘지역 모름’ 체크박스가 있는 폼에서는 목록에서 감춘다(체크했을 때만 잠깐 끼워 표시) */
+  sel.innerHTML=REGIONS.filter(function(r){ return !(hideUnknown&&r.unknown); }).map(function(r){
+    return '<option value="'+r.k+'">'+r.name+'</option>';
   }).join('');
 }
 function syncUnknown(c,s){
   if(!c||!s) return;
   s.disabled=c.checked;
   s.classList.toggle('is-off',c.checked);
+  /* 첫 칸(안내 칸)은 체크했을 때만 ‘시간 모름’으로 바꿔 보여준다 */
+  var ph=(s.options[0]&&s.options[0].value==='')?s.options[0]:null;
+  if(ph) ph.textContent=c.checked?'시간 모름':'시간 선택';
   if(c.checked) s.value='';
 }
 function regionOf(k){
@@ -141,9 +142,15 @@ function init(){
     nrg.addEventListener('change',function(){
       if(nrg.checked){
         if(rg.value&&rg.value!=='unknown') prevReg=rg.value;
+        /* v49 · 잠긴 동안에만 ‘출생지 모름’ 칸을 끼워 표시한다 (목록에는 원래 없다) */
+        if(!rg.querySelector('option[data-unknown]')){
+          var o=document.createElement('option'); o.value='unknown'; o.textContent='출생지 모름';
+          o.setAttribute('data-unknown','1'); rg.appendChild(o);
+        }
         rg.value='unknown'; rg.disabled=true; rg.classList.add('is-off');
       }else{
         rg.disabled=false; rg.classList.remove('is-off');
+        var tmp=rg.querySelector('option[data-unknown]'); if(tmp) tmp.parentNode.removeChild(tmp);
         rg.value=(prevReg&&prevReg!=='unknown')?prevReg:'seoul';
       }
     });
