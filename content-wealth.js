@@ -17,8 +17,8 @@ function n2(n){ return n<10?'0'+n:''+n; }
 function jaeWhere(R,c){
   var d=D(R), out=[];
   d.live.forEach(function(p){
-    if(S.GOD_GROUP[p.sGod]==='재성') out.push(p.pos+' 천간 '+p.gz+'('+p.sGod+')');
-    if(S.GOD_GROUP[p.bGod]==='재성') out.push(p.pos+' 지지 '+bp(p.branch)+'('+p.bGod+')');
+    if(S.GOD_GROUP[p.sGod]==='재성') out.push(p.pos+' 천간 '+sp(p.stem)+' '+p.sGod);
+    if(S.GOD_GROUP[p.bGod]==='재성') out.push(p.pos+' 지지 '+bp(p.branch)+' '+p.bGod);
   });
   return out;
 }
@@ -65,8 +65,8 @@ function mo2(R,c,input,name){
     (d.docu.gmJae.length?'받을 돈을 “나중에”로 미루는 것 — 공망 재성은 미룰수록 사라집니다':'정산을 미루는 것 — 미룬 결정은 손실이 됩니다')
   ]);
   h+=H('막는 방법 — 이 사주에게 맞는 것');
-  h+='<p>큰 결심보다 <b>구조</b>입니다. 통장을 셋으로 나누세요 — 쓰는 통장, 쌓는 통장, 비상 통장. 이 사주는 필요한 기운이 '+elK(d.yong)+'이라, 쌓는 통장의 이름에 '+S.EL_DEEP[d.yong].color+' 계열을 쓰면 의식이 유지됩니다.</p>';
-  h+='<p>기신 '+EL_KO[g]+'이 도는 달에는 <b>큰 결제를 2주 미루는 규칙</b> 하나만 더하세요. 이 사주는 2주만 지나면 절반은 사지 않습니다.</p>';
+  h+='<p>큰 결심보다 <b>구조</b>입니다. 통장을 셋으로 나누세요 — 쓰는 통장, 쌓는 통장, 비상 통장. 이 사주는 필요한 기운이 '+elK(d.yong)+'이고, 쌓는 통장의 이름에 '+S.EL_DEEP[d.yong].color+' 계열을 쓰면 의식이 유지됩니다.</p>';
+  h+='<p>기신 '+EL_KO[g]+S.josaP(EL_KO[g],'이가')+' 도는 달에는 <b>큰 결제를 2주 미루는 규칙</b> 하나만 더하세요. 이 사주는 2주만 지나면 절반은 사지 않습니다.</p>';
   return h+K('한 줄','들어오는 것보다 <b>새는 곳</b>을 먼저 막으세요. 이 사주는 버는 힘보다 지키는 구조가 약합니다.');
 }
 function mo3(R,c,input,name){
@@ -163,13 +163,13 @@ function md5(R,c,input,name){
   });
   h+='</table>';
   var best=w.types[0], second=w.types[1];
-  h+='<p>결론은 <b>'+best.label+'</b>이 가장 잘 맞고, 그다음이 <b>'+second.label+'</b>입니다. '+(best.k==='jeonse'?'전세·보증금 계약이 1순위라는 것은, 이 사주가 <b>큰 빚을 지는 매수보다 안전한 계약</b>에서 힘을 낸다는 뜻입니다.':(best.k==='live'?'실거주 매수가 1순위라는 것은, 이 사주가 <b>사는 순간 명의와 생활이 함께 정리되는</b> 구조라는 뜻입니다.':(best.k==='cheong'?'청약·분양이 1순위라는 것은, 이 사주가 <b>공적 절차와 서류</b>에서 이긴다는 뜻입니다.':'수익형·임대가 1순위라는 것은, 이 사주가 <b>돌아가는 현금</b>을 다루는 감각이 있다는 뜻입니다.')))+'</p>';
+  h+='<p>결론은 <b>'+best.label+'</b>'+S.josaP(best.label.slice(-1),'이가')+' 가장 잘 맞고, 그다음이 <b>'+second.label+'</b>입니다. '+(best.k==='jeonse'?'전세·보증금 계약이 1순위라는 것은, 이 사주가 <b>큰 빚을 지는 매수보다 안전한 계약</b>에서 힘을 낸다는 뜻입니다.':(best.k==='live'?'실거주 매수가 1순위라는 것은, 이 사주가 <b>사는 순간 명의와 생활이 함께 정리되는</b> 구조라는 뜻입니다.':(best.k==='cheong'?'청약·분양이 1순위라는 것은, 이 사주가 <b>공적 절차와 서류</b>에서 이긴다는 뜻입니다.':'수익형·임대가 1순위라는 것은, 이 사주가 <b>돌아가는 현금</b>을 다루는 감각이 있다는 뜻입니다.')))+'</p>';
   h+=H('유리한 해와 달 — 이유');
   var dshow=w.years.slice(0,3);
   if(w.bestClean&&dshow.indexOf(w.bestClean)<0) dshow.push(w.bestClean);
   h+='<ul>'+dshow.map(function(y){
     var clean=!y.why.some(function(x){return x.indexOf('기신')>=0||x.indexOf('공망')>=0;});
-    return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>이 해가 첫 번째 창</b>입니다.':'')+(clean?'':' <span style="color:#B5533F">이 해는 조건이 겹쳐 부담이 큽니다.</span>')+'</li>';
+    return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(' · '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>이 해가 첫 번째 창</b>입니다.':'')+(clean?'':' — <span style="color:#B5533F">조건이 겹쳐 부담이 큽니다.</span>')+'</li>';
   }).join('')+'</ul>';
   h+='<p>'+(w.bestClean?'실제로 계약을 잡을 첫 번째 창은 <b>'+w.bestClean.y+'년 '+w.bestClean.gz+'</b>입니다. 기신·공망이 겹치지 않는 해라 잔금과 등기가 뒤에서 흔들리지 않습니다.':'앞으로 여섯 해 중 기신·공망이 겹치지 않는 해가 없습니다. 이때는 <b>가장 점수가 높은 해</b>에 계약하되 잔금·등기·대출 조건을 세 번 확인하세요.')+'</p>';
   h+='<p>달까지 좁히면 '+w.goodMonths.map(function(m){

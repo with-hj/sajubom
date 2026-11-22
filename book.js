@@ -430,8 +430,8 @@ function moneyPages(){
   var jeong=c.gc['정재'],pyeon=c.gc['편재'];
   var jaeWhere=[];
   d.live.forEach(function(p){
-    if(S.GOD_GROUP[p.sGod]==='재성') jaeWhere.push(p.pos+' 천간 '+p.gz+'('+p.sGod+')');
-    if(S.GOD_GROUP[p.bGod]==='재성') jaeWhere.push(p.pos+' 지지 '+brS(p.branch));
+    if(S.GOD_GROUP[p.sGod]==='재성') jaeWhere.push(p.pos+' 천간 '+stemS(p.stem)+' '+p.sGod);
+    if(S.GOD_GROUP[p.bGod]==='재성') jaeWhere.push(p.pos+' 지지 '+brS(p.branch)+' '+p.bGod);
   });
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물')+'<h1>돈의 그릇과<br><span class="accent">들어오는 문</span></h1>'+
     '<p class="lead">재성은 <b>'+(jeong+pyeon)+'개</b>(정재 '+jeong+' · 편재 '+pyeon+')입니다. '+(pyeon>jeong?'변동형 수입에 강하고 큰 판을 보는 눈이 있습니다.':(jeong>pyeon?'고정형 수입에 강하고 관리에 능합니다.':'고정과 변동이 반반이라 균형 잡힌 운영이 맞습니다.'))+'</p>'+
@@ -496,7 +496,7 @@ function docuPages(){
   push(page('10 / DOCUMENT',secLabel('10','DOCUMENT · 시기와 함정')+'<h1>언제,<br><span class="accent">무엇을 조심할까</span></h1>'+
     '<p class="lead">시기는 <b>인성(문서)·관성(명의)·재성(자금)</b>이 세운으로 들어오는 해와, <b>지지가 내 기둥과 합·충</b>을 이루는 해로 좁힙니다.</p>'+
     '<ul>'+(function(){ var L=w.years.slice(0,3); if(w.bestClean&&L.indexOf(w.bestClean)<0) L.push(w.bestClean); return L.map(function(y){
-      return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>첫 번째 창</b>':'')+'</li>';
+      return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(' · '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>첫 번째 창</b>':'')+'</li>';
     }).join(''); })()+'</ul>'+
     '<p>계약을 잡을 첫 번째 창은 <b>'+(w.bestClean?w.bestClean.y+'년 '+w.bestClean.gz:'기신·공망이 겹치지 않는 해가 없어 가장 점수가 높은 해')+'</b>입니다. 기신·공망이 겹치는 해는 계약이 되어도 이자·세금·보수에서 지출이 늘어납니다.</p>'+
     '<p>달까지 좁히면 '+w.goodMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+' '+m.gz+'</b>'+(m.why.length?'('+m.why.join('·')+')':''); }).join(', ')+'입니다. 가계약·잔금·등기 접수 중 하나를 여기에 잡으세요.</p>'+

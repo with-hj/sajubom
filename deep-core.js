@@ -363,13 +363,13 @@ function sinsalHTML(R){
 }
 function strengthText(R){
   var d=deepOf(R);
-  var yn=(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'));
+  var yn=(R.strength==='강'?'강한 편(신강)':(R.strength==='약'?'약한 편(신약)':'중화에 가까운 편'));
   var parts=[];
-  parts.push('태어난 달 '+BR_HAN[R.mIdx%12]+'이 '+elTxt(BR_EL[R.mIdx%12])+'이라 '+(d.deukRyeong?'일간의 뿌리가 되는 계절에 태어났습니다(득령)':'일간을 돕는 계절은 아닙니다(실령)'));
-  parts.push('일지 '+BR_HAN[R.dBranch]+'은 '+(d.deukJi?'일간을 받쳐주는 자리(득지)':'일간을 소모시키는 자리'))
-  parts.push('천간에서 나를 돕는 글자는 '+(d.supportStems?d.supportStems+'개':'없음')+(d.deukSe?'으로 힘을 보태는 편(득세)':'이라 힘을 보태기엔 적습니다'));
+  parts.push('태어난 달 '+BR_HAN[R.mIdx%12]+j(BR_HAN[R.mIdx%12],'은는')+' '+elTxt(BR_EL[R.mIdx%12])+'이라 '+(d.deukRyeong?'일간의 뿌리가 되는 계절에 태어났습니다(득령)':'일간을 돕는 계절은 아닙니다(실령)'));
+  parts.push('일지 '+BR_HAN[R.dBranch]+j(BR_HAN[R.dBranch],'은는')+' '+(d.deukJi?'일간을 받쳐주는 자리입니다(득지)':'일간을 소모시키는 자리입니다'));
+  parts.push('천간에서 나를 돕는 글자는 '+(d.supportStems?d.supportStems+'개로 힘을 보태는 편입니다(득세)':'없어 힘을 보태기엔 적습니다'));
   parts.push(d.roots.length?'지장간에 같은 오행의 뿌리가 '+d.roots.join('·')+'에 있습니다(통근)':'지장간에도 같은 오행의 뿌리가 없어 뿌리가 얕습니다(무근)');
-  return '일간의 힘은 <b>'+yn+'</b>입니다. '+parts.join(', ')+'. 그래서 '+S.STRENGTH_TXT[R.strength].adv;
+  return '일간의 힘은 <b>'+yn+'</b>입니다. '+parts.join('. ')+'. 그래서 '+S.STRENGTH_TXT[R.strength].adv;
 }
 function yongText(R){
   var d=deepOf(R), c=d.c;
