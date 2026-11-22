@@ -368,7 +368,7 @@ function revealForm(scroll){
   }
   if(!scroll) return;
   try{
-    var top=p.getBoundingClientRect().top+window.pageYOffset-76;
+    var top=p.getBoundingClientRect().top+window.pageYOffset-124;  /* 상단 헤더+트랙 바 아래로 */
     window.scrollTo({top:top<0?0:top,behavior:'smooth'});
   }catch(e){}
 }
