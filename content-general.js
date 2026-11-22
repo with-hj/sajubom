@@ -11,6 +11,7 @@ window.CTP=window.CTP||{};
 
 function D(R){ return S.deep(R); }
 function elK(i){ return S.EL_KO[i]+'('+S.EL_HAN[i]+')'; }
+function elKj(i,p){ return elK(i)+S.josaP(S.EL_KO[i],p||'이가'); }
 function n2(n){ return n<10?'0'+n:''+n; }
 
 /* 대운 하나를 정밀하게 읽기 */
@@ -40,7 +41,7 @@ function ny(R,c,input,name){
     : (r.tone==='hold'?'벌이기보다 지키는 해입니다. 새 계약·새 대출·새 판은 다음 해로 미루세요.':'오르내리는 해입니다. 되는 일과 막히는 일이 번갈아 오니, 한 번에 하나만 잡으세요.'))+'</p>';
   h+=H('이 해를 받치는 10년');
   h+='<p>한 해의 날씨는 <b>대운</b>이라는 기후 위에 얹힙니다. 지금은 <b>'+cur.dn.from+'~'+cur.dn.to+'세 · '+cur.gz+'('+cur.g+')</b>의 10년, 그중 <b>'+(R.age-cur.dn.from+1)+'년 차</b>입니다. '+(S.GOD_DAEUN[cur.g]||'')+'</p>';
-  h+='<p>이 대운의 지지는 '+relWords(cur.rels)+'. '+(cur.yong?'용신 '+EL_KO[dd.yong]+'이 걸린 10년이라 <b>막힌 것이 풀리는</b> 구간입니다.':(cur.gi?'기신 '+EL_KO[dd.gisin]+'이 걸린 10년이라 <b>버티는 힘</b>이 결과를 만듭니다.':'용신도 기신도 걸리지 않아, 세운의 날씨가 그대로 드러나는 10년입니다.'))+'</p>';
+  h+='<p>이 대운의 지지는 '+relWords(cur.rels)+'. '+(cur.yong?'용신 '+EL_KO[dd.yong]+S.josaP(EL_KO[dd.yong],'이가')+' 걸린 10년이라 <b>막힌 것이 풀리는</b> 구간입니다.':(cur.gi?'기신 '+EL_KO[dd.gisin]+S.josaP(EL_KO[dd.gisin],'이가')+' 걸린 10년이라 <b>버티는 힘</b>이 결과를 만듭니다.':'용신도 기신도 걸리지 않아, 세운의 날씨가 그대로 드러나는 10년입니다.'))+'</p>';
   h+=H('상반기와 하반기 — 달로 본 순서');
   var ms=C.luckMonths(R,12), first=ms.slice(0,6), second=ms.slice(6,12);
   function avg(a){ var s=0; a.forEach(function(x){s+=x.score;}); return s/a.length; }
@@ -147,7 +148,7 @@ function life5(R,c,input,name){
   var h=H('평생의 재물 구조');
   h+='<p>재성은 <b>'+(jc+pc)+'개</b>(정재 '+jc+' · 편재 '+pc+')이고, 일간의 힘은 <b>'+R.strength+'</b>입니다. '+(pc>jc?'변동형 수입에 강하고 큰 판을 보는 눈이 있습니다.':(jc>pc?'고정형 수입에 강하고 관리에 능합니다.':'고정과 변동이 반반이라 균형 잡힌 운영이 맞습니다.'))+'</p>';
   h+='<p>'+S.strengthText(R)+'</p>';
-  h+=H('돈이 새는 지점')+'<p>'+(S.WEALTH_LEAK_GOD[c.topGodInGrp]||'사람을 통한 지출에서 계산이 흐려집니다.')+' 기신 '+elK(dd.gisin)+'이 도는 달에 특히 커집니다.</p>';
+  h+=H('돈이 새는 지점')+'<p>'+(S.WEALTH_LEAK_GOD[c.topGodInGrp]||'사람을 통한 지출에서 계산이 흐려집니다.')+' 기신 '+elKj(dd.gisin)+' 도는 달에 특히 커집니다.</p>';
   h+=H('부르는 방식')+'<p>'+(S.WEALTH_VESSEL_GOD[c.topGodInGrp]||'성실함이 그대로 재산이 되는 구조입니다.')+'</p>';
   h+=H('문서·부동산')+'<p>문서·부동산 취득 지수는 <b>'+w.score+'/100('+w.grade+')</b>입니다. 가장 잘 맞는 방식은 <b>'+w.types[0].label+'</b>이고, 첫 번째 창은 <b>'+(w.bestClean?w.bestClean.y+'년 '+w.bestClean.gz:w.best.y+'년 '+w.best.gz)+'</b>입니다. '+(w.gmIn.length?'인성이 공망이라 계약서·등기를 직접 확인해야 합니다.':'인성·관성이 받쳐줘 등기와 계약에서 손해가 적은 구조입니다.')+'</p>';
   h+=H('평생의 루틴')+'<p>'+(S.WEALTH_ROUTINE[c.topGrp]||'수입이 들어온 날 바로 떼어두는 습관 하나가 10년을 바꿉니다.')+' '+d.habit+'.</p>';

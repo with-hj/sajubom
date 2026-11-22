@@ -427,7 +427,7 @@ function answerFor(kind,R,c,q){
     h+=callout('한 줄','<p>이 사주는 <b>표현이 늦어</b> 마음을 놓칩니다. 좋으면 좋다고, 서운하면 서운하다고 그날 말하는 것 — 이것이 인연의 속도를 바꿉니다.</p>');
   } else if(kind==='health'){
     var li=R.count[4], fi=R.count[1];
-    h+='<p class="lead">이 사주는 '+elK(c.leastI)+'이 가장 얇아, <b>'+S.EL_DEEP[c.leastI].part+'</b> 쪽이 먼저 신호를 보냅니다.</p>';
+    h+='<p class="lead">이 사주는 '+elKj(c.leastI)+' 가장 얇아, <b>'+S.EL_DEEP[c.leastI].part+'</b> 쪽이 먼저 신호를 보냅니다.</p>';
     h+='<p>'+S.EL_DEEP[c.leastI].under+' 특히 '+S.SEASON_RHYTHM[c.leastI][0]+'에 주의하세요. '+S.SEASON_RHYTHM[c.leastI][1]+'</p>';
     h+='<p>물(水) '+li+' · 불(火) '+fi+' — '+(fi>=li+2?'열이 먼저 오르는 구조라 잠과 수분이 핵심입니다.':(li>=fi+2?'몸이 차기 쉬운 구조라 온기와 아침 햇빛이 핵심입니다.':'고른 구조라 계절의 흔들림을 관리하면 충분합니다.'))+'</p>';
     h+='<p>'+qaMonthLine(R,function(mp,g,tag){return tag==='충'||tag==='형';},'몸이 먼저 신호를 보내는 달')+'</p>';
