@@ -371,6 +371,7 @@ var SETS={
   sseom:['ilju','elem','gaewun','people','life3','act'],
   reunion:['ilju','elem','gaewun','life3','people','act'],
   pattern:['ilju','elem','gaewun','decade','life3','act'],
+  love:['ilju','elem','gaewun','decade','life3','act'],   /* v50 · 연애운 탭 */
   couple:['ilju','elem','gaewun','life3','people','act'],
   wedding:['ilju','elem','gaewun','life3','health'],
   divorce:['ilju','elem','gaewun','people','life3','act'],

@@ -379,8 +379,9 @@ function updatePanelCopy(){
   var T=CT.TABS[state.tab];
   $('#pf-title').textContent=T.formTitle||(T.name+' — 내 사주 입력');
   $('#pf-note').textContent=T.note||'';
+  /* v50 · 알약 아래 한 줄 — 탭이 정한 문장(sub)이 있으면 그것만, 없으면 ‘이름 · 설명’ */
   var tn=$('#v-tab-note');
-  if(tn) tn.innerHTML='<b>'+esc(T.name)+'</b> · '+esc(T.tag||'');
+  if(tn) tn.innerHTML=T.sub?esc(T.sub):('<b>'+esc(T.name)+'</b> · '+esc(T.tag||''));
   applyFields();
   syncIntro();
 }
@@ -486,10 +487,24 @@ function revealForm(scroll){
     }
   },REVEAL_MS+120);
 }
+/* v50 · 영상 카드의 문구·포스터를 탭에 맞춘다 (예전에는 신년운세 문구로 고정돼 있었음) */
+function setIntroCopy(T){
+  var IQ=T&&T.intro;
+  var b=$('#introBadge'), hk=$('#introHook'), ct=$('#introCta'), vd=$('#introVideo');
+  if(b) b.textContent=IQ?IQ.badge:'2027 신년 · 天靈堂';
+  if(hk) hk.innerHTML=IQ?IQ.hook:'다가오는 한 해,<br>어느 달에 문이 열리고<br><b>무엇을 피해야 할지</b> 보고 가세요';
+  if(ct) ct.innerHTML=(IQ?IQ.cta:(T.name+' · 사주 정보 입력하기'))+' <span aria-hidden="true">→</span>';
+  if(vd){
+    var pos=(T&&T.poster)?T.poster:'./assets/themes-web/t-general.jpg';
+    if(vd.getAttribute('poster')!==pos) vd.setAttribute('poster',pos);
+    vd.setAttribute('aria-label',(T?T.name:'신년운세')+' 인트로 영상');
+  }
+}
 function syncIntro(){
   var card=$('#introCard'), vid=$('#introVideo'), panel=$('#panelForm');
   if(!card||!vid||!panel) return;
   var src=introSrc();
+  setIntroCopy(CT.TABS[state.tab]);
   if(!src){
     card.hidden=true;
     try{ vid.pause(); }catch(e){}

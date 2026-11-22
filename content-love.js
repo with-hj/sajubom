@@ -231,6 +231,127 @@ function pt7(R,c,input,name){
     K('한 줄','합의 달에는 먼저 다가가고, 충의 달에는 정리에 쓰세요.');
 }
 
+/* =====================================================================
+   v50 · 연애운 — “나는 언제, 어떤 사람을 만나게 되는지”
+   (기존 ‘내 연애 패턴’ 자리를 대신하는 탭. 만남의 결 → 해 → 달 → 사람 → 실전 순서)
+   ===================================================================== */
+function lvStar(input){ return (input&&input.gender==='f')?'관성':'재성'; }
+function lvStarTitle(input){ return (input&&input.gender==='f')?'관성(정관)':'재성(정재)'; }
+function lvStarYears(R,star){ /* 배우자성이 세운으로 들어오는 해 */
+  var out=[];
+  for(var i=0;i<R.seun.length;i++){
+    var r=S.yearRead(R,R.seun[i].year);
+    if(r.grp===star) out.push(r);
+  }
+  return out;
+}
+function lvHapYears(R,n){ /* 일지와 합·삼합이 걸리는 해 */
+  var out=[];
+  for(var i=0;i<R.seun.length&&i<(n||5);i++){
+    var r=S.yearRead(R,R.seun[i].year);
+    if(r.rels.some(function(x){return x.type==='육합'||x.type==='삼합'||x.type==='방합';})) out.push(r);
+  }
+  return out;
+}
+function lv1(R,c,input,name){
+  var dd=S.deep(R), star=lvStar(input);
+  var inPos=[];
+  dd.live.forEach(function(p){ if(S.GOD_GROUP[p.bGod]===star||S.GOD_GROUP[p.sGod]===star) inPos.push(p.pos); });
+  var h=window.CH.facts(R);
+  h+='<p>'+name+' 님에게 오는 인연은 “어떤 사람이 좋은가”보다 <b>어떤 자리에서 마음이 열리는가</b>로 먼저 정해집니다. 배우자궁인 일지 '+window.CH.bj(R.dBranch,'은는')+' <b>'+S.SPOUSE[R.dBranch]+'</b>을 가리키고, 이 사주의 배우자성은 <b>'+lvStarTitle(input)+'</b>입니다.</p>';
+  h+=H('먼저 끌리는 사람')+'<p>'+S.LOVE_ATTRACT[R.dayEl]+'</p>';
+  h+=H('실제로 오래 머무는 사람')+'<p>'+S.LOVE_FIT[R.dayEl]+'<br>'+S.BR_INNER[R.dBranch]+' 그래서 이 사주는 첫 만남의 설렘보다 <b>세 번째 만남의 편안함</b>으로 사람을 정합니다.</p>';
+  h+=H('인연이 서는 자리')+'<p>'+(inPos.length
+    ? '원국에서 '+lvStarTitle(input)+'이 '+inPos.join('·')+'에 있습니다. '+(inPos.indexOf('일지')>=0
+      ? '배우자궁 안에 배우자성이 앉아 있어, 결혼이 <b>소개나 사건이 아니라 생활 속에서</b> 자연스럽게 결정되는 사주입니다.'
+      : inPos.indexOf('월지')>=0 ? '월지에 있어 <b>일·모임·사회생활</b>을 통해 인연이 들어옵니다. 같은 목적을 가진 자리에서 만난 사람이 오래 갑니다.'
+      : '배우자궁 바깥에 있어 인연이 <b>먼 곳이나 새로운 판</b>에서 들어옵니다. 익숙한 자리만 반복하면 만남이 늦어집니다.')
+    : '배우자성이 원국에 뚜렷하게 드러나지 않았습니다. 이런 사주는 사람이 없는 것이 아니라 <b>내가 나서지 않으면 보이지 않는</b> 구조라, 만남의 자리를 스스로 만드는 쪽이 훨씬 빠릅니다.')+'</p>';
+  h+=H('두 사람이 다를 때')+'<p>끌리는 사람과 오래 가는 사람이 다르면, 대개 <b>끌림을 기준으로 결정하고 맞음을 나중에 확인</b>합니다. 이 사주는 특히 그 간격이 큽니다. 설렘이 6개월을 넘겼다면, 그때부터는 상대의 <b>생활 리듬</b>을 보세요.</p>';
+  h+=window.CH.UL(['대화가 끝난 뒤 피곤한가, 편안한가','내 일정을 바꿀 때 서운함이 남는가','다툰 뒤 누가 먼저 회복하는가']);
+  return h+K('한 줄','이 사주에게 인연은 <b>찾는 것</b>이 아니라 <b>알아보는 것</b>입니다.');
+}
+function lv2(R,c,input,name){
+  var star=lvStar(input), ys=lvStarYears(R,star), hs=lvHapYears(R,5);
+  var h=H('배우자성이 들어오는 해');
+  h+='<p>인연의 문은 '+lvStarTitle(input)+'이 세운으로 들어오는 해에 열립니다. '+(ys.length
+    ? '앞으로 다섯 해 중 <b>'+ys.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 그 해입니다. '+ys[0].why
+    : '앞으로 다섯 해에는 '+lvStarTitle(input)+'이 세운에 뚜렷하게 서지 않습니다. 이 시기는 기다림보다 <b>내 생활을 세우는 쪽</b>이 맞습니다. 만남은 그릇이 커진 뒤에 옵니다.')+'</p>';
+  h+=H('일지가 열리는 해')+'<p>'+(hs.length
+    ? '<b>'+hs.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>은 일지와 합이 걸리는 해입니다. 배우자궁이 열리는 때라 소개·만남·고백이 자연스럽게 이어집니다.'
+    : '앞으로 다섯 해에는 일지와 합이 걸리는 해가 뚜렷하지 않습니다. 대신 배우자성이 들어오는 해에 움직임이 몰립니다.')+'</p>';
+  h+=H('그래서 어느 해에 움직일까')+((ys.length?(function(){
+    var best=ys[0]; var both=ys.filter(function(r){return hs.some(function(x){return x.y===r.y;});});
+    return '<p>'+(both.length? '<b>'+both[0].y+'년</b>은 배우자성과 합이 함께 걸리는 해입니다. 이 사주에게 가장 힘이 실리는 창이라, 이 해에는 만남을 미루지 마세요.'
+      : '<b>'+best.y+'년</b>이 첫 번째 창입니다. 이 해에 사람을 만나는 자리를 하나라도 더 만들면 결과가 달라집니다.')+'</p>';
+  }):''))+'<p>해가 좋다고 결혼이 되는 것은 아닙니다. 해는 <b>문이 열리는 때</b>이고, 문 안으로 들어가는 것은 그해의 생활입니다. 일을 하나 줄이고 만남을 하나 늘리는 정도의 변화가 필요합니다.</p>';
+  h+=seunTable(R,c,5);
+  return h+K('한 줄','이 사주의 인연은 <b>해가 오는 때</b>와 <b>내가 움직이는 때</b>가 겹칠 때 성사됩니다.');
+}
+function lv3(R,c,input,name){
+  var now=new Date(), tops=[];
+  for(var k=0;k<8;k++){
+    var yy=now.getFullYear(), mo=now.getMonth()+1+k;
+    while(mo>12){ mo-=12; yy++; }
+    var mr=S.monthRead(R,yy,mo);
+    var hap=mr.rels.some(function(x){return x.type==='육합';});
+    if(hap||mr.grp==='관성'||mr.grp==='재성') tops.push({t:yy+'.'+(mo<10?'0'+mo:mo),gz:mr.gz,hap:hap});
+  }
+  var h='<p>연애운은 해보다 달에서 더 정확해집니다. 같은 해라도 <b>일지와 합이 걸리는 달</b>에는 연락이 오고, 충이 걸리는 달에는 마음이 흔들립니다.</p>';
+  h+=H('앞으로 8개월의 문')+'<p>'+(tops.length
+    ? tops.slice(0,5).map(function(o){return '<b>'+o.t+' '+o.gz+'</b>'+(o.hap?' (일지와 합)':'');}).join(', ')+' — 이 달들은 만남·고백·소개가 자연스럽게 이어지는 때입니다.'
+    : '앞으로 8개월은 일지와 합이 걸리는 달이 뚜렷하지 않습니다. 이 시기는 새 사람을 기다리기보다 <b>이미 아는 사람과의 자리</b>를 한 번 더 만드는 쪽이 낫습니다.')+'</p>';
+  h+=H('달을 쓰는 법')+window.CH.UL([
+    '합의 달 — 먼저 연락하고, 만남을 잡고, 마음을 표현합니다.',
+    '충의 달 — 감정이 앞서므로 고백과 결정을 미룹니다.',
+    '배우자성의 달 — 소개·모임·새 자리에 나갑니다. 집에 있으면 지나갑니다.'
+  ]);
+  h+=monthsBlock(R,c,'love',6,'앞으로 6개월, 인연의 문이 열리는 달입니다.');
+  return h+K('한 줄','좋은 달을 기다리기보다 <b>좋은 달에 밖에 나가 있는 것</b>이 이 사주의 연애운을 바꿉니다.');
+}
+function lv4(R,c,input,name){
+  var dd=S.deep(R), star=lvStar(input);
+  var sal=dd.sals.filter(function(s){return s.key==='dohwa'||s.key==='hongyeom';});
+  var h='<p>이 사주에 오래 남는 사람은 겉으로 드러난 조건이 아니라 <b>생활의 온도</b>가 맞는 사람입니다. 일지 '+window.CH.bj(R.dBranch,'과는')+' 어떤 사람이 편한지 먼저 봅니다.</p>';
+  h+=H('이 사주가 편한 사람')+'<p>'+S.MARR_HABIT_BR[R.dBranch]+' 이 리듬을 존중해주는 사람이면, 설렘이 작아도 오래 갑니다.</p>';
+  h+=H('성별로 보는 배우자의 결')+'<p>'+((input&&input.gender==='f')
+    ? '여성 사주에서 배우자는 <b>관성</b>입니다. 관성은 나를 규율하는 기운이라, 이 사주에게 남자는 <b>자기 자리가 분명한 사람</b>으로 와야 오래갑니다. 관성이 약하면 남자가 없어서가 아니라, <b>나를 세워주는 사람</b>을 만나기까지 시간이 걸린다는 뜻입니다.'
+    : '남성 사주에서 배우자는 <b>재성</b>입니다. 재성은 현실과 생활을 챙기는 기운이라, 이 사주에게 여자는 <b>생활을 함께 정리해주는 사람</b>으로 와야 오래갑니다. 재성이 약하면 인연이 없어서가 아니라, <b>내가 챙기는 쪽에만 서 있으면</b> 인연이 굳는다는 뜻입니다.')+'</p>';
+  h+='<p>원국에서 '+lvStarTitle(input)+'은 <b>'+c.grp[star]+'개</b>입니다. '+ (c.grp[star]>=2?'두 개 이상이면 인연이 반복해서 들어오는 구조입니다. 그래서 선택이 중요합니다. 고르는 기준이 없으면 좋은 인연도 지나갑니다.':(c.grp[star]===1?'하나면 인연이 한 번에 깊어지는 구조입니다. 넓게 만나기보다 한 사람을 오래 보는 쪽이 맞습니다.':'하나도 없으면 인연이 늦게 오는 대신, 한 번 오면 오래갑니다. 서두르지 않아도 됩니다.'))+'</p>';
+  if(sal.length) h+='<p>인연의 표시로 <b>'+sal.map(function(s){return s.name;}).join('·')+'</b>이 '+sal[0].pos+'에 있습니다. '+sal[0].txt+' 이 기운은 사람을 끌어당기는 힘이라, 표정과 목소리가 좋아지는 날에 더 크게 작동합니다.</p>';
+  h+=H('알아볼 신호')+window.CH.UL(['내 이야기를 기억했다가 나중에 꺼내는 사람','약속을 크게 말하지 않고 조용히 지키는 사람','내가 지칠 때 해결보다 <b>자리를 비켜주는</b> 사람']);
+  return h+K('한 줄','이 사주에게 오래 가는 사람은 <b>나를 편하게 만드는 사람</b>입니다.');
+}
+function lv5(R,c,input,name){
+  var h='<p>연애운은 매력의 크기보다 <b>매력이 보이는 방식</b>에서 갈립니다. 이 사주는 꾸밈보다 결로 기억되는 사람입니다.</p>';
+  h+=H('이 사주가 기억되는 지점')+'<p>'+S.LOVE_CHARM[R.dayEl]+'</p>';
+  h+='<p>'+S.DM_DEEP[R.dStem].out+' 그래서 처음 만난 사람은 이 사람을 “말이 정갈하다, 흔들리지 않는다”고 기억합니다. 그 인상이 첫 만남의 절반입니다.</p>';
+  h+=H('매력이 커지는 조건')+window.CH.UL(['잠을 충분히 잔 날의 얼굴 — 이 사주는 피로가 표정에 먼저 나옵니다','내 이야기 한 가지를 준비해 두는 것 — 준비된 사람은 말이 짧아도 남습니다',S.EL_KO[c.yongEl]+' 색 소품 하나 — '+S.EL_DEEP[c.yongEl].color]);
+  h+=H('매력이 죽는 조건')+'<p>상대의 반응을 재는 순간입니다. 이 사주는 확인하려고 할수록 말이 무거워지고, 무거운 말은 설렘을 지웁니다. '+S.LOVE_SHADOW[R.dayEl]+'</p>';
+  h+=H('첫 만남의 순서')+window.CH.UL(['첫 대화 — 질문은 하나, 답은 짧게','두 번째 — 내 이야기를 한 조각 꺼내기','세 번째 — 만남을 내가 한 번 잡아보기']);
+  return h+K('개운',S.EL_DEEP[c.yongEl].habit+' — 몸이 편하면 표정이 먼저 달라집니다.');
+}
+function lv6(R,c,input,name){
+  var h='<p>이 사주가 반복하는 장면의 출발점은 일지 '+brB(R.dBranch)+'입니다. '+S.BR_INNER[R.dBranch]+'</p>';
+  h+=H('반복되는 실수')+'<p>'+S.LOVE_MISTAKE_GOD[c.topGodInGrp]+'</p>';
+  h+=H('끊어내는 세 가지')+window.CH.UL([
+    '<b>사흘 규칙</b> — 흔들린 일은 사흘 뒤에 결론. 이 사주는 사흘이면 절반이 정리됩니다.',
+    '<b>한 문장</b> — 하고 싶은 말을 한 문장으로 적어두기. 문장이 길어지면 감정이 결정을 대신합니다.',
+    '<b>한 번</b> — 연락은 한 번만. 두 번째부터는 상대가 아니라 내 불안이 움직입니다.'
+  ]);
+  h+=H('무너지는 지점')+'<p>'+S.LOVE_SHADOW[R.dayEl]+' 이 문장이 반복해서 나오면 그것이 패턴입니다. 패턴은 성격이 아니라 습관이라, 하나만 바꿔도 결과가 달라집니다.</p>';
+  return h+K('한 줄','이 사주는 <b>기다릴 기한</b>을 정해두면 훨씬 편해집니다. 기한 없이 기다리다 스스로 정리하는 편이니까요.');
+}
+function lv7(R,c,input,name){
+  var now=new Date(), mr=S.monthRead(R,now.getFullYear(),now.getMonth()+1);
+  var yr=S.yearRead(R,now.getFullYear());
+  var h=H('지금의 연애 온도')+'<p>'+yr.y+'년은 '+yr.gz+'로 '+yr.short+'입니다. '+yr.why+'</p>';
+  h+='<p>이번 달('+now.getMonth()+1+'월 '+mr.gz+')은 '+(mr.tone==='open'?'마음이 밖으로 나가기 좋은 달입니다. 연락과 만남을 이 달에 잡으세요.':(mr.tone==='hold'?'감정이 안으로 들어가는 달입니다. 고백보다 정리에 쓰는 쪽이 맞습니다.':'오르내리는 달입니다. 결정은 미루고 분위기를 보세요.'))+'</p>';
+  h+=H('이 시기에 지킬 것')+window.CH.UL(['새 사람을 만날 자리를 한 달에 한 번은 만들기','이미 아는 사람에게 안부를 한 번 더','호감은 말로, 서운함은 그날로']);
+  h+=monthsBlock(R,c,'love',3,'앞으로 석 달의 온도입니다.');
+  return h+K('한 줄','연애운은 <b>지금의 생활</b>을 조금 바꾸면 움직입니다.');
+}
+
 window.CTP.love={
   sseom:[
     {title:'좋아할 때 드러나는 신호',sub:'나의 연애 언어와 상대가 읽는 나',body:sm1},
@@ -249,6 +370,16 @@ window.CTP.love={
     {title:'그만두어야 할 신호',sub:'정리의 순서',body:re5},
     {title:'다시 이어졌을 때',sub:'무너지는 지점과 새 규칙',body:re6},
     {title:'연락의 6개월',sub:'문이 열리는 달',body:re7}
+  ],
+  /* v50 · 연애운 — 알약 순서 [썸 속마음, 연애운, 재회운]의 두 번째 */
+  love:[
+    {title:'나에게 오는 인연의 결',sub:'끌리는 사람과 오래 남는 사람',body:lv1},
+    {title:'인연이 들어오는 해',sub:'배우자성이 세운에 서는 때',body:lv2},
+    {title:'만남이 열리는 달',sub:'합의 달, 충의 달',body:lv3},
+    {title:'어떤 사람이 오래 남는가',sub:'배우자궁과 배우자성으로 본 결',body:lv4},
+    {title:'첫 만남에서 통하는 나',sub:'매력이 보이는 방식',body:lv5},
+    {title:'반복되는 패턴을 끊는 법',sub:'같은 사람에게 끌리는 이유',body:lv6},
+    {title:'지금의 연애 온도',sub:'올해·이번 달의 마음',body:lv7}
   ],
   pattern:[
     {title:'끌리는 사람',sub:'왜 그 사람에게 마음이 가는가',body:pt1},
