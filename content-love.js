@@ -33,7 +33,7 @@ function sm2(R,c,input,name){
   var pc=partnerChart(input),h='';
   if(pc){
     var R2=pc.R, c2=pc.c, rel=S.branchRel(R.dBranch,R2.dBranch);
-    h+='<p>상대의 일주는 <b>'+S.STEM_HAN[R2.dStem]+S.BR_HAN[R2.dBranch]+'</b>, 중심 별은 <b>'+c2.topGodInGrp+'</b>입니다. '+S.GOD_DEEP[c2.topGodInGrp]+'</p>';
+    h+='<p>상대의 일주는 <b>'+C.gzP(R2.dStem,R2.dBranch)+'</b>, 중심 별은 <b>'+c2.topGodInGrp+'</b>입니다. '+S.GOD_DEEP[c2.topGodInGrp]+'</p>';
     h+=H('상대가 지금 보고 있는 것');
     var sn=R.seun[0], pg=S.tenGod(R2.dStem,sn.idx%10);
     h+='<p>'+sn.year+'년 상대의 세운은 <b>'+pg+'</b> — '+S.PARTNER_MIND[S.GOD_GROUP[pg]]+'</p>';

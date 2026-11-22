@@ -1327,6 +1327,7 @@ function iga(s){ return josaP(s,IGA); }
 function elB(i){ return '<b style="color:'+EL_COLOR[i]+'">'+EL_KO[i]+'('+EL_HAN[i]+')</b>'; }
 function stemB(s){ return '<b>'+STEM_KO[s]+'('+STEM_HAN[s]+')</b>'; }
 function brB(b){ return '<b>'+BR_KO[b]+'('+BR_HAN[b]+')</b>'; }
+function gzP(st,br){ return STEM_KO[st%10]+BR_KO[br%12]+'('+STEM_HAN[st%10]+BR_HAN[br%12]+')'; }
 function num2(n){ return n<10?'0'+n:''+n; }
 
 /* 다음 n개월 목록 */
@@ -1539,7 +1540,7 @@ function monthFlow(R,c,kind,n,introTxt){
     if(rt&&rt===lastRel&&rl.length>1) rt=rl[(i+mp.branch+1)%rl.length];
     var bn=MONTH_BRANCH_NOTE[mp.branch]||'';
     lastTip=tip; lastRel=rt;
-    h+='<div class="rb-yr"><div class="yh"><span class="y">'+mo.y+'.'+num2(mo.m)+'</span><b>'+STEM_HAN[mp.stem]+BR_HAN[mp.branch]+'</b>'+
+    h+='<div class="rb-yr"><div class="yh"><span class="y">'+mo.y+'.'+num2(mo.m)+'</span><b>'+gzP(mp.stem,mp.branch)+'</b>'+
        '<span class="g">'+g+' · '+tag+'</span></div>'+
        '<p class="mt">'+tip+(rt?' '+rt:'')+'</p>'+
        '<p class="bn">'+bn+'</p></div>';

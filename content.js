@@ -22,6 +22,7 @@ function sp(s){return '<b>'+S.STEM_KO[s]+'('+S.STEM_HAN[s]+')</b>';}
 function n2(n){return n<10?'0'+n:''+n;}
 /* 60갑자 한 벌을 읽기 쉬운 한글(한자)로 — 정미(丁未) */
 function gz(ix){var s=ix%10,b=ix%12;return S.STEM_KO[s]+S.BR_KO[b]+'('+S.STEM_HAN[s]+S.BR_HAN[b]+')';}
+function gzP(st,br){var s=st%10,b=br%12;return S.STEM_KO[s]+S.BR_KO[b]+'('+S.STEM_HAN[s]+S.BR_HAN[b]+')';}
 function gzS(ix){var s=ix%10,b=ix%12;return '<b>'+S.STEM_KO[s]+S.BR_KO[b]+'</b> <span style="font-size:11.5px;color:#7d7364">'+S.STEM_HAN[s]+S.BR_HAN[b]+'</span>';}
 function ctx(input){return (input&&input.ctx)||{};}
 function marryOf(input){return ctx(input).marry||'unknown';}
@@ -122,10 +123,10 @@ function pillarDetail(R){
   d.pillars.forEach(function(p){
     if(p.ix==null){ h+='<tr><td><b>'+p.pos+'</b></td><td colspan="4" style="color:#8a7f6d">시간 미상</td></tr>'; return; }
     h+='<tr><td><b>'+p.pos+'</b><br><span style="font-size:11px;color:#8a7f6d">'+p.range.split(' ·')[0]+'</span></td>'+
-      '<td style="text-align:center">'+S.STEM_HAN[p.stem]+'<br><span style="font-size:11.5px;color:#5a5145">'+(p.key==='day'?'일간':p.sGod)+'</span></td>'+
-      '<td style="text-align:center">'+S.BR_HAN[p.branch]+'<br><span style="font-size:11.5px;color:#5a5145">'+p.bGod+'</span></td>'+
+      '<td style="text-align:center">'+S.STEM_KO[p.stem]+'<br><span style="font-size:10px;color:#8a7f6d">'+S.STEM_HAN[p.stem]+'</span><br><span style="font-size:11.5px;color:#5a5145">'+(p.key==='day'?'일간':p.sGod)+'</span></td>'+
+      '<td style="text-align:center">'+S.BR_KO[p.branch]+'<br><span style="font-size:10px;color:#8a7f6d">'+S.BR_HAN[p.branch]+'</span><br><span style="font-size:11.5px;color:#5a5145">'+p.bGod+'</span></td>'+
       '<td style="text-align:center;font-size:12.5px">'+p.stage+'</td>'+
-      '<td style="font-size:11.5px;line-height:1.6">'+p.hidden.map(function(x){return x.stem+'('+x.god+')';}).join(' · ')+'</td></tr>';
+      '<td style="font-size:11.5px;line-height:1.6">'+p.hidden.map(function(x){return S.STEM_KO[x.stem]+'('+x.god+')';}).join(' · ')+'</td></tr>';
   });
   return h+'</table>';
 }
@@ -161,7 +162,7 @@ window.CH={P:P,H:H,UL:UL,K:K,elB:elB,stemB:stemB,brB:brB,bj:bj,sj:sj,bp:bp,sp:sp
   kidOf:kidOf,noKids:noKids,singleOf:singleOf,pillars:pillars,elMeter:elMeter,godTable:godTable,
   seunTable:seunTable,monthsBlock:monthsBlock,daeunTable:daeunTable,gaewunBlock:gaewunBlock,
   riskyMonths:riskyMonths,riskyMonthsText:riskyMonthsText,elCount:elCount,yearOfStar:yearOfStar,
-  partnerChart:partnerChart,pillarDetail:pillarDetail,facts:facts,luckYears:luckYears,luckMonths:luckMonths,gz:gz,gzS:gzS,S:S};
+  partnerChart:partnerChart,pillarDetail:pillarDetail,facts:facts,luckYears:luckYears,luckMonths:luckMonths,gz:gz,gzP:gzP,gzS:gzS,S:S};
 
 /* =====================================================================
    5대 테마 · 세부 탭

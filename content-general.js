@@ -75,7 +75,7 @@ function ny(R,c,input,name){
 function life1(R,c,input,name){
   var dd=D(R);
   var h=facts(R);
-  h+='<p>'+name+' 님의 여덟 글자는 <b>'+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주</b>입니다. '+S.lineup(R)+'. '+S.STRENGTH_TXT[R.strength].out+'</p>';
+  h+='<p>'+name+' 님의 여덟 글자는 <b>'+C.gzP(R.dStem,R.dBranch)+'일주</b>입니다. '+S.lineup(R)+'. '+S.STRENGTH_TXT[R.strength].out+'</p>';
   h+=pillarDetail(R);
   h+=H('일간이 말하는 삶의 태도');
   h+='<p>'+S.DAY_MASTER[R.dStem][0]+' — 이것이 이 사주의 바탕입니다. '+S.ILJU[R.dIdx][1]+'</p>';
@@ -135,7 +135,7 @@ function life4(R,c,input,name){
     rows+='<tr><td><b>'+p.pos+' '+S.BR_HAN[p.branch]+'</b></td><td>'+p.hidden.map(function(x){return S.STEM_HAN[x.stem]+'('+x.god+')';}).join(' · ')+'</td><td style="font-size:12.5px">'+p.hidden[0].label+' '+S.STEM_HAN[p.hidden[0].stem]+'이 '+(p.bGod===p.hidden[0].god?'그대로':'다른 결로')+' 작동합니다</td></tr>';
   });
   h+=rows+'</table>';
-  h+='<p>지장간은 <b>“말하지 않은 마음”</b>입니다. 이 사주는 '+dd.live.map(function(p){ return S.BR_HAN[p.branch]+'에 '+p.hidden.map(function(x){return x.god;}).join('·'); }).join(', ')+'이 숨어 있어, 겉으로 보이는 성격과 실제 계산이 다를 수 있습니다.</p>';
+  h+='<p>지장간은 <b>“말하지 않은 마음”</b>입니다. 이 사주는 '+dd.live.map(function(p){ return S.BR_KO[p.branch]+'('+S.BR_HAN[p.branch]+')에 '+p.hidden.map(function(x){return x.god;}).join('·'); }).join(', ')+'이 숨어 있어, 겉으로 보이는 성격과 실제 계산이 다를 수 있습니다.</p>';
   h+=H('이 사주가 반복하는 장면');
   h+='<p>'+S.GOD_DEEP[c.topGodInGrp]+'</p>';
   h+='<p>반대로 <b>'+c.topGrp+'</b>이 무시당하는 자리에 오래 있으면, 능력과 별개로 몸과 마음이 먼저 지칩니다. 이 감각이 들면 자리를 바꾸는 신호로 보세요.</p>';

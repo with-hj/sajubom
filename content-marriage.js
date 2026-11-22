@@ -103,7 +103,7 @@ function wd2(R,c,input,name){
   var h=H('배우자궁이 말하는 사람')+'<p>일지 '+brB(R.dBranch)+'는 <b>'+S.SPOUSE[R.dBranch]+'</b>을 가리킵니다. '+S.BR_INNER[R.dBranch]+'</p>';
   h+=H('끌리는 사람과 오래 가는 사람')+'<p><b>끌리는 사람</b> — '+S.LOVE_ATTRACT[R.dayEl]+'</p><p><b>오래 가는 사람</b> — '+S.LOVE_FIT[R.dayEl]+'</p>';
   if(pc){
-    h+=H('지금 상대가 배우자감인지')+'<p>상대의 일주는 '+S.STEM_HAN[pc.R.dStem]+S.BR_HAN[pc.R.dBranch]+', 배우자궁은 '+brB(pc.R.dBranch)+'입니다. 두 사람의 일지 관계는 <b>'+S.branchRel(R.dBranch,pc.R.dBranch).k+'</b>. '+S.branchRel(R.dBranch,pc.R.dBranch).t+'</p>';
+    h+=H('지금 상대가 배우자감인지')+'<p>상대의 일주는 '+C.gzP(pc.R.dStem,pc.R.dBranch)+', 배우자궁은 '+brB(pc.R.dBranch)+'입니다. 두 사람의 일지 관계는 <b>'+S.branchRel(R.dBranch,pc.R.dBranch).k+'</b>. '+S.branchRel(R.dBranch,pc.R.dBranch).t+'</p>';
     h+='<p>배우자감은 설렘보다 <b>생활의 리듬</b>으로 판단하세요. 두 사람의 리듬은 각각 “'+S.MARR_HABIT_BR[R.dBranch].split('.')[0]+'”, “'+S.MARR_HABIT_BR[pc.R.dBranch].split('.')[0]+'”입니다.</p>';
   } else {
     h+='<p>상대의 생년월일을 넣으면 두 사람의 일지·일간으로 배우자감을 더 정확히 볼 수 있습니다.</p>';

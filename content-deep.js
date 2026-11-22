@@ -102,12 +102,12 @@ function chIlju(R,c,input,name){
   var cu=(CHEONUL[R.dStem]||[]);
   var hasCheon=cu.some(function(b){return has(b);});
 
-  var h='<p>여덟 글자에서 <b>일주</b>는 하늘의 글자 하나와 땅의 글자 하나, 딱 두 글자입니다. 그런데 이 두 글자가 그 사람의 절반을 설명합니다. 하늘의 글자는 본바탕이고, 땅의 글자는 그 본바탕이 실제로 앉는 자리예요. '+name+' 님의 일주는 <b>'+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'</b>, '+il[0]+'의 자리입니다.</p>';
+  var h='<p>여덟 글자에서 <b>일주</b>는 하늘의 글자 하나와 땅의 글자 하나, 딱 두 글자입니다. 그런데 이 두 글자가 그 사람의 절반을 설명합니다. 하늘의 글자는 본바탕이고, 땅의 글자는 그 본바탕이 실제로 앉는 자리예요. '+name+' 님의 일주는 <b>'+C.gzP(R.dStem,R.dBranch)+'</b>, '+il[0]+'의 자리입니다.</p>';
   h+='<p>'+il[1]+' 그래서 이 사람을 한 문장으로 줄이면 <b>'+il[2]+'</b>이 남습니다. 오래 알아갈수록 이 문장이 점점 정확해집니다.</p>';
 
   h+=H('본바탕과 자리, 두 층으로 읽기');
-  h+='<p>일간 <b>'+S.STEM_HAN[R.dStem]+'('+S.STEM_KO[R.dStem]+')</b>은 '+S.DAY_MASTER[R.dStem][0]+'의 기운입니다. '+S.DAY_MASTER[R.dStem][1]+'</p>';
-  h+='<p>그 아래 일지 <b>'+S.BR_HAN[R.dBranch]+'('+S.BR_KO[R.dBranch]+')</b>는 그 기운이 놓이는 생활의 자리예요. '+S.BR_INNER[R.dBranch]+'</p>';
+  h+='<p>일간 <b>'+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')</b>'+S.josaP(S.STEM_KO[R.dStem],'은는')+' '+S.DAY_MASTER[R.dStem][0]+'의 기운입니다. '+S.DAY_MASTER[R.dStem][1]+'</p>';
+  h+='<p>그 아래 일지 <b>'+S.BR_KO[R.dBranch]+'('+S.BR_HAN[R.dBranch]+')</b>'+S.josaP(S.BR_KO[R.dBranch],'은는')+' 그 기운이 놓이는 생활의 자리예요. '+S.BR_INNER[R.dBranch]+'</p>';
   h+='<p>두 층이 겹치는 곳에서 이 사람의 습관이 만들어집니다. 혼자 있을 때는 조용한데 사람이 들어오면 갑자기 말이 많아진다든지, 결정은 빠른데 마음이 정리되는 데는 며칠이 걸린다든지 하는 식이에요. 그 간격을 알면 자기 자신에게 덜 놀라게 됩니다.</p>';
 
   h+=H('일지가 일간에게 주는 십이운성 — '+st);

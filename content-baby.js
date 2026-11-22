@@ -43,7 +43,7 @@ function pg1(R,c,input,name){
   var hits=[]; for(var i=0;i<R.seun.length;i++){ var r=S.yearRead(R,R.seun[i].year); if(r.grp===star) hits.push(r); }
   var where=[];
   dd.live.forEach(function(p){
-    if(S.GOD_GROUP[p.bGod]===star) where.push(p.pos+' 지지 '+S.BR_HAN[p.branch]);
+    if(S.GOD_GROUP[p.bGod]===star) where.push(p.pos+' 지지 '+S.BR_KO[p.branch]+'('+S.BR_HAN[p.branch]+')');
     if(S.GOD_GROUP[p.sGod]===star) where.push(p.pos+' 천간');
   });
   var h=window.CH.facts(R);
@@ -57,7 +57,7 @@ function pg1(R,c,input,name){
   for(var k=0;k<R.seun.length;k++){
     var sn=R.seun[k], g=S.tenGod(R.dStem,sn.idx%10), r=S.yearRead(R,sn.year);
     var isStar=(S.GOD_GROUP[g]===star);
-    h+='<tr><td><b>'+sn.year+'</b></td><td>'+S.STEM_HAN[sn.idx%10]+S.BR_HAN[sn.idx%12]+'</td><td>'+g+'</td><td style="font-size:13px">'+(isStar?'<b style="color:#c94228">문이 열리는 해</b> — '+(r.rels.length?r.rels.map(function(x){return x.pos+' '+x.type;}).join('·')+', ':'')+'몸을 세워두세요.':'준비의 해 — '+S.SEUN_KEY[g])+'</td></tr>';
+    h+='<tr><td><b>'+sn.year+'</b></td><td>'+C.gzP(sn.idx%10,sn.idx%12)+'</td><td>'+g+'</td><td style="font-size:13px">'+(isStar?'<b style="color:#c94228">문이 열리는 해</b> — '+(r.rels.length?r.rels.map(function(x){return x.pos+' '+x.type;}).join('·')+', ':'')+'몸을 세워두세요.':'준비의 해 — '+S.SEUN_KEY[g])+'</td></tr>';
   }
   h+='</table>';
   h+=H('달로 보는 창');
@@ -164,7 +164,7 @@ function chChart(input){ return S.childChart(input); }
 function ch1(R,c,input,name){
   var cc=chChart(input),h='';
   if(cc){
-    h+='<p>아이의 사주는 <b>'+S.STEM_HAN[cc.R.dStem]+S.BR_HAN[cc.R.dBranch]+'일주</b>입니다. 일간은 '+stemB(cc.R.dStem)+', 가장 두터운 기운은 '+elB(cc.c.mostI)+'입니다.</p>';
+    h+='<p>아이의 사주는 <b>'+C.gzP(cc.R.dStem,cc.R.dBranch)+'일주</b>입니다. 일간은 '+stemB(cc.R.dStem)+', 가장 두터운 기운은 '+elB(cc.c.mostI)+'입니다.</p>';
     h+='<p>'+S.CHILD_NATURE_EL[cc.R.dayEl]+'</p>';
     h+=H('아이의 중심 별')+'<p><b>'+cc.c.topGodInGrp+'</b> — '+S.GOD_DEEP[cc.c.topGodInGrp]+'</p>';
     h+=H('아이의 속도')+'<p>'+S.STRENGTH_TXT[cc.R.strength].out+' '+S.STRENGTH_TXT[cc.R.strength].adv+'</p>';
