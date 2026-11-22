@@ -274,7 +274,7 @@ function relationPage(){
    (rows?'<table><tr><th>만나는 자리</th><th>관계</th><th>이 사주에서</th></tr>'+rows+'</table>'
         :'<p>네 기둥 사이에 뚜렷한 합·충·형·파·해가 없습니다. 글자들이 서로 간섭하지 않고 <b>각자 제 몫</b>을 하는 구조라, 운의 변화는 세운·대운이 어느 자리에 들어오는지로 읽습니다.</p>')+
    '<h3>공망 — 비어 있는 두 글자</h3><p>'+S.gongmangText(R)+'</p>'+
-   '<h3>신살 — 타고난 표시</h3>'+(d.sals.length?'<p>'+d.sals.map(function(s){return '<b>'+s.name+'</b>('+s.pos+')';}).join(' · ')+' — 강하게 작동하는 자리는 '+d.sals.filter(function(s){return s.strong;}).map(function(s){return s.pos;}).join('·')+'입니다.</p>':'<p>대표적인 신살이 뚜렷하지 않습니다. 대신 치우친 글자가 적어 어느 자리에서든 평균 이상을 합니다.</p>')+
+   '<h3>신살 — 타고난 표시</h3>'+(d.sals.length?'<p>'+d.sals.map(function(s){return '<b>'+s.name+'</b>('+s.pos+')';}).join(' · ')+(d.sals.filter(function(s){return s.strong;}).length?' — 그중 '+d.sals.filter(function(s){return s.strong;}).map(function(s){return s.pos;}).join('·')+'에 걸린 것이 삶에서 가장 크게 작동합니다.':' — 이 자리들은 대개 초년과 사회 초기의 성향으로 나타납니다.')+'</p>':'<p>대표적인 신살이 뚜렷하지 않습니다. 대신 치우친 글자가 적어 어느 자리에서든 평균 이상을 합니다.</p>')+
    '<h3>이 구조를 쓰는 법</h3><p>합은 <b>사람을 거치는 일</b>에 힘을 주고, 충은 <b>판을 바꾸는 일</b>에 힘을 줍니다. 그래서 이 사주는 '+(d.branchRels.some(function(r){return r.type==='충';})?'큰 결정을 혼자 밀지 말고, 충이 걸린 자리의 일은 3개월 단위로 나눠 확인해야 합니다.':(d.branchRels.some(function(r){return r.type==='육합'||r.type==='삼합';})?'중개·소개·동업처럼 사람을 거치는 구조에서 빨라집니다.':'결정의 속도를 스스로 정하는 편이 좋습니다.'))+'</p>'+
    callout('한 줄','<p>사주의 합충은 길흉이 아니라 <b>일에 힘이 실리는 방향</b>입니다.</p>');
   chapter('interaction','02-2','합과 충 · 여덟 글자의 관계','기둥 사이의 합·충·공망·신살');
