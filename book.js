@@ -495,9 +495,9 @@ function docuPages(){
     callout('결론','<p>이 사주는 <b>'+w.types[0].label+'</b>이 가장 잘 맞고, 그다음이 <b>'+w.types[1].label+'</b>입니다. '+(w.types[0].k==='jeonse'?'큰 빚을 지는 매수보다 안전한 계약에서 힘을 냅니다.':(w.types[0].k==='live'?'사는 순간 명의와 생활이 함께 정리되는 구조입니다.':(w.types[0].k==='cheong'?'공적 절차와 서류에서 이기는 구조입니다.':'돌아가는 현금을 다루는 감각이 있는 구조입니다.')))+'</p>'),{spread:true}));
   push(page('10 / DOCUMENT',secLabel('10','DOCUMENT · 시기와 함정')+'<h1>언제,<br><span class="accent">무엇을 조심할까</span></h1>'+
     '<p class="lead">시기는 <b>인성(문서)·관성(명의)·재성(자금)</b>이 세운으로 들어오는 해와, <b>지지가 내 기둥과 합·충</b>을 이루는 해로 좁힙니다.</p>'+
-    '<ul>'+w.years.slice(0,3).map(function(y){
+    '<ul>'+(function(){ var L=w.years.slice(0,3); if(w.bestClean&&L.indexOf(w.bestClean)<0) L.push(w.bestClean); return L.map(function(y){
       return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>첫 번째 창</b>':'')+'</li>';
-    }).join('')+'</ul>'+
+    }).join(''); })()+'</ul>'+
     '<p>계약을 잡을 첫 번째 창은 <b>'+(w.bestClean?w.bestClean.y+'년 '+w.bestClean.gz:'기신·공망이 겹치지 않는 해가 없어 가장 점수가 높은 해')+'</b>입니다. 기신·공망이 겹치는 해는 계약이 되어도 이자·세금·보수에서 지출이 늘어납니다.</p>'+
     '<p>달까지 좁히면 '+w.goodMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+' '+m.gz+'</b>'+(m.why.length?'('+m.why.join('·')+')':''); }).join(', ')+'입니다. 가계약·잔금·등기 접수 중 하나를 여기에 잡으세요.</p>'+
     '<p>피할 달은 '+w.badMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+'</b>'; }).join(', ')+'입니다. '+(w.badMonths[0].why.length?w.badMonths[0].why.join('·')+'이라 그 달의 계약은 뒤에서 흔들립니다.':'')+'</p>'+

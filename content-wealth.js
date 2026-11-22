@@ -165,7 +165,9 @@ function md5(R,c,input,name){
   var best=w.types[0], second=w.types[1];
   h+='<p>결론은 <b>'+best.label+'</b>이 가장 잘 맞고, 그다음이 <b>'+second.label+'</b>입니다. '+(best.k==='jeonse'?'전세·보증금 계약이 1순위라는 것은, 이 사주가 <b>큰 빚을 지는 매수보다 안전한 계약</b>에서 힘을 낸다는 뜻입니다.':(best.k==='live'?'실거주 매수가 1순위라는 것은, 이 사주가 <b>사는 순간 명의와 생활이 함께 정리되는</b> 구조라는 뜻입니다.':(best.k==='cheong'?'청약·분양이 1순위라는 것은, 이 사주가 <b>공적 절차와 서류</b>에서 이긴다는 뜻입니다.':'수익형·임대가 1순위라는 것은, 이 사주가 <b>돌아가는 현금</b>을 다루는 감각이 있다는 뜻입니다.')))+'</p>';
   h+=H('유리한 해와 달 — 이유');
-  h+='<ul>'+w.years.slice(0,3).map(function(y){
+  var dshow=w.years.slice(0,3);
+  if(w.bestClean&&dshow.indexOf(w.bestClean)<0) dshow.push(w.bestClean);
+  h+='<ul>'+dshow.map(function(y){
     var clean=!y.why.some(function(x){return x.indexOf('기신')>=0||x.indexOf('공망')>=0;});
     return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>이 해가 첫 번째 창</b>입니다.':'')+(clean?'':' <span style="color:#B5533F">이 해는 조건이 겹쳐 부담이 큽니다.</span>')+'</li>';
   }).join('')+'</ul>';
