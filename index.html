@@ -32,8 +32,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=26">
-<link rel="stylesheet" href="./book.css?v=26">
+<link rel="stylesheet" href="./styles.css?v=27">
+<link rel="stylesheet" href="./book.css?v=27">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 </head>
 <body>
@@ -427,9 +427,27 @@
     <div class="fb"><span class="seal">天</span><b>천령당 天靈堂</b></div>
     <div class="ft-disc">사주명리 기반의 참고 해석입니다.<br>의학적 진단·법률·투자 판단을 대신하지 않습니다.</div>
     <div>문의 <a href="mailto:with-hj@users.noreply.github.com">with-hj@users.noreply.github.com</a></div>
+    <button type="button" class="ft-adm" id="ftAdmin" aria-haspopup="dialog">관리자</button>
     <div style="margin-top:10px;font-size:11px;color:#6a7383">© 2026 천령당 · All rights reserved.</div>
   </div>
 </footer>
+
+<!-- ================= 관리자 비밀번호 ================= -->
+<div class="pwmodal" id="pwModal" role="dialog" aria-modal="true" aria-labelledby="pwTitle" aria-hidden="true">
+  <div class="pwbox" id="pwBox">
+    <span class="pw-seal" aria-hidden="true">天</span>
+    <h3 id="pwTitle">관리자 비밀번호 입력</h3>
+    <p class="pw-sub">운영자만 열람할 수 있습니다.</p>
+    <form id="pwForm" autocomplete="off">
+      <input type="password" id="pwInput" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="12" aria-label="관리자 비밀번호" placeholder="••••">
+      <p class="pw-err" id="pwErr" hidden>비밀번호가 맞지 않습니다.</p>
+      <div class="pw-btns">
+        <button type="button" class="btn btn-line" id="pwCancel">취소</button>
+        <button type="submit" class="btn btn-gold">확인</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- ================= 관리자 ================= -->
 <div class="sheet" id="adminSheet" aria-hidden="true" data-mode="admin">
@@ -476,16 +494,16 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=26"></script>
-<script src="./content.js?v=26"></script>
-<script src="./content-deep.js?v=26"></script>
-<script src="./content-general.js?v=26"></script>
-<script src="./content-love.js?v=26"></script>
-<script src="./content-marriage.js?v=26"></script>
-<script src="./content-baby.js?v=26"></script>
-<script src="./content-wealth.js?v=26"></script>
-<script src="./book.js?v=26"></script>
-<script src="./book-more.js?v=26"></script>
-<script src="./app.js?v=26"></script>
+<script src="./engine.js?v=27"></script>
+<script src="./content.js?v=27"></script>
+<script src="./content-deep.js?v=27"></script>
+<script src="./content-general.js?v=27"></script>
+<script src="./content-love.js?v=27"></script>
+<script src="./content-marriage.js?v=27"></script>
+<script src="./content-baby.js?v=27"></script>
+<script src="./content-wealth.js?v=27"></script>
+<script src="./book.js?v=27"></script>
+<script src="./book-more.js?v=27"></script>
+<script src="./app.js?v=27"></script>
 </body>
 </html>

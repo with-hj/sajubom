@@ -147,8 +147,14 @@ function init(){
   /* PDF 신청 */
   initPdf();
   /* 관리자 · 고객 리포트 뷰어
-     — 관리자 화면은 주소에 ?admin=1 이 있을 때만 열린다. 고객 화면에는 관리자 UI가 없다. */
-  ADMIN_OK=/[?&]admin=1/.test(location.search);
+     — 관리자 화면은 푸터 [관리자] 또는 ?admin=1 로 열리며, 반드시 비밀번호를 받는다.
+       한 번 열면 그 탭 세션 동안은 다시 묻지 않는다(sessionStorage). 고객 화면에는 관리자 UI가 없다. */
+  ADMIN_OK=false;
+  if($('#ftAdmin')) $('#ftAdmin').addEventListener('click',function(){ askAdminPassword('list'); });
+  if($('#pwCancel')) $('#pwCancel').addEventListener('click',closePwModal);
+  if($('#pwForm')) $('#pwForm').addEventListener('submit',onPwSubmit);
+  if($('#pwModal')) $('#pwModal').addEventListener('click',function(e){ if(e.target&&e.target.id==='pwModal') closePwModal(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ var m=$('#pwModal'); if(m&&m.classList.contains('on')) closePwModal(); } });
   if($('#admClose')) $('#admClose').addEventListener('click',closeBookSheet);
   if($('#admBack')) $('#admBack').addEventListener('click',function(){
     $('#admBookView').style.display='none'; $('#admListView').style.display='block';
@@ -166,8 +172,8 @@ function init(){
 
   /* URL 파라미터 */
   try{
-    if(/[?&]admin=1/.test(location.search)) openAdmin();
-    if(/[?&]admin=1/.test(location.search)&&/[?&]book=sample/.test(location.search)) openBook(sampleEntry(),'admin');
+    if(/[?&]admin=1/.test(location.search)) askAdminPassword(/[?&]book=sample/.test(location.search)?'sample':'list');
+    else if(adminUnlocked()) ADMIN_OK=true;
     if(/[?&]track=life/.test(location.search)) setTrack('life');
   }catch(e){}
 }
@@ -602,6 +608,48 @@ function openAdmin(){
   if(!ADMIN_OK) return;
   setSheetMode('admin'); openSheet(); renderAdminList();
 }
+
+/* ---------------- 관리자 비밀번호 ---------------- */
+var ADMIN_PW='0808', pendingAdmin='list';
+function adminUnlocked(){
+  try{ return sessionStorage.getItem('wlh_admin_ok')==='1'; }catch(e){ return ADMIN_OK; }
+}
+function askAdminPassword(after){
+  pendingAdmin=after||'list';
+  if(adminUnlocked()){ ADMIN_OK=true; unlockAdmin(); return; }
+  var m=$('#pwModal'); if(!m){ return; }
+  m.classList.add('on'); m.setAttribute('aria-hidden','false');
+  document.body.classList.add('lock');
+  var box=$('#pwBox'); if(box) box.classList.remove('shake');
+  var err=$('#pwErr'); if(err) err.hidden=true;
+  var inp=$('#pwInput'); if(inp) inp.value='';
+  setTimeout(function(){ try{ if(inp) inp.focus(); }catch(e){} },120);
+}
+function closePwModal(){
+  var m=$('#pwModal'); if(!m) return;
+  m.classList.remove('on'); m.setAttribute('aria-hidden','true');
+  var box=$('#pwBox'); if(box) box.classList.remove('shake');
+  var sh=$('#adminSheet');
+  if(!(sh&&sh.classList.contains('on'))) document.body.classList.remove('lock');
+}
+function unlockAdmin(){
+  ADMIN_OK=true;
+  try{ sessionStorage.setItem('wlh_admin_ok','1'); }catch(e){}
+  closePwModal();
+  openAdmin();
+  if(pendingAdmin==='sample') openBook(sampleEntry(),'admin');
+  pendingAdmin='list';
+}
+function onPwSubmit(e){
+  if(e&&e.preventDefault) e.preventDefault();
+  var inp=$('#pwInput');
+  var v=inp?String(inp.value||'').replace(/\s+/g,''):'';
+  if(v&&v===ADMIN_PW){ unlockAdmin(); return; }
+  var err=$('#pwErr'); if(err) err.hidden=false;
+  var box=$('#pwBox');
+  if(box){ box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); }
+  if(inp){ inp.value=''; try{ inp.focus(); }catch(e2){} }
+}
 function renderAdminList(){
   var list=orders(), h='';
   h+='<button type="button" class="adm-item" data-open="sample"><b>샘플 · 김서연</b><span>1993.05.14 08:30 · 여 · 서울</span><span class="st">샘플 책자</span></button>';
@@ -750,8 +798,52 @@ function downloadBookPdf(){
   }).catch(function(e){
     host.removeAttribute('data-busy');
     if(window.console) console.error('pdf',e);
-    prog('PDF를 만들지 못했습니다',0,'네트워크가 막혔거나 인앱 브라우저일 수 있습니다. Safari/Chrome으로 열어 다시 시도하시거나 인쇄하기를 이용해 주세요.');
-    setTimeout(progOff,4200);
+    var at=(e&&e.pdfPage)?(' · '+(e.pdfPage)+'/'+(e.pdfTotal||'?')+'쪽에서 멈췄습니다'):'';
+    prog('PDF를 만들지 못했습니다'+at,0,'휴대폰 메모리가 부족했을 수 있습니다. 잠시 뒤 다시 시도하시거나, 위의 [인쇄하기]로 저장해 주세요.');
+    var tb=document.querySelector('#admBookView .pdf-toolbar');
+    if(tb&&tb.scrollIntoView){ try{ tb.scrollIntoView({block:'center'}); }catch(e2){ tb.scrollIntoView(); } }
+    setTimeout(progOff,6000);
+  });
+}
+function fontsReady(ms){
+  return new Promise(function(res){
+    var done=false, t=setTimeout(function(){ if(!done){ done=true; res(false); } },ms||1500);
+    function fin(){ if(done) return; done=true; clearTimeout(t); res(true); }
+    try{
+      if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fin,fin);
+      else fin();
+    }catch(e){ fin(); }
+  });
+}
+/* 한 장을 그린다. 8초 안에 끝나지 않으면 멈춘 것으로 보고 PDF를 중단한다. */
+function renderPageOnce(page,scale){
+  return new Promise(function(res,rej){
+    var done=false;
+    var tmr=setTimeout(function(){
+      if(done) return; done=true;
+      var e=new Error('page timeout'); e.pdfTimeout=true; rej(e);
+    },8000);
+    function ok(cv){ if(done) return; done=true; clearTimeout(tmr); res(cv); }
+    function bad(e){ if(done) return; done=true; clearTimeout(tmr); rej(e||new Error('page render')); }
+    var opts={
+      scale:scale,
+      backgroundColor:'#F6F1E7',
+      useCORS:true,
+      allowTaint:false,
+      logging:false,
+      removeContainer:true,
+      imageTimeout:3500,
+      /* 이 지면 밖(랜딩 화면·다른 쪽·진행 카드)은 복제하지 않는다 — 아이폰이 여기서 멈춘다 */
+      ignoreElements:function(el){
+        if(!el||el===page) return false;
+        try{
+          if(page.contains&&page.contains(el)) return false;
+          if(el.contains&&el.contains(page)) return false;
+        }catch(e){ return true; }
+        return true;
+      }
+    };
+    try{ window.html2canvas(page,opts).then(ok).catch(bad); }catch(e){ bad(e); }
   });
 }
 function makePdf(host,name){
@@ -761,11 +853,19 @@ function makePdf(host,name){
     if(!total){ reject(new Error('empty book')); return; }
     var jsPDF=window.jspdf.jsPDF;
     var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-    var scale=(window.innerWidth<560)?1.45:1.75;
-    var i=0;
+    var scale=(window.innerWidth<560)?1.15:1.5;
+    var i=0, restored=false, k;
     host.classList.add('pdf-shot');
-    function finish(){
+    /* 지금 그리는 한 장만 문서에 남긴다. 나머지는 떼어 두었다가 끝나면 제자리로 되돌린다. */
+    var parked=document.createDocumentFragment();
+    for(k=0;k<pages.length;k++){ parked.appendChild(pages[k]); }
+    function restoreDom(){
+      if(restored) return; restored=true;
+      for(var j=0;j<pages.length;j++){ try{ host.appendChild(pages[j]); }catch(e){} }
       try{ host.classList.remove('pdf-shot'); }catch(e){}
+    }
+    function finish(){
+      restoreDom();
       prog('파일을 저장하고 있어요…',0.99,'');
       setTimeout(function(){
         try{ doc.save('천령당-인생사주-'+safeName(name)+'.pdf'); }
@@ -775,26 +875,35 @@ function makePdf(host,name){
         resolve(true);
       },140);
     }
+    function fail(e){
+      restoreDom();
+      e=e||new Error('pdf');
+      e.pdfPage=i+1; e.pdfTotal=total;
+      reject(e);
+    }
     function step(){
       if(i>=total){ finish(); return; }
-      prog('PDF 생성 중 ('+(i+1)+'/'+total+')…', i/total, '이 화면을 닫지 마세요. 보통 1~2분 걸립니다.');
-      window.html2canvas(pages[i],{scale:scale,backgroundColor:'#F6F1E7',useCORS:true,logging:false,removeContainer:true}).then(function(cv){
-        var img=cv.toDataURL('image/jpeg',0.86);
-        if(i>0) doc.addPage('a4','portrait');
-        doc.addImage(img,'JPEG',0,0,210,295);
+      var sh=$('#adminSheet');
+      if(sh&&!sh.classList.contains('on')){ fail(new Error('sheet closed')); return; }
+      prog('PDF 생성 중 ('+(i+1)+'/'+total+')…', i/total, '이 화면을 닫지 마세요. 1분 안팎 걸립니다.');
+      var page=pages[i];
+      try{ host.appendChild(page); }catch(e){ fail(e); return; }
+      renderPageOnce(page,scale).then(function(cv){
+        var img;
+        try{ img=cv.toDataURL('image/jpeg',0.86); }catch(e){ fail(e); return; }
+        try{
+          if(i>0) doc.addPage('a4','portrait');
+          doc.addImage(img,'JPEG',0,0,210,295);
+        }catch(e){ fail(e); return; }
         try{ cv.width=0; cv.height=0; }catch(e){}
+        try{ parked.appendChild(page); }catch(e){}
         i++;
-        setTimeout(step,16);
-      }).catch(function(e){
-        host.classList.remove('pdf-shot');
-        reject(e);
-      });
+        setTimeout(step,10);
+      }).catch(fail);
     }
-    var go=function(){ setTimeout(step,60); };
-    if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(go); } else { go(); }
+    fontsReady(1500).then(function(){ setTimeout(step,60); });
   });
 }
-
 window.APP={init:init,state:state};
 document.addEventListener('DOMContentLoaded',function(){
   try{ init(); }catch(e){ if(window.console) console.error('init',e); }

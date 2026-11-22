@@ -431,6 +431,9 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .ft .ft-disc{font-size:12px;line-height:1.85;letter-spacing:-.01em}
 .ft a{color:#b9c0cc;text-decoration:underline;text-underline-offset:2px}
 .ft .adm-link{margin-top:14px;display:inline-block;font-size:12px;letter-spacing:.08em;color:#737d8e}
+/* 하단 [관리자] — 문의 메일 바로 아래, 눈에 띄지 않게 */
+.ft .ft-adm{display:block;margin:14px auto 0;padding:6px 10px;background:none;border:0;font:inherit;font-size:12px;letter-spacing:.18em;color:#6f7889;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ft .ft-adm:hover,.ft .ft-adm:active{color:#cbb98f}
 /* 하단 문구 — 전부 가운데 정렬 */
 .ft{text-align:center}
 .ft .fb{justify-content:center}
@@ -438,6 +441,22 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .ft .wrap>*{text-align:center}
 
 /* ---------- 모달 · 관리자 ---------- */
+/* 관리자 비밀번호 */
+.pwmodal{position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(6,9,15,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.pwmodal.on{display:flex}
+.pwbox{width:min(88vw,340px);padding:26px 20px 20px;border:1px solid rgba(216,179,106,.34);border-radius:18px;background:linear-gradient(180deg,#151b27 0%,#0c111b 100%);box-shadow:0 26px 60px rgba(0,0,0,.6);color:#f1e3c8;text-align:center}
+.pwbox .pw-seal{display:flex;align-items:center;justify-content:center;width:42px;height:42px;margin:0 auto 14px;border:1px solid rgba(200,75,24,.6);border-radius:6px;font-family:var(--serif);font-size:23px;color:#d8663a;line-height:1}
+.pwbox h3{margin:0 0 6px;font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:.04em;color:#f4e6c8}
+.pwbox .pw-sub{margin:0 0 4px;font-size:12.5px;color:#8f97a8;letter-spacing:-.01em}
+.pwbox input{display:block;width:100%;margin-top:16px;padding:13px 12px;border:1px solid rgba(216,179,106,.3);border-radius:12px;background:rgba(255,255,255,.05);color:#f7ecd5;font-family:inherit;font-size:21px;letter-spacing:.42em;text-align:center;text-indent:.42em}
+.pwbox input::placeholder{color:#5b6474;letter-spacing:.2em}
+.pwbox input:focus{outline:none;border-color:rgba(226,192,122,.85);box-shadow:0 0 0 3px rgba(216,179,106,.14)}
+.pwbox .pw-err{margin:10px 0 0;font-size:12.5px;color:#e88f6a;letter-spacing:-.01em}
+.pwbox .pw-btns{display:flex;gap:8px;margin-top:16px}
+.pwbox .pw-btns .btn{flex:1;padding:12px 10px;font-size:15px;border-radius:11px}
+.pwbox .btn-line{background:rgba(255,255,255,.04);border:1px solid rgba(216,179,106,.28);color:#c9bda6}
+@keyframes pwshake{0%,100%{transform:translateX(0)}18%{transform:translateX(-9px)}36%{transform:translateX(8px)}54%{transform:translateX(-6px)}72%{transform:translateX(4px)}88%{transform:translateX(-2px)}}
+.pwbox.shake{animation:pwshake .4s cubic-bezier(.36,.07,.19,.97)}
 .sheet{position:fixed;inset:0;z-index:120;display:none;background:#0d1321;overflow:auto;-webkit-overflow-scrolling:touch}
 .sheet.on{display:block}
 .sheet-hd{position:sticky;top:0;z-index:5;background:rgba(20,18,16,.96);border-bottom:1px solid var(--gold-line);padding:12px 0}
