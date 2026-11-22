@@ -431,6 +431,11 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .ft .ft-disc{font-size:12px;line-height:1.85;letter-spacing:-.01em}
 .ft a{color:#b9c0cc;text-decoration:underline;text-underline-offset:2px}
 .ft .adm-link{margin-top:14px;display:inline-block;font-size:12px;letter-spacing:.08em;color:#737d8e}
+/* 하단 문구 — 전부 가운데 정렬 */
+.ft{text-align:center}
+.ft .fb{justify-content:center}
+.ft .ft-disc{margin-left:auto;margin-right:auto}
+.ft .wrap>*{text-align:center}
 
 /* ---------- 모달 · 관리자 ---------- */
 .sheet{position:fixed;inset:0;z-index:120;display:none;background:#0d1321;overflow:auto;-webkit-overflow-scrolling:touch}
@@ -452,6 +457,21 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .pdf-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .pdf-toolbar .btn{flex:1 1 auto}
 .adm-note{font-size:12.5px;color:#9a8d78;line-height:1.7;margin:8px 0 14px}
+.pdf-note{font-size:11.5px;color:#9a8d78;line-height:1.7;margin:0 0 12px;text-align:center}
+/* 고객용 리포트 뷰어 — 관리자 목록·관리 도구는 보이지 않는다 */
+#adminSheet[data-mode="cust"] #admListView,
+#adminSheet[data-mode="cust"] #admBack,
+#adminSheet[data-mode="cust"] #admBookMeta,
+#adminSheet[data-mode="cust"] .adm-tabs{display:none !important}
+#adminSheet[data-mode="cust"] .pdf-toolbar{margin-top:2px}
+/* PDF 생성 진행 표시 */
+.pdfprog{position:fixed;inset:0;z-index:200;display:none;background:rgba(9,13,22,.94)}
+.pdfprog.on{display:flex;align-items:center;justify-content:center}
+.pdfprog .box{width:min(76vw,320px);text-align:center;color:#f1e3c8}
+.pdfprog b{font-family:var(--serif);font-size:16px;display:block;margin-bottom:12px;letter-spacing:.02em}
+.pdfprog .bar{height:6px;border-radius:99px;background:rgba(216,179,106,.2);overflow:hidden}
+.pdfprog .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e2c07a,#c39a4f);transition:width .18s}
+.pdfprog p{font-size:12px;color:#c9bda6;margin:10px 0 0;line-height:1.7}
 .sendbox{margin-top:14px;background:rgba(255,255,255,.05);border:1px solid rgba(216,179,106,.2);border-radius:12px;padding:14px}
 .sendbox h4{color:var(--gold-l);font-family:var(--serif);font-size:15px;margin:0 0 8px}
 .sendbox textarea{background:#0f0d0b;border-color:rgba(216,179,106,.25);color:#ded3bf;font-size:13px;min-height:130px}

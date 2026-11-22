@@ -188,7 +188,7 @@
   html,body{background:#fff !important;margin:0 !important;padding:0 !important;height:auto !important;max-height:none !important;overflow:visible !important}
   body>*{display:none !important}
   #adminSheet{display:block !important;position:static !important;background:#fff !important;overflow:visible !important;inset:auto !important;width:auto !important;height:auto !important;max-height:none !important;padding:0 !important;margin:0 !important}
-  #adminSheet .sheet-hd,.pdf-toolbar,.adm-note,#admListView,.sheet-bd>.wrap>#admBookMeta{display:none !important}
+  #adminSheet .sheet-hd,.pdf-toolbar,.adm-note,.pdf-note,#admListView,.sheet-bd>.wrap>#admBookMeta{display:none !important}
   #adminSheet .sheet-bd{padding:0 !important;margin:0 !important}
   #adminSheet .wrap{padding:0 !important;margin:0 !important;max-width:none !important;width:auto !important}
   #admBookView{display:block !important;padding:0 !important;margin:0 !important}
@@ -219,3 +219,19 @@
   .mgrid{grid-template-columns:1fr}
   .chart4{grid-template-columns:repeat(4,1fr)}
 }
+
+/* 맞춤 질문 — 손님이 적은 질문 원문 상자 */
+.qbox{border-left:3px solid var(--b-orange);background:rgba(224,100,42,.06);border-radius:0 6px 6px 0;
+  padding:4mm 5mm;margin:1mm 0 2.5mm;font-size:calc(var(--fs) * .96);line-height:1.85;color:#2A3140}
+.qkind{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:10.5px;
+  letter-spacing:.02em;color:var(--b-mute);margin:0 0 4mm;line-height:1.7}
+
+/* PDF 파일로 뽑을 때 — 폰 화면에서도 A4 지면 그대로 조판한다 */
+#wl2-book.pdf-shot{width:210mm !important;max-width:none !important;background:#F6F1E7 !important}
+#wl2-book.pdf-shot>.pg{
+  width:210mm !important;height:295mm !important;min-height:295mm !important;max-height:295mm !important;
+  padding:14mm 14.5mm 11mm !important;margin:0 !important;border-radius:0 !important;
+  box-shadow:none !important;font-size:var(--fs,15.5px) !important;line-height:var(--lh,1.9) !important;
+}
+#wl2-book.pdf-shot>.pg.cover{padding:0 !important;height:295mm !important}
+#wl2-book.pdf-shot .toc-r:hover .t,#wl2-book.pdf-shot .toc-r:active .t{color:var(--b-navy)}

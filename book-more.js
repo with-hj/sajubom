@@ -136,7 +136,7 @@ function seunPages(){
   for(var k=0;k<5;k++){
     var y=2027+k, idx=S.mod(y-4,60), s=idx%10, b=idx%12, g=S.tenGod(R.dStem,s), grp=S.GOD_GROUP[g];
     var diff=S.mod(b-R.dBranch,12), rel=(diff===6?'충(沖)':(diff===0?'동일':((diff===4||diff===8)?'합(合)':'무난')));
-    var F=SEUN_FIELD[grp]||SEUN_FIELD['비겁'];
+    var F=SEUN_FIELD[g]||SEUN_FIELD[grp]||SEUN_FIELD['비겁'];
     push(page('16 / SEWOON',secLabel('16','SEWOON · '+y)+'<h1><span class="accent">'+y+'년</span> · '+S.STEM_HAN[s]+S.BR_HAN[b]+'</h1>'+
       '<p class="lead">'+S.SEUN_DEEP[g]+'</p>'+
       '<div style="margin:2mm 0 4mm"><span class="tag">'+g+'</span><span class="tag navy">'+grp+'</span><span class="tag navy">일지 '+rel+'</span><span class="tag soft">'+S.SEUN_KEY[g]+'</span></div>'+
@@ -182,26 +182,98 @@ var WEEK={
  '편인':['준비 — 혼자 정리하는 시간','실행 — 공부·연구','조정 — 사람 만나기','정리 — 배운 것 기록'],
  '정인':['준비 — 쉬고 채우기','실행 — 배움에 집중','조정 — 도움 받기','정리 — 가르치기']
 };
+/* 달마다 다른 결 — 십성 10종 × 지지 계절 × 일지 관계 */
+var MONTH_FIELD={
+ '비견':{money:'내 이름으로 돈이 도는 달입니다. 동업·공동 작업은 몫과 정산일을 먼저 적어두세요.',work:'내 일을 앞세우기 좋은 달입니다. 남의 일을 떠안으면 내 일정이 먼저 무너집니다.',love:'친구·동료와 거리가 가까워집니다. 가까운 사이일수록 순서와 예의를 지키세요.',health:'기운이 넘쳐 무리하기 쉽습니다. 잠을 줄이는 대신 일을 줄이세요.'},
+ '겁재':{money:'사람을 통해 돈이 오갑니다. 함께 벌면 장부를 먼저 만들고 보증은 피하세요.',work:'판이 넓어지는 달입니다. 새 사람을 만나되 역할을 글로 남기지 않으면 다툽니다.',love:'소개와 모임이 늘어납니다. 경쟁하듯 다가오는 인연은 한 발 물러서 보세요.',health:'술자리와 회식이 늘면 간과 수면이 먼저 지칩니다. 빈 날을 하루 정하세요.'},
+ '식신':{money:'좋아하는 일이 밥이 되는 달입니다. 취미를 수입의 한 줄로 연결해보세요.',work:'만들고 익힌 것을 밖으로 꺼내기 좋습니다. 완성보다 공개를 먼저 하세요.',love:'편안함이 매력이 되는 달입니다. 다만 표현하지 않으면 친구로 남습니다.',health:'식사와 수면이 좋아지는 달입니다. 이때 만든 리듬을 다음 달로 넘기세요.'},
+ '상관':{money:'재능이 돈이 되지만 말로 인한 지출도 늘어납니다. 구설에 돈이 붙지 않게 하세요.',work:'발표·기획·강의가 빛나는 달입니다. 윗사람과의 말은 반 박자 늦추세요.',love:'말과 매력이 살아나는 달입니다. 시험하는 말은 관계를 식히니 삼가세요.',health:'잠이 얕고 목이 먼저 상합니다. 말을 아끼는 날을 정해두세요.'},
+ '편재':{money:'큰돈의 흐름이 보이는 달입니다. 기회가 오지만 씀씀이도 함께 커집니다.',work:'판이 넓어지는 달입니다. 새 시장·새 거래처를 만나되 검증을 먼저 하세요.',love:'만남이 구체적으로 잡히는 달입니다. 계획이 많은 사람과 잘 맞습니다.',health:'일정이 과열되면 소화와 허리가 먼저 신호를 보냅니다. 한 끼는 천천히 드세요.'},
+ '정재':{money:'차곡차곡 쌓이는 달입니다. 저축·계약·청약처럼 남는 일에 힘을 쓰세요.',work:'성실함이 평가받는 달입니다. 큰 변화보다 한 우물을 깊게 파세요.',love:'관계가 안정되고 현실적인 이야기가 오갑니다. 조건을 솔직하게 말해도 좋습니다.',health:'규칙적인 생활이 몸을 살립니다. 이 달에 만든 루틴이 반년을 지탱합니다.'},
+ '편관':{money:'돈이 압박으로 느껴지는 달입니다. 큰 지출·보증·대출을 새로 만들지 마세요.',work:'책임이 커지고 위기 대응이 필요한 달입니다. 버티면 단단해집니다.',love:'관계에 긴장이 생깁니다. 상대를 몰아붙이면 먼저 닫힙니다.',health:'가장 조심할 달입니다. 혈압·수면·어깨를 먼저 보고 일정을 20% 비우세요.'},
+ '정관':{money:'안정된 수입이 늘고 자리가 돈을 만드는 달입니다. 공적인 절차가 유리합니다.',work:'시험·승진·계약에 좋은 달입니다. 서류와 절차를 미리 준비하세요.',love:'관계의 이름이 정해지는 달입니다. 결혼·약속 이야기가 오갑니다.',health:'규칙이 몸을 지켜주는 달입니다. 다만 긴장이 목과 어깨에 쌓입니다.'},
+ '편인':{money:'큰 지출보다 준비의 달입니다. 공부·자격에 쓴 돈이 남습니다.',work:'혼자 깊어지는 달입니다. 새 일보다 정리와 연구에 쓰세요.',love:'생각이 길어지는 달입니다. 결론을 미루되 연락은 끊지 마세요.',health:'잠이 많아지고 기운이 가라앉습니다. 햇빛과 걷기가 약입니다.'},
+ '정인':{money:'도움과 지원이 따르는 달입니다. 사람의 제안을 받아들이세요.',work:'배움과 보호의 달입니다. 자격·연수·멘토링을 시작하기 좋습니다.',love:'돌봄이 사랑으로 느껴지는 달입니다. 참기만 하면 서운함이 쌓입니다.',health:'회복에 좋은 달입니다. 충분히 자고 잘 먹으면 다음 분기가 달라집니다.'}
+};
+/* 지지의 계절이 돈의 결에 얹히는 한 줄 — 12달을 서로 다른 문장으로 만드는 축 */
+var BRANCH_MONEY=[
+ '겨울 물의 달이라 묶인 돈을 풀어 흐르게 하세요.',
+ '늦겨울 흙의 달이라 새는 곳을 막는 쪽으로 쓰세요.',
+ '이른 봄 나무의 달이라 새 수입의 씨앗을 심으세요.',
+ '봄 나무의 달이라 작게 시작한 것이 자랍니다.',
+ '봄 흙의 달이라 흩어진 돈을 한곳에 모으세요.',
+ '초여름 불의 달이라 벌이는 좋지만 씀씀이가 앞섭니다.',
+ '한여름 불의 달이라 수입보다 지출이 먼저 뜨겁습니다.',
+ '늦여름 흙의 달이라 익힌 것을 값으로 바꾸세요.',
+ '가을 쇠의 달이라 숫자와 조건을 다시 재세요.',
+ '가을 쇠의 달이라 받을 것을 정확히 거두세요.',
+ '늦가을 흙의 달이라 지킬 것을 정하고 새 지출은 미루세요.',
+ '초겨울 물의 달이라 막힌 정산을 풀어 흘려보내세요.'
+];
+/* 일지와의 관계가 영역별로 다르게 걸리는 한 줄 */
+var REL_TAIL={
+ '충':{money:'큰 결제는 2주 미루세요.',work:'계약서와 일정을 한 번 더 확인하세요.',love:'말이 날카로워집니다. 하루 뒤에 말하세요.',health:'잠과 혈압이 먼저 흔들립니다.'},
+ '합':{money:'사람을 거치면 돈이 풀립니다.',work:'소개와 연결이 일을 만듭니다.',love:'먼저 연락하는 쪽이 이깁니다.',health:'몸을 움직이는 약속이 회복을 돕습니다.'},
+ '형':{money:'서류와 조건이 꼬이기 쉽습니다.',work:'같은 실수를 반복하지 않게 기록하세요.',love:'서운함을 쌓으면 오래 갑니다.',health:'관절·목·피부가 예민해집니다.'},
+ '파':{money:'묶어둔 돈이 끊기기 쉽습니다.',work:'미뤄둔 정리를 먼저 하세요.',love:'연락이 끊기는 일이 생깁니다. 먼저 확인하세요.',health:'소화와 수면의 리듬이 깨집니다.'},
+ '해':{money:'작은 지출이 새어 나갑니다.',work:'말이 오해로 번지기 쉽습니다.',love:'표현이 어긋나 오해가 생깁니다.',health:'피부와 호흡기가 예민해집니다.'},
+ '동일':{money:'지난해 같은 달의 지출이 반복됩니다.',work:'미뤄둔 일이 다시 올라옵니다.',love:'같은 갈등이 다시 올라옵니다. 답을 바꾸세요.',health:'작년 이맘때의 피로가 돌아옵니다.'},
+ '원진':{money:'감정으로 쓴 돈이 후회로 남습니다.',work:'가까운 동료와 말이 어긋납니다.',love:'이유 없이 서운해집니다. 그날 말하세요.',health:'잠이 얕고 예민해집니다.'}
+};
+/* 달의 일지 관계 — 사람 사이의 설명이 아니라 그 달의 날씨로 쓴 문장 */
+var REL_NOTE={
+ '충':'일지와 부딪히는 달이라 예정이 흔들리기 쉽습니다. 큰 결정은 3주 미루세요.',
+ '합':'일지와 어울리는 달이라 사람을 거치면 일이 풀립니다. 혼자 밀지 마세요.',
+ '형':'일지와 형(刑)의 자리라 일이 겹치고 서류가 꼬이기 쉽습니다.',
+ '파':'일지와 파(破)의 자리라 묶여 있던 것이 끊기기 쉽습니다. 약속을 먼저 확인하세요.',
+ '해':'일지와 해(害)의 자리라 말이 오해로 번지기 쉽습니다. 문자보다 얼굴을 보세요.',
+ '동일':'일지와 같은 글자가 오는 달이라 미뤄둔 일이 다시 올라옵니다.',
+ '원진':'일지와 원진의 달이라 이유 없이 서운해지기 쉽습니다. 그날 안에 말하세요.',
+ '무난':''
+};
+var REL_SHORT={'충':'부딪히는 달','합':'어울리는 달','형':'얽히는 달','파':'끊기는 달','해':'어긋나는 달','동일':'되풀이되는 달','원진':'서운해지는 달','무난':'흔들리지 않는 달'};
+function monthRelMore(db,mb){
+  var rel=S.branchRel(db,mb), tag=S.monthTag(rel);
+  if(tag!=='무난') return {tag:tag,rel:rel};
+  var HYUNG=[[2,5],[5,8],[8,2],[1,7],[7,10],[10,1],[0,3],[3,0],[4,4],[6,6],[9,9],[11,11]];
+  var PA=[[0,9],[9,0],[3,6],[6,3],[4,1],[1,4],[7,10],[10,7],[2,11],[11,2],[5,8],[8,5]];
+  var HAE=[[0,7],[7,0],[1,6],[6,1],[2,5],[5,2],[3,4],[4,3],[8,11],[11,8],[9,10],[10,9]];
+  var hit=function(a){for(var i=0;i<a.length;i++) if(a[i][0]===db&&a[i][1]===mb) return true; return false;};
+  if(hit(HYUNG)) return {tag:'형',rel:{k:'형',t:REL_NOTE['형']}};
+  if(hit(PA)) return {tag:'파',rel:{k:'파',t:REL_NOTE['파']}};
+  if(hit(HAE)) return {tag:'해',rel:{k:'해',t:REL_NOTE['해']}};
+  return {tag:'무난',rel:rel};
+}
 function monthPages(){
   chapter('calendar','17','2027년 월별 달력','12개월 · 달마다의 결');
-  var R=B.R,c=B.c;
+  var R=B.R,c=B.c,bn=S.MONTH_BRANCH_NOTE||[];
   for(var m=1;m<=12;m++){
     var mp=S.monthPillarOf(2027,m), g=S.tenGod(R.dStem,mp.stem), grp=S.GOD_GROUP[g];
-    var rel=S.branchRel(R.dBranch,mp.branch), tag=S.monthTag(rel);
-    var tip=(((S.MONTH_TIPS.general||{})[grp]||[])[0]||''), rt=(((S.MONTH_REL_TIPS||{})[tag]||[])[0]||'');
-    var F=SEUN_FIELD[grp]||SEUN_FIELD['비겁'];
-    var wk=WEEK[g]||WEEK['비겁'];
+    var rr=monthRelMore(R.dBranch,mp.branch), tag=rr.tag;
+    var F=MONTH_FIELD[g]||MONTH_FIELD['비견'];
+    var tail=REL_TAIL[tag]||{};
+    var bm=BRANCH_MONEY[mp.branch]||'';
+    var tip=(((S.MONTH_TIPS.general||{})[grp]||[])[0]||'');
+    var season=bn[mp.branch]||'';
+    var relNote=REL_NOTE[tag]||'';
+    var wk=WEEK[g]||WEEK[S.GOD_GROUP[g]]||WEEK['비겁'];
+    var cells={
+      money:F.money+' '+bm+(tail.money?' '+tail.money:''),
+      work:F.work+(tail.work?' '+tail.work:''),
+      love:F.love+(tail.love?' '+tail.love:''),
+      health:F.health+(tail.health?' '+tail.health:'')
+    };
     push(page('17 / 2027',secLabel('17','2027 MONTHLY · '+m+'월')+'<h1><span class="accent">2027년 '+m+'월</span><br>'+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+' · '+g+'</h1>'+
-      '<p class="lead">이 달은 '+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+'월, '+name_of_month(m)+'입니다. 십성은 <b>'+g+'</b>, 일지와의 관계는 <b>'+tag+'</b>입니다.</p>'+
-      '<p>'+tip+' '+(tag==='무난'?'':rt)+'</p>'+
+      '<p class="lead">'+m+'월은 '+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+'월, '+name_of_month(m)+'입니다. 십성은 <b>'+g+'</b>, 일지와의 관계는 <b>'+tag+'</b>입니다.</p>'+
+      '<p>'+season+' '+tip+(relNote?' '+relNote:'')+'</p>'+
       '<h3>이 달의 네 영역</h3>'+
       '<table><tr><th>영역</th><th>이 달의 결</th></tr>'+
-      '<tr><td class="k">돈</td><td>'+F.money+'</td></tr>'+
-      '<tr><td class="k">일</td><td>'+F.work+'</td></tr>'+
-      '<tr><td class="k">관계</td><td>'+F.love+'</td></tr>'+
-      '<tr><td class="k">건강</td><td>'+F.health+'</td></tr></table>'+
+      '<tr><td class="k">돈</td><td>'+cells.money+'</td></tr>'+
+      '<tr><td class="k">일</td><td>'+cells.work+'</td></tr>'+
+      '<tr><td class="k">관계</td><td>'+cells.love+'</td></tr>'+
+      '<tr><td class="k">건강</td><td>'+cells.health+'</td></tr></table>'+
       '<h3>주별로</h3><ul>'+wk.map(function(w,i){return '<li><b>'+(i+1)+'주</b> — '+w+'</li>';}).join('')+'</ul>'+
-      callout(m+'월의 한 줄','<p>'+tip.split('.')[0]+'. '+rt+'</p>'),{spread:true}));
+      callout(m+'월의 한 줄','<p>'+(REL_SHORT[tag]||'')+' — '+S.GOD_KEY[g]+'이 '+S.BR_KO[mp.branch]+'월의 계절 위에서 움직입니다. '+tip.split('.')[0]+'.</p>'),{spread:true}));
   }
 }
 function name_of_month(m){
@@ -254,52 +326,139 @@ function remedyPages(){
 }
 
 /* ---------------- 13장 맞춤 질문 ---------------- */
+var KIND_KO={baby:'임신·자녀',move:'이사·집',love:'결혼·인연',money:'재물·돈',health:'건강·몸',job:'일·이직',general:'삶의 방향'};
+var INTENT=[
+ {k:'baby',w:{'임신':6,'출산':6,'아이':4,'아기':4,'둘째':5,'첫째':4,'태아':5,'시험관':6,'난임':5,'육아':4,'자녀':4,'입양':5,'배':1}},
+ {k:'move',w:{'이사':6,'전세':6,'매매':5,'부동산':5,'청약':5,'월세':4,'집':3,'이주':5,'인테리어':3,'사무실':3,'자취':4}},
+ {k:'love',w:{'결혼':6,'연애':5,'배우자':6,'이혼':5,'재회':5,'인연':5,'소개팅':5,'연인':4,'부부':4,'짝':2,'결별':4}},
+ {k:'money',w:{'돈':4,'재물':6,'사업':5,'투자':5,'창업':5,'수입':4,'월급':3,'부업':4,'대출':4,'주식':4,'코인':3,'빚':4}},
+ {k:'health',w:{'건강':6,'수면':5,'불면':5,'병원':4,'수술':5,'다이어트':4,'체력':4,'피로':4,'우울':4,'질병':5,'몸':1}},
+ {k:'job',w:{'이직':6,'직업':5,'퇴사':6,'취업':6,'면접':5,'시험':5,'진로':5,'승진':4,'회사':4,'유학':5,'자격':4,'공부':3}}
+];
+function detectIntent(q){
+  var t=String(q||'').replace(/\s+/g,' '), best='general', bs=0;
+  for(var i=0;i<INTENT.length;i++){
+    var g=INTENT[i], s=0;
+    for(var k in g.w){ if(t.indexOf(k)>=0) s+=g.w[k]; }
+    if(s>bs){ bs=s; best=g.k; }
+  }
+  return bs>=3?best:'general';
+}
+function qaMonthLine(R,pred,label){
+  var out=[],bn=S.MONTH_BRANCH_NOTE||[];
+  for(var m=1;m<=12;m++){
+    var mp=S.monthPillarOf(2027,m), g=S.tenGod(R.dStem,mp.stem);
+    var rr=monthRelMore(R.dBranch,mp.branch);
+    if(pred(mp,g,rr.tag)) out.push('2027년 '+m+'월('+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+'·'+rr.tag+')');
+  }
+  return out.length?(label+'은 '+out.join(', ')+'입니다.'):('2027년에는 '+label+'이 뚜렷하게 겹치는 달이 없습니다.');
+}
 function qaPages(){
   chapter('qa','19','맞춤 질문 답변','300자 질문 · 네 개의 답');
-  var R=B.R,c=B.c,q=(B.input.ctx&&B.input.ctx.question)||'';
-  var qs=[
-    {q:q||'지금 이직해도 될까요? 시기는 언제가 좋을까요?',kind:'job'},
+  var R=B.R,c=B.c,q=((B.input.ctx&&B.input.ctx.question)||'').trim();
+  var firstKind=q?detectIntent(q):'general';
+  var fixed=[
     {q:'돈은 언제 들어오나요? 무엇을 조심해야 할까요?',kind:'money'},
     {q:'인연은 언제, 어떤 사람으로 올까요?',kind:'love'},
-    {q:'건강에서 조심해야 할 때는 언제인가요?',kind:'health'}
+    {q:'건강에서 조심해야 할 때는 언제인가요?',kind:'health'},
+    {q:'앞으로 3년, 무엇을 먼저 준비하면 좋을까요?',kind:'general'}
   ];
+  var qs=[{q:q||'앞으로 3년, 무엇을 먼저 준비하면 좋을까요?',kind:firstKind,own:!!q}];
+  fixed.forEach(function(x){ if(x.kind!==firstKind) qs.push(x); });
+  qs=qs.slice(0,4);
   qs.forEach(function(x,i){
     var body=secLabel('19','Q&A · 맞춤 답변 '+(i+1));
-    body+='<h1>“'+esc(x.q)+'”</h1>';
-    body+=answerFor(x.kind,R,c);
+    if(x.own){
+      body+='<div class="qbox">“'+esc(x.q)+'”</div>';
+      body+='<p class="qkind">질문에서 <b>'+KIND_KO[x.kind]+'</b>의 물음을 읽었습니다. 사주에서 확인되는 것만 답합니다.</p>';
+      body+='<h2>'+KIND_KO[x.kind]+' — 사주에 적힌 조건</h2>';
+    } else {
+      body+='<h1>“'+esc(x.q)+'”</h1>';
+    }
+    body+=answerFor(x.kind,R,c,x.q||'');
     push(page('19 / Q&A',body,{spread:true}));
   });
 }
-function answerFor(kind,R,c){
+function answerFor(kind,R,c,q){
   var h='';
   if(kind==='job'){
-    var gy=[];for(var i=0;i<R.seun.length;i++){var g=S.tenGod(R.dStem,R.seun[i].idx%10);if(S.GOD_GROUP[g]==='관성')gy.push(R.seun[i].year+'년');}
+    var gy=[];for(var i=0;i<R.seun.length;i++){var g=S.tenGod(R.dStem,R.seun[i].idx%10);if(S.GOD_GROUP[g]==='관성')gy.push(R.seun[i].year+'년('+g+')');}
     h+='<p class="lead">결론부터 말하면, 이 사주는 <b>'+(gy.length?gy[0]+' 무렵':'준비 기간을 거친 뒤')+'</b>에 자리가 움직입니다. 다만 시기보다 조건이 먼저입니다.</p>';
     h+='<p>이 사주의 중심은 <b>'+c.topGrp+'</b>이고, 그 재료는 '+S.GROUP_MEAN[c.topGrp]+' 직장에서 이 재료가 쓰이지 않는다고 느낀다면 그것이 이직의 이유가 됩니다. 반대로 사람 때문에 힘든 것이라면 옮겨도 반복됩니다.</p>';
+    h+='<p>'+(gy.length?'관성이 들어오는 해는 <b>'+gy.join(', ')+'</b>입니다.':'앞으로 5년에는 관성이 직접 들어오지 않아, 스스로 자리를 만드는 쪽이 맞습니다.')+' 서류와 면접은 그 해의 <b>1~3월</b>에 준비를 끝내두세요.</p>';
     h+='<h3>지금 확인할 세 가지</h3><ol><li>생활비 6개월이 확보되었는가</li><li>다음 자리에서 '+S.GOD_KEY[c.topGodInGrp]+'이 쓰이는가</li><li>옮기는 이유를 세 줄로 적을 수 있는가</li></ol>';
     h+='<p>세 가지가 모두 “예”라면 시기는 세운이 정해줍니다. '+riskyText(R,c,12)+'</p>';
+    h+='<p>'+qaMonthLine(R,function(mp,g,tag){return S.GOD_GROUP[g]==='관성';},'지원·면접에 힘이 실리는 달')+'</p>';
     h+=callout('권하는 순서','<p>1) 지금 자리에서 6개월 안에 하나를 바꿔보기 → 2) 그래도 안 되면 서류와 기록 준비 → 3) 관성이 오는 해에 지원. 이 순서를 지키면 후회가 적습니다.</p>');
   } else if(kind==='money'){
-    var jae=[];for(var i2=0;i2<R.seun.length;i2++){var g2=S.tenGod(R.dStem,R.seun[i2].idx%10);if(S.GOD_GROUP[g2]==='재성')jae.push(R.seun[i2].year+'년');}
+    var jae=[];for(var i2=0;i2<R.seun.length;i2++){var g2=S.tenGod(R.dStem,R.seun[i2].idx%10);if(S.GOD_GROUP[g2]==='재성')jae.push(R.seun[i2].year+'년('+g2+')');}
     h+='<p class="lead">이 사주는 <b>'+(jae.length?jae.join(', ')+'</b>에 돈의 문이 열립니다.':'큰 문보다 매달 쌓는 구조가 맞습니다.</b>')+'</p>';
     h+='<p>'+(S.WEALTH_VESSEL_GOD[c.topGodInGrp]||'성실함이 재산이 되는 구조입니다.')+'</p>';
+    h+='<p>'+qaMonthLine(R,function(mp,g,tag){return S.GOD_GROUP[g]==='재성';},'계약·정산을 진행하기 좋은 달')+'</p>';
     h+='<h3>조심할 것</h3><ul><li>'+(S.WEALTH_LEAK_GOD[c.topGodInGrp]||'사람을 통한 지출')+'</li><li>사람이 권하는 상품 — 서류로 확인하기</li><li>일지와 충하는 달의 큰 결제</li></ul>';
     h+='<p>'+riskyText(R,c,12)+'</p>';
     h+=callout('한 줄','<p>이 사주는 <b>버는 힘</b>보다 <b>남기는 구조</b>가 약합니다. 수입일 절반을 먼저 떼어두는 것 하나로 10년이 달라집니다.</p>');
   } else if(kind==='love'){
-    var ys=[];for(var i3=0;i3<R.seun.length;i3++){var g3=S.tenGod(R.dStem,R.seun[i3].idx%10);var grp=S.GOD_GROUP[g3];if(grp==='관성'||grp==='재성')ys.push(R.seun[i3].year+'년');}
+    var ys=[];for(var i3=0;i3<R.seun.length;i3++){var g3=S.tenGod(R.dStem,R.seun[i3].idx%10);var grp3=S.GOD_GROUP[g3];if(grp3==='관성'||grp3==='재성')ys.push(R.seun[i3].year+'년('+g3+')');}
     h+='<p class="lead">인연의 문은 <b>'+(ys.length?ys.join(', '):'뚜렷한 해가 오지 않으면 만남의 밀도')+'</b>에서 열립니다. 이 사주는 먼저 다가가는 쪽이 유리합니다.</p>';
     h+='<p>'+S.LOVE_ATTRACT[R.dayEl]+'</p>';
     h+='<p>다만 오래 가는 사람은 다릅니다. '+S.LOVE_FIT[R.dayEl]+'</p>';
+    h+='<p>'+qaMonthLine(R,function(mp,g,tag){return tag==='합'||tag==='동일';},'만남과 소개가 잘 붙는 달')+'</p>';
     h+='<h3>조심할 패턴</h3><p>'+S.LOVE_MISTAKE_GOD[c.topGodInGrp]+'</p>';
     h+=callout('한 줄','<p>이 사주는 <b>표현이 늦어</b> 마음을 놓칩니다. 좋으면 좋다고, 서운하면 서운하다고 그날 말하는 것 — 이것이 인연의 속도를 바꿉니다.</p>');
-  } else {
+  } else if(kind==='health'){
     var li=R.count[4], fi=R.count[1];
     h+='<p class="lead">이 사주는 '+elK(c.leastI)+'이 가장 얇아, <b>'+S.EL_DEEP[c.leastI].part+'</b> 쪽이 먼저 신호를 보냅니다.</p>';
     h+='<p>'+S.EL_DEEP[c.leastI].under+' 특히 '+S.SEASON_RHYTHM[c.leastI][0]+'에 주의하세요. '+S.SEASON_RHYTHM[c.leastI][1]+'</p>';
     h+='<p>물(水) '+li+' · 불(火) '+fi+' — '+(fi>=li+2?'열이 먼저 오르는 구조라 잠과 수분이 핵심입니다.':(li>=fi+2?'몸이 차기 쉬운 구조라 온기와 아침 햇빛이 핵심입니다.':'고른 구조라 계절의 흔들림을 관리하면 충분합니다.'))+'</p>';
+    h+='<p>'+qaMonthLine(R,function(mp,g,tag){return tag==='충'||tag==='형';},'몸이 먼저 신호를 보내는 달')+'</p>';
     h+='<h3>조심할 때</h3><p>'+riskyText(R,c,12)+'</p>';
     h+=callout('한 줄','<p>큰 결심보다 <b>잠드는 시간</b>입니다. 이 사주는 수면이 무너지면 모든 것이 함께 무너집니다.</p>');
+  } else if(kind==='baby'){
+    var star=(B.input.gender==='f')?'식상':'관성';
+    var by=[];for(var i4=0;i4<R.seun.length;i4++){var g4=S.tenGod(R.dStem,R.seun[i4].idx%10);if(S.GOD_GROUP[g4]===star)by.push(R.seun[i4].year+'년('+g4+')');}
+    var d=R.daeun[R.curDaeun], dg=S.tenGod(R.dStem,d.idx%10), bd=S.bestDaeun(R,c);
+    h+='<p class="lead">아이의 문은 <b>자녀성('+star+')</b>이 세운으로 들어오는 해에 크게 열립니다. '+(by.length?'이 사주는 <b>'+by.join(', ')+'</b>입니다.':'앞으로 5년 안에는 '+star+'이 직접 들어오지 않아, 해보다 몸의 리듬과 지금 대운이 중요합니다.')+'</p>';
+    h+='<p>지금은 <b>'+d.from+'~'+d.to+'세 · '+dg+'</b> 구간입니다. 이 사주의 중심은 <b>'+c.topGrp+'</b>이고, '+S.GROUP_MEAN[c.topGrp]+' 일과 사람에게 이 기운을 다 쓰면 몸에 남는 것이 없습니다. 아이를 계획한다면 올해는 <b>기운을 나눌 자리</b>를 먼저 비워두세요. 가장 안정되는 때는 <b>'+R.daeun[bd.i].from+'~'+R.daeun[bd.i].to+'세</b>입니다.</p>';
+    h+='<h3>몸부터 정리하는 순서</h3><ul>'+
+       '<li><b>잠</b> — '+S.EL_DEEP[c.yongEl].habit+'. 잠이 무너지면 가장 먼저 '+S.EL_DEEP[c.leastI].part+'이 신호를 보냅니다.</li>'+
+       '<li><b>식사</b> — '+S.EL_DEEP[c.yongEl].food+'을 주 3회, '+S.EL_DEEP[c.leastI].taste+'은 줄이세요.</li>'+
+       '<li><b>몸의 계절</b> — '+S.SEASON_RHYTHM[c.leastI][0]+'에는 일정을 절반으로. '+S.SEASON_RHYTHM[c.leastI][1]+'</li></ul>';
+    h+='<p>'+qaMonthLine(R,function(mp,g,tag){return tag==='충'||tag==='원진';},'일정을 줄이고 몸을 먼저 챙길 달')+'</p>';
+    h+=callout('준비 한 줄','<p>시기보다 <b>잠·식사·역할 분담</b>이 먼저입니다. 그 위에 아이가 옵니다. 임신과 출산의 시기는 명리로 정할 수 없으니 산부인과 상담을 우선하세요.</p>');
+  } else if(kind==='move'){
+    var ch=[],jn=[];
+    for(var i5=0;i5<R.seun.length;i5++){
+      var sn=R.seun[i5], g5=S.tenGod(R.dStem,sn.idx%10), grp5=S.GOD_GROUP[g5];
+      if(S.mod(sn.idx%12-R.dBranch,12)===6) ch.push(sn.year+'년');
+      if(grp5==='인성'||grp5==='재성') jn.push(sn.year+'년('+g5+')');
+    }
+    var d2=R.daeun[R.curDaeun], dg2=S.tenGod(R.dStem,d2.idx%10), g2s=S.GOD_GROUP[dg2];
+    var DAEMOVE={'비겁':'내 이름으로 자리를 옮기는 흐름이라 혼자 결정하기 쉽습니다. 가족의 동의를 먼저 받으세요.','식상':'집을 꾸미고 바꾸는 데 힘이 실립니다. 구조·수리 쪽이 잘 맞습니다.','재성':'집이 자산으로 움직이는 10년입니다. 매매·임대 조건을 숫자로 비교하세요.','관성':'계약·등기·절차가 중요해집니다. 서류를 직접 확인하세요.','인성':'집과 문서의 기운이 강합니다. 문서를 꼼꼼히 보면 손해가 적습니다.'};
+    var dd=S.EL_DEEP[c.yongEl];
+    h+='<p class="lead">이사는 <b>일지가 움직이는 해(충)</b>와 <b>집·문서(인성)·자금(재성)이 들어오는 해</b>가 겹칠 때 실제로 진행됩니다. '+(ch.length?'이 사주는 <b>'+ch.join(', ')+'</b>이 일지와 부딪히는 해입니다.':'앞으로 5년에는 일지와 정면으로 부딪히는 해가 없어, 급히 옮기기보다 조건을 다듬는 편이 좋습니다.')+'</p>';
+    h+='<p>'+(jn.length?'집과 자금의 문이 열리는 해는 <b>'+jn.join(', ')+'</b>입니다. ':'')+'지금 대운은 '+d2.from+'~'+d2.to+'세 · <b>'+dg2+'</b>이고, '+(DAEMOVE[g2s]||'')+'</p>';
+    h+='<h3>집을 보는 기준</h3><table><tr><th>항목</th><th>이 사주에 맞는 방향</th></tr>'+
+       '<tr><td class="k">방위</td><td>'+dd.dir+' 쪽 — 현관·창·책상이 마주 보는 자리</td></tr>'+
+       '<tr><td class="k">색</td><td>'+dd.color+' 계열의 벽·패브릭</td></tr>'+
+       '<tr><td class="k">공간</td><td>'+dd.space+'</td></tr>'+
+       '<tr><td class="k">피할 것</td><td>'+S.EL_KO[c.mostI]+' 기운이 넘치는 구조 — '+S.EL_DEEP[c.mostI].part+'이 먼저 지칩니다</td></tr></table>';
+    h+='<p>'+qaMonthLine(R,function(mp,g,tag){return tag==='합';},'사람을 거쳐 계약이 풀리는 달')+' '+qaMonthLine(R,function(mp,g,tag){return tag==='충';},'계약이 흔들리기 쉬운 달')+'</p>';
+    h+=callout('순서','<p>1) 예산과 대출 한도 확정 → 2) 후보 세 곳 비교 → 3) 계약 전 등기·특약·누수 확인 → 4) 이사는 합의 달에. 충의 달에는 계약과 이사를 한꺼번에 하지 마세요.</p>');
+  } else {
+    var db= S.bestDaeun(R,c), cd=R.daeun[R.curDaeun], cg=S.tenGod(R.dStem,cd.idx%10);
+    var yl=[];
+    for(var i6=0;i6<Math.min(3,R.seun.length);i6++){
+      var s6=R.seun[i6], gg6=S.tenGod(R.dStem,s6.idx%10);
+      yl.push('<li><b>'+s6.year+'년 '+S.STEM_HAN[s6.idx%10]+S.BR_HAN[s6.idx%12]+'('+gg6+')</b> — '+S.SEUN_DEEP[gg6]+'</li>');
+    }
+    h+='<p class="lead">한 가지로 답하기 어려운 질문이라, 이 사주의 <b>중심</b>과 <b>지금의 대운</b>에서 순서를 잡았습니다. 결론은 <b>'+c.topGrp+'을 쓰는 일을 먼저 정하고, '+S.EL_KO[c.yongEl]+'을 채우는 생활을 그 위에 얹는 것</b>입니다.</p>';
+    h+='<p>이 사주는 <b>'+c.topGodInGrp+'</b>이 중심이고 필요한 기운은 '+elK(c.yongEl)+'입니다. '+S.GOD_KEY[c.topGodInGrp]+'의 방식으로 살 때 가장 편안하고, '+S.EL_DEEP[c.yongEl].habit+'이 그 힘을 받쳐줍니다.</p>';
+    h+='<p>지금은 <b>'+cd.from+'~'+cd.to+'세 · '+cg+'</b> 구간입니다. '+(S.GOD_DEEP[cg]||'')+' 가장 힘이 실리는 때는 <b>'+R.daeun[db.i].from+'~'+R.daeun[db.i].to+'세</b>이니, 그 전까지는 그 자리에 필요한 것을 쌓는 시기로 쓰세요.</p>';
+    h+='<h3>앞으로 3년의 순서</h3><ul>'+yl.join('')+'</ul>';
+    h+='<h3>올해 안에 먼저 할 세 가지</h3><ol><li>'+S.EL_DEEP[c.yongEl].habit+' — 3개월만 지켜보기</li><li>'+S.GOD_KEY[c.topGodInGrp]+'이 쓰이는 일 하나를 문서로 정리하기</li><li>일지와 부딪히는 달을 일정에서 비워두기</li></ol>';
+    h+='<p>'+qaMonthLine(R,function(mp,g,tag){return tag==='충';},'큰 결정을 미룰 달')+'</p>';
+    h+=callout('한 줄','<p>좋은 삶은 좋은 운이 아니라 <b>좋은 순서</b>에서 옵니다. 올해는 벌이기보다 <b>'+S.EL_KO[c.yongEl]+'을 채우는 습관</b> 하나를 남기세요.</p>');
   }
   return h;
 }

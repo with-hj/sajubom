@@ -32,8 +32,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=22">
-<link rel="stylesheet" href="./book.css?v=22">
+<link rel="stylesheet" href="./styles.css?v=23">
+<link rel="stylesheet" href="./book.css?v=23">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 </head>
 <body>
@@ -45,9 +45,6 @@
       <span class="bn">천령당</span>
       <span class="bs">天靈堂</span>
     </a>
-    <div class="hd-r">
-      <button type="button" class="btn-admin" id="btn-admin"><span>⚙</span> 관리자</button>
-    </div>
   </div>
 </header>
 
@@ -430,16 +427,15 @@
     <div class="fb"><span class="seal">天</span><b>천령당 天靈堂</b></div>
     <div class="ft-disc">사주명리 기반의 참고 해석입니다.<br>의학적 진단·법률·투자 판단을 대신하지 않습니다.</div>
     <div>문의 <a href="mailto:with-hj@users.noreply.github.com">with-hj@users.noreply.github.com</a></div>
-    <button type="button" class="adm-link" data-admin-open>관리자 검수함</button>
     <div style="margin-top:10px;font-size:11px;color:#6a7383">© 2026 천령당 · All rights reserved.</div>
   </div>
 </footer>
 
 <!-- ================= 관리자 ================= -->
-<div class="sheet" id="adminSheet" aria-hidden="true">
+<div class="sheet" id="adminSheet" aria-hidden="true" data-mode="admin">
   <div class="sheet-hd">
     <div class="wrap">
-      <h2>管理 · 관리자 검수함</h2>
+      <h2 id="sheetTitle">管理 · 관리자 검수함</h2>
       <button type="button" class="x" id="admClose">닫기</button>
     </div>
   </div>
@@ -456,12 +452,22 @@
       <div id="admBookView" style="display:none">
         <div class="pdf-toolbar">
           <button type="button" class="btn btn-line btn-sm" id="admBack">← 목록</button>
-          <button type="button" class="btn btn-gold btn-sm" id="pdfPrint">📄 PDF 인쇄 / 저장</button>
+          <button type="button" class="btn btn-gold btn-sm" id="pdfDl">PDF 파일 다운로드</button>
+          <button type="button" class="btn btn-line btn-sm" id="pdfPrint">인쇄하기</button>
         </div>
+        <p class="pdf-note" id="pdfNote">PDF는 이 기기의 다운로드 폴더로 저장됩니다. 인앱 브라우저에서 저장이 안 될 경우 Safari/Chrome으로 열어주세요.</p>
         <div id="admBookMeta" class="adm-note"></div>
         <div id="wl2-book"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="pdfprog" id="pdfProg" aria-hidden="true">
+  <div class="box">
+    <b id="pdfProgT">PDF 생성 중…</b>
+    <div class="bar"><i id="pdfProgBar"></i></div>
+    <p id="pdfProgS">잠시만 기다려 주세요.</p>
   </div>
 </div>
 
@@ -470,16 +476,16 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=22"></script>
-<script src="./content.js?v=22"></script>
-<script src="./content-deep.js?v=22"></script>
-<script src="./content-general.js?v=22"></script>
-<script src="./content-love.js?v=22"></script>
-<script src="./content-marriage.js?v=22"></script>
-<script src="./content-baby.js?v=22"></script>
-<script src="./content-wealth.js?v=22"></script>
-<script src="./book.js?v=22"></script>
-<script src="./book-more.js?v=22"></script>
-<script src="./app.js?v=22"></script>
+<script src="./engine.js?v=23"></script>
+<script src="./content.js?v=23"></script>
+<script src="./content-deep.js?v=23"></script>
+<script src="./content-general.js?v=23"></script>
+<script src="./content-love.js?v=23"></script>
+<script src="./content-marriage.js?v=23"></script>
+<script src="./content-baby.js?v=23"></script>
+<script src="./content-wealth.js?v=23"></script>
+<script src="./book.js?v=23"></script>
+<script src="./book-more.js?v=23"></script>
+<script src="./app.js?v=23"></script>
 </body>
 </html>

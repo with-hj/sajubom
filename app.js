@@ -146,25 +146,28 @@ function init(){
   $('#sajuForm').addEventListener('submit',onSubmit);
   /* PDF 신청 */
   initPdf();
-  /* 관리자 */
-  $('#btn-admin').addEventListener('click',openAdmin);
-  $$('[data-admin-open]').forEach(function(b){ b.addEventListener('click',openAdmin); });
-  $('#admClose').addEventListener('click',closeAdmin);
-  $('#admBack').addEventListener('click',function(){ $('#admBookView').style.display='none'; $('#admListView').style.display='block'; });
+  /* 관리자 · 고객 리포트 뷰어
+     — 관리자 화면은 주소에 ?admin=1 이 있을 때만 열린다. 고객 화면에는 관리자 UI가 없다. */
+  ADMIN_OK=/[?&]admin=1/.test(location.search);
+  if($('#admClose')) $('#admClose').addEventListener('click',closeBookSheet);
+  if($('#admBack')) $('#admBack').addEventListener('click',function(){
+    $('#admBookView').style.display='none'; $('#admListView').style.display='block';
+  });
   $$('.adm-tab').forEach(function(b){
     b.addEventListener('click',function(){
       $$('.adm-tab').forEach(function(x){x.classList.remove('on');});
       b.classList.add('on');
-      if(b.getAttribute('data-adm')==='sample') openBook(sampleEntry());
+      if(b.getAttribute('data-adm')==='sample') openBook(sampleEntry(),'admin');
       else { $('#admBookView').style.display='none'; $('#admListView').style.display='block'; }
     });
   });
-  $('#pdfPrint').addEventListener('click',function(){ window.print(); });
+  if($('#pdfPrint')) $('#pdfPrint').addEventListener('click',function(){ window.print(); });
+  if($('#pdfDl')) $('#pdfDl').addEventListener('click',downloadBookPdf);
 
   /* URL 파라미터 */
   try{
     if(/[?&]admin=1/.test(location.search)) openAdmin();
-    if(/[?&]book=sample/.test(location.search)){ openAdmin(); openBook(sampleEntry()); }
+    if(/[?&]admin=1/.test(location.search)&&/[?&]book=sample/.test(location.search)) openBook(sampleEntry(),'admin');
     if(/[?&]track=life/.test(location.search)) setTrack('life');
   }catch(e){}
 }
@@ -552,31 +555,52 @@ function submitPdf(){
   $('#pdfSteps').style.display='none';
   var d=$('#pdfDone');
   d.classList.add('on');
+  lastOrder=order;
   d.innerHTML='<div class="done-box fade-in"><div class="ok">✓</div><h3>접수가 완료되었습니다</h3>'+
     '<div class="num">접수번호 '+order.id+'</div>'+
     '<p>'+esc(b.name)+' 님의 원국을 검수한 뒤, 영업일 2~3일 안에 책자형 PDF를 '+esc(email)+'으로 보내드립니다.</p>'+
-    '<p>결제와 발송 안내는 검수 완료 후 문자로 드립니다.</p>'+
-    '<button type="button" class="btn btn-line btn-block" style="margin-top:16px" data-goto-top>처음으로</button></div>';
+    '<p>지금 바로 리포트를 펼쳐보고 PDF 파일로 저장하실 수 있습니다.</p>'+
+    '<button type="button" class="btn btn-gold btn-block" style="margin-top:14px" data-cust-view>내 인생사주 리포트 보기</button>'+
+    '<button type="button" class="btn btn-verm btn-block" style="margin-top:8px" data-cust-pdf>PDF 파일 다운로드</button>'+
+    '<p class="pdf-note">PDF는 이 기기의 다운로드 폴더로 저장됩니다. 인앱 브라우저에서 저장이 안 될 경우 Safari/Chrome으로 열어주세요.</p>'+
+    '<button type="button" class="btn btn-line btn-block" style="margin-top:10px" data-goto-top>처음으로</button></div>';
+  $$('[data-cust-view]').forEach(function(x){ x.addEventListener('click',function(){ openCustomerReport(); }); });
+  $$('[data-cust-pdf]').forEach(function(x){ x.addEventListener('click',function(){ openCustomerReport(function(){ downloadBookPdf(); }); }); });
   $$('[data-goto-top]').forEach(function(x){ x.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); }); });
 }
 
-/* ---------------- 관리자 ---------------- */
+/* ---------------- 관리자 · 고객 리포트 뷰어 ---------------- */
+var ADMIN_OK=false, lastOrder=null, curBookName='';
 function orders(){
   try{ return JSON.parse(localStorage.getItem('cl_orders')||'[]'); }catch(e){ return []; }
 }
 function sampleEntry(){
   return {id:'SAMPLE-01',name:'김서연',date:'1993-05-14',hasTime:true,hourIndex:4,gender:'f',
-    tsoff:-32,regionName:'서울 · 인천 · 경기',cal:'solar',stage:'work',marry:'married',kid:'none',
-    q:'올해 안에 아이를 준비해도 될까요? 그리고 남편과 함께 이사를 계획 중인데 시기가 궁금합니다.',email:'sample@cheonryeongdang.kr',phone:'010-0000-0000',status:'샘플'};
+    tsoff:-32,regionName:'서울 · 인천 · 경기',cal:'solar',stage:'work',marry:'married',kid:'plan',
+    q:'올해 안에 둘째를 준비해도 될까요? 시기와 몸의 리듬이 궁금합니다.',email:'sample@cheonryeongdang.kr',phone:'010-0000-0000',status:'샘플'};
+}
+function setSheetMode(mode){
+  var sh=$('#adminSheet'); if(!sh) return;
+  mode=(mode==='admin')?'admin':'cust';
+  sh.setAttribute('data-mode',mode);
+  var t=$('#sheetTitle');
+  if(t) t.textContent=(mode==='admin')?'管理 · 관리자 검수함':'천령당 · 내 인생사주 리포트';
+  var lv=$('#admListView'); if(lv) lv.style.display=(mode==='admin')?'block':'none';
+  var bk=$('#admBack'); if(bk) bk.style.display=(mode==='admin')?'':'none';
+}
+function openSheet(){
+  var sh=$('#adminSheet'); if(!sh) return;
+  sh.classList.add('on'); sh.setAttribute('aria-hidden','false');
+  document.body.classList.add('lock');
+}
+function closeBookSheet(){
+  var sh=$('#adminSheet'); if(!sh) return;
+  sh.classList.remove('on'); sh.setAttribute('aria-hidden','true');
+  document.body.classList.remove('lock');
 }
 function openAdmin(){
-  $('#adminSheet').classList.add('on'); $('#adminSheet').setAttribute('aria-hidden','false');
-  document.body.classList.add('lock');
-  renderAdminList();
-}
-function closeAdmin(){
-  $('#adminSheet').classList.remove('on'); $('#adminSheet').setAttribute('aria-hidden','true');
-  document.body.classList.remove('lock');
+  if(!ADMIN_OK) return;
+  setSheetMode('admin'); openSheet(); renderAdminList();
 }
 function renderAdminList(){
   var list=orders(), h='';
@@ -591,7 +615,7 @@ function renderAdminList(){
   $$('#admList .adm-item').forEach(function(b){
     b.addEventListener('click',function(){
       var k=b.getAttribute('data-open');
-      openBook(k==='sample'?sampleEntry():orders()[parseInt(k,10)]);
+      openBook(k==='sample'?sampleEntry():orders()[parseInt(k,10)],'admin');
     });
   });
 }
@@ -620,16 +644,21 @@ function bindToc(host){
     row.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ go(e); } });
   });
 }
-function openBook(o){
+function openBook(o,mode,after){
   if(!o) return;
+  mode=(mode==='admin'&&ADMIN_OK)?'admin':'cust';
+  setSheetMode(mode);
+  openSheet();
   var inp=entryToInput(o);
   var R;
   try{ R=S.computeSaju(inp); }catch(e){ alert('원국을 계산하지 못했습니다.'); return; }
   inp.ctx.R=R;
-  $('#admListView').style.display='none';
+  curBookName=o.name||'고객';
+  $('#admListView').style.display=(mode==='admin')?'block':'none';
   $('#admBookView').style.display='block';
   var host=$('#wl2-book');
   host.innerHTML='<p style="color:#c9bda6">책자를 조판하는 중입니다…</p>';
+  var sh=$('#adminSheet'); sh.scrollTop=0;
   setTimeout(function(){
     try{
       var res=window.BOOK.build(R,inp,o.name);
@@ -642,11 +671,128 @@ function openBook(o){
       }
       $('#admBookMeta').innerHTML='<b style="color:#ecd6a6">'+esc(o.name)+'</b> · '+o.date+' · '+(o.hasTime?hourLabel(o.hourIndex):'시간 모름')+' · '+
         'A4 '+res.pages+'장 · 원국 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주';
+      if(typeof after==='function') setTimeout(after,60);
     }catch(ex){
       host.innerHTML='<p style="color:#e79a72">책자를 만들지 못했습니다: '+esc(ex.message)+'</p>';
       if(window.console) console.error(ex);
     }
   },40);
+}
+function openCustomerReport(after){
+  var o=lastOrder||orders()[0];
+  if(!o){ alert('신청 내역을 찾지 못했습니다. 신청 완료 화면에서 다시 열어주세요.'); return; }
+  openBook(o,'cust',after);
+}
+
+/* ---------------- PDF 파일 다운로드 ---------------- */
+var pdfLibsReady=null;
+function loadFirst(urls){
+  return new Promise(function(res,rej){
+    var i=0;
+    function next(){
+      if(i>=urls.length){ rej(new Error('load fail')); return; }
+      var s=document.createElement('script');
+      s.src=urls[i++]; s.async=true;
+      s.onload=function(){ res(true); };
+      s.onerror=function(){ try{ s.parentNode.removeChild(s); }catch(e){} next(); };
+      document.head.appendChild(s);
+    }
+    next();
+  });
+}
+function loadPdfLibs(){
+  if(pdfLibsReady) return pdfLibsReady;
+  pdfLibsReady=new Promise(function(res,rej){
+    var h2c=window.html2canvas?Promise.resolve(true):loadFirst([
+      'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+      'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js']);
+    h2c.then(function(){
+      if(window.jspdf) return true;
+      return loadFirst([
+        'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+        'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js']);
+    }).then(function(){
+      if(!window.html2canvas||!window.jspdf) throw new Error('pdf lib');
+      res(true);
+    }).catch(rej);
+  });
+  return pdfLibsReady;
+}
+function progOn(t,s){
+  var el=$('#pdfProg'); if(!el) return;
+  el.classList.add('on'); el.setAttribute('aria-hidden','false');
+  prog(t,0,s);
+}
+function prog(t,p,s){
+  if($('#pdfProgT')&&t!=null) $('#pdfProgT').textContent=t;
+  if(typeof p==='number'&&$('#pdfProgBar')) $('#pdfProgBar').style.width=Math.round(Math.max(0,Math.min(1,p))*100)+'%';
+  if(s!=null&&$('#pdfProgS')) $('#pdfProgS').textContent=s;
+}
+function progOff(){
+  var el=$('#pdfProg'); if(!el) return;
+  el.classList.remove('on'); el.setAttribute('aria-hidden','true');
+}
+function safeName(n){
+  return String(n||'고객').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'').slice(0,24)||'고객';
+}
+function downloadBookPdf(){
+  var host=$('#wl2-book');
+  if(!host||!host.querySelector('.pg')){ alert('리포트를 먼저 열어주세요.'); return; }
+  if(host.getAttribute('data-busy')==='1') return;
+  host.setAttribute('data-busy','1');
+  progOn('PDF 준비 중…','A4 104쪽을 한 장씩 그립니다. 잠시만 기다려 주세요.');
+  loadPdfLibs().then(function(){
+    return makePdf(host,curBookName);
+  }).then(function(){
+    host.removeAttribute('data-busy');
+  }).catch(function(e){
+    host.removeAttribute('data-busy');
+    if(window.console) console.error('pdf',e);
+    prog('PDF를 만들지 못했습니다',0,'네트워크가 막혔거나 인앱 브라우저일 수 있습니다. Safari/Chrome으로 열어 다시 시도하시거나 인쇄하기를 이용해 주세요.');
+    setTimeout(progOff,4200);
+  });
+}
+function makePdf(host,name){
+  return new Promise(function(resolve,reject){
+    var pages=[].slice.call(host.querySelectorAll('.pg'));
+    var total=pages.length;
+    if(!total){ reject(new Error('empty book')); return; }
+    var jsPDF=window.jspdf.jsPDF;
+    var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+    var scale=(window.innerWidth<560)?1.45:1.75;
+    var i=0;
+    host.classList.add('pdf-shot');
+    function finish(){
+      try{ host.classList.remove('pdf-shot'); }catch(e){}
+      prog('파일을 저장하고 있어요…',0.99,'');
+      setTimeout(function(){
+        try{ doc.save('천령당-인생사주-'+safeName(name)+'.pdf'); }
+        catch(e){ reject(e); return; }
+        prog('PDF가 저장되었습니다',1,'다운로드 폴더에서 확인해 주세요. 인앱 브라우저에서는 저장 위치가 다를 수 있습니다.');
+        setTimeout(progOff,1500);
+        resolve(true);
+      },140);
+    }
+    function step(){
+      if(i>=total){ finish(); return; }
+      prog('PDF 생성 중 ('+(i+1)+'/'+total+')…', i/total, '이 화면을 닫지 마세요. 폰에서는 20~60초 걸립니다.');
+      window.html2canvas(pages[i],{scale:scale,backgroundColor:'#F6F1E7',useCORS:true,logging:false,removeContainer:true}).then(function(cv){
+        var img=cv.toDataURL('image/jpeg',0.86);
+        if(i>0) doc.addPage('a4','portrait');
+        doc.addImage(img,'JPEG',0,0,210,295);
+        try{ cv.width=0; cv.height=0; }catch(e){}
+        i++;
+        setTimeout(step,16);
+      }).catch(function(e){
+        host.classList.remove('pdf-shot');
+        reject(e);
+      });
+    }
+    var go=function(){ setTimeout(step,60); };
+    if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(go); } else { go(); }
+  });
 }
 
 window.APP={init:init,state:state};
