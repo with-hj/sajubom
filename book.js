@@ -624,6 +624,30 @@ function fitPages(host){
       fs-=0.25; guard++;
       p.style.setProperty('--fs',fs.toFixed(2)+'px');
     }
+    /* 지면 아래가 비면 문단 사이를 벌리는 대신 글씨를 키워 채운다(최대 17.4px).
+       space-between으로 벌리면 목차·짧은 지면에서 제목과 본문 사이가 크게 뜬다. */
+    if(bd){
+      var up=fs;
+      while(up<17.4 && guard<90){
+        up+=0.25; guard++;
+        p.style.setProperty('--fs',up.toFixed(2)+'px');
+        if(bd.scrollHeight>bd.clientHeight+1){ up-=0.25; p.style.setProperty('--fs',up.toFixed(2)+'px'); break; }
+      }
+    }
+    /* 남는 여백이 지면의 1/4 이하일 때만 문단 사이에 나눠 채운다.
+       목차처럼 여백이 크게 남는 지면은 위에서부터 쌓아 사이가 벌어지지 않게 한다. */
+    if(bd){
+      var kids=[].slice.call(bd.children).filter(function(k){ return k.offsetHeight>0; });
+      var last=kids[kids.length-1], used=0;
+      for(var ci=0;ci<kids.length;ci++){
+        var cs=window.getComputedStyle(kids[ci]);
+        used+=kids[ci].offsetHeight+(parseFloat(cs.marginTop)||0)+(parseFloat(cs.marginBottom)||0);
+      }
+      var slack=bd.clientHeight-used, gaps=Math.max(1,kids.length-1), per=slack/gaps;
+      /* 남는 여백을 나눠도 문단 사이가 24px을 넘지 않을 때만 고르게 채운다.
+         목차처럼 여백이 크게 남는 지면은 위에서부터 쌓아 사이가 벌어지지 않게 한다. */
+      bd.classList.toggle('fill', !!last && slack>0 && per<=24);
+    }
     /* 본문이 아무리 줄여도 한 장을 넘으면 잘라내지 않고 클립 영역을 푼다 */
     if(bd && bd.scrollHeight>bd.clientHeight+1) bd.style.overflow='visible';
     else if(bd) bd.style.removeProperty('overflow');

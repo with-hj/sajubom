@@ -552,19 +552,68 @@ function submitPdf(){
     name:b.name,date:b.y+'-'+pad2(b.m)+'-'+pad2(b.d),hasTime:b.hasTime,hourIndex:b.hourIndex,
     gender:b.gender,tsoff:b.tsoff,regionName:b.regionName,regionKey:b.regionKey,cal:state.pcal,
     stage:stage?stage.getAttribute('data-s'):'',marry:marry?marry.getAttribute('data-m'):'single',
-    kid:kid?kid.getAttribute('data-c'):'none',q:($('#lz-q').value||'').trim(),email:email,phone:phone,status:'접수'};
+    kid:kid?kid.getAttribute('data-c'):'none',q:($('#lz-q').value||'').trim(),email:email,phone:phone,
+    product:'천령당 인생사주 리포트',price:69900,status:'결제대기'};
+  /* 정보 입력 → 결제 → 보기/다운로드. 접수 저장은 결제를 마친 뒤에 한다. */
+  showPayStep(order);
+}
+
+/* ---------------- 결제 단계 ---------------- */
+var pendingOrder=null;
+function won(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',')+'원'; }
+function payRowsHTML(o){
+  var h='';
+  function row(k,v,cls){ return '<div class="pay-row'+(cls?' '+cls:'')+'"><span>'+k+'</span><b>'+v+'</b></div>'; }
+  h+=row('신청자',esc(o.name)+' · '+(o.gender==='f'?'여성':'남성'));
+  h+=row('생년월일',String(o.date).replace(/-/g,'.')+(o.hasTime?' '+hourLabel(o.hourIndex):' 시간 모름'));
+  h+=row('받는 곳',esc(o.email||'-'));
+  h+=row('상품','인생사주 리포트 · A4 책자형 PDF');
+  h+=row('결제 금액',won(o.price||69900),'total');
+  return h;
+}
+function showPayStep(o){
+  pendingOrder=o;
+  $$('.step-body').forEach(function(x){ x.classList.remove('on'); });
+  try{ $('#pdfSteps').style.display='none'; }catch(e){}
+  var p=$('#pdfPay'); if(!p) return;
+  p.classList.add('on');
+  p.innerHTML='<div class="pay-box fade-in">'+
+    '<div class="pay-tag">주문 확인</div>'+
+    '<h3>천령당 인생사주 리포트</h3>'+
+    '<p class="pay-sub">검수 후 이메일로 보내드리는 A4 책자형 PDF입니다.</p>'+
+    '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
+    '<p class="pay-test">테스트 모드 · 실제 결제는 청구되지 않습니다</p>'+
+    '<button type="button" class="btn btn-verm btn-block" id="payGo">결제하기 (테스트)</button>'+
+    '<button type="button" class="btn btn-line btn-block" id="payBack" style="margin-top:8px">이전으로</button>'+
+    '<p class="pay-note">결제를 마치면 리포트를 바로 펼쳐보고 PDF로 저장하실 수 있습니다.</p>'+
+    '</div>';
+  var go=$('#payGo'), back=$('#payBack');
+  if(go) go.addEventListener('click',function(){ completePayment(); });
+  if(back) back.addEventListener('click',function(){ p.classList.remove('on'); p.innerHTML=''; pendingOrder=null; gotoPdf(4); });
+  try{ p.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+}
+function completePayment(){
+  var o=pendingOrder; if(!o) return;
+  o.status='결제완료'; o.paidAt=new Date().toISOString();
   try{
     var list=JSON.parse(localStorage.getItem('cl_orders')||'[]');
-    list.unshift(order); localStorage.setItem('cl_orders',JSON.stringify(list));
+    list.unshift(o); localStorage.setItem('cl_orders',JSON.stringify(list));
   }catch(e){}
+  pendingOrder=null;
+  showDone(o);
+}
+function showDone(order){
+  var b={name:order.name};
   $$('.step-body').forEach(function(x){ x.classList.remove('on'); });
-  $('#pdfSteps').style.display='none';
+  try{ $('#pdfSteps').style.display='none'; }catch(e){}
+  var p=$('#pdfPay'); if(p){ p.classList.remove('on'); p.innerHTML=''; }
   var d=$('#pdfDone');
+  if(!d) return;
   d.classList.add('on');
   lastOrder=order;
-  d.innerHTML='<div class="done-box fade-in"><div class="ok">✓</div><h3>접수가 완료되었습니다</h3>'+
-    '<div class="num">접수번호 '+order.id+'</div>'+
-    '<p>'+esc(b.name)+' 님의 원국을 검수한 뒤, 영업일 2~3일 안에 책자형 PDF를 '+esc(email)+'으로 보내드립니다.</p>'+
+  d.innerHTML='<div class="done-box fade-in"><div class="ok">✓</div><h3>결제 및 접수가 완료되었습니다</h3>'+
+    '<div class="num">접수번호 '+order.id+' · 테스트 결제 '+won(order.price||69900)+'</div>'+
+    '<p>'+esc(b.name)+' 님의 원국을 검수한 뒤, 영업일 2~3일 안에 책자형 PDF를 '+esc(order.email||'신청하신 이메일')+'으로 보내드립니다.</p>'+
     '<p>지금 바로 리포트를 펼쳐보고 PDF 파일로 저장하실 수 있습니다.</p>'+
     '<button type="button" class="btn btn-gold btn-block" style="margin-top:14px" data-cust-view>내 인생사주 리포트 보기</button>'+
     '<button type="button" class="btn btn-verm btn-block" style="margin-top:8px" data-cust-pdf>PDF 파일 다운로드</button>'+
@@ -573,6 +622,7 @@ function submitPdf(){
   $$('[data-cust-view]').forEach(function(x){ x.addEventListener('click',function(){ openCustomerReport(); }); });
   $$('[data-cust-pdf]').forEach(function(x){ x.addEventListener('click',function(){ openCustomerReport(function(){ downloadBookPdf(); }); }); });
   $$('[data-goto-top]').forEach(function(x){ x.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); }); });
+  try{ d.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
 }
 
 /* ---------------- 관리자 · 고객 리포트 뷰어 ---------------- */
@@ -733,6 +783,92 @@ function openCustomerReport(after){
 }
 
 /* ---------------- PDF 파일 다운로드 ---------------- */
+/* html2canvas 글자 처짐 보정 -------------------------------------------------
+   html2canvas는 알약(배지)·표 칸처럼 상자 높이가 글줄보다 큰 곳에서 글자를 상자
+   아래쪽에 붙여서 그린다(아이폰·안드로이드·PC 모두). 어긋나는 정도가 기기·글꼴마다
+   달라서, PDF를 만들기 직전에 이 기기에서 한 번 재어 보고 그만큼 글자만 위로 올린다.
+   화면(미리보기)의 DOM은 건드리지 않고, html2canvas가 복사한 지면에만 적용한다. */
+var PDF_FX={pill:0,cell:0};
+function fxTextRows(cv,box,scale){
+  try{
+    var x=Math.max(0,Math.round(box.x*scale)), y=Math.max(0,Math.round(box.y*scale));
+    var w=Math.max(1,Math.round(box.w*scale)), h=Math.max(1,Math.round(box.h*scale));
+    var ctx=cv.getContext('2d');
+    if(!ctx) return null;
+    var d=ctx.getImageData(x,y,w,h).data, top=-1, bot=-1;
+    for(var j=0;j<h;j++){
+      var dark=false;
+      for(var i=0;i<w;i++){
+        var p=(j*w+i)*4;
+        if((d[p]+d[p+1]+d[p+2])/3<150){ dark=true; break; }
+      }
+      if(dark){ if(top<0) top=j; bot=j; }
+    }
+    if(top<0) return null;
+    return {top:top, bot:h-1-bot};
+  }catch(e){ return null; }
+}
+function fxShift(m,scale){
+  if(!m) return 0;
+  var s=(m.bot-m.top)/(2*scale);           /* 글자를 s(음수)만큼 올리면 위·아래 여백이 같아진다 */
+  s=Math.round(s*10)/10;
+  return Math.max(-24,Math.min(0,s));
+}
+function calibratePdfText(scale){
+  return new Promise(function(res){
+    var host=$('#wl2-book');
+    if(!host||!window.html2canvas||!host.querySelector('.pg')){ res(PDF_FX); return; }
+    var probe=document.createElement('div');
+    probe.className='pg';
+    probe.style.cssText='position:absolute;left:-4000px;top:0;width:210mm;height:295mm;z-index:-1;';
+    probe.innerHTML='<div class="pg-bd">'+
+      '<div style="margin:4mm 0 6mm"><span class="tag">가나다</span><span class="tag navy">라마바</span></div>'+
+      '<table style="width:90mm;margin:0"><tr><td style="height:13mm">가나다라</td><td style="height:13mm">마바사</td></tr></table>'+
+      '</div>';
+    host.appendChild(probe);
+    function done(){ try{ if(probe.parentNode) probe.parentNode.removeChild(probe); }catch(e){} res(PDF_FX); }
+    fontsReady(1200).then(function(){
+      var pr, pillBox, cellBox;
+      try{
+        pr=probe.getBoundingClientRect();
+        var tag=probe.querySelector('.tag'), cell=probe.querySelector('td');
+        if(!tag||!cell){ done(); return; }
+        var tr=tag.getBoundingClientRect(), cr=cell.getBoundingClientRect();
+        pillBox={x:tr.x-pr.x,y:tr.y-pr.y,w:tr.width,h:tr.height};
+        cellBox={x:cr.x-pr.x,y:cr.y-pr.y,w:cr.width,h:cr.height};
+      }catch(e){ done(); return; }
+      window.html2canvas(probe,{scale:scale,backgroundColor:'#F6F1E7',useCORS:true,allowTaint:false,
+        logging:false,removeContainer:true,imageTimeout:3500}).then(function(cv){
+        var a=fxShift(fxTextRows(cv,pillBox,scale),scale);
+        var b=fxShift(fxTextRows(cv,cellBox,scale),scale);
+        if(a) PDF_FX.pill=a;
+        if(b) PDF_FX.cell=b;
+        done();
+      }).catch(function(){ done(); });
+    });
+  });
+}
+function fxWrapText(el,shift){
+  if(!el||!shift) return;
+  try{
+    if(!el.firstChild) return;
+    if(el.querySelector(':scope > .fx')) return;
+    if(el.querySelector('table,div,p,ul,ol,h1,h2,h3')) return;   /* 표 안의 표·블록은 건드리지 않는다 */
+    var s=document.createElement('span');
+    s.className='fx';
+    s.style.cssText='position:relative;top:'+shift+'px';
+    while(el.firstChild) s.appendChild(el.firstChild);
+    el.appendChild(s);
+  }catch(e){}
+}
+function fxApplyClone(doc){
+  try{
+    var root=doc.getElementById('wl2-book'); if(!root) return;
+    var tags=root.querySelectorAll('.pg .tag'), cells=root.querySelectorAll('.pg th, .pg td'), i;
+    for(i=0;i<tags.length;i++) fxWrapText(tags[i],PDF_FX.pill);
+    for(i=0;i<cells.length;i++) fxWrapText(cells[i],PDF_FX.cell);
+  }catch(e){}
+}
 var pdfLibsReady=null;
 function loadFirst(urls){
   return new Promise(function(res,rej){
@@ -843,7 +979,8 @@ function renderPageOnce(page,scale){
           if(el.contains&&el.contains(page)) return false;
         }catch(e){ return false; }
         return true;
-      }
+      },
+      onclone:function(doc){ fxApplyClone(doc); }
     };
     try{ window.html2canvas(page,opts).then(ok).catch(bad); }catch(e){ bad(e); }
   });
@@ -860,7 +997,11 @@ function makePdf(host,name){
     host.classList.add('pdf-shot');
     /* 지금 그리는 한 장만 문서에 남긴다. 나머지는 떼어 두었다가 끝나면 제자리로 되돌린다. */
     var parked=document.createDocumentFragment();
-    for(k=0;k<pages.length;k++){ parked.appendChild(pages[k]); }
+    var parkedNow=false;
+    function parkPages(){
+      if(parkedNow) return; parkedNow=true;
+      for(k=0;k<pages.length;k++){ parked.appendChild(pages[k]); }
+    }
     function restoreDom(){
       if(restored) return; restored=true;
       for(var j=0;j<pages.length;j++){ try{ host.appendChild(pages[j]); }catch(e){} }
@@ -903,7 +1044,7 @@ function makePdf(host,name){
         setTimeout(step,10);
       }).catch(fail);
     }
-    fontsReady(1500).then(function(){ setTimeout(step,60); });
+    fontsReady(1500).then(function(){ return calibratePdfText(scale); }).then(function(){ parkPages(); setTimeout(step,60); });
   });
 }
 window.APP={init:init,state:state};

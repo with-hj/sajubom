@@ -37,7 +37,13 @@
   font-size:8px;letter-spacing:.14em;color:#9C8E7A;
 }
 .pg-bd{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
-.pg-bd.spread{justify-content:space-between}
+/* 제목·소제목·본문은 언제나 위에서부터 차곡차곡 쌓는다.
+   space-between을 쓰면 목차(3쪽)처럼 내용이 짧은 지면에서 제목과 목록 사이가 크게 벌어진다.
+   지면 아래쪽 정렬은 .pg-ft의 margin-top:auto 하나로만 처리한다. */
+.pg-bd.spread{justify-content:flex-start}
+/* 남는 여백이 조금뿐인 지면은 문단 사이에 고르게 나눠 채운다(fit()이 .fill을 붙인다).
+   여백이 많은 지면은 위에서부터 쌓아 제목과 본문 사이가 크게 벌어지지 않게 한다. */
+.pg-bd.fill{justify-content:space-between}
 .sec-label{
   font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   font-size:9.4px;letter-spacing:.2em;color:var(--b-orange);font-weight:700;margin-bottom:3mm;
@@ -81,8 +87,9 @@
 .callout p+p{margin-top:2mm}
 .note{font-size:calc(var(--fs) * .82);line-height:1.8;color:var(--b-mute);border-top:1px solid var(--b-line);padding-top:2.4mm;margin-top:3mm}
 .tag{
-  display:inline-block;font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;
-  font-size:10px;letter-spacing:.06em;padding:1.2mm 2.6mm;border-radius:999px;
+  display:inline-block;vertical-align:middle;font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;
+  font-size:10px;line-height:1.2;letter-spacing:.06em;text-align:center;
+  padding:1.4mm 2.8mm;border-radius:999px;
   background:rgba(224,100,42,.12);color:#B94D1E;font-weight:700;margin:0 1.2mm 1.4mm 0;
 }
 .tag.navy{background:rgba(28,42,74,.09);color:#31456B}
@@ -92,8 +99,8 @@
 .pg table{width:100%;border-collapse:collapse;margin:3mm 0 5mm;font-size:calc(var(--fs) * .9)}
 .pg table th{
   text-align:left;font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
-  font-size:calc(var(--fs) * .74);letter-spacing:.1em;color:#7C6E5A;font-weight:700;
-  border-bottom:1.2px solid var(--b-line);padding:2mm 2mm;
+  font-size:calc(var(--fs) * .74);line-height:1.5;letter-spacing:.1em;color:#7C6E5A;font-weight:700;
+  border-bottom:1.2px solid var(--b-line);padding:2mm 2mm;vertical-align:middle;
 }
 .pg table td{border-bottom:1px solid rgba(221,208,184,.75);padding:1.9mm 2mm;vertical-align:top;line-height:1.65;color:#2A3040}
 .pg table td.k{font-weight:800;color:var(--b-navy);white-space:nowrap}
@@ -127,7 +134,7 @@
 /* 월 카드 */
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
 .mcard{border:1px solid var(--b-line);border-radius:6px;padding:3mm 3.4mm;background:rgba(255,255,255,.5)}
-.mcard .mh{display:flex;baseline;justify-content:space-between;align-items:baseline;margin-bottom:1.4mm}
+.mcard .mh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.4mm}
 .mcard .mh .m{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.1em;color:var(--b-orange);font-weight:800}
 .mcard .mh .s{font-size:calc(var(--fs) * .78);color:var(--b-navy);font-weight:800}
 .mcard p{margin:0;font-size:calc(var(--fs) * .78);line-height:1.8;color:#333A48}
@@ -161,7 +168,10 @@
 @media screen{.toc-r:hover .t,.toc-r:active .t{color:var(--b-orange)}}
 .toc-r .n{font-family:-apple-system,sans-serif;font-size:10.5px;color:var(--b-orange);font-weight:800;min-width:9mm}
 .toc-r .t{font-weight:700;color:var(--b-navy)}
-.toc-r .d{flex:1;border-bottom:1px dotted #D8CBB4;transform:translateY(-2px)}
+/* 점선 리더 — html2canvas가 border 점선을 대각선으로 그려서 배경 반복선으로 대신한다 */
+.toc-r .d{flex:1;height:1px;align-self:center;margin-top:2px;
+  background-image:linear-gradient(90deg,#D8CBB4 30%,transparent 0);
+  background-size:4px 1px;background-repeat:repeat-x;background-position:0 50%}
 .toc-r .p{font-size:11px;color:#8C7D66}
 
 /* 장 도입 */
