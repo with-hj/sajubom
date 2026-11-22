@@ -383,7 +383,10 @@ function revealForm(scroll){
   p.style.opacity='0';
   p.style.transform='translateY(20px)';
   void p.offsetWidth;                     /* 0 높이를 먼저 그려 두고 */
-  if(scroll) scrollToPanel(p);            /* 스크롤을 먼저 걸어 두면 도중에 튀지 않는다 */
+  /* 입력창을 펼치기 전에는 문서가 짧아 목표 위치까지 스크롤할 수 없다.
+     잠시 같은 높이의 아래 여백을 두어 목표를 확보한 뒤, 다 펼치면 걷어낸다. */
+  var padBase=document.body.style.paddingBottom;
+  if(scroll){ document.body.style.paddingBottom=h+'px'; scrollToPanel(p); }
   requestAnimationFrame(function(){
     p.style.height=h+'px';
     p.style.opacity='1';
@@ -393,6 +396,11 @@ function revealForm(scroll){
     p.style.height=''; p.style.opacity=''; p.style.transform='';
     p.classList.remove('reveal-in');
     p.classList.add('reveal-settled');
+    if(scroll){
+      document.body.style.paddingBottom=padBase;
+      var t=p.getBoundingClientRect().top;   /* 상단 바 바로 아래(124px)에 와 있어야 한다 */
+      if(t>150||t<90) scrollToPanel(p);      /* 어긋났으면 한 번 더 부드럽게 */
+    }
   },800);
 }
 function syncIntro(){
