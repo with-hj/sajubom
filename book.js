@@ -15,6 +15,16 @@ function elS(i){return '<b>'+S.EL_KO[i]+'</b>('+S.EL_HAN[i]+')';}
 function stemS(s){return S.STEM_HAN[s]+'('+S.STEM_KO[s]+')';}
 function brS(b){return S.BR_HAN[b]+'('+S.BR_KO[b]+')';}
 function josa(s,pair){var c=s.charCodeAt(s.length-1);var has=(c>=0xAC00&&c<=0xD7A3)&&((c-0xAC00)%28)!==0;return has?pair[0]:pair[1];}
+function bj(b,pair){ return brS(b)+josa(S.BR_KO[b],pair); }
+function sj(s,pair){ return stemS(s)+josa(S.STEM_KO[s],pair); }
+function DD(){ return S.deep(B.R); }
+function salsAt(d,pos){
+  return d.sals.filter(function(x){ return x.pos===pos; }).map(function(x){ return x.name; });
+}
+function relsAt(d,pos){
+  return d.branchRels.filter(function(r){ return r.a===pos||r.b===pos; })
+    .map(function(r){ return (r.a===pos?r.b:r.a)+' '+r.type+'('+r.pair+')'; });
+}
 
 /* ---------------- 십이운성 ---------------- */
 var UNSUNG_START=[11,5,2,9,2,9,5,0,8,3]; /* 갑해 을오 병인 정유 무인 기유 경사 신자 임신 계묘 */
@@ -192,6 +202,9 @@ function chartPage(){
   h+=row('십성',function(ix){ return ix===B.R.dIdx?'일간':S.tenGod(R.dStem,ix%10); });
   h+=row('지지 오행',function(ix){ return S.EL_KO[S.BR_EL[ix%12]]+'('+S.EL_HAN[S.BR_EL[ix%12]]+')'; });
   h+=row('십이운성',function(ix){ return unsung(R.dStem,ix%12); });
+  h+=row('지장간',function(ix){ return S.deep(R).pillars.filter(function(p){return p.ix===ix;})[0].hidden.map(function(x){return S.STEM_HAN[x.stem];}).join('·'); });
+  h+=row('기둥 관계',function(ix){ var p=cells.filter(function(y){return y[1]===ix;})[0]; var rel=relsAt(S.deep(R),p[0]); return rel.length?rel.join('<br>'):'—'; });
+  h+=row('공망·신살',function(ix){ var p=cells.filter(function(y){return y[1]===ix;})[0]; var g=(S.deep(R).gmHits.filter(function(x){return x.pos===p[0];}).length?'공망':'')+(salsAt(S.deep(R),p[0]).length?(S.deep(R).gmHits.filter(function(x){return x.pos===p[0];}).length?'·':'')+salsAt(S.deep(R),p[0]).join('·'):''); return g||'—'; });
   h+='</table>';
   var body=secLabel('02','ORIGINAL CHART · 원국')+
    '<h1>여덟 글자의 <span class="accent">지도</span></h1>'+
@@ -246,6 +259,28 @@ function godPage(){
   push(page('04 / TEN GODS',body2,{spread:true}));
 }
 
+function relationPage(){
+  var R=B.R,d=S.deep(R),c=B.c;
+  var rows='';
+  d.branchRels.forEach(function(r){
+    rows+='<tr><td class="k">'+r.a+' '+brS(r.aBr)+' · '+r.b+' '+brS(r.bBr)+'</td><td>'+r.type+'</td><td style="font-size:12px">'+r.mean+'</td></tr>';
+  });
+  d.stemRels.forEach(function(r){
+    rows+='<tr><td class="k">'+r.a+' · '+r.b+' 천간</td><td>'+r.type+'</td><td style="font-size:12px">'+r.mean+'</td></tr>';
+  });
+  var body=secLabel('02','INTERACTION · 합과 충')+
+   '<h1>여덟 글자가<br><span class="accent">서로 만나는 자리</span></h1>'+
+   '<p class="lead">사주는 네 글자가 따로 노는 것이 아니라, 서로 묶이고 부딪히면서 한 사람의 생활을 만듭니다. 같은 글자라도 어느 기둥과 묶이느냐에 따라 결과가 달라집니다.</p>'+
+   (rows?'<table><tr><th>만나는 자리</th><th>관계</th><th>이 사주에서</th></tr>'+rows+'</table>'
+        :'<p>네 기둥 사이에 뚜렷한 합·충·형·파·해가 없습니다. 글자들이 서로 간섭하지 않고 <b>각자 제 몫</b>을 하는 구조라, 운의 변화는 세운·대운이 어느 자리에 들어오는지로 읽습니다.</p>')+
+   '<h3>공망 — 비어 있는 두 글자</h3><p>'+S.gongmangText(R)+'</p>'+
+   '<h3>신살 — 타고난 표시</h3>'+(d.sals.length?'<p>'+d.sals.map(function(s){return '<b>'+s.name+'</b>('+s.pos+')';}).join(' · ')+' — 강하게 작동하는 자리는 '+d.sals.filter(function(s){return s.strong;}).map(function(s){return s.pos;}).join('·')+'입니다.</p>':'<p>대표적인 신살이 뚜렷하지 않습니다. 대신 치우친 글자가 적어 어느 자리에서든 평균 이상을 합니다.</p>')+
+   '<h3>이 구조를 쓰는 법</h3><p>합은 <b>사람을 거치는 일</b>에 힘을 주고, 충은 <b>판을 바꾸는 일</b>에 힘을 줍니다. 그래서 이 사주는 '+(d.branchRels.some(function(r){return r.type==='충';})?'큰 결정을 혼자 밀지 말고, 충이 걸린 자리의 일은 3개월 단위로 나눠 확인해야 합니다.':(d.branchRels.some(function(r){return r.type==='육합'||r.type==='삼합';})?'중개·소개·동업처럼 사람을 거치는 구조에서 빨라집니다.':'결정의 속도를 스스로 정하는 편이 좋습니다.'))+'</p>'+
+   callout('한 줄','<p>사주의 합충은 길흉이 아니라 <b>일에 힘이 실리는 방향</b>입니다.</p>');
+  chapter('interaction','02-2','합과 충 · 여덟 글자의 관계','기둥 사이의 합·충·공망·신살');
+  push(page('02 / INTERACTION',body,{spread:true}));
+}
+
 function salsPage(){
   var R=B.R;
   var sals=salsOf(R);
@@ -259,6 +294,7 @@ function salsPage(){
    '<p class="lead">십이운성은 일간의 기운이 각 지지에서 어느 단계에 있는지를 보여줍니다. 같은 글자라도 사람마다 단계가 달라, 힘의 세기와 쓰임이 달라집니다.</p>'+h+
    '<h3>신살(神煞)</h3>'+
    (sals.length?'<ul>'+sals.map(function(s){return '<li><b>'+s.n+'</b> · '+s.b+' — '+s.t+'</li>';}).join('')+'</ul>':'<p>이 사주에는 대표적인 신살이 뚜렷하게 걸리지 않았습니다. 신살이 없다는 것은 흠이 아니라, 삶의 결이 <b>사주 본연의 구조</b>로 더 또렷하게 나타난다는 뜻입니다.</p>')+
+   '<p>'+S.gongmangText(R)+'</p>'+
    '<p>신살은 “있다/없다”보다 <b>어느 자리에 있는지</b>가 중요합니다. 년지·월지에 있으면 초년과 사회 초기의 성향으로, 일지에 있으면 배우자와의 관계로, 시지에 있으면 말년과 자녀의 결로 나타납니다.</p>'+
    callout('신살을 읽는 태도','<p>신살은 길흉의 낙인이 아닙니다. 도화는 매력, 역마는 이동, 화개는 몰입 — 쓰는 방식에 따라 재능이 되고 부담이 됩니다.</p>');
   chapter('stages','05','십이운성 · 신살','기운이 머무는 자리');
@@ -271,8 +307,8 @@ function strengthPage(){
   var d=S.EL_DEEP[c.yongEl];
   var body=secLabel('06','USEFUL GOD · 격국과 용신')+
    '<h1>이 사주에 필요한<br><span class="accent">한 가지 기운</span></h1>'+
-   '<p class="lead">일간의 힘은 <b>'+(R.strength==='강'?'강(신강)':(R.strength==='약'?'약(신약)':'중화에 가까움'))+'</b>입니다. '+S.STRENGTH_TXT[R.strength].out+'</p>'+
-   '<p>'+yongWhy+'</p>'+
+   '<p class="lead">일간의 힘은 <b>'+(R.strength==='강'?'강(신강)':(R.strength==='약'?'약(신약)':'중화에 가까움'))+'</b>입니다. '+S.strengthText(R)+'</p>'+
+   '<p>'+S.yongText(R)+'</p>'+
    '<table><tr><th>용신</th><th>'+elK(c.yongEl)+'</th></tr>'+
    '<tr><td class="k">색</td><td>'+d.color+'</td></tr>'+
    '<tr><td class="k">방위</td><td>'+d.dir+'</td></tr>'+
@@ -289,7 +325,7 @@ function strengthPage(){
 
 /* ---------------- 3장 네 기둥 ---------------- */
 function pillarPages(){
-  var R=B.R,c=B.c;
+  var R=B.R,c=B.c,d=S.deep(R);
   var defs=[
     {name:'년주',ix:R.yIdx,range:'0~15세 · 뿌리',desc:'조상과 집안의 분위기, 그리고 초년의 환경을 상징합니다. 이 자리는 “내가 태어난 조건”입니다.',key:'year'},
     {name:'월주',ix:R.mIdx,range:'16~30세 · 사회 초년',desc:'부모와 형제, 그리고 사회에 처음 나갈 때의 자리입니다. 직업의 재료가 여기서 나옵니다.',key:'month'},
@@ -316,6 +352,9 @@ function pillarPages(){
       '<div class="c"><div class="lab">십성</div><div class="god">'+S.GOD_GROUP[g]+'</div><div class="st" style="font-size:18px">'+g+'</div><div class="ko">'+S.GOD_KEY[g]+'</div></div>'+
       '<div class="c"><div class="lab">단계</div><div class="god">'+df.range.split(' · ')[0]+'</div><div class="st" style="font-size:17px">'+df.range.split(' · ')[1]+'</div><div class="ko">'+unsung(R.dStem,b)+'</div></div></div>'+
       '<h3>이 기둥의 결</h3><p>'+S.GOD_DEEP[g]+'</p>'+
+      '<p>지장간은 '+d.pillars.filter(function(p){return p.key===df.key;})[0].hidden.map(function(x){return '<b>'+S.STEM_HAN[x.stem]+'('+x.god+')</b>';}).join(' · ')+'입니다. 지장간은 이 기둥이 <b>속으로 품고 있는 재료</b>라, 겉으로 보이는 십성과 다른 결이 여기서 나옵니다.</p>'+
+      '<p>다른 기둥과의 관계 — '+(function(){ var rr=relsAt(d,df.name); return rr.length?rr.join(', ')+'입니다. '+REL_MEAN_BOOK(rr):'두드러진 합·충이 없습니다. 이 기둥은 다른 자리에 간섭하지 않고 제 몫을 합니다.'; })()+'</p>'+
+      (function(){ var gm=d.gmHits.filter(function(x){return x.pos===df.name;}); return gm.length?'<p>이 기둥은 <b>공망</b>입니다. '+S.gongmangText(R)+'</p>':''; })()+
       '<p>'+S.BR_INNER[b]+' 이 기둥에서 이 글자가 놓인 자리는 '+df.range.split(' · ')[1]+'의 시기입니다. 그래서 이 시기에 '+S.GOD_KEY[g]+'의 성향이 삶의 방식으로 굳어집니다.</p>'+
       '<p>'+UNSUNG_MEAN[unsung(R.dStem,b)]+'</p>'+
       callout('이 기둥을 쓰는 법','<p>'+df.name+'는 '+S.GOD_KEY[g]+'의 자리입니다. '+S.GROUP_MEAN[S.GOD_GROUP[g]]+' 이 재료를 '+df.range.split(' · ')[1]+'에 어떻게 썼는지가 지금의 습관이 되었습니다.</p>');
@@ -386,48 +425,86 @@ function relationPages(){
 
 /* ---------------- 6장 재물 ---------------- */
 function moneyPages(){
-  chapter('wealth','10','재물과 자산','그릇·새는 곳·10년');
-  var R=B.R,c=B.c;
+  chapter('wealth','10','재물과 자산','그릇·새는 곳·문서·10년');
+  var R=B.R,c=B.c,d=S.deep(R),w=d.docu;
   var jeong=c.gc['정재'],pyeon=c.gc['편재'];
+  var jaeWhere=[];
+  d.live.forEach(function(p){
+    if(S.GOD_GROUP[p.sGod]==='재성') jaeWhere.push(p.pos+' 천간 '+p.gz+'('+p.sGod+')');
+    if(S.GOD_GROUP[p.bGod]==='재성') jaeWhere.push(p.pos+' 지지 '+brS(p.branch));
+  });
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물')+'<h1>돈의 그릇과<br><span class="accent">들어오는 문</span></h1>'+
     '<p class="lead">재성은 <b>'+(jeong+pyeon)+'개</b>(정재 '+jeong+' · 편재 '+pyeon+')입니다. '+(pyeon>jeong?'변동형 수입에 강하고 큰 판을 보는 눈이 있습니다.':(jeong>pyeon?'고정형 수입에 강하고 관리에 능합니다.':'고정과 변동이 반반이라 균형 잡힌 운영이 맞습니다.'))+'</p>'+
+    '<p>재성이 놓인 자리는 '+(jaeWhere.length?jaeWhere.join(', '):'천간·지지 본기에 뚜렷하지 않음')+'입니다. 어느 기둥에 있느냐가 돈의 성질을 정합니다 — 년주면 자라온 환경, 월주면 직업, 일주면 내 손, 시주면 말년과 자녀입니다.</p>'+
+    '<p>'+S.strengthText(R)+'</p>'+
+    '<p>'+S.yongText(R)+'</p>'+
     '<table><tr><th>구분</th><th>이 사주의 결</th></tr>'+
     '<tr><td class="k">그릇</td><td>'+(S.WEALTH_VESSEL_GOD[c.topGodInGrp]||'성실함이 그대로 재산이 되는 구조')+'</td></tr>'+
-    '<tr><td class="k">일간의 힘</td><td>'+R.strength+' — '+S.STRENGTH_TXT[R.strength].adv+'</td></tr>'+
     '<tr><td class="k">새는 곳</td><td>'+(S.WEALTH_LEAK_GOD[c.topGodInGrp]||'사람을 통한 지출에서 계산이 흐려집니다.')+'</td></tr>'+
-    '<tr><td class="k">맞는 일</td><td>'+S.WORK_BY_GRP[c.topGrp]+'</td></tr></table>'+
-    '<h3>돈을 보는 눈</h3><p>'+(c.grp['재성']>=3?'이 사주는 현실적인 계산이 빠릅니다. 다만 사람이 앞서면 계산이 흐려지니, 큰 결정은 혼자 숫자로 확인하는 시간을 두세요.':(c.grp['식상']>=3?'아이디어가 돈이 되는 구조입니다. 검증 없이 뛰어들지 말고 작은 금액으로 먼저 확인하세요.':(c.grp['인성']>=3?'공부하고 확신이 생겨야 움직입니다. 확신이 늦어 기회를 놓치지 않도록 기한을 정하세요.':(c.grp['관성']>=3?'안정형입니다. 원금과 절차를 중요하게 보고, 급한 제안에 흔들리지 않습니다.':'내 판단을 믿는 편입니다. 손실 한도를 먼저 정하는 것이 가장 중요합니다.'))))+'</p>',{spread:true}));
+    '<tr><td class="k">맞는 일</td><td>'+S.careerMap(R).roles[0]+' · '+S.careerMap(R).roles[1]+'</td></tr>'+
+    '<tr><td class="k">공망</td><td>'+(d.gmHits.length?d.gmHits.map(function(x){return x.pos;}).join('·')+' — 들어온 돈이 늦게 정산됩니다':(w.gmIn.length?'인성 공망 — 서류·등기에서 한 번 더 확인':'걸린 자리 없음'))+'</td></tr></table>'+
+    '<p>'+(c.grp['재성']>=3?'이 사주는 현실적인 계산이 빠릅니다. 다만 사람이 앞서면 계산이 흐려지니, 큰 결정은 혼자 숫자로 확인하는 시간을 두세요.':(c.grp['식상']>=3?'아이디어가 돈이 되는 구조입니다. 검증 없이 뛰어들지 말고 작은 금액으로 먼저 확인하세요.':(c.grp['인성']>=3?'공부하고 확신이 생겨야 움직입니다. 확신이 늦어 기회를 놓치지 않도록 기한을 정하세요.':(c.grp['관성']>=3?'안정형입니다. 원금과 절차를 중요하게 보고, 급한 제안에 흔들리지 않습니다.':'내 판단을 믿는 편입니다. 손실 한도를 먼저 정하는 것이 가장 중요합니다.'))))+'</p>',{spread:true}));
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 2')+'<h1>돈이 새는<br><span class="accent">세 개의 구멍</span></h1>'+
     '<p class="lead">돈은 벌이의 크기보다 <b>새는 곳</b>에서 갈립니다. 이 사주는 특히 사람과 감정에 연결된 지출에서 새기 쉽습니다.</p>'+
     '<h3>1. 사람에게 쓰는 돈</h3><p>이 사주의 중심 기운은 '+c.topGrp+'입니다. '+S.GROUP_MEAN[c.topGrp]+' 그래서 관계를 위해 계산을 포기하는 순간이 있습니다. 빌려준 돈, 함께 쓴 비용, 내가 더 낸 자리 — 이 사주는 기억은 하지만 말은 못 합니다.</p>'+
     '<h3>2. 기분 전환으로 쓰는 돈</h3><p>'+S.EL_DEEP[c.leastI].under+' 가장 얇은 기운이 비면 작은 소비로 채우려 합니다. 그 소비는 한 달 뒤에 남지 않습니다.</p>'+
-    '<h3>3. 미루는 돈</h3><p>이 사주는 결제·청구·정산을 미루는 습관이 있습니다. 미룬 돈은 커지지 않지만, 미룬 결정은 손실이 됩니다.</p>'+
-    callout('막는 방법','<p>큰 결심보다 구조가 낫습니다. 통장을 셋으로 — 쓰는 통장, 쌓는 통장, 비상 통장. 수입이 들어온 날 <b>절반</b>을 먼저 옮기세요. '+S.EL_DEEP[c.yongEl].color+' 계열의 이름을 붙이면 의식이 유지됩니다.</p>'),{spread:true}));
+    '<h3>3. 미루는 돈</h3><p>이 사주는 결제·청구·정산을 미루는 습관이 있습니다. 미룬 돈은 커지지 않지만, 미룬 결정은 손실이 됩니다. 기신 '+elK(d.gisin)+'이 도는 달에는 이 구멍이 두 배로 커집니다.</p>'+
+    '<p>'+S.gongmangText(R)+'</p>'+
+    callout('막는 방법','<p>큰 결심보다 구조가 낫습니다. 통장을 셋으로 — 쓰는 통장, 쌓는 통장, 비상 통장. 수입이 들어온 날 <b>절반</b>을 먼저 옮기세요. '+S.EL_DEEP[d.yong].color+' 계열의 이름을 붙이면 의식이 유지됩니다.</p>'),{spread:true}));
+  docuPages();
   // 10년 재물 흐름
   var rows='';
-  R.daeun.forEach(function(d,i){
-    var g=S.tenGod(R.dStem,d.idx%10), grp=S.GOD_GROUP[g];
+  R.daeun.forEach(function(dn,i){
+    var g=S.tenGod(R.dStem,dn.idx%10), grp=S.GOD_GROUP[g];
     var note=({'정재':'쌓이는 돈의 구간. 저축·계약·자격처럼 남는 일이 재산이 됩니다.','편재':'큰 돈이 도는 구간. 판이 넓어지지만 씀씀이도 함께 커집니다.','비견':'내 힘으로 버는 구간. 동업은 몫을 먼저 정하세요.','겁재':'사람을 통해 버는 구간. 장부가 없으면 남지 않습니다.','식신':'좋아하는 일이 수입이 되는 구간.','상관':'재능이 돈이 되는 구간. 구설을 조심하세요.','편관':'압박이 커지는 구간. 자리를 지키는 것이 곧 돈입니다.','정관':'자리가 돈을 만드는 구간. 조직·자격이 곧 재산입니다.','편인':'혼자 깊어지는 구간. 준비에 돈을 씁니다.','정인':'배움에 돈을 쓰는 구간. 큰 투자보다 실력을 사는 쪽이 남습니다.'})[g]||'';
-    rows+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+S.STEM_HAN[d.idx%10]+S.BR_HAN[d.idx%12]+' · '+g+'</td><td style="font-size:12px">'+note+'</td></tr>';
+    var rel=S.relType(R.dBranch,dn.idx%12);
+    rows+='<tr><td class="k">'+dn.from+'~'+dn.to+'</td><td>'+S.STEM_HAN[dn.idx%10]+S.BR_HAN[dn.idx%12]+' · '+g+(rel&&rel!=='동일'?'<br><span style="font-size:11px">일지와 '+rel+'</span>':'')+'</td><td style="font-size:12px">'+note+'</td></tr>';
   });
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 3')+'<h1>10년마다 바뀌는<br><span class="accent">돈의 그릇</span></h1>'+
     '<p class="lead">같은 노력도 대운의 결에 따라 결과가 달라집니다. 이 사주의 재물은 아래 구간에서 크기가 달라집니다.</p>'+
     '<table><tr><th>나이</th><th>대운</th><th>재물의 결</th></tr>'+rows+'</table>'+
     '<p>이 사주에게 가장 중요한 것은 <b>들어오는 구간에 무엇을 남기느냐</b>입니다. 재성이 오는 10년에 벌어도, 인성의 10년에 지키지 못하면 남지 않습니다.</p>'+
-    callout('10년의 규칙','<p>재성이 오는 10년에는 <b>벌이는 크게, 지출은 작게</b>. 인성이 오는 10년에는 <b>실력에 투자</b>. 비겁이 오는 10년에는 <b>내 이름을 걸되 몫을 문서로</b>.</p>'),{spread:true}));
-  push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 4')+'<h1>한 달의<br><span class="accent">금전 루틴</span></h1>'+
+    callout('10년의 규칙','<p>재성이 오는 10년에는 <b>벌이는 크게, 지출은 작게</b>. 인성이 오는 10년에는 <b>실력과 문서에 투자</b>. 비겁이 오는 10년에는 <b>내 이름을 걸되 몫을 문서로</b>.</p>'),{spread:true}));
+  push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 5')+'<h1>한 달의<br><span class="accent">금전 루틴</span></h1>'+
     '<p class="lead">'+(S.WEALTH_ROUTINE[c.topGrp]||'수입이 들어온 날 바로 떼어두는 습관 하나가 10년을 바꿉니다.')+'</p>'+
     '<table><tr><th>때</th><th>할 일</th><th>왜</th></tr>'+
     '<tr><td class="k">수입일</td><td>절반을 쌓는 통장으로 이동</td><td>이 사주는 손에 있으면 씁니다</td></tr>'+
     '<tr><td class="k">주 1회</td><td>지출 10분 점검</td><td>작은 지출이 새는 곳입니다</td></tr>'+
+    '<tr><td class="k">기신의 달</td><td>큰 결제 2주 미루기</td><td>2주면 절반은 사지 않습니다</td></tr>'+
     '<tr><td class="k">월 1회</td><td>고정 지출 하나 줄이기</td><td>구조를 바꾸는 유일한 방법</td></tr>'+
     '<tr><td class="k">분기 1회</td><td>큰 지출 계획 세우기</td><td>충동과 분리하기</td></tr>'+
     '<tr><td class="k">연 1회</td><td>보험·연금·세금 점검</td><td>이 사주가 가장 미루는 일</td></tr></table>'+
-    '<h3>공간의 처방</h3><p>'+S.EL_DEEP[c.yongEl].space+'. '+S.EL_DEEP[c.yongEl].item+' — 이 사주는 눈에 보이는 것으로 의식을 유지합니다.</p>'+
+    '<h3>공간의 처방</h3><p>'+S.EL_DEEP[d.yong].space+'. '+S.EL_DEEP[d.yong].item+' — 이 사주는 눈에 보이는 것으로 의식을 유지합니다.</p>'+
     callout('한 줄','<p>돈은 <b>한 달의 순서</b>로 지켜집니다. 많이 버는 사람이 아니라, 순서를 지키는 사람이 남깁니다.</p>'),{spread:true}));
 }
 
 /* ---------------- 7장 커리어 ---------------- */
+function docuPages(){
+  var R=B.R,c=B.c,w=S.docu(R),d=S.deep(R);
+  chapter('docu','10-4','문서와 부동산','계약·등기·매매의 문');
+  push(page('10 / DOCUMENT',secLabel('10','DOCUMENT · 문서와 부동산')+'<h1>문서와 부동산<br><span class="accent">취득의 문</span></h1>'+
+    '<p class="lead">문서운은 재물의 크기와 다른 축입니다. 명리에서는 <b>인성(문서·계약·등기)</b> · <b>관성(명의·관청)</b> · <b>재성(실물·자금)</b> 세 축의 균형과, 그 글자가 <b>공망·충·형</b>에 걸렸는지로 봅니다.</p>'+
+    '<p><b>취득 지수 '+w.score+'/100 · '+w.grade+'</b> — 인성 '+w.inCnt+' · 관성 '+w.gwanCnt+' · 재성 '+w.jaeCnt+' · 토(土) '+w.toCnt+'</p>'+
+    '<table><tr><th>축</th><th>이 사주의 구조</th></tr>'+
+    '<tr><td class="k">인성 '+w.inCnt+'</td><td>'+(w.inCnt===0?'문서를 “나중에” 보는 구조입니다. 계약서·등기부를 읽는 습관 자체를 만들어야 합니다.':(w.inCnt<=2?'문서를 읽고 남기는 힘이 적당합니다. 확인 목록만 정해두면 충분합니다.':'문서가 많은 사주입니다. 검토가 길어져 타이밍을 놓치는 쪽이 위험합니다.'))+'</td></tr>'+
+    '<tr><td class="k">관성 '+w.gwanCnt+'</td><td>'+(w.gwanCnt===0?'명의·등기·관청 절차에 약합니다. 매수는 되지만 명의를 넘기는 순서에서 실수가 생깁니다.':(w.gwanCnt<=2?'명의와 절차를 지키는 힘이 있습니다. 등기·확정일자 같은 공적 기록이 힘이 됩니다.':'절차가 강해 형식에 매달릴 수 있습니다. 실익(잔금·대출·세금)을 먼저 계산하세요.'))+'</td></tr>'+
+    '<tr><td class="k">재성 '+w.jaeCnt+'</td><td>'+(w.jaeCnt===0?'실물 자산보다 현금·사람 쪽에 가까운 사주입니다. 부동산은 작게 한 채가 맞습니다.':(w.jaeCnt<=2?'실물을 쥐는 힘이 있습니다. 판단이 늦지 않으면 남습니다.':'자산이 여러 개로 흩어지기 쉽습니다. 명의와 관리 주체를 하나로 모으세요.'))+'</td></tr>'+
+    '<tr><td class="k">토(土) '+w.toCnt+'</td><td>'+(w.toCnt>=2?'토가 넉넉해 땅·집과 인연이 있습니다.':(w.toCnt===1?'토가 하나 있어 부동산과 한 번은 인연이 됩니다.':'토가 얇아 부동산보다 금융·사람 쪽이 이 사주에 맞습니다.'))+'</td></tr></table>'+
+    '<p>'+S.gongmangText(R)+'</p>'+
+    '<table><tr><th>취득 방식</th><th>적합도</th></tr>'+w.types.map(function(t){ return '<tr><td class="k">'+t.label+'</td><td>'+t.s+'점 — '+t.why+'</td></tr>'; }).join('')+'</table>'+
+    callout('결론','<p>이 사주는 <b>'+w.types[0].label+'</b>이 가장 잘 맞고, 그다음이 <b>'+w.types[1].label+'</b>입니다. '+(w.types[0].k==='jeonse'?'큰 빚을 지는 매수보다 안전한 계약에서 힘을 냅니다.':(w.types[0].k==='live'?'사는 순간 명의와 생활이 함께 정리되는 구조입니다.':(w.types[0].k==='cheong'?'공적 절차와 서류에서 이기는 구조입니다.':'돌아가는 현금을 다루는 감각이 있는 구조입니다.')))+'</p>'),{spread:true}));
+  push(page('10 / DOCUMENT',secLabel('10','DOCUMENT · 시기와 함정')+'<h1>언제,<br><span class="accent">무엇을 조심할까</span></h1>'+
+    '<p class="lead">시기는 <b>인성(문서)·관성(명의)·재성(자금)</b>이 세운으로 들어오는 해와, <b>지지가 내 기둥과 합·충</b>을 이루는 해로 좁힙니다.</p>'+
+    '<ul>'+w.years.slice(0,3).map(function(y,ix){
+      return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+(ix===0?' → 첫 번째 창':'')+'</li>';
+    }).join('')+'</ul>'+
+    '<p>달까지 좁히면 '+w.goodMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+' '+m.gz+'</b>'+(m.why.length?'('+m.why.join('·')+')':''); }).join(', ')+'입니다. 가계약·잔금·등기 접수 중 하나를 여기에 잡으세요.</p>'+
+    '<p>피할 달은 '+w.badMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+'</b>'; }).join(', ')+'입니다. '+(w.badMonths[0].why.length?w.badMonths[0].why.join('·')+'이라 그 달의 계약은 뒤에서 흔들립니다.':'')+'</p>'+
+    '<h3>계약·대출에서 조심할 것</h3><ul>'+w.traps.map(function(t){ return '<li>'+t+'</li>'; }).join('')+'</ul>'+
+    '<h3>실행 순서</h3><ol><li>자금과 대출 한도를 먼저 숫자로 확정 — 상환액이 월 소득의 30%를 넘기지 않기</li><li>명의(단독·공동)와 등기 순서를 종이에 적기</li><li>잔금일·접수일·특약을 한 사람이 아닌 두 사람이 확인</li><li>이사와 계약을 같은 달에 몰지 않기</li></ol>'+
+    callout('한 줄','<p>이 사주의 문서운은 <b>'+w.grade+'</b>입니다. '+(w.score>=60?'확인 목록만 지키면 자산이 남습니다.':'먼저 명의·등기·자금 순서를 정리하고 움직이세요.')+'</p>'),{spread:true}));
+}
+
 function careerWindow(R){
   var ds=daeunStarsOf(R,'관성');
   if(!ds.length) return '이 사주는 관성이 대운으로 뚜렷하게 들어오지 않아, 자리보다 결과로 평가받는 곳에서 빨리 인정받습니다. 직함을 기다리기보다 남길 수 있는 결과를 먼저 만드세요.';
@@ -439,11 +516,13 @@ function careerWindow(R){
 }
 
 function careerPages(){
-  chapter('career','11','일과 커리어','천직·이직·조건');
-  var R=B.R,c=B.c;
+  chapter('career','11','일과 커리어','천직·직군·이직·조건');
+  var R=B.R,c=B.c,cm=S.careerMap(R),d=S.deep(R);
   push(page('11 / CAREER',secLabel('11','CAREER · 일')+'<h1>천직의<br><span class="accent">방향</span></h1>'+
-    '<p class="lead">이 사주가 오래 해도 기운이 돌아오는 일은 <b>'+S.WORK_BY_GRP[c.topGrp]+'</b>입니다. '+S.GOD_DEEP[c.topGodInGrp]+'</p>'+
-    '<table><tr><th>일간</th><th>결이 맞는 분야</th></tr><tr><td class="k">'+stemS(R.dStem)+'</td><td>'+S.CAREER[R.dayEl].join(' · ')+'</td></tr></table>'+
+    '<p class="lead">'+cm.why+'</p>'+
+    '<table><tr><th>일간</th><th>결이 맞는 영역</th></tr><tr><td class="k">'+stemS(R.dStem)+'</td><td>'+cm.domain+'</td></tr></table>'+
+    '<h3>2026년 기준, 이 사주에 맞는 직군</h3><ul>'+cm.roles.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'+
+    '<p>두 번째 줄은 <b>'+cm.secondGrp+'('+cm.secondGod+')</b>입니다 — '+cm.sub.join(' · ')+'. 수입이 한 줄로만 들어오면 이 사주는 금방 지칩니다.</p>'+
     '<h3>일하는 방식</h3><p>'+(S.WORK_MODE[c.topGrp]||'역할이 분명할 때 가장 오래 갑니다.')+'</p>'+
     '<h3>이 사주가 일에서 지치는 순간</h3><p>'+S.DM_DEEP[R.dStem].drain+' 이 감각이 2주 이상 이어지면 그것은 게으름이 아니라 <b>자리의 문제</b>입니다.</p>'+
     '<h3>인정받는 시기</h3><p>'+careerWindow(R)+'</p>',{spread:true}));
@@ -508,7 +587,15 @@ function lovePages(){
     '<h3>위기의 신호</h3><p>'+S.MARR_CRISIS_BR[R.dBranch]+'</p>'+
     '<h3>회복의 처방</h3><p>'+(S.MARR_SOLUTION[c.topGrp]||'각자의 시간을 보장하고, 함께하는 시간을 정기적으로 두세요.')+'</p>',{spread:true}));
 }
+function relWordsR(rr){ return rr.join(', '); }
 function C_marry(){ return (B.input.ctx&&B.input.ctx.marry)==='married'; }
+function REL_MEAN_BOOK(rr){
+  var s=rr.join(' ');
+  if(s.indexOf('충')>=0) return '충이 있어 이 자리의 일은 <b>한 번에 정해지지 않고</b> 흔들리며 진행됩니다.';
+  if(s.indexOf('형')>=0||s.indexOf('파')>=0) return '형·파가 있어 서류와 일정이 꼬이기 쉽습니다.';
+  if(s.indexOf('육합')>=0||s.indexOf('삼합')>=0) return '합이 있어 사람을 거치면 일이 풀립니다.';
+  return '서로 부딪히지 않는 자리입니다.';
+}
 
 /* ---------------- 시기 계산 : 자녀성(임신의 문)을 실제 연·월로 ---------------- */
 function pregWindow(R,c){
@@ -675,7 +762,7 @@ B.build=function(R,input,name){
   introPage();
   var tocStart=B.pages.length;
   B.pages.push('__TOC1__');B.pages.push('__TOC2__');
-  summaryPage();chartPage();elPage();godPage();salsPage();strengthPage();
+  summaryPage();chartPage();relationPage();elPage();godPage();salsPage();strengthPage();
   pillarPages();personalityPages();relationPages();moneyPages();careerPages();lovePages();familyPages();healthPages();
   if(window.BOOKM&&window.BOOKM.sections) window.BOOKM.sections();
   var html=B.pages.join('');

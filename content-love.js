@@ -17,10 +17,16 @@ function loveYears(R){
 
 /* ---------- 썸 속마음 ---------- */
 function sm1(R,c,input,name){
-  var h='<p>'+name+' 님이 좋아할 때 드러나는 신호는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b> 쪽입니다. '+S.loveSignal(R,c)+'</p>';
+  var dd=S.deep(R);
+  var stage=S.stage12(R.dStem,R.dBranch);
+  var sal=dd.sals.filter(function(s){return s.key==='dohwa'||s.key==='hongyeom'||s.key==='hwagae';});
+  var h=window.CH.facts(R);
+  h+='<p>'+name+' 님이 좋아할 때 드러나는 신호는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b> 쪽입니다. '+S.loveSignal(R,c)+'</p>';
   h+=H('사랑의 언어')+'<p>'+S.LOVE_LANG[R.dayEl]+'</p>';
   h+=H('상대가 읽는 나')+'<p>'+S.DM_DEEP[R.dStem].out+' 그래서 처음 만난 사람은 이 사람을 “차분하다, 쉽게 마음을 안 준다”고 기억합니다. 하지만 '+S.DM_DEEP[R.dStem].in+'</p>';
-  h+=H('지금의 온도')+'<p>올해 세운은 <b>'+S.tenGod(R.dStem,R.seun[0].idx%10)+'</b>입니다. '+(S.SEUN_DEEP[S.tenGod(R.dStem,R.seun[0].idx%10)]||'')+'</p>';
+  h+='<p>일지 '+window.CH.bj(R.dBranch,'이가')+' <b>'+stage+'</b>의 자리입니다. '+S.STAGE_MEAN[stage]+' 연애에서도 이 방식으로 회복합니다.</p>';
+  if(sal.length) h+='<p>인연의 표시로 <b>'+sal.map(function(s){return s.name;}).join('·')+'</b>이 '+sal[0].pos+'에 있습니다. '+sal[0].txt+'</p>';
+  h+=H('지금의 온도')+'<p>'+S.yearRead(R,R.seun[0].year).why+'</p>';
   return h+K('먼저 할 일','완벽한 문장을 만들기보다 <b>짧은 안부를 먼저</b> 보내세요. 이 사주는 표현이 늦어질수록 상대가 마음을 접습니다.');
 }
 function sm2(R,c,input,name){
@@ -57,13 +63,25 @@ function sm3(R,c,input,name){
   return h;
 }
 function sm4(R,c,input,name){
-  var ys=loveYears(R);
-  var h=H('지금 움직여도 되는가')+'<p>'+(ys.length?('앞으로 5년 중 '+ys.map(function(o){return '<b>'+o.y+'년('+o.g+')</b>';}).join(', ')+'이 관계가 구체적으로 움직이는 해입니다.'):'앞으로 5년에는 관계성이 세운으로 크게 들어오지 않아, 해보다 만남의 밀도가 중요합니다.')+'</p>';
+  var dd=S.deep(R);
+  var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
+  var open=reads.filter(function(r){return r.grp==='재성'||r.grp==='관성';});
+  var h=H('지금 움직여도 되는가');
+  h+='<p>'+(open.length?open.map(function(r){return '<b>'+r.y+'년('+r.gz+')</b>';}).join(', ')+'이 관계가 구체적으로 움직이는 해입니다. '+open[0].why:'앞으로 다섯 해에는 관계성이 세운으로 크게 들어오지 않아, 해보다 만남의 밀도가 중요합니다.')+'</p>';
+  h+='<p>'+S.gongmangText(R)+'</p>';
   h+=H('연락의 순서')+UL([
     '<b>1단계</b> — 안부 한 줄, 질문은 하나만.',
     '<b>2단계</b> — 상대가 답하면 그 답에 대한 내 감상 한 줄. 질문을 또 던지지 마세요.',
     '<b>3단계</b> — 만남은 상대가 편한 시간대에. 이 사주는 저녁보다 낮 약속에서 자연스럽습니다.'
   ]);
+  var now=new Date(), mm=now.getMonth()+1, tops=[];
+  for(var k=0;k<6;k++){
+    var yy=now.getFullYear(), mo=mm+k;
+    while(mo>12){ mo-=12; yy++; }
+    var mr=S.monthRead(R,yy,mo);
+    if(mr.rels.some(function(x){return x.type==='육합'||x.type==='삼합';})||mr.grp==='재성'||mr.grp==='관성') tops.push(yy+'.'+(mo<10?'0'+mo:mo)+'('+mr.gz+')');
+  }
+  if(tops.length) h+='<p>연락·고백에 힘이 실리는 달은 <b>'+tops.slice(0,3).join(', ')+'</b>입니다.</p>';
   h+=H('흔들리는 지점')+'<p>'+S.LOVE_SHADOW[R.dayEl]+'</p>';
   return h+K('타이밍','지금 답이 없다고 관계가 없는 것은 아닙니다. 다만 <b>기다릴 기한</b>을 정해두세요. 이 사주는 기한 없이 기다리다 스스로 정리합니다.');
 }
@@ -90,7 +108,12 @@ function sm7(R,c,input,name){
 
 /* ---------- 재회 / 연락운 ---------- */
 function re1(R,c,input,name){
-  var h='<p>재회운은 “돌아올까”보다 <b>다시 이어졌을 때 무엇이 달라지는가</b>로 봅니다. 이 사주는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>이 강해 그리움이 커지면 이유를 잊는 편입니다.</p>';
+  var dd=S.deep(R);
+  var chung=dd.branchRels.filter(function(r){return r.type==='충';});
+  var h=window.CH.facts(R);
+  h+='<p>재회운은 “돌아올까”보다 <b>다시 이어졌을 때 무엇이 달라지는가</b>로 봅니다. 이 사주는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>이 강해 그리움이 커지면 이유를 잊는 편입니다.</p>';
+  h+='<p>'+S.interHTML(R)+'</p>';
+  h+='<p>'+(chung.length?'특히 '+chung.map(function(r){return r.a+'와 '+r.b;}).join(', ')+'의 충이 이 사주 안에 이미 있습니다. <b>관계가 끊기고 다시 붙는 일</b>이 구조적으로 반복되는 자리입니다. 그래서 재회는 “한 번 더”가 아니라 <b>규칙을 바꾸는 일</b>이어야 합니다.':'원국에 충이 없어 관계가 끊기는 방식이 급격하지 않습니다. 대신 <b>서서히 식는</b> 쪽이라, 재회도 서서히 시작됩니다.')+'</p>';
   h+=H('헤어진 이유가 바뀌었는가')+'<p>헤어진 이유를 세 줄로 적어보세요. 그중 <b>두 줄이 아직 그대로</b>라면 지금의 재회는 같은 결말을 한 번 더 겪는 일이 됩니다.</p>';
   h+=H('이 사주가 그리워하는 것')+'<p>'+S.DM_DEEP[R.dStem].in+' 그래서 그리운 것이 상대보다 <b>그때의 나</b>인 경우가 많습니다. 둘을 구분하면 연락의 문장이 훨씬 담백해집니다.</p>';
   h+=H('재회가 되는 경우')+UL(['헤어진 이유가 <b>상황</b>이었고 상황이 실제로 바뀌었을 때','한 사람이 먼저 <b>조건을 내려놓았을 때</b>','연락이 아니라 <b>만남</b>으로 이어질 계기가 있을 때']);
@@ -115,9 +138,19 @@ function re2(R,c,input,name){
   return h+K('상대의 속도','상대가 압박을 받는 시기라면 연락은 <b>한 번만</b>. 두 번째부터는 상대의 속도가 아니라 내 불안이 움직입니다.');
 }
 function re3(R,c,input,name){
-  var ys=loveYears(R);
-  var h=H('연락의 문')+'<p>연락은 <b>배우자성</b>이 세운으로 들어오는 해에 열립니다. '+(ys.length?('앞으로 5년 중 <b>'+ys.map(function(o){return o.y+'년('+o.g+')';}).join(', ')+'</b>이 그 해입니다.'):'앞으로 5년에는 그 문이 뚜렷하지 않습니다. 이 시기는 기다림보다 내 생활을 세우는 쪽이 맞습니다.')+'</p>';
+  var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
+  var ys=reads.filter(function(r){return r.grp==='재성'||r.grp==='관성';});
+  var h=H('연락의 문');
+  h+='<p>연락은 <b>배우자성</b>이 세운으로 들어오는 해에 열립니다. '+(ys.length?('앞으로 다섯 해 중 <b>'+ys.map(function(r){return r.y+'년('+r.gz+')';}).join(', ')+'</b>이 그 해입니다. '+ys[0].why):'앞으로 다섯 해에는 그 문이 뚜렷하지 않습니다. 이 시기는 기다림보다 내 생활을 세우는 쪽이 맞습니다.')+'</p>';
   h+=seunTable(R,c,5);
+  var now=new Date(), tops=[];
+  for(var k=0;k<8;k++){
+    var yy=now.getFullYear(), mo=now.getMonth()+1+k;
+    while(mo>12){ mo-=12; yy++; }
+    var mr=S.monthRead(R,yy,mo);
+    if(mr.rels.some(function(x){return x.type==='육합';})) tops.push(yy+'.'+(mo<10?'0'+mo:mo)+'('+mr.gz+')');
+  }
+  h+='<p>'+(tops.length?'일지와 합이 걸리는 달은 <b>'+tops.slice(0,3).join(', ')+'</b>입니다. 이 달의 연락은 상대도 마음이 열려 있습니다.':'앞으로 8개월은 일지와 합이 걸리는 달이 뚜렷하지 않습니다. 연락보다 만남의 자리를 먼저 만드세요.')+'</p>';
   h+=H('달 단위로 보기')+monthsBlock(R,c,'love',6,'앞으로 6개월 중 연락이 오갈 달입니다.');
   return h+K('한 줄','일지와 충하는 달에 들어온 연락은 감정이 앞서 있습니다. 그 달에 결정하지 마세요.');
 }
@@ -153,9 +186,11 @@ function re7(R,c,input,name){
 
 /* ---------- 내 연애 패턴 ---------- */
 function pt1(R,c,input,name){
-  var h='<p>이 사주가 끌리는 사람은 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>의 반대편에 있습니다. '+S.LOVE_ATTRACT[R.dayEl]+'</p>';
-  h+=H('왜 그 사람에게 끌리는가')+'<p>이 사주의 가장 얇은 기운은 '+elB(c.leastI)+'입니다. 그래서 그 기운을 가진 사람에게서 <b>내게 없는 것</b>을 느끼고, 관계가 깊어질수록 기대도 커집니다. 기대를 말로 옮기는 연습이 필요합니다.</p>';
-  h+=H('끌림과 맞음은 다르다')+'<p>끌리는 사람은 '+elB(c.leastI)+' 쪽, 오래 가는 사람은 '+elB(c.yongEl)+' 쪽입니다. '+S.LOVE_FIT[R.dayEl]+'</p>';
+  var dd=S.deep(R);
+  var h=window.CH.facts(R);
+  h+='<p>이 사주가 끌리는 사람은 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>의 반대편에 있습니다. '+S.LOVE_ATTRACT[R.dayEl]+'</p>';
+  h+=H('왜 그 사람에게 끌리는가')+'<p>이 사주의 가장 얇은 기운은 '+window.CH.elB(c.leastI)+'입니다. 그래서 그 기운을 가진 사람에게서 <b>내게 없는 것</b>을 느끼고, 관계가 깊어질수록 기대도 커집니다. 기대를 말로 옮기는 연습이 필요합니다.</p>';
+  h+='<p>끌리는 사람은 '+window.CH.elB(c.leastI)+' 쪽, 오래 가는 사람은 '+window.CH.elB(dd.yong)+' 쪽입니다. '+S.LOVE_FIT[R.dayEl]+'</p>';
   return h+K('한 줄','설렘이 6개월을 넘기면 그다음은 <b>생활의 리듬</b>이 결정합니다.');
 }
 function pt2(R,c,input,name){

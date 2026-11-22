@@ -14,6 +14,11 @@ function K(a,b){return '<div class="ch-key"><b>'+a+'</b><span>'+b+'</span></div>
 function elB(i){return '<b style="color:'+S.EL_COLOR[i]+'">'+S.EL_KO[i]+'('+S.EL_HAN[i]+')</b>';}
 function stemB(s){return '<b>'+S.STEM_HAN[s]+'('+S.STEM_KO[s]+')</b>';}
 function brB(b){return '<b>'+S.BR_HAN[b]+'('+S.BR_KO[b]+')</b>';}
+/* 조사까지 맞춘 글자 표기 — 子(자)가 · 丑(축)이 */
+function bj(b,p){return '<b>'+S.BR_HAN[b]+'('+S.BR_KO[b]+')</b>'+S.josaP(S.BR_KO[b],p);}
+function sj(s,p){return '<b>'+S.STEM_HAN[s]+'('+S.STEM_KO[s]+')</b>'+S.josaP(S.STEM_KO[s],p);}
+function bp(b){return '<b>'+S.BR_HAN[b]+'('+S.BR_KO[b]+')</b>';}
+function sp(s){return '<b>'+S.STEM_HAN[s]+'('+S.STEM_KO[s]+')</b>';}
 function n2(n){return n<10?'0'+n:''+n;}
 function ctx(input){return (input&&input.ctx)||{};}
 function marryOf(input){return ctx(input).marry||'unknown';}
@@ -108,12 +113,52 @@ function yearOfStar(R,grp){
 }
 function partnerChart(input){ return S.partnerChart(input); }
 
+/* ---------------- 정밀 진단 블록 (전 테마 공용) ---------------- */
+function pillarDetail(R){
+  var d=S.deep(R), h='<table class="tbl"><tr><th>기둥</th><th>천간</th><th>지지</th><th>십이운성</th><th>지장간</th></tr>';
+  d.pillars.forEach(function(p){
+    if(p.ix==null){ h+='<tr><td><b>'+p.pos+'</b></td><td colspan="4" style="color:#8a7f6d">시간 미상</td></tr>'; return; }
+    h+='<tr><td><b>'+p.pos+'</b><br><span style="font-size:11px;color:#8a7f6d">'+p.range.split(' ·')[0]+'</span></td>'+
+      '<td style="text-align:center">'+S.STEM_HAN[p.stem]+'<br><span style="font-size:11.5px;color:#5a5145">'+(p.key==='day'?'일간':p.sGod)+'</span></td>'+
+      '<td style="text-align:center">'+S.BR_HAN[p.branch]+'<br><span style="font-size:11.5px;color:#5a5145">'+p.bGod+'</span></td>'+
+      '<td style="text-align:center;font-size:12.5px">'+p.stage+'</td>'+
+      '<td style="font-size:11.5px;line-height:1.6">'+p.hidden.map(function(x){return x.stem+'('+x.god+')';}).join(' · ')+'</td></tr>';
+  });
+  return h+'</table>';
+}
+function facts(R){
+  var d=S.deep(R), c=d.c;
+  var rel=d.branchRels.length?d.branchRels.map(function(r){return r.type+'('+r.pair+')';}).join(' · '):'없음';
+  var sal=d.sals.length?d.sals.map(function(s){return s.name;}).join(' · '):'없음';
+  var gm=d.gmHits.length?d.gmHits.map(function(x){return x.pos;}).join('·')+' 공망':'공망 없음';
+  return '<div class="ch-key" style="margin:2px 0 12px"><b>원국 증거</b><span>'+
+    S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+
+    ' · 용신 '+S.EL_KO[d.yong]+' · 기신 '+S.EL_KO[d.gisin]+'<br>합충 '+rel+' · '+gm+' · 신살 '+sal+'</span></div>';
+}
+function luckYears(R,n){
+  var out=[];
+  for(var i=0;i<Math.min(n||3,R.seun.length);i++){
+    var r=S.yearRead(R,R.seun[i].year);
+    out.push({y:r.y,gz:r.gz,g:r.g,tone:r.tone,why:r.why,short:r.short});
+  }
+  return out;
+}
+function luckMonths(R,n){
+  var out=[], now=new Date(), y=now.getFullYear(), m=now.getMonth()+1;
+  for(var i=0;i<(n||12);i++){
+    var r=S.monthRead(R,y,m);
+    out.push({y:y,m:m,gz:r.gz,g:r.g,tone:r.tone,rels:r.rels,score:r.score});
+    m++; if(m>12){m=1;y++;}
+  }
+  return out;
+}
+
 /* helpers를 다른 파일에서도 쓰도록 노출 */
-window.CH={P:P,H:H,UL:UL,K:K,elB:elB,stemB:stemB,brB:brB,n2:n2,ctx:ctx,marryOf:marryOf,
+window.CH={P:P,H:H,UL:UL,K:K,elB:elB,stemB:stemB,brB:brB,bj:bj,sj:sj,bp:bp,sp:sp,n2:n2,ctx:ctx,marryOf:marryOf,
   kidOf:kidOf,noKids:noKids,singleOf:singleOf,pillars:pillars,elMeter:elMeter,godTable:godTable,
   seunTable:seunTable,monthsBlock:monthsBlock,daeunTable:daeunTable,gaewunBlock:gaewunBlock,
   riskyMonths:riskyMonths,riskyMonthsText:riskyMonthsText,elCount:elCount,yearOfStar:yearOfStar,
-  partnerChart:partnerChart,S:S};
+  partnerChart:partnerChart,pillarDetail:pillarDetail,facts:facts,luckYears:luckYears,luckMonths:luckMonths,S:S};
 
 /* =====================================================================
    5대 테마 · 세부 탭

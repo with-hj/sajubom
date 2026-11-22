@@ -14,20 +14,24 @@ function wedYears(R,input){
 /* ---------- 커플 궁합 ---------- */
 function cp1(R,c,input,name){
   var pc=partnerChart(input),h='';
+  var dd=S.deep(R);
   if(pc){
-    var R2=pc.R, sc=S.coupleScore(R,R2);
+    var R2=pc.R, sc=S.coupleScore(R,R2), dd2=S.deep(R2);
     h+='<div class="ch-key" style="margin-bottom:12px"><b>기본 궁합 '+sc.s+'점</b><span>'+sc.notes.join(' · ')+'</span></div>';
     h+='<p>두 사람의 일간은 '+stemB(R.dStem)+'과 '+stemB(R2.dStem)+'. '+S.DAY_MASTER[R.dStem][0]+'와 '+S.DAY_MASTER[R2.dStem][0]+'가 만나는 구조입니다.</p>';
     h+=H('일간이 만나는 자리');
-    h+='<p>'+(S.generates(R2.dayEl,R.dayEl)?'상대의 기운이 이 사주를 살립니다. 상대가 먼저 움직일 때 관계가 부드러워집니다.':(S.generates(R.dayEl,R2.dayEl)?'이 사주의 기운이 상대를 살립니다. 다만 이 사주가 지치면 관계 전체가 무거워집니다.':(R.dayEl===R2.dayEl?'두 사람의 결이 같아 통하는 부분이 많습니다. 다만 같은 약점도 함께 커집니다.':'두 기운이 서로를 누르지도 살리지도 않아, 생활의 규칙이 관계를 지탱합니다.')))+'</p>';
+    h+='<p>'+(S.generates(R2.dayEl,R.dayEl)?'상대의 '+S.EL_KO[R2.dayEl]+' 기운이 이 사주의 '+S.EL_KO[R.dayEl]+'을 살립니다. 상대가 먼저 움직일 때 관계가 부드러워집니다.':(S.generates(R.dayEl,R2.dayEl)?'이 사주의 '+S.EL_KO[R.dayEl]+' 기운이 상대의 '+S.EL_KO[R2.dayEl]+'을 살립니다. 다만 이 사주가 지치면 관계 전체가 무거워집니다.':(R.dayEl===R2.dayEl?'두 사람의 결이 같아 통하는 부분이 많습니다. 다만 같은 약점도 함께 커집니다.':'두 기운이 서로를 누르지도 살리지도 않아, 생활의 규칙이 관계를 지탱합니다.')))+'</p>';
     h+=H('일지가 만나는 자리');
     var rel=S.branchRel(R.dBranch,R2.dBranch);
     h+='<p><b>'+rel.k+'</b> — '+rel.t+'</p>';
+    h+='<p>이 사주 안에서도 '+S.interHTML(R)+'</p>';
     h+=H('서로에게 없는 것');
-    h+='<p>이 사주에게 얇은 기운은 '+elB(c.leastI)+', 상대에게 얇은 기운은 '+elB(pc.c.leastI)+'. '+(c.leastI===pc.c.leastI?'두 사람 모두 같은 기운이 얇아 그 부분은 서로 채워주지 못합니다. 생활에서 의식적으로 만들어야 합니다.':'서로 다른 기운이 비어 있어 채워줄 수 있습니다. 이 사주가 상대에게 '+S.EL_KO[pc.c.leastI]+'의 환경을 만들어주면 관계가 편해집니다.')+'</p>';
+    h+='<p>이 사주에게 얇은 기운은 '+window.CH.elB(c.leastI)+', 상대에게 얇은 기운은 '+window.CH.elB(pc.c.leastI)+'. '+(c.leastI===pc.c.leastI?'두 사람 모두 같은 기운이 얇아 그 부분은 서로 채워주지 못합니다. 생활에서 의식적으로 만들어야 합니다.':'서로 다른 기운이 비어 있어 채워줄 수 있습니다. 이 사주가 상대에게 '+S.EL_KO[pc.c.leastI]+'의 환경을 만들어주면 관계가 편해집니다.')+'</p>';
+    if(dd.gmHits.length||dd2.gmHits.length) h+='<p>'+(dd.gmHits.length?S.gongmangText(R):'')+' 상대 쪽에서도 '+(dd2.gmHits.length?dd2.gmHits.map(function(x){return x.pos;}).join('·')+'가 공망이라 ':'')+'약속이 문서로 남지 않으면 기억이 달라집니다.</p>';
   } else {
     h+='<p>상대의 생년월일이 비어 있어 두 사람의 점수는 아직 계산되지 않았습니다. 위쪽 <b>상대방 정보</b>를 켜고 생년월일을 넣으면 일간·일지·오행까지 계산해 드립니다.</p>';
-    h+=H('지금은 이 사주의 배우자궁부터')+'<p>배우자궁인 일지 '+brB(R.dBranch)+'는 <b>'+S.SPOUSE[R.dBranch]+'</b>을 가리킵니다. '+S.BR_INNER[R.dBranch]+'</p>';
+    h+=H('지금은 이 사주의 배우자궁부터')+'<p>배우자궁인 일지 '+window.CH.bj(R.dBranch,'은는')+' <b>'+S.SPOUSE[R.dBranch]+'</b>을 가리킵니다. '+S.BR_INNER[R.dBranch]+'</p>';
+    h+='<p>일지의 십이운성은 <b>'+S.stage12(R.dStem,R.dBranch)+'</b>입니다. '+S.STAGE_MEAN[S.stage12(R.dStem,R.dBranch)]+'</p>';
     h+=H('궁합에서 먼저 볼 세 가지')+UL(['<b>일간</b> — 서로를 살리는지, 누르는지','<b>일지</b> — 생활의 리듬이 붙는지 부딪히는지','<b>비어 있는 기운</b> — 상대가 내게 없는 것을 채워주는지']);
   }
   return h+K('한 줄','궁합은 잘 맞는 사람을 찾는 일이 아니라 <b>어긋나는 방식을 미리 아는 일</b>입니다.');
@@ -78,7 +82,18 @@ function cp7(R,c,input,name){
 /* ---------- 결혼 시기 ---------- */
 function wd1(R,c,input,name){
   var w=wedYears(R,input);
-  var h='<p>이 사주에서 결혼의 문은 <b>'+w.star+'</b>이 열어요. '+(w.ys.length?('앞으로 5년 중 '+w.ys.map(function(o){return '<b>'+o.y+'년('+o.g+')</b>';}).join(', ')+'이 그 문이 열리는 해입니다.'):('앞으로 5년에는 '+w.star+'이 세운으로 뚜렷하게 들어오지 않아, 해보다 사람을 만나는 자리의 밀도가 중요합니다.'))+'</p>';
+  var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
+  var hits=reads.filter(function(r){return r.grp===w.star||r.rels.some(function(x){return x.type==='육합';});});
+  var dd=S.deep(R);
+  var mate=[],gm=[];
+  dd.live.forEach(function(p){ if(S.GOD_GROUP[p.bGod]===w.star||S.GOD_GROUP[p.sGod]===w.star) mate.push(p.pos); });
+  var h=window.CH.facts(R);
+  h+='<p>이 사주에서 결혼의 문은 <b>'+w.star+'</b>이 열어요. '+(hits.length
+    ? '앞으로 다섯 해 중 <b>'+hits.map(function(r){return r.y+'년('+r.gz+')';}).join(', ')+'</b>이 그 문이 열리는 해입니다. '+hits[0].why
+    : '앞으로 다섯 해에는 '+w.star+'이 세운으로 뚜렷하게 들어오지 않아, 해보다 사람을 만나는 자리의 밀도가 중요합니다.')+'</p>';
+  h+='<p>원국에서 '+w.star+'이 놓인 자리는 '+(mate.length?mate.join('·'):'뚜렷하지 않음')+'입니다. '+(mate.indexOf('일지')>=0?'<b>배우자궁 안에</b> 배우자성이 있어 결혼이 생활 속에서 자연스럽게 결정되는 사주입니다.':'배우자성이 배우자궁 바깥에 있어, <b>소개·모임</b>을 통해 들어오는 인연이 결혼으로 이어집니다.')+'</p>';
+  h+='<p>일지 '+window.CH.bj(R.dBranch,'은는')+' <b>'+S.stage12(R.dStem,R.dBranch)+'</b>의 자리입니다. '+S.STAGE_MEAN[S.stage12(R.dStem,R.dBranch)]+' 이 자리가 결혼생활의 온도를 정합니다.</p>';
+  if(dd.gmHits.length) h+='<p>'+S.gongmangText(R)+'</p>';
   h+=seunTable(R,c,5);
   h+=H('문이 열리는 달')+monthsBlock(R,c,'marriage',6,'결혼 이야기가 구체화되기 좋은 달입니다.');
   return h+K('한 줄','날짜보다 <b>조건</b>이 먼저입니다. 조건이 정리되면 날짜는 자연스럽게 정해집니다.');
@@ -131,13 +146,19 @@ function wd7(R,c,input,name){
 
 /* ---------- 이혼 / 위기 ---------- */
 function dv1(R,c,input,name){
-  var single=C.singleOf(input);
-  var h='';
+  var single=C.singleOf(input), dd=S.deep(R);
+  var rel=dd.branchRels.filter(function(r){return r.type==='충'||r.type==='형'||r.type==='파';});
+  var sal=dd.sals.filter(function(s){return s.key==='yangin'||s.key==='baekho'||s.key==='goegang';});
+  var h=window.CH.facts(R);
   if(single){
     h+='<p>아직 결혼 전이라면 이 탭은 <b>앞으로의 관계에서 반복될 위기 패턴</b>을 미리 보는 용도입니다. 이혼을 전제하지 않고, 이 사주가 관계에서 무너지는 지점을 봅니다.</p>';
   } else {
     h+='<p>명리에서 이혼수는 “이혼한다”는 예언이 아니라 <b>관계가 흔들리는 해</b>를 가리킵니다.</p>';
   }
+  h+=H('구조적으로 흔들리는 자리');
+  h+='<p>'+(rel.length? '원국에 '+rel.map(function(r){return r.a+'·'+r.b+'의 '+r.type;}).join(', ')+'이 있어 <b>관계가 끊기고 다시 붙는 일</b>이 구조적으로 반복됩니다. 이 사주는 갈등이 “사건”이 아니라 <b>반복되는 패턴</b>으로 옵니다.':'원국에 충·형·파가 없어 관계가 급격히 끊기지는 않습니다. 대신 <b>서서히 식는</b> 방식으로 흔들립니다.'))+'</p>';
+  h+='<p>'+S.gongmangText(R)+'</p>';
+  if(sal.length) h+='<p>'+sal.map(function(s){return '<b>'+s.name+'</b>('+s.pos+')';}).join(', ')+' — '+sal[0].txt+' 관계에서 강하게 나갈 때 이 힘이 나옵니다.</p>';
   h+=H('이 사주의 위기 신호')+'<p>'+S.MARR_CRISIS_BR[R.dBranch]+'</p>';
   h+=H('갈등이 커지는 구조')+'<p>'+S.CONFLICT_BY_EL[R.dayEl]+'</p>';
   h+=H('위기가 오는 방식')+'<p>이 사주는 <b>'+c.topGrp+'</b>이 중심이라, 그 기운이 무시당한다고 느낄 때 조용히 마음을 닫습니다. 상대는 이유를 모른 채 끝났다고 느낍니다.</p>';
@@ -145,8 +166,14 @@ function dv1(R,c,input,name){
 }
 function dv2(R,c,input,name){
   var danger=[];
-  for(var i=0;i<R.seun.length;i++){ if(S.mod(R.seun[i].idx%12-R.dBranch,12)===6) danger.push(R.seun[i].year); }
-  var h=H('흔들리는 해')+'<p>'+(danger.length?('앞으로 5년 중 일지와 충하는 해는 <b>'+danger.join(', ')+'년</b>입니다. 이 해에는 이사·이직·별거 같은 생활 변화가 겹치기 쉬워 작은 갈등이 크게 느껴집니다.'):'앞으로 5년에는 일지와 직접 충하는 해가 없습니다. 대신 갈등이 쌓이는 구조를 점검하세요.')+'</p>';
+  for(var i=0;i<R.seun.length;i++){
+    var r=S.yearRead(R,R.seun[i].year);
+    if(r.rels.some(function(x){return x.type==='충';})) danger.push({y:r.y,why:'일지·기둥과 충'});
+    else if(r.grp==='관성'&&S.GOD_GROUP[S.tenGod(R.dStem,R.seun[i].idx%10)]==='관성'&&r.gi) danger.push({y:r.y,why:'기신이 겹친 관성'});
+  }
+  var h=H('흔들리는 해');
+  h+='<p>'+(danger.length?('앞으로 다섯 해 중 <b>'+danger.map(function(o){return o.y+'년('+o.why+')';}).join(', ')+'</b>입니다. 이 해에는 이사·이직·별거 같은 생활 변화가 겹치기 쉬워 작은 갈등이 크게 느껴집니다.'):'앞으로 다섯 해에는 기둥과 직접 충하는 해가 없습니다. 대신 갈등이 쌓이는 구조를 점검하세요.')+'</p>';
+  h+='<p>올해는 '+S.yearRead(R,R.seun[0].year).why+'</p>';
   h+=seunTable(R,c,5);
   h+=H('달 단위')+'<p>'+risky(R,c,12)+'</p>';
   return h+K('한 줄','충의 해에는 <b>큰 결정을 3개월 단위로</b> 나눠 확인하세요.');

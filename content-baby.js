@@ -39,19 +39,31 @@ function wfText(R){
 
 /* ---------------- 임신운 ---------------- */
 function pg1(R,c,input,name){
-  var ys=childStarYears(R,input);
-  var h='<p>임신의 시기는 <b>'+starName(input)+'이 들어오는 해</b>와 <b>몸의 리듬</b>을 함께 봅니다. '+(ys.length?('앞으로 5년 중 '+ys.map(function(o){return '<b>'+o.y+'년('+o.g+')</b>';}).join(', ')+'이 그 문에 해당합니다.'):'앞으로 5년에는 자녀성이 세운으로 뚜렷하게 들어오지 않습니다. 이때는 해보다 <b>몸과 생활의 조건</b>이 중요합니다.')+'</p>';
+  var dd=S.deep(R), star=starOf(input);
+  var hits=[]; for(var i=0;i<R.seun.length;i++){ var r=S.yearRead(R,R.seun[i].year); if(r.grp===star) hits.push(r); }
+  var where=[];
+  dd.live.forEach(function(p){
+    if(S.GOD_GROUP[p.bGod]===star) where.push(p.pos+' 지지 '+S.BR_HAN[p.branch]);
+    if(S.GOD_GROUP[p.sGod]===star) where.push(p.pos+' 천간');
+  });
+  var h=window.CH.facts(R);
+  h+='<p>임신의 시기는 <b>'+starName(input)+'이 들어오는 해</b>와 <b>몸의 리듬</b>을 함께 봅니다. '+(hits.length
+    ? '앞으로 다섯 해 중 '+hits.map(function(r){return '<b>'+r.y+'년('+r.gz+')</b>';}).join(', ')+'이 그 문에 해당합니다. '+hits[0].why
+    : '앞으로 다섯 해에는 자녀성이 세운으로 뚜렷하게 들어오지 않습니다. 이때는 해보다 <b>몸과 생활의 조건</b>이 중요합니다.')+'</p>';
+  h+='<p>원국에서 자녀성이 놓인 자리는 '+(where.length?where.join(', '):'뚜렷하지 않음')+'입니다. '+(where.length?'자녀성이 원국에 있어 <b>아이의 자리가 이미 열려 있는</b> 사주입니다.':'자녀성이 원국에 얇아, 아이의 일은 <b>세운·대운이 데려오는</b> 구조입니다.')+'</p>';
+  if(dd.gmHits.length) h+='<p>다만 '+dd.gmHits.map(function(x){return x.pos;}).join('·')+'가 공망이라, <b>일정·서류·검사 기록</b>을 직접 챙기는 습관이 필요합니다. 맡기면 빠지는 자리입니다.</p>';
   h+=H('해마다의 문');
   h+='<table class="tbl"><tr><th>해</th><th>간지</th><th>십성</th><th>임신·출산의 문</th></tr>';
-  for(var i=0;i<R.seun.length;i++){
-    var sn=R.seun[i], g=S.tenGod(R.dStem,sn.idx%10);
-    var isStar=(S.GOD_GROUP[g]===starOf(input));
-    h+='<tr><td><b>'+sn.year+'</b></td><td>'+S.STEM_HAN[sn.idx%10]+S.BR_HAN[sn.idx%12]+'</td><td>'+g+'</td><td style="font-size:13px">'+(isStar?'<b style="color:#c94228">문이 열리는 해</b> — '+S.SEUN_DEEP[g]:'준비의 해 — '+S.SEUN_KEY[g])+'</td></tr>';
+  for(var k=0;k<R.seun.length;k++){
+    var sn=R.seun[k], g=S.tenGod(R.dStem,sn.idx%10), r=S.yearRead(R,sn.year);
+    var isStar=(S.GOD_GROUP[g]===star);
+    h+='<tr><td><b>'+sn.year+'</b></td><td>'+S.STEM_HAN[sn.idx%10]+S.BR_HAN[sn.idx%12]+'</td><td>'+g+'</td><td style="font-size:13px">'+(isStar?'<b style="color:#c94228">문이 열리는 해</b> — '+(r.rels.length?r.rels.map(function(x){return x.pos+' '+x.type;}).join('·')+', ':'')+'몸을 세워두세요.':'준비의 해 — '+S.SEUN_KEY[g])+'</td></tr>';
   }
   h+='</table>';
   h+=H('달로 보는 창');
   var ms=starMonths(R,input,12);
   h+='<p>'+(ms.length?('앞으로 12개월 중 <b>'+ms.map(function(o){return o.y+'.'+C.n2(o.m);}).join(', ')+'</b>이 '+starName(input)+'이 도는 달입니다. 이 달들은 몸의 컨디션을 가장 잘 만들어두면 좋습니다.'):'앞으로 12개월에는 자녀성이 도는 달이 뚜렷하지 않습니다. 이때는 달보다 몸의 주기를 먼저 안정시키세요.')+'</p>';
+  h+='<p>지금 대운은 <b>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세 · '+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</b>입니다. '+(S.GOD_GROUP[S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)]===star?'대운이 자녀성을 데리고 있는 10년이라 세운이 두드리는 해가 더 또렷합니다.':'대운에는 자녀성이 없어, 세운이 오는 해에 몸을 미리 세워두는 쪽이 효율적입니다.')+'</p>';
   return h+K('한 줄','시기는 <b>문</b>이고, 준비는 <b>몸</b>입니다. 문이 열리는 해에 몸이 준비되어 있어야 합니다.');
 }
 function pg2(R,c,input,name){
