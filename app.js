@@ -493,7 +493,7 @@ function setIntroCopy(T){
   var b=$('#introBadge'), hk=$('#introHook'), ct=$('#introCta'), vd=$('#introVideo');
   if(b) b.textContent=IQ?IQ.badge:'2027 신년 · 天靈堂';
   if(hk) hk.innerHTML=IQ?IQ.hook:'다가오는 한 해,<br>어느 달에 문이 열리고<br><b>무엇을 피해야 할지</b> 보고 가세요';
-  if(ct) ct.innerHTML=(IQ?IQ.cta:(T.name+' · 사주 정보 입력하기'))+' <span aria-hidden="true">→</span>';
+  if(ct) ct.innerHTML=(IQ?IQ.cta:('내 '+(T?T.name:'')+' · 사주 정보 입력하기'))+' <span aria-hidden="true">→</span>';
   if(vd){
     var pos=(T&&T.poster)?T.poster:'./assets/themes-web/t-general.jpg';
     if(vd.getAttribute('poster')!==pos) vd.setAttribute('poster',pos);

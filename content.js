@@ -185,7 +185,8 @@ var THEMES={
 var TABS={
   newyear:{theme:'general',name:'신년운세',tag:'다가오는 한 해, 어디로 문이 열리는지',
     note:'다가오는 한 해의 세운을 중심으로 상반기·하반기의 방향을 먼저 짚어요.',
-    video:'./assets/videos/newyear.mp4'},   /* v46 · 탭별 인트로 영상 (있으면 입력창 앞에 9:16 카드로 재생) */
+    video:'./assets/videos/newyear.mp4',poster:'./assets/themes-web/t-general.jpg',
+    intro:{badge:'2027 신년 · 天靈堂',hook:'다가오는 한 해,<br>어느 달에 문이 열리고<br><b>무엇을 피해야 할지</b> 보고 가세요',cta:'내 신년운세 · 사주 정보 입력하기'}},   /* v46 · 탭별 인트로 영상 (있으면 입력창 앞에 9:16 카드로 재생) */
   /* v50 · 영상 인트로를 6개 탭으로 넓힌다. intro 는 카드 문구, poster 는 영상 첫 프레임 대체 이미지 */
   life:{theme:'general',name:'평생사주',tag:'타고난 그릇과 평생의 결',
     note:'한 해의 운이 아니라 평생 따라다니는 바탕을 읽어요.',
