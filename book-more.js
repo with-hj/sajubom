@@ -454,7 +454,7 @@ function answerFor(kind,R,c,q){
     h+='<h3>유리한 해와 달</h3><ul>'+w.years.slice(0,3).map(function(y){ return '<li><b>'+y.y+'년 '+y.gz+'</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+'</li>'; }).join('')+'</ul>';
     h+='<p>달은 '+w.goodMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+'</b>'+(m.why.length?'('+m.why.join('·')+')':''); }).join(', ')+'이 좋고, '+w.badMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+'</b>'; }).join(', ')+'은 피하세요.</p>';
     h+='<h3>조심할 것</h3><ul>'+w.traps.slice(0,3).map(function(t){ return '<li>'+t+'</li>'; }).join('')+'</ul>';
-    h+=callout('한 줄','<p>이 사주는 <b>'+(w.score>=60?'확인 목록을 지키면 자산이 남습니다.':'명의·등기·자금 순서를 먼저 정리해야 합니다.')+'</b> '+(dd.gmIn.length?'특히 인성 공망 — 구두 약속을 특약으로 남기세요.':'')+'</p>');
+    h+=callout('한 줄','<p>이 사주는 <b>'+(w.score>=60?'확인 목록을 지키면 자산이 남습니다.':'명의·등기·자금 순서를 먼저 정리해야 합니다.')+'</b> '+(w.gmIn.length?'특히 인성 공망 — 구두 약속을 특약으로 남기세요.':'')+'</p>');
   } else if(kind==='move'){
     var ch=[],jn=[];
     for(var i5=0;i5<R.seun.length;i5++){
