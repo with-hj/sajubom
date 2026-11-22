@@ -149,7 +149,7 @@ function life5(R,c,input,name){
   h+='<p>'+S.strengthText(R)+'</p>';
   h+=H('돈이 새는 지점')+'<p>'+(S.WEALTH_LEAK_GOD[c.topGodInGrp]||'사람을 통한 지출에서 계산이 흐려집니다.')+' 기신 '+elK(dd.gisin)+'이 도는 달에 특히 커집니다.</p>';
   h+=H('부르는 방식')+'<p>'+(S.WEALTH_VESSEL_GOD[c.topGodInGrp]||'성실함이 그대로 재산이 되는 구조입니다.')+'</p>';
-  h+=H('문서·부동산')+'<p>문서·부동산 취득 지수는 <b>'+w.score+'/100('+w.grade+')</b>입니다. 가장 잘 맞는 방식은 <b>'+w.types[0].label+'</b>이고, 첫 번째 창은 <b>'+w.best.y+'년 '+w.best.gz+'</b>입니다. '+(w.gmIn.length?'인성이 공망이라 계약서·등기를 직접 확인해야 합니다.':'인성·관성이 받쳐줘 등기와 계약에서 손해가 적은 구조입니다.')+'</p>';
+  h+=H('문서·부동산')+'<p>문서·부동산 취득 지수는 <b>'+w.score+'/100('+w.grade+')</b>입니다. 가장 잘 맞는 방식은 <b>'+w.types[0].label+'</b>이고, 첫 번째 창은 <b>'+(w.bestClean?w.bestClean.y+'년 '+w.bestClean.gz:w.best.y+'년 '+w.best.gz)+'</b>입니다. '+(w.gmIn.length?'인성이 공망이라 계약서·등기를 직접 확인해야 합니다.':'인성·관성이 받쳐줘 등기와 계약에서 손해가 적은 구조입니다.')+'</p>';
   h+=H('평생의 루틴')+'<p>'+(S.WEALTH_ROUTINE[c.topGrp]||'수입이 들어온 날 바로 떼어두는 습관 하나가 10년을 바꿉니다.')+' '+d.habit+'.</p>';
   h+=K('한 줄','평생의 재물은 <b>'+S.careerMap(R).roles[0]+'</b> 같은 자리에서 만들어집니다.');
   return h;

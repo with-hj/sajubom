@@ -46,7 +46,7 @@ function mo1(R,c,input,name){
   h+='<p>'+S.yongText(R)+'</p>';
   h+=H('십성으로 보는 돈의 재료')+C.godTable(c);
   h+='<p>중심은 <b>'+c.topGrp+'</b>이고, 그 안의 별은 <b>'+c.topGodInGrp+'</b>입니다. '+S.GROUP_MEAN[c.topGrp]+'</p>';
-  h+='<p>'+(d.gmJae.length?'다만 재성 중 '+d.gmJae.map(function(p){return p.pos;}).join('·')+'가 <b>공망</b>입니다. 벌이는 되지만 <b>들어온 돈이 손에 오래 머물지 않는</b> 자리라, 받을 것은 그 자리에서 확정해야 합니다.':'재성에 공망이 걸리지 않아, 들어온 돈이 <b>장부에 남는</b> 구조입니다.')+'</p>';
+  h+='<p>'+(d.docu.gmJae.length?'다만 재성 중 '+d.docu.gmJae.map(function(p){return p.pos;}).join('·')+'가 <b>공망</b>입니다. 벌이는 되지만 <b>들어온 돈이 손에 오래 머물지 않는</b> 자리라, 받을 것은 그 자리에서 확정해야 합니다.':'재성에 공망이 걸리지 않아, 들어온 돈이 <b>장부에 남는</b> 구조입니다.')+'</p>';
   return h+K('한 줄','이 사주의 돈은 <b>'+S.careerMap(R).roles[0]+'</b> 같은 자리에서 만들어지고, <b>'+(tot>=3?'여러 줄':'한 줄')+'</b>로 들어올 때 가장 안정됩니다.');
 }
 function mo2(R,c,input,name){
@@ -62,7 +62,7 @@ function mo2(R,c,input,name){
   h+=H('이 사주가 반복하는 세 가지 지출')+UL([
     (c.grp['식상']>=2?'기분이 좋아지면 사는 작은 것 — 한 달에 모으면 꽤 큽니다':'필요해 보여서 사두고 쓰지 않는 것 — 집에 쌓입니다'),
     (c.grp['비겁']>=2?'사람과의 자리에서 내가 더 내는 습관':'구독·멤버십을 해지하지 못하는 습관'),
-    (d.gmJae.length?'받을 돈을 “나중에”로 미루는 것 — 공망 재성은 미룰수록 사라집니다':'정산을 미루는 것 — 미룬 결정은 손실이 됩니다')
+    (d.docu.gmJae.length?'받을 돈을 “나중에”로 미루는 것 — 공망 재성은 미룰수록 사라집니다':'정산을 미루는 것 — 미룬 결정은 손실이 됩니다')
   ]);
   h+=H('막는 방법 — 이 사주에게 맞는 것');
   h+='<p>큰 결심보다 <b>구조</b>입니다. 통장을 셋으로 나누세요 — 쓰는 통장, 쌓는 통장, 비상 통장. 이 사주는 필요한 기운이 '+elK(d.yong)+'이라, 쌓는 통장의 이름에 '+S.EL_DEEP[d.yong].color+' 계열을 쓰면 의식이 유지됩니다.</p>';
@@ -106,7 +106,7 @@ function mo3(R,c,input,name){
   }
   if(tops.length){
     h+='<ul>'+tops.slice(0,4).map(function(o){
-      return '<li><b>'+o.y+'.'+n2(o.m)+' '+o.r.gz+'('+o.r.g+')</b> — '+(o.r.rels.length?o.r.rels.map(function(x){return x.pos+'와 '+x.type;}).join(', ')+'라 ':'')+(o.r.grp==='재성'?'수입과 계약이 구체적으로 움직이는 달입니다.':(o.r.grp==='인성'?'문서·자금줄이 정리되는 달입니다.':'자리와 절차가 돈을 만드는 달입니다.'))+'</li>';
+      return '<li><b>'+o.y+'.'+n2(o.m)+' '+o.r.gz+'('+o.r.g+')</b> — '+(o.r.rels.length?o.r.rels.map(function(x){return x.pos+'와 '+x.type;}).join(', ')+'이라 ':'')+(o.r.grp==='재성'?'수입과 계약이 구체적으로 움직이는 달입니다.':(o.r.grp==='인성'?'문서·자금줄이 정리되는 달입니다.':'자리와 절차가 돈을 만드는 달입니다.'))+'</li>';
     }).join('')+'</ul>';
   } else {
     h+='<p>앞으로 12개월은 재성·인성·관성이 도는 달이 뚜렷하지 않습니다. 달을 고르기보다 <b>분기마다 한 번</b> 정산하는 리듬이 맞습니다.</p>';
@@ -165,9 +165,11 @@ function md5(R,c,input,name){
   var best=w.types[0], second=w.types[1];
   h+='<p>결론은 <b>'+best.label+'</b>이 가장 잘 맞고, 그다음이 <b>'+second.label+'</b>입니다. '+(best.k==='jeonse'?'전세·보증금 계약이 1순위라는 것은, 이 사주가 <b>큰 빚을 지는 매수보다 안전한 계약</b>에서 힘을 낸다는 뜻입니다.':(best.k==='live'?'실거주 매수가 1순위라는 것은, 이 사주가 <b>사는 순간 명의와 생활이 함께 정리되는</b> 구조라는 뜻입니다.':(best.k==='cheong'?'청약·분양이 1순위라는 것은, 이 사주가 <b>공적 절차와 서류</b>에서 이긴다는 뜻입니다.':'수익형·임대가 1순위라는 것은, 이 사주가 <b>돌아가는 현금</b>을 다루는 감각이 있다는 뜻입니다.')))+'</p>';
   h+=H('유리한 해와 달 — 이유');
-  h+='<ul>'+w.years.slice(0,3).map(function(y,ix){
-    return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+(ix===0?' → <b>이 해가 첫 번째 창</b>입니다.':'')+'</li>';
+  h+='<ul>'+w.years.slice(0,3).map(function(y){
+    var clean=!y.why.some(function(x){return x.indexOf('기신')>=0||x.indexOf('공망')>=0;});
+    return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(', '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>이 해가 첫 번째 창</b>입니다.':'')+(clean?'':' <span style="color:#B5533F">이 해는 조건이 겹쳐 부담이 큽니다.</span>')+'</li>';
   }).join('')+'</ul>';
+  h+='<p>'+(w.bestClean?'실제로 계약을 잡을 첫 번째 창은 <b>'+w.bestClean.y+'년 '+w.bestClean.gz+'</b>입니다. 기신·공망이 겹치지 않는 해라 잔금과 등기가 뒤에서 흔들리지 않습니다.':'앞으로 여섯 해 중 기신·공망이 겹치지 않는 해가 없습니다. 이때는 <b>가장 점수가 높은 해</b>에 계약하되 잔금·등기·대출 조건을 세 번 확인하세요.')+'</p>';
   h+='<p>달까지 좁히면 '+w.goodMonths.map(function(m){
     return '<b>'+m.y+'.'+n2(m.m)+' '+m.gz+'</b>'+(m.why.length?'('+m.why.join('·')+')':'');
   }).join(', ')+'입니다. 이 달에 가계약·잔금·등기 접수 중 하나를 잡으면 흐름이 붙습니다.</p>';
@@ -182,7 +184,7 @@ function mo5(R,c,input,name){
   h+='<p>'+(S.WEALTH_ROUTINE[c.topGrp]||'수입이 들어온 날 바로 떼어두는 습관 하나가 10년을 바꿉니다.')+'</p>';
   h+='<table class="tbl"><tr><th>때</th><th>할 일</th><th>왜 이 사주에게</th></tr>'+
      '<tr><td>수입이 들어온 날</td><td>절반을 쌓는 통장으로 이동</td><td>'+(R.strength==='강'?'힘이 넘쳐 손에 있으면 바로 씁니다':'재성이 얇아 남겨두지 않으면 사라집니다')+'</td></tr>'+
-     '<tr><td>주 1회</td><td>지출 10분 점검 — 구독·약속 확인</td><td>'+S.EL_KO[c.topGrp]+'의 결이 새는 곳이 여기입니다</td></tr>'+
+     '<tr><td>주 1회</td><td>지출 10분 점검 — 구독·약속 확인</td><td>'+c.topGrp+'의 결이 새는 곳이 여기입니다</td></tr>'+
      '<tr><td>월 1회</td><td>고정 지출 하나 줄이기</td><td>구조를 바꾸는 유일한 방법</td></tr>'+
      '<tr><td>기신 '+EL_KO[d.gisin]+'의 달</td><td>큰 결제 2주 미루기</td><td>2주면 절반은 사지 않습니다</td></tr>'+
      '<tr><td>분기 1회</td><td>큰 지출 계획 세우기</td><td>충동과 분리하기</td></tr>'+

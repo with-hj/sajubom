@@ -447,7 +447,7 @@ function answerFor(kind,R,c,q){
     h+=callout('준비 한 줄','<p>시기보다 <b>잠·식사·역할 분담</b>이 먼저입니다. 그 위에 아이가 옵니다. 임신과 출산의 시기는 명리로 정할 수 없으니 산부인과 상담을 우선하세요.</p>');
   } else if(kind==='docu'){
     var w=S.docu(R), dd=S.deep(R);
-    h+='<p class="lead">결론부터 — 이 사주의 문서·부동산 취득 지수는 <b>'+w.score+'/100 · '+w.grade+'</b>입니다. 가장 잘 맞는 방식은 <b>'+w.types[0].label+'</b>, 첫 번째 창은 <b>'+w.best.y+'년 '+w.best.gz+'</b>입니다.</p>';
+    h+='<p class="lead">결론부터 — 이 사주의 문서·부동산 취득 지수는 <b>'+w.score+'/100 · '+w.grade+'</b>입니다. 가장 잘 맞는 방식은 <b>'+w.types[0].label+'</b>, 첫 번째 창은 <b>'+(w.bestClean?w.bestClean.y+'년 '+w.bestClean.gz:w.best.y+'년 '+w.best.gz)+'</b>입니다.</p>';
     h+='<p>구조는 인성 <b>'+w.inCnt+'</b>(문서·계약) · 관성 <b>'+w.gwanCnt+'</b>(명의·절차) · 재성 <b>'+w.jaeCnt+'</b>(실물·자금) · 토 <b>'+w.toCnt+'</b>입니다. '+(w.inCnt&&w.gwanCnt&&w.jaeCnt?'세 축이 모두 있어 <b>사서 명의를 넘기는 순서</b>가 자연스럽습니다.':'세 축 중 하나가 비어 있어, 계약 전에 그 자리를 사람이나 절차로 메워야 합니다.')+'</p>'+
       '<p>'+S.gongmangText(R)+'</p>';
     h+='<h3>어떤 방식이 맞는가</h3><table><tr><th>유형</th><th>적합도</th></tr>'+w.types.map(function(t){ return '<tr><td class="k">'+t.label+'</td><td>'+t.s+'점 — '+t.why+'</td></tr>'; }).join('')+'</table>';

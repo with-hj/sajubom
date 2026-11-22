@@ -341,13 +341,14 @@ function gongmangText(R){
   var head='일주 '+ganzhiOf(R.dIdx)+'의 순(旬)에서 <b>'+BR_HAN[gm[0]]+'·'+BR_HAN[gm[1]]+'</b> 두 글자가 비어 있습니다(공망).';
   if(!d.gmHits.length) return head+' 이 사주의 기둥에는 그 두 글자가 없어, 공망이 실제 생활을 흔드는 자리는 크지 않습니다.';
   var t=d.gmHits.map(function(x){ return x.pos+' '+BR_HAN[x.br]; }).join(', ');
+  var lastBr=d.gmHits[d.gmHits.length-1].br;
   var gods=d.gmGods.map(function(g){ return g.god; });
   var mean='공망은 “없다”가 아니라 <b>그 자리의 것이 늦게 채워지거나, 마음처럼 남지 않는</b> 자리입니다.';
   if(gods.indexOf('정인')>=0||gods.indexOf('편인')>=0)
     mean+=' 특히 인성이 공망이면 <b>서류·계약·등기</b>에서 한 번 더 확인해야 합니다. 구두 약속이 문서로 남지 않으면 나중에 증명하기 어렵습니다.';
   if(gods.indexOf('정재')>=0||gods.indexOf('편재')>=0)
     mean+=' 재성이 공망이면 <b>들어온 돈이 손에 오래 남지 않는</b> 자리라, 받을 것은 그 자리에서 확정해야 합니다.';
-  return head+' 이 사주는 '+t+'가 공망에 걸립니다('+gods.join('·')+'). '+mean;
+  return head+' 이 사주는 '+t+j(BR_KO[lastBr],'이가')+' 공망에 걸립니다'+(gods.length?'('+gods.join('·')+')':'')+'. '+mean;
 }
 function sinsalHTML(R){
   var d=deepOf(R);
@@ -512,6 +513,8 @@ function buildDocu(R,c,ctx){
     years.push({y:yy,gz:rd.gz,g:rd.g,score:dscore,why:why});
   }
   years.sort(function(a,b){ return b.score-a.score; });
+  var clean=years.filter(function(y){ return !y.why.some(function(w){ return w.indexOf('기신')>=0||w.indexOf('공망')>=0; }); });
+  var bestClean=clean.length?clean[0]:null;
 
   var months=[];
   var now=new Date(), y0=now.getFullYear(), m0=now.getMonth()+1;
@@ -543,7 +546,7 @@ function buildDocu(R,c,ctx){
   if(inCnt>=4) traps.push('인성이 많아 문서를 오래 검토하다 <b>타이밍</b>을 놓칩니다. 검토 기한을 3일로 정해두세요.');
   if(!traps.length) traps.push('원국 구조가 문서와 자산에 유리하게 짜여 있습니다. 다만 계약 당일 <b>구두 약속</b>을 특약에 넣는 습관은 그대로 두세요.');
 
-  return {score:score,grade:grade,inCnt:inCnt,jaeCnt:jaeCnt,gwanCnt:gwanCnt,sikCnt:sikCnt,biCnt:biCnt,
+  return {score:score,grade:grade,bestClean:bestClean,inCnt:inCnt,jaeCnt:jaeCnt,gwanCnt:gwanCnt,sikCnt:sikCnt,biCnt:biCnt,
     jeong:jeong,pyeon:pyeon,jeongjae:jeongjae,pyeonjae:pyeonjae,toCnt:toCnt,
     inPos:inPos,jaePos:jaePos,gwanPos:gwanPos,gmIn:gmIn,gmJae:gmJae,gongHits:gongHits,
     types:types,years:years,goodMonths:goodMonths,badMonths:badMonths,traps:traps,
