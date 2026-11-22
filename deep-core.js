@@ -407,10 +407,10 @@ function yearRead(R,y){
   if(isGong) score-=1.2;
   var tone=score>=3?'open':(score<=-1.5?'hold':'mixed');
   var bits=[];
-  bits.push(y+'년 '+ganzhiOf(ix)+' — 천간 '+stT(s)+j(STEM_KO[s],'은는')+' '+elTxt(sel)+j(EL_KO[sel],'은는')+' <b>'+g+'</b>, 지지 '+brT(b)+j(BR_KO[b],'은는')+' '+elTxt(bel)+j(EL_KO[bel],'은는')+' <b>'+S.tenGod(R.dStem,(S.BR_MAIN?S.BR_MAIN[b]:[9,5,0,1,4,2,3,5,6,7,4,8][b]))+'</b>입니다.');
-  if(rels.length) bits.push('네 기둥과는 '+rels.map(function(r){ return r.pos+'와 '+r.type; }).join(', ')+'으로 만납니다.');
+  bits.push(y+'년 '+ganzhiOf(ix)+' — 천간 '+stT(s)+j(STEM_KO[s],'은는')+' '+elTxt(sel)+'의 기운으로 <b>'+g+'</b>, 지지 '+brT(b)+j(BR_KO[b],'은는')+' '+elTxt(bel)+'의 기운으로 <b>'+S.tenGod(R.dStem,(S.BR_MAIN?S.BR_MAIN[b]:[9,5,0,1,4,2,3,5,6,7,4,8][b]))+'</b>입니다.');
+  if(rels.length){ var lastT=rels[rels.length-1].type; bits.push('네 기둥과는 '+rels.map(function(r){ return r.pos+'와 '+r.type; }).join(', ')+j(lastT,'으로로')+' 만납니다.'); }
   else bits.push('네 기둥과는 크게 부딪히지도 묶이지도 않습니다.');
-  bits.push(yong?'용신 '+EL_KO[d.yong]+'이 직접 들어와 막힌 것이 풀리는 해입니다.':(hee?'희신 '+EL_KO[d.heesin]+'이 들어와 용신을 받쳐줍니다.':(gi?'기신 '+EL_KO[d.gisin]+'이 들어오는 해라 벌인 일이 늦게 정리됩니다.':(gu?'구신 '+EL_KO[d.gusin]+'이 들어와 애쓴 만큼 남지 않기 쉬운 해입니다.':'용신도 기신도 직접 들어오지 않아 평소의 구조가 그대로 이어집니다.'))));
+  bits.push(yong?'용신 '+EL_KO[d.yong]+j(EL_KO[d.yong],'이가')+' 직접 들어와 막힌 것이 풀리는 해입니다.':(hee?'희신 '+EL_KO[d.heesin]+j(EL_KO[d.heesin],'이가')+' 들어와 용신을 받쳐줍니다.':(gi?'기신 '+EL_KO[d.gisin]+j(EL_KO[d.gisin],'이가')+' 들어오는 해라 벌인 일이 늦게 정리됩니다.':(gu?'구신 '+EL_KO[d.gusin]+j(EL_KO[d.gusin],'이가')+' 들어와 애쓴 만큼 남지 않기 쉬운 해입니다.':'용신도 기신도 직접 들어오지 않아 평소의 구조가 그대로 이어집니다.'))));
   if(isGong) bits.push('이 해의 지지 '+brT(b)+j(BR_KO[b],'은는')+' 공망이라 약속이 미뤄지거나 문서가 늦어질 수 있습니다.');
   return {y:y,ix:ix,gz:ganzhiOf(ix),stem:s,branch:b,g:g,grp:grp,sEl:sel,bEl:bel,
     rels:rels,isGong:isGong,yong:yong,hee:hee,gi:gi,gu:gu,score:score,tone:tone,

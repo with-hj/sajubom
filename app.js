@@ -530,7 +530,7 @@ function renderResult(R,input){
   h+='<div class="rh-meta">'+meta+'<br>'+R.y+'년 '+R.m+'월 '+R.d+'일 '+(input.cal==='lunar'?'음력':'양력')+' · '+(R.hasTime?solarNote(R,input):'시간 모름(시주 제외)')+'</div>';
   h+='</div>';
 
-  h+='<div class="res-sum fade-in"><p><b>'+esc(name)+'</b> 님의 여덟 글자는 '+S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'일주, 일간 '+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')입니다. 오행은 <b>'+S.EL_KO[c.mostI]+'</b>이 가장 두텁고 <b>'+S.EL_KO[c.leastI]+'</b>이 가장 얇으며, 필요한 기운은 <b>'+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+')</b>입니다.</p>';
+  h+='<div class="res-sum fade-in"><p><b>'+esc(name)+'</b> 님의 여덟 글자는 '+S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'일주, 일간 '+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')입니다. 오행은 <b>'+S.EL_KO[c.mostI]+'</b>'+S.josaP(S.EL_KO[c.mostI],'이가')+' 가장 두텁고 <b>'+S.EL_KO[c.leastI]+'</b>'+S.josaP(S.EL_KO[c.leastI],'이가')+' 가장 얇으며, 필요한 기운은 <b>'+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+')</b>입니다.</p>';
   h+='<p>'+S.DAY_MASTER[R.dStem][0]+'의 결로 태어나 '+S.GROUP_MEAN[c.topGrp]+' 이 사주의 중심 별은 <b>'+c.topGodInGrp+'</b>입니다. '+S.GOD_KEY[c.topGodInGrp]+'의 방식으로 살 때 가장 편안해집니다.</p>';
   if(input.ctx&&input.ctx.partnerErr) h+='<p style="color:#c94228">'+esc(input.ctx.partnerErr)+' — 내 사주만 읽었습니다.</p>';
   h+='</div>';
