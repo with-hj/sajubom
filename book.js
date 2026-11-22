@@ -307,7 +307,7 @@ function strengthPage(){
   var d=S.EL_DEEP[c.yongEl];
   var body=secLabel('06','USEFUL GOD · 격국과 용신')+
    '<h1>이 사주에 필요한<br><span class="accent">한 가지 기운</span></h1>'+
-   '<p class="lead">일간의 힘은 <b>'+(R.strength==='강'?'강(신강)':(R.strength==='약'?'약(신약)':'중화에 가까움'))+'</b>입니다. '+S.strengthText(R)+'</p>'+
+   '<p class="lead">'+S.strengthText(R)+'</p>'+
    '<p>'+S.yongText(R)+'</p>'+
    '<table><tr><th>용신</th><th>'+elK(c.yongEl)+'</th></tr>'+
    '<tr><td class="k">색</td><td>'+d.color+'</td></tr>'+
@@ -354,7 +354,7 @@ function pillarPages(){
       '<h3>이 기둥의 결</h3><p>'+S.GOD_DEEP[g]+'</p>'+
       '<p>지장간은 '+d.pillars.filter(function(p){return p.key===df.key;})[0].hidden.map(function(x){return '<b>'+S.STEM_HAN[x.stem]+'('+x.god+')</b>';}).join(' · ')+'입니다. 지장간은 이 기둥이 <b>속으로 품고 있는 재료</b>라, 겉으로 보이는 십성과 다른 결이 여기서 나옵니다.</p>'+
       '<p>다른 기둥과의 관계 — '+(function(){ var rr=relsAt(d,df.name); return rr.length?rr.join(', ')+'입니다. '+REL_MEAN_BOOK(rr):'두드러진 합·충이 없습니다. 이 기둥은 다른 자리에 간섭하지 않고 제 몫을 합니다.'; })()+'</p>'+
-      (function(){ var gm=d.gmHits.filter(function(x){return x.pos===df.name;}); return gm.length?'<p>이 기둥은 <b>공망</b>입니다. '+S.gongmangText(R)+'</p>':''; })()+
+      (function(){ var gm=d.gmHits.filter(function(x){return x.pos===df.name;}); return gm.length?'<p>이 기둥은 <b>공망</b>입니다 — 이 자리의 것은 늦게 채워지거나 마음처럼 남지 않습니다. 그래서 '+df.range.split(' · ')[1]+'의 일은 구두 약속보다 <b>기록</b>이 남아야 합니다.</p>':''; })()+
       '<p>'+S.BR_INNER[b]+' 이 기둥에서 이 글자가 놓인 자리는 '+df.range.split(' · ')[1]+'의 시기입니다. 그래서 이 시기에 '+S.GOD_KEY[g]+'의 성향이 삶의 방식으로 굳어집니다.</p>'+
       '<p>'+UNSUNG_MEAN[unsung(R.dStem,b)]+'</p>'+
       callout('이 기둥을 쓰는 법','<p>'+df.name+'는 '+S.GOD_KEY[g]+'의 자리입니다. '+S.GROUP_MEAN[S.GOD_GROUP[g]]+' 이 재료를 '+df.range.split(' · ')[1]+'에 어떻게 썼는지가 지금의 습관이 되었습니다.</p>');
@@ -492,7 +492,7 @@ function docuPages(){
     '<tr><td class="k">토(土) '+w.toCnt+'</td><td>'+(w.toCnt>=2?'토가 넉넉해 땅·집과 인연이 있습니다.':(w.toCnt===1?'토가 하나 있어 부동산과 한 번은 인연이 됩니다.':'토가 얇아 부동산보다 금융·사람 쪽이 이 사주에 맞습니다.'))+'</td></tr></table>'+
     '<p>'+S.gongmangText(R)+'</p>'+
     '<table><tr><th>취득 방식</th><th>적합도</th></tr>'+w.types.map(function(t){ return '<tr><td class="k">'+t.label+'</td><td>'+t.s+'점 — '+t.why+'</td></tr>'; }).join('')+'</table>'+
-    callout('결론','<p>이 사주는 <b>'+w.types[0].label+'</b>이 가장 잘 맞고, 그다음이 <b>'+w.types[1].label+'</b>입니다. '+(w.types[0].k==='jeonse'?'큰 빚을 지는 매수보다 안전한 계약에서 힘을 냅니다.':(w.types[0].k==='live'?'사는 순간 명의와 생활이 함께 정리되는 구조입니다.':(w.types[0].k==='cheong'?'공적 절차와 서류에서 이기는 구조입니다.':'돌아가는 현금을 다루는 감각이 있는 구조입니다.')))+'</p>'),{spread:true}));
+    callout('결론','<p>이 사주는 <b>'+w.types[0].label+'</b>'+S.josaP(w.types[0].label.slice(-1),'이가')+' 가장 잘 맞고, 그다음이 <b>'+w.types[1].label+'</b>입니다. '+(w.types[0].k==='jeonse'?'큰 빚을 지는 매수보다 안전한 계약에서 힘을 냅니다.':(w.types[0].k==='live'?'사는 순간 명의와 생활이 함께 정리되는 구조입니다.':(w.types[0].k==='cheong'?'공적 절차와 서류에서 이기는 구조입니다.':'돌아가는 현금을 다루는 감각이 있는 구조입니다.')))+'</p>'),{spread:true}));
   push(page('10 / DOCUMENT',secLabel('10','DOCUMENT · 시기와 함정')+'<h1>언제,<br><span class="accent">무엇을 조심할까</span></h1>'+
     '<p class="lead">시기는 <b>인성(문서)·관성(명의)·재성(자금)</b>이 세운으로 들어오는 해와, <b>지지가 내 기둥과 합·충</b>을 이루는 해로 좁힙니다.</p>'+
     '<ul>'+(function(){ var L=w.years.slice(0,3); if(w.bestClean&&L.indexOf(w.bestClean)<0) L.push(w.bestClean); return L.map(function(y){
@@ -530,7 +530,7 @@ function careerPages(){
   var gy=[];
   for(var i=0;i<R.seun.length;i++){ var g=S.tenGod(R.dStem,R.seun[i].idx%10); if(S.GOD_GROUP[g]==='관성') gy.push(R.seun[i].year+'년('+g+')'); }
   push(page('11 / CAREER',secLabel('11','CAREER · 일 2')+'<h1>옮길까,<br><span class="accent">남을까</span></h1>'+
-    '<p class="lead">이 사주는 관성 '+c.grp['관성']+'개, 비겁 '+c.grp['비겁']+'개입니다. '+(c.grp['관성']>=3?'조직에서 자리를 올리는 방식이 맞습니다.':'조직과 독립이 반반이라, 소속은 있되 전문 영역은 내 것으로 가져야 합니다.')+'</p>'+
+    '<p class="lead">이 사주는 관성 '+c.grp['관성']+'개, 비겁 '+c.grp['비겁']+'개입니다. '+(c.grp['관성']>=3?'조직에서 자리를 올리는 방식이 맞습니다.':((c.grp['관성']===0&&c.grp['비겁']===0)?'조직과 독립 어느 쪽도 뿌리가 얇습니다. 그래서 직함보다 <b>결과로 평가받는 자리</b>에서 빨리 인정받습니다.':'조직과 독립이 반반이라, 소속은 있되 전문 영역은 내 것으로 가져야 합니다.'))+'</p>'+
     '<p>이직의 문은 <b>관성</b>이 세운으로 들어오는 해에 열립니다. '+(gy.length?('앞으로 5년 중 <b>'+gy.join(', ')+'</b>이 그 해입니다.'):'앞으로 5년에는 그 문이 뚜렷하지 않아, 지금은 준비의 시기입니다.')+'</p>'+
     '<h3>퇴사 판단 기준</h3><ol><li>생활비 6개월이 확보되었는가</li><li>그만두는 이유가 <b>사람</b>인가 <b>일</b>인가 — 사람 때문이라면 옮겨도 반복될 수 있습니다</li><li>다음 자리에서 내 '+S.GOD_KEY[c.topGodInGrp]+'이 쓰이는가</li></ol>'+
     '<h3>남기로 했다면</h3><p>6개월 안에 <b>하나</b>를 바꾸세요. 업무 범위, 보고 방식, 근무 시간 중 하나입니다. 아무것도 바뀌지 않으면 1년 뒤 같은 자리에서 같은 고민을 합니다.</p>'+
@@ -634,7 +634,7 @@ function familyPages(){
     '<p class="lead">'+(hasKid?'이미 아이가 있는 사주입니다. 이 장은 아이와의 관계와 부모로서의 결을 다룹니다.':'이 장은 앞으로 맞이할 가족의 결을 미리 보는 내용입니다.')+'</p>'+
     '<h3>자녀성</h3><p>이 사주의 자녀성은 '+elK(S.mod(R.dayEl+1,5))+'입니다. '+S.CHILD_NATURE_EL[S.mod(R.dayEl+1,5)]+'</p>'+
     (cc?'<h3>아이의 결</h3><p>아이의 사주는 '+S.STEM_HAN[cc.R.dStem]+S.BR_HAN[cc.R.dBranch]+'일주입니다. '+S.CHILD_NATURE_EL[cc.R.dayEl]+'</p>':'')+
-    '<h3>가족 안에서 이 사주가 맡는 것</h3><p>'+S.GROUP_MEAN[c.topGrp].split('.')[0]+'을 맡기 쉽습니다. '+S.STRENGTH_TXT[R.strength].adv+'</p>'+
+    '<h3>가족 안에서 이 사주가 맡는 것</h3><p>이 사주는 가족 안에서 <b>'+c.topGrp+'</b>의 자리를 맡기 쉽습니다. '+S.GROUP_MEAN[c.topGrp]+' '+S.STRENGTH_TXT[R.strength].adv+'</p>'+
     '<h3>가족과의 거리</h3><p>이 사주는 가까운 사람에게 다정하지만 문을 여는 데 시간이 걸립니다. '+S.BR_INNER[R.dBranch]+'</p>',{spread:true}));
   // 임신·자녀 (context)
   var preg=(B.input.ctx&&B.input.ctx.kid)==='plan'||(B.input.ctx&&B.input.ctx.kid)==='none';

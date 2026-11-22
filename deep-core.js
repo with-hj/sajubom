@@ -375,11 +375,11 @@ function yongText(R){
   var d=deepOf(R), c=d.c;
   var harship={0:'목',1:'화',2:'토',3:'금',4:'수'};
   var why=(R.strength==='약')
-    ? '일간이 얇아 나를 낳아주는 <b>'+elTxt(d.yong)+'</b>(인성)이 뿌리를 세워줍니다.'
+    ? '일간이 얇아 나를 낳아주는 <b>'+elTxt(d.yong)+'</b> 인성이 뿌리를 세워줍니다.'
     : (R.strength==='강'
-      ? '일간이 넉넉해 넘치는 힘을 밖으로 내보내는 <b>'+elTxt(d.yong)+'</b>(식상)이 약이 됩니다.'
+      ? '일간이 넉넉해 넘치는 힘을 밖으로 내보내는 <b>'+elTxt(d.yong)+'</b> 식상이 약이 됩니다.'
       : '크게 기울지 않아 가장 얇은 <b>'+elTxt(d.yong)+'</b>을 채우는 것이 가장 효율적입니다.');
-  return why+' 희신은 <b>'+elTxt(d.heesin)+'</b>(용신을 낳아주는 기운), 기신은 <b>'+elTxt(d.gisin)+'</b>(용신을 누르는 기운), 구신은 <b>'+elTxt(d.gusin)+'</b>(용신이 낳아주느라 소모되는 기운)입니다. 기신 '+EL_KO[d.gisin]+'이 세운·월운으로 들어오는 해·달에는 같은 노력도 결과가 늦게 오니, 계약과 지출을 그 시기에 몰지 마세요.';
+  return why+' 희신은 <b>'+elTxt(d.heesin)+'</b> — 용신을 낳아주는 기운, 기신은 <b>'+elTxt(d.gisin)+'</b> — 용신을 누르는 기운, 구신은 <b>'+elTxt(d.gusin)+'</b> — 용신이 낳아주느라 소모되는 기운입니다. 기신 '+EL_KO[d.gisin]+j(EL_KO[d.gisin],'이가')+' 세운·월운으로 들어오는 해·달에는 같은 노력도 결과가 늦게 오니, 계약과 지출을 그 시기에 몰지 마세요.';
 }
 
 /* ---------------------------------------------------------------- 해·달 읽기 */
@@ -490,7 +490,9 @@ function buildDocu(R,c,ctx){
   setType('rent', 40+(pyeonjae*6)+(sikCnt*5)+(biCnt*3)+(R.strength==='강'?8:-6)+(inCnt?4:0),
     (pyeonjae>=1?'편재가 있어 <b>돌아가는 현금(월세·임대)</b>을 다루는 감각이 있습니다.':'편재가 얇아 임대·수익형은 관리 부담이 먼저 커집니다.'));
   setType('jeonse', 40+(inCnt*6)+(gwanCnt*4)+(jeong*4)-(gongHits.length*6)-(gmIn.length*10)+(ctx.branchRels.some(function(r){return r.type==='충';})?-8:0),
-    (gmIn.length?'인성이 공망이라 <b>보증금·계약서</b>에서 확인이 한 번 더 필요합니다.':'인성과 관성이 받쳐줘 계약서와 등기 확인만 지키면 보증금 사고는 적은 구조입니다.'));
+    (gmIn.length?'인성이 공망이라 <b>보증금·계약서</b>에서 확인이 한 번 더 필요합니다.'
+      :(gwanCnt===0?'관성이 없어 <b>등기·확정일자 확인</b>을 남에게 맡기면 위험합니다. 보증금 계약은 직접 확인하는 쪽이 맞습니다.'
+      :'인성과 관성이 받쳐줘 계약서와 등기 확인만 지키면 보증금 사고는 적은 구조입니다.')));
   types.sort(function(a,b){ return b.s-a.s; });
 
   /* 해·달 타이밍 */
