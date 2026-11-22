@@ -179,7 +179,7 @@ function wd1(R,c,input,name){
   h+='<p>'+name+' 님의 사랑은 일지 '+brB(R.dBranch)+'에서 시작됩니다. 일간 '+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')'+S.josaP(S.STEM_KO[R.dStem],'은는')+' 밖으로 드러나는 나이고, 일지 '+bj(R.dBranch,'은는')+' 내가 앉는 자리이자 가장 가까이 마주 앉을 사람의 자리인 <b>배우자궁</b>입니다. 그래서 이 사주는 “어떤 사람이 좋은가”보다 <b>어떤 사람 곁에서 내가 편해지는가</b>로 인연을 정합니다.</p>';
   h+=H('배우자궁이 가리키는 사람')+'<p>배우자궁이 가리키는 사람은 <b>'+S.SPOUSE[R.dBranch]+'</b>입니다. '+S.BR_INNER[R.dBranch]+'</p>';
   h+='<p>이 자리의 십이운성은 <b>'+stage+'</b>입니다. '+S.STAGE_MEAN[stage]+' 이 기운이 연애에서도 그대로 나와서, 마음이 정해지기까지의 속도와 정해진 뒤의 태도를 함께 만듭니다. 그래서 이 사주는 첫 만남에서 판단하기보다 <b>세 번째 만남</b>에서 마음이 정해집니다.</p>';
-  h+=H('나의 연애 성향과 선천적 매력')+'<p>이 사주의 사랑의 언어는 <b>'+String(S.LOVE_LANG[R.dayEl]).split('.')[0]+'</b>입니다. '+S.LOVE_LANG[R.dayEl]+'</p>';
+  h+=H('나의 연애 성향과 선천적 매력')+'<p>이 사주의 사랑의 언어는 <b>'+String(S.LOVE_LANG[R.dayEl]).split('.')[0]+'</b>입니다. '+String(S.LOVE_LANG[R.dayEl]).split('.').slice(1).join('.').trim()+'</p>';
   h+='<p>'+S.LOVE_CHARM[R.dayEl]+'</p>';
   h+='<p>'+S.DM_DEEP[R.dStem].out+' '+S.DM_DEEP[R.dStem].in+' 그래서 처음 만난 사람은 이 사람을 “차분하다, 쉽게 마음을 안 준다”고 기억하고, 가까운 사람은 “생각보다 단단하고 계산이 빠르다”고 말합니다. 두 인상 모두 사실이고, 이 두 얼굴이 사랑에서도 번갈아 나옵니다.</p>';
   if(sal.length) h+='<p>인연의 표시로 <b>'+sal.map(function(s){return s.name;}).join('·')+'</b>이 '+sal[0].pos+'에 있습니다. '+sal[0].txt+' 이 기운은 사람을 끌어당기는 힘이라, 표정이 살아 있는 날에 더 크게 작동합니다.</p>';
@@ -229,7 +229,7 @@ function wd3(R,c,input,name){
   var h=window.CH.facts(R);
   h+='<p>명리에서 이혼수는 “이혼한다”는 예언이 아닙니다. <b>관계가 흔들리는 자리</b>를 가리키는 표시이고, 그 자리를 아는 사람은 대개 같은 자리에서 덜 넘어집니다. 이 장은 겁을 주려는 글이 아니라 <b>미리 손볼 곳</b>을 찾는 글입니다.</p>';
   h+=H('원국에 새겨진 흔들리는 자리')+'<p>'+(hard.length
-    ? '배우자궁인 일지에 '+hard.map(function(x){return '<b>'+x.type+'</b>('+x.a+'·'+x.b+')';}).join(', ')+'이 걸려 있습니다. '+hard[0].mean+' 이 구조는 갈등이 “사건”으로 오기보다 <b>반복되는 장면</b>으로 옵니다. 같은 이유로 세 번 싸우면 그것이 이 사주의 패턴입니다.'
+    ? '배우자궁인 일지에 '+hard.map(function(x){return '<b>'+x.type+'</b>('+x.a+'·'+x.b+')';}).join(', ')+'이 걸려 있습니다. '+hard[0].mean+'. 이 구조는 갈등이 “사건”으로 오기보다 <b>반복되는 장면</b>으로 옵니다. 같은 이유로 세 번 싸우면 그것이 이 사주의 패턴입니다.'
     : '배우자궁인 일지에 충·형·파·해가 직접 걸려 있지는 않습니다. 이 사주는 관계가 급격히 끊기지 않고 <b>서서히 식는</b> 방식으로 흔들립니다. 그래서 위기는 대개 말이 줄어드는 것으로 시작됩니다.')+'</p>';
   if(good.length) h+='<p>대신 '+good.map(function(x){return x.type+'('+x.a+'·'+x.b+')';}).join(', ')+'이 일지에 걸려 있어, 한 번 묶인 관계는 쉽게 풀리지 않습니다. 이 힘이 이 사주의 가장 큰 안전장치입니다.</p>';
   if(gm.length) h+='<p>'+S.gongmangText(R)+' 배우자궁이 공망이면 관계의 약속이 <b>문서로 남지 않으면 기억이 달라집니다</b>. 말로 정한 것은 한 달이면 흐려지니, 생활의 규칙을 글로 남겨두세요.</p>';
@@ -266,7 +266,7 @@ function wd4(R,c,input,name){
   var starYears=ys.filter(function(r){return r.grp===star;});
   var hapYears=ys.filter(function(r){return r.rels.some(function(x){return x.type==='육합'||x.type==='삼합';});});
   var golden=ys.filter(function(r){ return r.grp===star && r.rels.some(function(x){return x.type==='육합'||x.type==='삼합';}); });
-  var rush=ys.filter(function(r){ return r.gi||r.rels.some(function(x){return x.type==='충';}); });
+  var rush=ys.filter(function(r){ var ch=r.rels.some(function(x){return x.type==='충';}); return ch||(r.gi&&r.grp!==star); });
   var h=window.CH.facts(R);
   h+='<p>결혼의 때는 두 겹으로 옵니다. <b>대운</b>은 10년짜리 판이고, <b>세운</b>은 그 판 위에서 문이 열리는 해입니다. 판이 좋아도 해가 맞지 않으면 결정이 흔들리고, 해가 좋아도 판이 아니면 만남이 오래가지 않습니다.</p>';
   h+=H('대운으로 보는 결혼의 판')+'<table class="tbl"><tr><th>나이</th><th>간지</th><th>십성</th><th>이 10년의 결</th></tr>'+(function(){
@@ -282,7 +282,7 @@ function wd4(R,c,input,name){
     var out=[];
     for(var i=0;i<R.daeun.length;i++){
       var d=R.daeun[i], g=S.tenGod(R.dStem,d.idx%10);
-      if(S.GOD_GROUP[g]===star) out.push(d.from+'~'+d.to+'세('+gzP(d.idx%10,d.idx%12)+')');
+      if(S.GOD_GROUP[g]===star) out.push(d.from+'~'+d.to+'세 '+gzP(d.idx%10,d.idx%12));
     }
     return out.length?out.join(', ')+'입니다. 이 구간에는 사람이 자연스럽게 들어오고, 관계가 구체적인 이야기로 넘어갑니다.':'뚜렷하지 않습니다. 이 사주는 대운보다 <b>세운과 만남의 자리</b>가 결정합니다.';
   })()+' 지금은 '+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세 대운을 지나고 있습니다.</p>';
@@ -308,15 +308,15 @@ function wd5(R,c,input,name){
   var elB2=S.BR_EL[R.dBranch], starEl=wedStarEl(R,input);
   var pos=wedStarPos(R,input);
   var h=window.CH.facts(R);
-  h+='<p>배우자의 모습은 두 글자에서 읽습니다. <b>배우자궁인 일지</b>는 곁에 앉을 사람의 분위기와 생활 방식을, <b>배우자성</b>은 그 사람이 세상에 나와 있는 방식(직업·돈·태도)을 보여줍니다. 이 사주는 일지가 '+S.EL_KO[elB2]+'('+S.EL_HAN[elB2]+'), 배우자성이 '+S.EL_KO[starEl]+'('+S.EL_HAN[starEl]+')인 사람입니다.</p>';
+  h+='<p>배우자의 모습은 두 글자에서 읽습니다. <b>배우자궁인 일지</b>는 곁에 앉을 사람의 분위기와 생활 방식을, <b>배우자성</b>은 그 사람이 세상에 나와 있는 방식(직업·돈·태도)을 보여줍니다. 이 사주는 일지가 '+S.EL_KO[elB2]+'('+S.EL_HAN[elB2]+')이고 배우자성이 '+S.EL_KO[starEl]+'('+S.EL_HAN[starEl]+')인 사주입니다.</p>';
   h+=H('첫인상과 분위기')+'<p>'+WED_MOOD[elB2]+'</p>';
-  h+='<p>그리고 '+S.SPOUSE[R.dBranch]+' 쪽의 사람입니다. '+S.BR_INNER[R.dBranch]+' 그래서 처음 만난 자리에서 “이 사람은 내 편에 서 줄 사람”이라는 인상이 먼저 옵니다.</p>';
+  h+='<p>그리고 배우자궁이 가리키는 결은 <b>'+S.SPOUSE[R.dBranch]+'</b>입니다. '+S.BR_INNER[R.dBranch]+' 그래서 처음 만난 자리에서 “이 사람은 내 편에 서 줄 사람”이라는 인상이 먼저 옵니다.</p>';
   h+=H('외모와 말투')+'<p>'+WED_LOOK[starEl]+'</p>';
   h+='<p>인상은 화려하기보다 <b>정돈된 쪽</b>입니다. 유행을 따라가기보다 자기에게 맞는 것을 오래 쓰고, 말할 때 결론이 분명합니다. 이 사주는 이 결의 사람에게 “믿을 수 있다”는 감각을 먼저 받습니다.</p>';
   h+=H('가치관과 함께 있을 때의 온도')+'<p>'+WED_VALUE[elB2]+'</p>';
   h+='<p>함께 있을 때의 온도는 <b>뜨겁지 않지만 오래가는 쪽</b>입니다. 이 사주는 상대의 감정이 나보다 낮아도 서운해하지 않으며, 대신 <b>반복되는 행동</b>으로 사랑을 확인합니다. 그래서 말보다 습관이 중요하고, 습관이 무너지면 온도가 빠르게 내려갑니다.</p>';
   h+=H('경제 관념과 신념')+'<p>'+WED_MONEY[starEl]+'</p>';
-  h+='<p>이 사주가 돈을 다루는 방식은 '+S.MARR_MONEY_GRP[c.topGrp]+' 그래서 두 사람이 같은 기준을 갖기보다 <b>역할을 나누는 것</b>이 안전합니다. 고정 지출은 한 사람이, 큰 지출은 둘이 함께 결정하는 구조가 오래 갑니다.</p>';
+  h+='<p>이 사주 본인의 돈 기준은 이렇습니다. '+S.MARR_MONEY_GRP[c.topGrp]+' 그래서 두 사람이 같은 기준을 갖기보다 <b>역할을 나누는 것</b>이 안전합니다. 고정 지출은 한 사람이, 큰 지출은 둘이 함께 결정하는 구조가 오래 갑니다.</p>';
   h+=H('배우자의 자산 규모와 어울리는 직종')+'<p>이 사주에게 오는 사람은 <b>한 번에 크게 벌기보다 오래 쌓는 쪽</b>입니다. 자산은 급격히 늘지 않지만, 생활의 기반이 흔들리지 않는 구조입니다. '+ (starEl===2?'부동산·예금처럼 실물이 중심이고, 결정이 느린 대신 크게 잃지 않습니다.':(starEl===3?'현금 흐름과 자격이 자산이고, 빚을 싫어해 안정적입니다.':(starEl===4?'정보와 흐름이 자산이고, 손에 있는 돈은 잘 쥐지 않습니다.':(starEl===0?'배움과 콘텐츠가 자산이 되고, 초기에 작게 시작해 오래 키웁니다.':'사람과 브랜드가 자산이 되고, 경조사·모임 지출이 큽니다.'))))+'</p>';
   h+=UL(WED_JOB[starEl].map(function(x){return x;}));
   if(pos.length) h+='<p>배우자성이 '+pos.join('·')+'에 있는 만큼, 이 사람을 만나는 자리는 <b>'+(pos.indexOf('월지')>=0?'일과 사회생활':'생활의 거점과 오래된 인연')+'</b>입니다. 그 자리에 서 있으면 만나고, 비켜 있으면 지나갑니다.</p>';
@@ -332,7 +332,7 @@ function wd6(R,c,input,name){
   var h=window.CH.facts(R);
   h+='<p>악연은 나쁜 사람이 아니라 <b>나를 흔드는 방식</b>입니다. 같은 사람도 어떤 사주에게는 약이고 어떤 사주에게는 독입니다. 이 사주에게 독이 되는 유형은 여덟 글자로 미리 알 수 있습니다.</p>';
   h+=H('만나면 운을 깎아먹는 이성의 특징')+'<p>이 사주의 배우자궁은 '+S.EL_KO[elB2]+'('+S.EL_HAN[elB2]+')이고, 그 기운을 누르는 것은 '+S.EL_KO[badEl]+'('+S.EL_HAN[badEl]+')입니다. 그래서 <b>'+S.EL_KO[badEl]+' 기운이 강한 사람</b> — '+(badEl===0?'시작만 하고 마무리하지 않는 사람, 말이 많고 약속이 가벼운 사람':(badEl===1?'감정의 기복이 크고 화를 그 자리에서 쏟는 사람, 인정 욕구가 강한 사람':(badEl===2?'모든 것을 자기 기준으로 정리하려는 사람, 통제가 강한 사람':(badEl===3?'말이 날카롭고 규칙으로 사람을 재단하는 사람, 감정을 인정하지 않는 사람':'생각만 많고 결정하지 않는 사람, 관계를 흐리게 두는 사람'))))+'</b>에게 이 사주는 특히 지칩니다.</p>';
-  h+='<p>또한 이 사주에게는 <b>'+S.LOVE_MISTAKE_GOD[c.topGodInGrp]+'</b> 그래서 같은 실수를 반복하기 쉬운 유형이 따로 있습니다. '+S.DM_DEEP[R.dStem].weak+'</p>';
+  h+='<p>그리고 이 사주가 사랑에서 되풀이하는 실수는 <b>'+S.LOVE_MISTAKE_GOD[c.topGodInGrp].split('.')[0]+'</b>입니다. 그래서 같은 유형의 사람에게 같은 방식으로 마음을 내주게 됩니다. '+S.DM_DEEP[R.dStem].weak+'</p>';
   if(sal.length) h+='<p>도화·홍염이 '+sal.map(function(s){return s.pos;}).join('·')+'에 있어 사람이 끊이지 않는 사주입니다. 그 자체는 복이지만, <b>확신 없이 시작하는 관계</b>가 많아지면 운이 흩어집니다. 시작 전에 한 번 더 물어보는 습관이 필요합니다.</p>';
   h+=H('나를 편안하게 하는 사람 vs 불안하게 하는 사람')+
     '<table class="tbl"><tr><th>편안하게 하는 사람</th><th>불안하게 하는 사람</th></tr>'+
@@ -360,7 +360,7 @@ function wd7(R,c,input,name){
   h+='<p>결혼은 끝이 아니라 <b>생활의 시작</b>입니다. 이 사주는 결혼 전보다 결혼 후에 돈과 사람의 흐름이 더 분명해지는 구조인지, 반대로 관리해야 할 것이 늘어나는 구조인지가 여덟 글자에 적혀 있습니다.</p>';
   h+=H('결혼 후 재물운의 변화')+'<p>이 사주는 재성이 <b>'+jae+'개</b>입니다. '+ (jae>=2?'결혼 후에는 통장이 두 개가 되면서 오히려 재물의 그릇이 커집니다. 다만 두 사람의 기준이 다르면 지출이 새므로, 고정 지출을 한 사람이 맡는 구조가 필요합니다.':(jae===1?'결혼 후 재물운은 배우자의 습관에 크게 좌우됩니다. 이 사주는 벌이는 힘이 있지만 챙기는 데 약해서, 배우자가 챙기는 역할을 맡으면 안정됩니다.':'재성이 얇아 결혼 후에도 돈은 꾸준히 모으는 쪽이 맞습니다. 큰 투자보다 고정 수입과 저축의 비중을 높이세요.'))+'</p>';
   h+='<p>'+S.MARR_MONEY_GRP[c.topGrp]+' 결혼 후 3년은 재물의 구조가 정해지는 시간이라, 이 기간에 통장·보험·명의를 정리해두면 그 뒤 10년이 편합니다.</p>';
-  h+=H('결혼 후 관계운')+'<p>이 사주의 배우자궁은 '+brB(R.dBranch)+' — '+String(S.MARR_HABIT_BR[R.dBranch]).split('.')[0]+'입니다. '+S.BR_INNER[R.dBranch]+' 결혼 후 이 사주가 가장 조심할 것은 <b>혼자 다 하려는 습관</b>입니다.</p>';
+  h+=H('결혼 후 관계운')+'<p>이 사주의 배우자궁은 '+brB(R.dBranch)+'이고, 생활의 결은 <b>'+String(S.MARR_HABIT_BR[R.dBranch]).split('.')[0]+'</b>입니다. '+S.BR_INNER[R.dBranch]+' 결혼 후 이 사주가 가장 조심할 것은 <b>혼자 다 하려는 습관</b>입니다.</p>';
   h+='<p>'+S.MARR_SOLUTION[c.topGrp]+' 그리고 '+S.MARR_TEMP[R.dayEl]+'</p>';
   h+=S.interHTML(R);
   h+=H('자녀운 — 수와 시기')+'<p>이 사주의 자녀성은 <b>'+S.EL_KO[kidStar]+'('+S.EL_HAN[kidStar]+')</b>이고, 원국에 '+c.grp[kidGrp]+'개 있습니다. '+(c.grp[kidGrp]>=2?'자녀의 인연이 두 갈래 이상으로 이어지는 구조입니다. 아이와의 관계가 삶의 중심에 오고, 아이를 통해 이 사주의 재능이 다시 열립니다.':(c.grp[kidGrp]===1?'자녀의 인연이 하나로 깊게 이어지는 구조입니다. 수보다 관계의 밀도가 중요한 사주입니다.':'자녀의 인연이 늦게 오는 구조입니다. 서두르지 않아도 되고, 오면 오래 곁에 있습니다.'))+'</p>';
@@ -368,8 +368,8 @@ function wd7(R,c,input,name){
   h+='<p>임신과 출산의 문은 자녀성('+kidGrp+')이 세운으로 들어오는 해에 열립니다. '+(kidYears.length?'앞으로 다섯 해 중 <b>'+kidYears.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 그 해입니다. 이 해의 봄·가을에 몸의 리듬을 맞춰두면 훨씬 자연스럽습니다.':'앞으로 다섯 해에는 그 문이 뚜렷하지 않습니다. 이 시기는 아이보다 <b>몸의 기반</b>을 먼저 세우는 때입니다.')+'</p>';
   h+='<p>사주는 몸의 리듬과 시기를 보여줄 뿐 임신 가능성이나 건강을 진단하지 않습니다. 실제 계획은 산부인과 상담과 검사 결과를 먼저 두세요.</p>';
   h+=H('결혼 후 인생 그래프')+UL((function(){
-    var out=[], mid=Math.floor(R.daeun.length/2);
-    var segs=[[0,Math.min(2,mid)],[Math.max(0,mid-1),Math.min(mid+2,R.daeun.length)],[Math.max(0,mid+1),R.daeun.length]];
+    var out=[], n=R.daeun.length, third=Math.ceil(n/3);
+    var segs=[[0,third],[third,third*2],[third*2,n]];
     var label=['전반','중반','후반'];
     for(var s=0;s<segs.length;s++){
       var a=segs[s][0], b=segs[s][1]; if(b<=a) continue;
