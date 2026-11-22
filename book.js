@@ -215,7 +215,7 @@ function chartPage(){
   h+=row('십성',function(ix){ return ix===B.R.dIdx?'일간':S.tenGod(R.dStem,ix%10); });
   h+=row('지지 오행',function(ix){ return S.EL_KO[S.BR_EL[ix%12]]+'('+S.EL_HAN[S.BR_EL[ix%12]]+')'; });
   h+=row('십이운성',function(ix){ return unsung(R.dStem,ix%12); });
-  h+=row('지장간',function(ix){ return S.deep(R).pillars.filter(function(p){return p.ix===ix;})[0].hidden.map(function(x){return S.STEM_HAN[x.stem];}).join('·'); });
+  h+=row('지장간',function(ix){ return S.deep(R).pillars.filter(function(p){return p.ix===ix;})[0].hidden.map(function(x){return S.STEM_KO[x.stem]+'('+S.STEM_HAN[x.stem]+')';}).join('·'); });
   h+=row('기둥 관계',function(ix){ var p=cells.filter(function(y){return y[1]===ix;})[0]; var rel=relsAt(S.deep(R),p[0]); return rel.length?rel.join('<br>'):'—'; });
   h+=row('공망·신살',function(ix){ var p=cells.filter(function(y){return y[1]===ix;})[0]; var g=(S.deep(R).gmHits.filter(function(x){return x.pos===p[0];}).length?'공망':'')+(salsAt(S.deep(R),p[0]).length?(S.deep(R).gmHits.filter(function(x){return x.pos===p[0];}).length?'·':'')+salsAt(S.deep(R),p[0]).join('·'):''); return g||'—'; });
   h+='</table>';
@@ -365,7 +365,7 @@ function pillarPages(){
       '<div class="c"><div class="lab">십성</div><div class="god">'+S.GOD_GROUP[g]+'</div><div class="st" style="font-size:18px">'+g+'</div><div class="ko">'+S.GOD_KEY[g]+'</div></div>'+
       '<div class="c"><div class="lab">단계</div><div class="god">'+df.range.split(' · ')[0]+'</div><div class="st" style="font-size:17px">'+df.range.split(' · ')[1]+'</div><div class="ko">'+unsung(R.dStem,b)+'</div></div></div>'+
       '<h3>이 기둥의 결</h3><p>'+S.GOD_DEEP[g]+'</p>'+
-      '<p>지장간은 '+d.pillars.filter(function(p){return p.key===df.key;})[0].hidden.map(function(x){return '<b>'+S.STEM_HAN[x.stem]+'('+x.god+')</b>';}).join(' · ')+'입니다. 지장간은 이 기둥이 <b>속으로 품고 있는 재료</b>라, 겉으로 보이는 십성과 다른 결이 여기서 나옵니다.</p>'+
+      '<p>지장간은 '+d.pillars.filter(function(p){return p.key===df.key;})[0].hidden.map(function(x){return '<b>'+S.STEM_KO[x.stem]+'('+S.STEM_HAN[x.stem]+')</b> '+x.god;}).join(' · ')+'입니다. 지장간은 이 기둥이 <b>속으로 품고 있는 재료</b>라, 겉으로 보이는 십성과 다른 결이 여기서 나옵니다.</p>'+
       '<p>다른 기둥과의 관계 — '+(function(){ var rr=relsAt(d,df.name); return rr.length?rr.join(', ')+'입니다. '+REL_MEAN_BOOK(rr):'두드러진 합·충이 없습니다. 이 기둥은 다른 자리에 간섭하지 않고 제 몫을 합니다.'; })()+'</p>'+
       (function(){ var gm=d.gmHits.filter(function(x){return x.pos===df.name;}); return gm.length?'<p>이 기둥은 <b>공망</b>입니다 — 이 자리의 것은 늦게 채워지거나 마음처럼 남지 않습니다. 그래서 '+df.range.split(' · ')[1]+'의 일은 구두 약속보다 <b>기록</b>이 남아야 합니다.</p>':''; })()+
       '<p>'+S.BR_INNER[b]+' 이 기둥에서 이 글자가 놓인 자리는 '+df.range.split(' · ')[1]+'의 시기입니다. 그래서 이 시기에 '+S.GOD_KEY[g]+'의 성향이 삶의 방식으로 굳어집니다.</p>'+
