@@ -31,7 +31,7 @@ function hourLabel(i){
 var state={
   theme:null, tab:null, gender:'f', cal:'solar', leap:false,
   ctx:false, pg:'m', pcal:'solar', stage:'', marry:'single', kid:'none',
-  R:null, input:null
+  R:null, input:null, email:''
 };
 
 /* ---------------- 셀렉트 채우기 ---------------- */
@@ -205,17 +205,16 @@ function setTrack(t){
 }
 
 /* 생년월일 입력 전에도 보이는 가격: 테마 결제 이력이 있으면 차감가를 함께 안내 */
+function lifePriceHTML(credit){
+  if(credit) return '<s>119,000원</s><em>75%</em><b>29,900원</b><span>테마 결제 9,900원 차감 적용</span>';
+  return '<s>119,000원</s><em>67%</em><b>39,800원</b><span>1부 · 프리미엄 소장본 PDF</span>';
+}
 function markThemeCredit(){
+  var old=document.getElementById('lrCreditNote');
+  if(old&&old.parentNode) old.parentNode.removeChild(old);
   var box=document.querySelector('#track-life .lr-price');
   if(!box) return;
-  var note=document.getElementById('lrCreditNote');
-  if(!themeCredit()){ if(note) note.parentNode.removeChild(note); return; }
-  if(note) return;
-  note=document.createElement('p');
-  note.id='lrCreditNote'; note.className='lr-micro';
-  note.style.color='#D8B36A';
-  note.innerHTML='테마 결제 9,900원 차감 → <b>29,900원</b>에 받으실 수 있습니다.';
-  box.parentNode.insertBefore(note,box.nextSibling);
+  box.innerHTML=lifePriceHTML(themeCredit());
 }
 /* ---------------- 테마 · 탭 ---------------- */
 function renderThemes(){
@@ -434,7 +433,7 @@ function renderResult(R,input){
   }
   h+='<div class="panel" style="margin-top:18px;text-align:center">'+
      '<h3 style="font-size:17px">'+(lockH?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
-     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <s style="color:#8A93A4">69,900원</s> <b>39,800원</b>(43% 할인)입니다.</p>'+
+     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <s style="color:#8A93A4">119,000원</s> <b>39,800원</b>(67% 할인)입니다.</p>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
@@ -482,9 +481,9 @@ function setThemeCredit(v){
 }
 function upsellMarkup(){
   return '<p class="tt">이미 9,900원을 결제하셨다면?</p>'+
-    '<p class="pp">인생사주 리포트 특가 <b>39,800원</b>에서<br>방금 결제한 <b>9,900원</b>을 빼고, <b>+29,900원</b>만 추가하면 됩니다.</p>'+
+    '<p class="pp">인생사주 리포트는 정가 <b>119,000원</b>, 지금은 <b>39,800원</b>(67% 할인)입니다.<br>방금 결제한 <b>9,900원</b>을 빼고 <b>29,900원</b>만 더 내시면 됩니다.</p>'+
     '<button type="button" class="btn btn-gold btn-block" data-theme-upgrade>+29,900원으로 인생사주 리포트 받기</button>'+
-    '<p class="small">A4 104쪽 책자형 PDF · 방금 입력한 사주 정보 그대로 이어집니다</p>';
+    '<p class="small">방금 입력한 사주 정보 그대로 이어집니다</p>';
 }
 function addUpsellCard(host){
   if(!host||document.getElementById('rdUpsell')) return;
@@ -526,9 +525,74 @@ function themeUpgradeToLife(){
     }
   }
   setTrack('life');
+  openFastConfirm();
+}
+
+/* 테마 결제 후 업셀 : 4단계 신청서를 건너뛰고 이메일만 확인해 29,900원 결제(#pdfPay)로 직행 */
+var fastPay=false;
+function savedEmail(){ try{ return localStorage.getItem('wlh_email_v1')||''; }catch(e){ return ''; } }
+function savedPhone(){ try{ return localStorage.getItem('wlh_phone_v1')||''; }catch(e){ return ''; } }
+function saveContact(email,phone){
+  try{ if(email) localStorage.setItem('wlh_email_v1',email); if(phone) localStorage.setItem('wlh_phone_v1',phone); }catch(e){}
+}
+function fastSummaryHTML(){
+  var b=readPdfBase();
+  if(b.err) return '<span class="fs-warn">'+b.err+'</span>';
+  var marryMap={single:'미혼',dating:'연애 중',married:'기혼',etc:'말하지 않음'};
+  var kidMap={none:'자녀 없음',plan:'자녀 계획 중',have:'자녀 있음'};
+  var stageMap={'':'상황 미선택',student:'학생',job:'취업 준비',work:'직장 생활',own:'사업·프리랜서',home:'가정·육아',rest:'쉬는 중'};
+  var q=($('#lz-q')&&$('#lz-q').value||'').trim();
+  var chips=[];
+  var st=chipLabel('#lzStage','data-s',stageMap); if(st&&st!=='상황 미선택') chips.push(st);
+  chips.push(chipLabel('#lzMarry','data-m',marryMap));
+  chips.push(chipLabel('#lzChild','data-c',kidMap));
+  return '<div class="fs-line"><b>'+esc(b.name)+'</b> · '+b.y+'.'+pad2(b.m)+'.'+pad2(b.d)+' '+(b.hasTime?hourLabel(b.hourIndex):'시간 모름')+'</div>'+
+    '<div class="fs-line">'+(b.gender==='f'?'여성':'남성')+' · '+esc(b.regionName)+'</div>'+
+    '<div class="fs-chips">'+chips.map(function(c){ return '<span>'+c+'</span>'; }).join('')+'</div>'+
+    (q?'<div class="fs-q">질문 — '+esc(q)+'</div>':'');
+}
+function openFastConfirm(){
+  var box=$('#lzFast');
+  if(!box) return;
+  fastPay=true;
+  try{ $('#pdfSteps').style.display='none'; }catch(e){}
+  var f=$('#pdfForm'); if(f) f.style.display='none';
+  var done=$('#pdfDone'); if(done){ done.classList.remove('on'); done.innerHTML=''; }
+  var sum=$('#lzFastSum'); if(sum) sum.innerHTML=fastSummaryHTML();
+  var err=$('#lz-fast-err'); if(err){ err.hidden=true; err.textContent=''; }
+  var em=$('#lz-fast-email'); if(em) em.value=(state.email||savedEmail()||'');
+  box.classList.add('on');
+  var go=$('#lzFastGo'), edit=$('#lzFastEdit');
+  if(go&&!go.__b){ go.__b=1; go.addEventListener('click',fastSubmit); }
+  if(edit&&!edit.__b){ edit.__b=1; edit.addEventListener('click',backToWizard); }
+  if(em&&!em.__b){ em.__b=1; em.addEventListener('input',function(){ state.email=em.value.trim(); }); }
   setTimeout(function(){
-    try{ $('#pdfForm').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
-  },220);
+    try{ var y=box.getBoundingClientRect().top+window.pageYOffset-140; window.scrollTo({top:y<0?0:y,behavior:'smooth'}); }catch(e){}
+  },120);
+}
+function backToWizard(){
+  fastPay=false;
+  var box=$('#lzFast'); if(box) box.classList.remove('on');
+  var f=$('#pdfForm'); if(f) f.style.display='';
+  var st=$('#pdfSteps'); if(st) st.style.display='';
+  var em=$('#lz-fast-email'); if(em&&em.value.trim()) state.email=em.value.trim();
+  if($('#lz-email')&&!$('#lz-email').value&&state.email) $('#lz-email').value=state.email;
+  gotoPdf(1);
+  try{ $('#pdfForm').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+}
+function fastSubmit(){
+  var err=$('#lz-fast-err');
+  function fail(m){ if(err){ err.textContent=m; err.hidden=false; } }
+  if(err){ err.hidden=true; err.textContent=''; }
+  var b=readPdfBase();
+  if(b.err){ fail(b.err); return; }
+  var ag=$('#lz-fast-agree');
+  if(ag&&!ag.checked){ fail('동의에 체크해 주세요'); return; }
+  var em=$('#lz-fast-email');
+  var email=(em?em.value:'').trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ fail('이메일 주소를 확인해 주세요'); return; }
+  state.email=email; saveContact(email,'');
+  showPayStep(makeOrder(b,email,savedPhone(),'fast'));
 }
 
 function unlockReading(){
@@ -615,6 +679,16 @@ function buildPdfSummary(){
   $('#lz-summary').innerHTML=h;
   return true;
 }
+function makeOrder(b,email,phone,from){
+  var marry=$('#lzMarry .chip.on'), kid=$('#lzChild .chip.on'), stage=$('#lzStage .chip.on');
+  return {id:'CL'+Date.now().toString(36).toUpperCase().slice(-6),at:new Date().toISOString(),
+    name:b.name,date:b.y+'-'+pad2(b.m)+'-'+pad2(b.d),hasTime:b.hasTime,hourIndex:b.hourIndex,
+    gender:b.gender,tsoff:b.tsoff,regionName:b.regionName,regionKey:b.regionKey,cal:state.pcal,
+    stage:stage?stage.getAttribute('data-s'):'',marry:marry?marry.getAttribute('data-m'):'single',
+    kid:kid?kid.getAttribute('data-c'):'none',q:($('#lz-q').value||'').trim(),email:email,phone:phone||'',
+    product:'천령당 인생사주 리포트',priceRegular:119000,price:themeCredit()?29900:39800,
+    themePaid:themeCredit(),status:'결제대기',from:from||'form'};
+}
 function submitPdf(){
   var b=readPdfBase();
   if(b.err){ $('#lz-err4').textContent=b.err; $('#lz-err4').hidden=false; return; }
@@ -622,16 +696,9 @@ function submitPdf(){
   var email=($('#lz-email').value||'').trim();
   var phone=($('#lz-phone').value||'').trim();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ gotoPdf(3); $('#lz-err3').textContent='이메일 주소를 확인해 주세요'; $('#lz-err3').hidden=false; return; }
-  var marry=$('#lzMarry .chip.on'), kid=$('#lzChild .chip.on'), stage=$('#lzStage .chip.on');
-  var order={id:'CL'+Date.now().toString(36).toUpperCase().slice(-6),at:new Date().toISOString(),
-    name:b.name,date:b.y+'-'+pad2(b.m)+'-'+pad2(b.d),hasTime:b.hasTime,hourIndex:b.hourIndex,
-    gender:b.gender,tsoff:b.tsoff,regionName:b.regionName,regionKey:b.regionKey,cal:state.pcal,
-    stage:stage?stage.getAttribute('data-s'):'',marry:marry?marry.getAttribute('data-m'):'single',
-    kid:kid?kid.getAttribute('data-c'):'none',q:($('#lz-q').value||'').trim(),email:email,phone:phone,
-    product:'천령당 인생사주 리포트',priceRegular:69900,price:themeCredit()?29900:39800,
-    themePaid:themeCredit(),status:'결제대기'};
+  state.email=email; saveContact(email,phone);
   /* 정보 입력 → 결제 → 보기/다운로드. 접수 저장은 결제를 마친 뒤에 한다. */
-  showPayStep(order);
+  showPayStep(makeOrder(b,email,phone,'form'));
 }
 
 /* ---------------- 결제 단계 ---------------- */
@@ -644,14 +711,15 @@ function payRowsHTML(o){
   h+=row('생년월일',String(o.date).replace(/-/g,'.')+(o.hasTime?' '+hourLabel(o.hourIndex):' 시간 모름'));
   h+=row('받는 곳',esc(o.email||'-'));
   h+=row('상품','인생사주 리포트 · A4 책자형 PDF');
-  var reg=o.priceRegular||69900, base=39800, price=o.price||base;
-  h+='<div class="pay-row"><span>정가</span><b><s style="color:#8A93A4">'+won(reg)+'</s> <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">43% 할인</em></b></div>';
+  var reg=o.priceRegular||119000, base=39800, price=o.price||base;
   if(o.themePaid){
-    h+='<div class="pay-row"><span>특가</span><b>'+won(base)+'</b></div>';
+    h+='<div class="pay-row"><span>정가</span><b><s style="color:#8A93A4">'+won(reg)+'</s></b></div>';
+    h+='<div class="pay-row"><span>특가</span><b>'+won(base)+' <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">67% 할인</em></b></div>';
     h+=row('테마 결제 차감','-'+won(9900),'discount');
-    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">특가 '+won(base)+' - 테마 결제 차감 '+won(9900)+'</span></b></div>';
+    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+' 대비 75% 할인 · 특가 '+won(base)+' - 테마 결제 차감 '+won(9900)+'</span></b></div>';
   } else {
-    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+'에서 43% 할인</span></b></div>';
+    h+='<div class="pay-row"><span>정가</span><b><s style="color:#8A93A4">'+won(reg)+'</s> <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">67% 할인</em></b></div>';
+    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+'에서 67% 할인</span></b></div>';
   }
   return h;
 }
@@ -659,6 +727,7 @@ function showPayStep(o){
   pendingOrder=o;
   $$('.step-body').forEach(function(x){ x.classList.remove('on'); });
   try{ $('#pdfSteps').style.display='none'; }catch(e){}
+  var fb=$('#lzFast'); if(fb) fb.classList.remove('on');
   var p=$('#pdfPay'); if(!p) return;
   p.classList.add('on');
   p.innerHTML='<div class="pay-box fade-in">'+
@@ -673,8 +742,15 @@ function showPayStep(o){
     '</div>';
   var go=$('#payGo'), back=$('#payBack');
   if(go) go.addEventListener('click',function(){ completePayment(); });
-  if(back) back.addEventListener('click',function(){ p.classList.remove('on'); p.innerHTML=''; pendingOrder=null; gotoPdf(4); });
-  try{ p.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+  if(back) back.addEventListener('click',function(){
+    p.classList.remove('on'); p.innerHTML='';
+    var from=o.from||'form'; pendingOrder=null;
+    if(from==='fast'){ openFastConfirm(); return; }
+    fastPay=false;
+    var f=$('#pdfForm'); if(f) f.style.display='';
+    gotoPdf(4);
+  });
+  try{ var py=p.getBoundingClientRect().top+window.pageYOffset-130; window.scrollTo({top:py<0?0:py,behavior:'smooth'}); }catch(e){}
 }
 function completePayment(){
   var o=pendingOrder; if(!o) return;

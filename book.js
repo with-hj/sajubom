@@ -149,11 +149,20 @@ function introPage(){
 }
 
 /* ---------------- 목차 ---------------- */
+/* 목차 1쪽에 재물의 마지막 장인 '10-4 문서와 부동산'까지 담아, 문서운이 빠졌다고
+   오해하지 않게 한다(2쪽에는 나머지 장이 들어간다). */
+function tocHalf(rows){
+  var half=Math.ceil(rows.length/2);
+  var at=-1;
+  for(var i=0;i<B.chapters.length;i++){ if(B.chapters[i].key==='docu'){ at=i; break; } }
+  if(at>=half && at<=15) half=at+1;
+  return half;
+}
 function tocPages(){
   var rows=B.chapters.map(function(ch){
     return '<div class="toc-r" data-goto="'+ch.page+'" role="link" tabindex="0"><span class="n">'+ch.no+'</span><span class="t">'+ch.title+'</span><span class="d"></span><span class="p">__TOC_'+ch.key+'__</span></div>';
   });
-  var half=Math.ceil(rows.length/2);
+  var half=tocHalf(rows);
   push(page('CONTENTS 01','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이 책의 지도</h1><div class="toc-list">'+rows.slice(0,half).join('')+'</div>',{spread:true}));
   push(page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div>',{spread:true}));
 }
@@ -774,7 +783,7 @@ B.build=function(R,input,name){
   var rows=B.chapters.map(function(ch){
     return '<div class="toc-r" data-goto="'+ch.page+'" role="link" tabindex="0"><span class="n">'+ch.no+'</span><span class="t">'+ch.title+'</span><span class="d"></span><span class="p">'+n2(ch.page)+'</span></div>';
   });
-  var half=Math.ceil(rows.length/2);
+  var half=tocHalf(rows);
   var t1=page('CONTENTS 01','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이 책의 지도</h1><div class="toc-list">'+rows.slice(0,half).join('')+'</div>',{spread:true});
   var t2=page('CONTENTS 02','<div class="sec-label"><span>00</span>목차 · CONTENTS</div><h1>이어서</h1><div class="toc-list">'+rows.slice(half).join('')+'</div>',{spread:true});
   html=html.replace('__TOC1__',t1).replace('__TOC2__',t2);
