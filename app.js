@@ -57,6 +57,8 @@ function fillHours(sel,withEmpty){
   var h=withEmpty?'<option value="" hidden disabled>시간 모름</option>':'';
   for(var i=0;i<12;i++) h+='<option value="'+i+'">'+hourLabel(i)+'</option>';
   sel.innerHTML=h;
+  /* 첫 칸이 disabled면 브라우저가 임의로 첫 시간(자시)을 골라버린다 → 빈 값으로 되돌린다 */
+  if(withEmpty) sel.selectedIndex=0;
 }
 function fillRegions(sel,hideUnknown){
   /* v49 · ‘지역 모름’ 체크박스가 있는 폼에서는 목록에서 감추고, 체크했을 때 표시용으로만 쓴다 */
