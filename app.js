@@ -31,7 +31,8 @@ function hourLabel(i){
 var state={
   theme:null, tab:null, gender:'f', cal:'solar', leap:false,
   ctx:false, pg:'m', pcal:'solar', stage:'', marry:'single', kid:'none',
-  R:null, input:null, email:''
+  R:null, input:null, email:'',
+  introDone:false
 };
 
 /* ---------------- 셀렉트 채우기 ---------------- */
@@ -106,6 +107,7 @@ function init(){
   bindChips('#lzMarry',function(b){return {m:b.getAttribute('data-m')};},function(v){ state.marry=v.m; });
   bindChips('#lzChild',function(b){return {c:b.getAttribute('data-c')};},function(v){ state.kid=v.c; });
   bindChips('#pGenderChips',function(b){return {p:b.getAttribute('data-pg')};},function(v){ state.pg=v.p; });
+  bindIntro();
 
   /* 상대 정보 스위치 */
   var sw=$('#ctxSwitch');
@@ -345,6 +347,72 @@ function updatePanelCopy(){
   var tn=$('#v-tab-note');
   if(tn) tn.innerHTML='<b>'+esc(T.name)+'</b> · '+esc(T.tag||'');
   applyFields();
+  syncIntro();
+}
+
+/* ---------------- v46 · 신년운세 영상 인트로 ----------------
+   영상이 있는 탭(지금은 종합운세 → 신년운세)에서만 9:16 인트로 카드를 보여주고
+   사주 입력창을 잠시 감춘다. 영상이 끝나거나 CTA를 누르면 입력창을 부드럽게 연다.
+   다른 탭에 영상을 붙일 때는 content.js의 TABS[탭].video 에 mp4 경로만 넣으면 된다. */
+function introSrc(){
+  var T=CT.TABS[state.tab];
+  return (T&&T.video)?T.video:null;
+}
+function revealForm(scroll){
+  var p=$('#panelForm'); if(!p) return;
+  if(p.hasAttribute('hidden')){
+    p.removeAttribute('hidden');
+    p.classList.remove('reveal-in');
+    void p.offsetWidth;            /* 애니메이션 다시 시작 */
+    p.classList.add('reveal-in');
+  }
+  if(!scroll) return;
+  try{
+    var top=p.getBoundingClientRect().top+window.pageYOffset-76;
+    window.scrollTo({top:top<0?0:top,behavior:'smooth'});
+  }catch(e){}
+}
+function syncIntro(){
+  var card=$('#introCard'), vid=$('#introVideo'), panel=$('#panelForm');
+  if(!card||!vid||!panel) return;
+  var src=introSrc();
+  if(!src){
+    card.hidden=true;
+    try{ vid.pause(); }catch(e){}
+    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.remove('reveal-in'); }
+    return;
+  }
+  card.hidden=false;
+  if(vid.getAttribute('data-src')!==src){
+    vid.setAttribute('data-src',src);
+    vid.setAttribute('src',src);
+    try{ vid.load(); }catch(e){}
+  }
+  if(state.introDone){                    /* 한 번 열린 뒤에는 입력창을 계속 열어 둔다 */
+    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.remove('reveal-in'); }
+    return;
+  }
+  panel.setAttribute('hidden','');
+  try{ vid.currentTime=0; }catch(e){}
+  var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){ /* 자동재생 차단 시 첫 프레임 유지, CTA로 진행 가능 */ });
+}
+function bindIntro(){
+  var vid=$('#introVideo');
+  if(!vid) return;
+  vid.addEventListener('ended',function(){
+    if(!introSrc()) return;
+    state.introDone=true;
+    revealForm(true);
+  });
+  vid.addEventListener('click',function(){
+    try{ if(vid.paused) vid.play(); else vid.pause(); }catch(e){}
+  });
+  var cta=$('#introCta');
+  if(cta) cta.addEventListener('click',function(){
+    state.introDone=true;
+    try{ vid.pause(); }catch(e){}
+    revealForm(true);
+  });
 }
 
 /* ---------------- 폼 읽기 ---------------- */

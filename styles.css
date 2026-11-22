@@ -911,3 +911,60 @@ input,select,textarea,button{font-family:var(--sans)}
 /* 결제 후 알림 : 잠긴 첫 장 안쪽에 붙는다 (밝은 카드 위 대비) */
 .ch .pw-open-flag{margin:0 0 14px;color:#6B5724;background:rgba(201,164,90,.16);border-color:rgba(169,133,63,.42)}
 .ch .pw-open-flag b{color:#3A2D11}
+
+/* =====================================================================
+   v46 · 신년운세 9:16 영상 인트로 (종합운세 → 신년운세 전용)
+   영상이 끝나거나 CTA를 누르면 아래 사주 입력창이 열린다.
+   ===================================================================== */
+.intro-card{
+  width:min(420px,100%,calc(78vh * 9 / 16));
+  margin:16px auto 0;
+  display:flex;flex-direction:column;gap:9px;
+  animation:introCardIn .55s cubic-bezier(.2,.7,.2,1) both;
+}
+.intro-card[hidden]{display:none}
+.intro-frame{
+  position:relative;width:100%;aspect-ratio:9/16;border-radius:20px;overflow:hidden;
+  background:#0A1421;border:1px solid rgba(216,179,106,.62);
+  box-shadow:0 18px 44px rgba(4,10,20,.5),inset 0 0 0 1px rgba(236,214,166,.16);
+}
+.intro-video{width:100%;height:100%;display:block;object-fit:cover;background:#0A1421}
+.intro-shade{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,12,22,.40) 0%,rgba(6,12,22,0) 24%,rgba(6,12,22,0) 44%,rgba(6,12,22,.88) 92%);
+}
+.intro-cap{position:absolute;left:0;right:0;bottom:0;padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px}
+.intro-badge{
+  align-self:flex-start;font-size:12.5px;font-weight:700;letter-spacing:.14em;color:#1A1305;
+  background:linear-gradient(135deg,#ECD6A6,#D8B36A);padding:5px 11px;border-radius:999px;
+}
+.intro-hook{
+  margin:0;font-family:var(--serif);font-size:19px;line-height:1.55;color:#FFF9EC;
+  text-shadow:0 2px 14px rgba(0,0,0,.6);
+}
+.intro-hook b{color:#ECD6A6;font-weight:700}
+.intro-cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;
+  border-radius:12px;background:linear-gradient(135deg,#ECD6A6,#D8B36A 55%,#C9A45A);
+  color:#1A1305;font-weight:800;font-size:16px;letter-spacing:-.01em;
+  box-shadow:0 10px 22px rgba(0,0,0,.35);animation:introCtaPulse 2.6s ease-in-out infinite;
+}
+.intro-cta:active{transform:translateY(1px)}
+.intro-note{margin:0;text-align:center;font-size:12.5px;color:#8C95A6;letter-spacing:-.01em}
+
+/* 입력창 열림 */
+#panelForm[hidden]{display:none}
+.panel.reveal-in{animation:formReveal .6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes introCardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes introCtaPulse{
+  0%,100%{box-shadow:0 10px 22px rgba(0,0,0,.35),0 0 0 0 rgba(216,179,106,.38)}
+  50%{box-shadow:0 10px 22px rgba(0,0,0,.35),0 0 0 7px rgba(216,179,106,0)}
+}
+@keyframes formReveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .intro-card,.intro-cta,.panel.reveal-in{animation:none}
+}
+@media (max-width:420px){
+  .intro-card{width:min(100%,calc(78vh * 9 / 16))}
+  .intro-hook{font-size:18px}
+}

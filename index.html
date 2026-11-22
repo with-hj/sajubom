@@ -34,8 +34,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="./styles.css?v=45">
-<link rel="stylesheet" href="./book.css?v=45">
+<link rel="stylesheet" href="./styles.css?v=46">
+<link rel="stylesheet" href="./book.css?v=46">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 </head>
 <body>
@@ -88,6 +88,20 @@
           </div>
           <div class="v8-tabs" id="subtabs" role="tablist" aria-label="세부 탭"></div>
           <p class="v8-tnote" id="v-tab-note"></p>
+        </div>
+
+        <!-- v46 · 신년운세 영상 인트로 : 재생이 끝나거나 버튼을 누르면 아래 사주 입력창이 열립니다 -->
+        <div class="intro-card" id="introCard" hidden>
+          <div class="intro-frame">
+            <video id="introVideo" class="intro-video" poster="./assets/themes-web/t-general.jpg" autoplay muted playsinline preload="auto" aria-label="2027 신년운세 인트로 영상"></video>
+            <span class="intro-shade" aria-hidden="true"></span>
+            <div class="intro-cap">
+              <span class="intro-badge">2027 新年 · 天靈堂</span>
+              <p class="intro-hook">다가오는 한 해,<br>어느 달에 문이 열리고<br><b>무엇을 피해야 할지</b> 보고 가세요</p>
+              <button type="button" class="intro-cta" id="introCta">내 신년운세 · 사주 정보 입력하기 <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+          <p class="intro-note">영상이 끝나면 사주 정보 입력창이 바로 열립니다.</p>
         </div>
 
         <div class="panel" id="panelForm">
@@ -526,17 +540,17 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=45"></script>
-<script src="./deep-core.js?v=45"></script>
-<script src="./content.js?v=45"></script>
-<script src="./content-deep.js?v=45"></script>
-<script src="./content-general.js?v=45"></script>
-<script src="./content-love.js?v=45"></script>
-<script src="./content-marriage.js?v=45"></script>
-<script src="./content-baby.js?v=45"></script>
-<script src="./content-wealth.js?v=45"></script>
-<script src="./book.js?v=45"></script>
-<script src="./book-more.js?v=45"></script>
-<script src="./app.js?v=45"></script>
+<script src="./engine.js?v=46"></script>
+<script src="./deep-core.js?v=46"></script>
+<script src="./content.js?v=46"></script>
+<script src="./content-deep.js?v=46"></script>
+<script src="./content-general.js?v=46"></script>
+<script src="./content-love.js?v=46"></script>
+<script src="./content-marriage.js?v=46"></script>
+<script src="./content-baby.js?v=46"></script>
+<script src="./content-wealth.js?v=46"></script>
+<script src="./book.js?v=46"></script>
+<script src="./book-more.js?v=46"></script>
+<script src="./app.js?v=46"></script>
 </body>
 </html>

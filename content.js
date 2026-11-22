@@ -179,7 +179,8 @@ var THEMES={
 
 var TABS={
   newyear:{theme:'general',name:'신년운세',han:'年',tag:'다가오는 한 해, 어디로 문이 열리는지',
-    note:'다가오는 한 해의 세운을 중심으로 상반기·하반기의 방향을 먼저 짚어요.'},
+    note:'다가오는 한 해의 세운을 중심으로 상반기·하반기의 방향을 먼저 짚어요.',
+    video:'./assets/videos/newyear.mp4'},   /* v46 · 탭별 인트로 영상 (있으면 입력창 앞에 9:16 카드로 재생) */
   life:{theme:'general',name:'평생사주',han:'命',tag:'타고난 그릇과 평생의 결',
     note:'한 해의 운이 아니라 평생 따라다니는 바탕을 읽어요.'},
   daeunflow:{theme:'general',name:'대운 흐름',han:'運',tag:'10년마다 바뀌는 판의 방향',
