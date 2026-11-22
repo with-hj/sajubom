@@ -105,6 +105,19 @@ function hasPair(tbl,a,b){
   }
   return false;
 }
+/* 세 글자가 모여야 성립하는 삼합·방합 — 두 글자만으로는 '반합'이라 단정하지 않는다 */
+function tripleWith(live,b){
+  var hits=[];
+  [['삼합',SAMHAP],['방합',BANGHAP]].forEach(function(g){
+    g[1].forEach(function(set){
+      if(set.indexOf(b)<0) return;
+      var have=[];
+      live.forEach(function(p){ if(p.branch!==b&&set.indexOf(p.branch)>=0) have.push(p.pos); });
+      if(have.length>=2) hits.push({type:g[0],pos:have.join('·'),pair:set.map(function(x){return BR_HAN[x];}).join('')});
+    });
+  });
+  return hits;
+}
 /* 두 지지의 관계 — 강한 것부터 하나만 */
 function relType(a,b){
   if(YUK[a]===b) return '육합';
@@ -114,8 +127,6 @@ function relType(a,b){
   if(hasPair(PA,a,b)) return '파';
   if(hasPair(HAE,a,b)) return '해';
   if(hasPair(WONJIN,a,b)) return '원진';
-  for(var i=0;i<SAMHAP.length;i++) if(a!==b&&SAMHAP[i].indexOf(a)>=0&&SAMHAP[i].indexOf(b)>=0) return '삼합';
-  for(var k=0;k<BANGHAP.length;k++) if(a!==b&&BANGHAP[k].indexOf(a)>=0&&BANGHAP[k].indexOf(b)>=0) return '방합';
   if(a===b) return '동일';
   return '';
 }
@@ -182,6 +193,21 @@ function buildDeep(R){
           mean:'천간이 부딪힙니다. 겉으로 드러나는 태도와 속의 계산이 어긋나 보이는 자리입니다.'});
     }
   }
+
+  /* 1-2. 세 글자가 모인 삼합·방합 */
+  [['삼합',SAMHAP],['방합',BANGHAP]].forEach(function(g){
+    g[1].forEach(function(set){
+      var hits=live.filter(function(p){ return set.indexOf(p.branch)>=0; });
+      var seen={}, uniq=[];
+      hits.forEach(function(p){ if(!seen[p.branch]){ seen[p.branch]=1; uniq.push(p); } });
+      if(uniq.length>=3){
+        branchRels.push({a:uniq[0].pos,b:uniq[1].pos,aBr:uniq[0].branch,bBr:uniq[1].branch,
+          type:g[0],pair:set.map(function(x){return BR_HAN[x];}).join(''),
+          mean:(g[0]==='삼합'?'세 글자가 모여 한 방향의 힘이 완성됐습니다. 그 기운이 생활의 중심축이 됩니다.':'세 글자가 같은 계절로 모여 그 오행이 크게 자랍니다. 한쪽으로 기울기 쉬운 대신 추진력이 큽니다.'),
+          w:g[0]==='삼합'?2.4:2.0});
+      }
+    });
+  });
 
   /* 2. 공망 (일주 기준 · 년주 기준) */
   var gmDay=gongmangBranches(R.dIdx), gmYear=gongmangBranches(R.yIdx);
@@ -364,6 +390,7 @@ function yearRead(R,y){
     var t=relType(p.branch,b);
     if(t&&t!=='동일') rels.push({pos:p.pos,type:t});
   });
+  tripleWith(d.live,b).forEach(function(h){ rels.push({pos:h.pos,type:h.type}); });
   var isGong=(d.gmDay.indexOf(b)>=0);
   var yong=(sel===d.yong||bel===d.yong), hee=(sel===d.heesin||bel===d.heesin),
       gi=(sel===d.gisin||bel===d.gisin), gu=(sel===d.gusin||bel===d.gusin);
@@ -392,6 +419,7 @@ function monthRead(R,y,m){
   var sel=STEM_EL[s], bel=BR_EL[b];
   var rels=[];
   d.live.forEach(function(p){ var t=relType(p.branch,b); if(t&&t!=='동일') rels.push({pos:p.pos,type:t}); });
+  tripleWith(d.live,b).forEach(function(h){ rels.push({pos:h.pos,type:h.type}); });
   var sco=0;
   if(grp==='재성') sco+=1.5; if(grp==='관성') sco+=1; if(grp==='식상') sco+=1; if(grp==='인성') sco+=0.8;
   if(sel===d.yong||bel===d.yong) sco+=1.5;

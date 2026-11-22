@@ -2,6 +2,7 @@
 (function(){
 'use strict';
 var C=window.CH, S=C.S;
+var EL_KO=S.EL_KO;
 var P=C.P,H=C.H,UL=C.UL,K=C.K,elB=C.elB,stemB=C.stemB,brB=C.brB,bj=C.bj,sj=C.sj,bp=C.bp,sp=C.sp;
 var pillars=C.pillars, elMeter=C.elMeter, godTable=C.godTable, seunTable=C.seunTable;
 var monthsBlock=C.monthsBlock, daeunTable=C.daeunTable, gaewunBlock=C.gaewunBlock;

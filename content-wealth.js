@@ -2,6 +2,7 @@
 (function(){
 'use strict';
 var C=window.CH, S=C.S;
+var EL_KO=S.EL_KO;
 var P=C.P,H=C.H,UL=C.UL,K=C.K,elB=C.elB,stemB=C.stemB,brB=C.brB,bj=C.bj,sj=C.sj,bp=C.bp,sp=C.sp;
 var monthsBlock=C.monthsBlock, seunTable=C.seunTable, risky=C.riskyMonthsText, yearOfStar=C.yearOfStar;
 window.CTP=window.CTP||{};
@@ -45,7 +46,7 @@ function mo1(R,c,input,name){
   h+='<p>'+S.yongText(R)+'</p>';
   h+=H('십성으로 보는 돈의 재료')+C.godTable(c);
   h+='<p>중심은 <b>'+c.topGrp+'</b>이고, 그 안의 별은 <b>'+c.topGodInGrp+'</b>입니다. '+S.GROUP_MEAN[c.topGrp]+'</p>';
-  h+='<p>'+(d.gmJae.length?'다만 재성 중 '+d.gmJae.map(function(p){return p.pos;}).join('·')+'가 <b>공망</b>입니다. 벌이는 되지만 <b>들어온 돈이 손에 오래 머물지 않는</b> 자리라, 받을 것은 그 자리에서 확정해야 합니다.':'재성에 공망이 걸리지 않아, 들어온 돈이 <b>장부에 남는</b> 구조입니다.'))+'</p>';
+  h+='<p>'+(d.gmJae.length?'다만 재성 중 '+d.gmJae.map(function(p){return p.pos;}).join('·')+'가 <b>공망</b>입니다. 벌이는 되지만 <b>들어온 돈이 손에 오래 머물지 않는</b> 자리라, 받을 것은 그 자리에서 확정해야 합니다.':'재성에 공망이 걸리지 않아, 들어온 돈이 <b>장부에 남는</b> 구조입니다.')+'</p>';
   return h+K('한 줄','이 사주의 돈은 <b>'+S.careerMap(R).roles[0]+'</b> 같은 자리에서 만들어지고, <b>'+(tot>=3?'여러 줄':'한 줄')+'</b>로 들어올 때 가장 안정됩니다.');
 }
 function mo2(R,c,input,name){

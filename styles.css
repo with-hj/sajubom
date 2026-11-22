@@ -592,9 +592,24 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .lr-hero h2{font-family:var(--serif);font-size:29px;line-height:1.28;color:#F8EED9;margin:9px 0 0;letter-spacing:-.02em;text-shadow:0 2px 14px rgba(0,0,0,.55)}
 .lr-hero h2 em{font-style:normal;color:var(--gold-l)}
 .lr-tag{font-family:var(--serif);font-size:12px;line-height:1.75;color:#D6CBB4;margin:9px auto 0;max-width:290px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
-.lr-price{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:0 0 10px}
+.lr-price{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:0 0 4px;flex-wrap:wrap}
+.lr-price s{font-size:14px;color:#8A93A4;text-decoration:line-through;text-decoration-thickness:1px}
+.lr-price em{font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px;letter-spacing:.02em}
 .lr-price b{font-family:var(--serif);font-size:25px;color:var(--gold-l);letter-spacing:-.01em}
-.lr-price span{font-size:11px;color:#A9A290}
+.lr-price span{font-size:11px;color:#A9A290;flex:0 0 100%;text-align:center;margin-top:2px}
+/* 가격 안내 · 업셀 카드 */
+.price-line{display:flex;align-items:baseline;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 5px}
+.price-line s{font-size:13px;color:#8A93A4;text-decoration:line-through}
+.price-line em{font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px}
+.price-line b{font-family:var(--serif);font-size:22px;color:var(--gold-l)}
+.pay-row.discount b{color:#B5533F}
+.pay-row .sub{display:block;font-size:11px;font-weight:400;color:#8A8172;margin-top:3px}
+.upsell{margin:18px 0 0;padding:16px 15px;border:1px solid rgba(216,179,106,.42);border-radius:14px;background:linear-gradient(180deg,rgba(216,179,106,.12),rgba(216,179,106,.04));text-align:center}
+.upsell .tt{font-family:var(--serif);font-size:16px;color:#F4EADA;line-height:1.5;margin:0 0 6px}
+.upsell .pp{font-size:12.5px;color:#B9B2A2;line-height:1.65;margin:0 0 12px}
+.upsell .pp b{color:#E4B96A}
+.upsell .btn{font-size:14.5px}
+.upsell .small{font-size:10.5px;color:#8A93A4;margin:8px 0 0;line-height:1.5}
 .lr-buy{margin-top:12px;text-align:center}
 .lr-buy .btn{font-size:15px;padding:12px 16px;border-radius:11px}
 .lr-micro{font-size:10px;color:#8A93A4;text-align:center;margin:7px 0 0;line-height:1.5}

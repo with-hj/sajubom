@@ -193,6 +193,7 @@ function bindChips(sel,get,on){
 /* ---------------- 트랙 ---------------- */
 function setTrack(t){
   $$('.track-btn').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-track')===t); });
+  if(t==='life') markThemeCredit();
   ['read','life'].forEach(function(k){
     var el=$('#track-'+k); if(el) el.classList.toggle('on',k===t);
   });
@@ -203,6 +204,19 @@ function setTrack(t){
   }catch(e){}
 }
 
+/* 생년월일 입력 전에도 보이는 가격: 테마 결제 이력이 있으면 차감가를 함께 안내 */
+function markThemeCredit(){
+  var box=document.querySelector('#track-life .lr-price');
+  if(!box) return;
+  var note=document.getElementById('lrCreditNote');
+  if(!themeCredit()){ if(note) note.parentNode.removeChild(note); return; }
+  if(note) return;
+  note=document.createElement('p');
+  note.id='lrCreditNote'; note.className='lr-micro';
+  note.style.color='#D8B36A';
+  note.innerHTML='테마 결제 9,900원 차감 → <b>29,900원</b>에 받으실 수 있습니다.';
+  box.parentNode.insertBefore(note,box.nextSibling);
+}
 /* ---------------- 테마 · 탭 ---------------- */
 function renderThemes(){
   var box=$('#themeList'), h='';
@@ -420,7 +434,7 @@ function renderResult(R,input){
   }
   h+='<div class="panel" style="margin-top:18px;text-align:center">'+
      '<h3 style="font-size:17px">'+(lockH?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
-     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <b>69,900원</b>입니다.</p>'+
+     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <s style="color:#8A93A4">69,900원</s> <b>39,800원</b>(43% 할인)입니다.</p>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
@@ -458,6 +472,64 @@ function bindPaywall(info){
     }
   });
 }
+/* ---------------- 테마 결제 → 인생사주 리포트 업셀 ---------------- */
+function themeCredit(){
+  try{ return localStorage.getItem('wlh_theme_paid')==='1'; }catch(e){ return false; }
+}
+function setThemeCredit(v){
+  try{ if(v) localStorage.setItem('wlh_theme_paid','1'); else localStorage.removeItem('wlh_theme_paid'); }catch(e){}
+}
+function upsellMarkup(){
+  return '<p class="tt">이미 9,900원을 결제하셨다면?</p>'+
+    '<p class="pp">인생사주 리포트 특가 <b>39,800원</b>에서<br>방금 결제한 <b>9,900원</b>을 빼고, <b>+29,900원</b>만 추가하면 됩니다.</p>'+
+    '<button type="button" class="btn btn-gold btn-block" data-theme-upgrade>+29,900원으로 인생사주 리포트 받기</button>'+
+    '<p class="small">A4 104쪽 책자형 PDF · 방금 입력한 사주 정보 그대로 이어집니다</p>';
+}
+function addUpsellCard(host){
+  if(!host||document.getElementById('rdUpsell')) return;
+  var up=document.createElement('div');
+  up.className='upsell fade-in'; up.id='rdUpsell';
+  up.innerHTML=upsellMarkup();
+  up.addEventListener('click',function(e){
+    if(e.target.closest('[data-theme-upgrade]')) themeUpgradeToLife();
+  });
+  host.appendChild(up);
+}
+/* 테마 결제 정보를 인생사주 리포트 신청서로 옮기고, 29,900원 차감가로 넘긴다 */
+function themeUpgradeToLife(){
+  var inp=state.input;
+  setThemeCredit(true);
+  if(inp){
+    if($('#lz-y')) $('#lz-y').value=inp.y;
+    if($('#lz-m')) $('#lz-m').value=inp.m;
+    if($('#lz-d')) $('#lz-d').value=inp.d;
+    if($('#lz-name')&&!$('#lz-name').value&&inp.name&&inp.name!=='당신') $('#lz-name').value=inp.name;
+    if($('#lz-hour')) $('#lz-hour').value=inp.hasTime?String(inp.hourIndex):'';
+    if($('#lz-notime')) $('#lz-notime').checked=!inp.hasTime;
+    if($('#lz-region')&&inp.regionKey){
+      var ok=false;
+      for(var i=0;i<$('#lz-region').options.length;i++){ if($('#lz-region').options[i].value===inp.regionKey) ok=true; }
+      if(ok) $('#lz-region').value=inp.regionKey;
+    }
+    var gc=$('#lzGender .chip[data-g="'+(inp.gender||'f')+'"]');
+    if(gc){ $$('#lzGender .chip').forEach(function(c){ c.classList.remove('on'); }); gc.classList.add('on'); }
+    var cal=(inp.cal==='lunar')?'lunar':'solar';
+    var cc=$('#lzCal .chip[data-cal="'+cal+'"]');
+    if(cc){ $$('#lzCal .chip').forEach(function(c){ c.classList.remove('on'); }); cc.classList.add('on'); state.pcal=cal; }
+    if(inp.ctx){
+      [['#lzMarry','data-m',inp.ctx.marry],['#lzChild','data-c',inp.ctx.kid],['#lzStage','data-s',inp.ctx.stage]].forEach(function(x){
+        if(!x[2]) return;
+        var el=$(x[0]+' .chip['+x[1]+'="'+x[2]+'"]');
+        if(el){ $$(x[0]+' .chip').forEach(function(c){ c.classList.remove('on'); }); el.classList.add('on'); }
+      });
+    }
+  }
+  setTrack('life');
+  setTimeout(function(){
+    try{ $('#pdfForm').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+  },220);
+}
+
 function unlockReading(){
   var locked=$('#pwLocked'), veil=$('#pwVeil'), wrap=$('#pwWrap');
   if(locked) locked.classList.add('open');
@@ -468,6 +540,8 @@ function unlockReading(){
     flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · 테스트 결제 9,900원';
     wrap.parentNode.insertBefore(flag,wrap);
   }
+  var host=wrap?wrap.parentNode:$('#resultView');
+  addUpsellCard(host);
   try{ if(wrap) wrap.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
 }
 
@@ -553,7 +627,8 @@ function submitPdf(){
     gender:b.gender,tsoff:b.tsoff,regionName:b.regionName,regionKey:b.regionKey,cal:state.pcal,
     stage:stage?stage.getAttribute('data-s'):'',marry:marry?marry.getAttribute('data-m'):'single',
     kid:kid?kid.getAttribute('data-c'):'none',q:($('#lz-q').value||'').trim(),email:email,phone:phone,
-    product:'천령당 인생사주 리포트',price:69900,status:'결제대기'};
+    product:'천령당 인생사주 리포트',priceRegular:69900,price:themeCredit()?29900:39800,
+    themePaid:themeCredit(),status:'결제대기'};
   /* 정보 입력 → 결제 → 보기/다운로드. 접수 저장은 결제를 마친 뒤에 한다. */
   showPayStep(order);
 }
@@ -568,7 +643,15 @@ function payRowsHTML(o){
   h+=row('생년월일',String(o.date).replace(/-/g,'.')+(o.hasTime?' '+hourLabel(o.hourIndex):' 시간 모름'));
   h+=row('받는 곳',esc(o.email||'-'));
   h+=row('상품','인생사주 리포트 · A4 책자형 PDF');
-  h+=row('결제 금액',won(o.price||69900),'total');
+  var reg=o.priceRegular||69900, base=39800, price=o.price||base;
+  h+='<div class="pay-row"><span>정가</span><b><s style="color:#8A93A4">'+won(reg)+'</s> <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">43% 할인</em></b></div>';
+  if(o.themePaid){
+    h+='<div class="pay-row"><span>특가</span><b>'+won(base)+'</b></div>';
+    h+=row('테마 결제 차감','-'+won(9900),'discount');
+    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">특가 '+won(base)+' - 테마 결제 차감 '+won(9900)+'</span></b></div>';
+  } else {
+    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+'에서 43% 할인</span></b></div>';
+  }
   return h;
 }
 function showPayStep(o){
@@ -612,7 +695,7 @@ function showDone(order){
   d.classList.add('on');
   lastOrder=order;
   d.innerHTML='<div class="done-box fade-in"><div class="ok">✓</div><h3>결제 및 접수가 완료되었습니다</h3>'+
-    '<div class="num">접수번호 '+order.id+' · 테스트 결제 '+won(order.price||69900)+'</div>'+
+    '<div class="num">접수번호 '+order.id+' · 테스트 결제 '+won(order.price||39800)+'</div>'+
     '<p>'+esc(b.name)+' 님의 원국을 검수한 뒤, 영업일 2~3일 안에 책자형 PDF를 '+esc(order.email||'신청하신 이메일')+'으로 보내드립니다.</p>'+
     '<p>지금 바로 리포트를 펼쳐보고 PDF 파일로 저장하실 수 있습니다.</p>'+
     '<button type="button" class="btn btn-gold btn-block" style="margin-top:14px" data-cust-view>내 인생사주 리포트 보기</button>'+
