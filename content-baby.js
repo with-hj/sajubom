@@ -1,4 +1,4 @@
-/* 천령당 — 임신·자녀 : 임신·출산운 · 자녀 사주 · 엄마아빠 궁합 */
+/* 천령당 — 임신·자녀 : 임신운 · 자녀 성장운 · 부모·자녀 궁합 (v51) */
 (function(){
 'use strict';
 var C=window.CH, S=C.S;
@@ -235,48 +235,143 @@ function ch7(R,c,input,name){
     K('한 줄','아이의 일정은 합의 달에, 큰 결정은 충의 달을 피해서.');
 }
 
-/* ---------------- 엄마·아빠 궁합 ---------------- */
+/* ---------------- 부모·자녀 궁합 (v51 · 엄마·아빠·아이 세 사람) ---------------- */
+function pairKey(A,B){
+  if(!A||!B) return null;
+  if(A.dayEl===B.dayEl) return 'me';
+  if(S.generates(A.dayEl,B.dayEl)) return 'give';
+  if(S.generates(B.dayEl,A.dayEl)) return 'take';
+  if(S.controls(A.dayEl,B.dayEl)) return 'push';
+  return 'pull';
+}
+function paChartTable(R,c,pc,cc){
+  var h='<table class="tbl"><tr><th>자리</th><th>일주</th><th>중심 기운</th><th>이 사람의 결</th></tr>';
+  h+='<tr><td><b>엄마</b></td><td>'+C.gzP(R.dStem,R.dBranch)+'</td><td>'+c.topGrp+'</td><td style="font-size:13px">'+S.ILJU[R.dIdx][0]+'</td></tr>';
+  if(pc) h+='<tr><td><b>아빠</b></td><td>'+C.gzP(pc.R.dStem,pc.R.dBranch)+'</td><td>'+pc.c.topGrp+'</td><td style="font-size:13px">'+S.ILJU[pc.R.dIdx][0]+'</td></tr>';
+  if(cc) h+='<tr><td><b>아이</b></td><td>'+C.gzP(cc.R.dStem,cc.R.dBranch)+'</td><td>'+cc.c.topGrp+'</td><td style="font-size:13px">'+S.ILJU[cc.R.dIdx][0]+'</td></tr>';
+  h+='</table>';
+  return h;
+}
 function pa1(R,c,input,name){
-  var cc=chChart(input);
-  var h=H('부모 각자의 결')+'<p>이 사주(부모)는 <b>'+S.ILJU[R.dIdx][0]+'</b>의 결이고, 중심 기운은 <b>'+c.topGrp+'</b>입니다. '+S.GROUP_MEAN[c.topGrp]+'</p>';
-  if(cc){ h+='<p>아이는 <b>'+S.ILJU[cc.R.dIdx][0]+'</b>의 결이고, 중심 기운은 <b>'+cc.c.topGrp+'</b>입니다. '+S.GROUP_MEAN[cc.c.topGrp]+'</p>'; }
-  else { h+='<p>아이의 생년월일을 넣으면 아이의 결까지 함께 놓고 볼 수 있습니다. 지금은 이 사주의 결이 아이에게 어떻게 닿는지부터 봅니다.</p>'; }
-  h+=H('두 결이 만나는 자리')+'<p>부모의 중심과 아이의 중심이 다르면, 같은 상황에서 <b>중요하게 여기는 것</b>이 다릅니다. 이것이 양육 갈등의 대부분입니다.</p>';
-  return h+K('한 줄','부모의 결이 다르면 <b>역할을 나누는 것</b>이 답입니다.');
+  var pc=partnerChart(input), cc=chChart(input);
+  var h='<p>부모·자녀 궁합은 부부 궁합과 다릅니다. 부부는 <b>같이 사는 관계</b>지만, 부모와 아이는 <b>한쪽이 기르고 한쪽이 자라는 관계</b>입니다. 그래서 세 사람의 사주를 나란히 놓고 <b>누가 무엇을 채워주고, 어디서 부딪히는지</b>를 봅니다.</p>';
+  h+=paChartTable(R,c,pc,cc);
+  h+='<p>이 사주(엄마)는 <b>'+c.topGrp+'</b>이 중심이라 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+' 역할을 맡기 쉽습니다. '+S.GROUP_MEAN[c.topGrp]+'</p>';
+  if(pc) h+='<p>아빠는 <b>'+pc.c.topGrp+'</b>이 중심입니다. '+(pc.c.topGrp===c.topGrp?'두 사람이 같은 결이라 양육의 방향을 정하기는 쉬운 대신, <b>같은 약점이 같이 드러납니다.</b>':'두 사람의 중심이 달라서, 같은 아이를 보면서도 <b>중요하게 여기는 것</b>이 다릅니다. 이 차이가 양육 갈등의 대부분입니다.')+'</p>';
+  else h+='<p>아빠의 생년월일을 넣으면 두 사람의 결과 아이의 자리까지 함께 놓고 볼 수 있습니다. 지금은 엄마와 아이의 자리부터 읽습니다.</p>';
+  if(cc) h+='<p>아이는 <b>'+cc.c.topGrp+'</b>이 중심입니다. '+S.GROUP_MEAN[cc.c.topGrp]+' 부모의 결과 다른 이 별이, 아이가 <b>혼자서도 서는 힘</b>입니다.</p>';
+  else h+='<p>아이의 생년월일을 넣으면 아이의 원국을 세 번째로 놓고 함께 읽습니다. 지금은 부모 두 사람의 결이 아이에게 닿는 방식부터 봅니다.</p>';
+  h+=H('세 사람을 읽는 순서');
+  h+='<p>먼저 <b>부모 두 사람의 결</b>을 봅니다. 그다음 <b>엄마와 아이</b>, <b>아빠와 아이</b>를 따로 봅니다. 마지막으로 세 사람이 함께 있을 때 <b>누가 무엇을 맡아야 하는지</b>를 정합니다. 순서를 바꾸면 결론이 흔들립니다.</p>';
+  return h+K('한 줄','세 사람이 모두 같은 방향을 볼 필요는 없습니다. <b>역할이 다르면 같은 편</b>이 됩니다.');
 }
 function pa2(R,c,input,name){
-  var h=H('역할을 나누는 법')+'<p>이 사주는 <b>'+c.topGrp+'</b>이 중심이라 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+' 역할을 맡기 쉽습니다.</p>';
-  h+='<table class="tbl"><tr><th>역할</th><th>맡기면 좋은 쪽</th></tr>'+
-     '<tr><td>생활·규칙</td><td>기준이 분명한 쪽</td></tr>'+
-     '<tr><td>공부·대화</td><td>말로 설명하는 데 부담이 적은 쪽</td></tr>'+
-     '<tr><td>놀이·감정</td><td>아이의 속도를 기다릴 수 있는 쪽</td></tr>'+
-     '<tr><td>큰 결정</td><td>두 사람이 함께, 하루 쉬고</td></tr></table>';
-  h+=H('이 사주가 놓치는 것')+'<p>잘하는 역할만 계속 맡습니다. 반대 역할을 <b>한 달에 한 번</b> 바꿔보면 아이가 두 사람을 다르게 보지 않습니다.</p>';
-  return h+K('한 줄','역할은 고정하지 말고 <b>돌아가며</b> 맡으세요.');
+  var cc=chChart(input);
+  var h=H('엄마와 아이 — 여덟 글자로 보는 사이');
+  if(cc){
+    var Rc=cc.R, key=pairKey(R,Rc);
+    h+='<p>엄마는 '+stemB(R.dStem)+', 아이는 '+stemB(Rc.dStem)+'로 만납니다. '+S.CHILD_PARENT_REL[key]+'</p>';
+    var rel=S.branchRel(R.dBranch,Rc.dBranch);
+    h+='<p>생활의 자리(일지)끼리는 <b>'+rel.k+'</b> — '+rel.t+' 이 관계는 말보다 <b>하루의 리듬</b>에서 드러납니다. 같이 밥을 먹고, 같이 잠드는 시간에서 갈리거나 붙습니다.</p>';
+    h+='<p>아이에게 가장 얇은 기운은 '+elB(cc.c.leastI)+'입니다. '+S.EL_DEEP[cc.c.leastI].under+' 엄마가 이 결의 환경('+S.EL_DEEP[cc.c.leastI].color+', '+S.EL_DEEP[cc.c.leastI].dir+')을 만들어주는 것이 가장 큰 도움이 됩니다.</p>';
+    h+=H('이 아이에게 엄마가 하는 말');
+    h+='<p>'+S.EL_KO[cc.R.dayEl]+'의 결을 가진 아이에게는 <b>'+S.EL_PERSON[cc.R.dayEl]+'</b> 같은 인상이 남습니다. 그래서 같은 말도 <b>어떤 톤으로</b> 하느냐가 오래 남습니다. 이 아이는 '+S.CHILD_NATURE_EL[cc.R.dayEl].split('.')[0]+' 쪽이라, 지적보다 <b>인정하는 한 문장</b>이 오래 갑니다.</p>';
+  } else {
+    var el=S.mod(R.dayEl+1,5);
+    h+='<p>아이의 생년월일을 넣으면 엄마와 아이의 일간·일지까지 실제 글자로 계산합니다. 지금은 이 사주의 자녀성 '+elB(el)+'으로 아이의 결을 읽습니다.</p>';
+    h+='<p>'+S.CHILD_NATURE_EL[el]+' 이 사주는 아이에게 <b>'+S.EL_PERSON[el]+'</b> 같은 인상을 줍니다. '+S.CHILD_PARENT_REL['give']+'</p>';
+  }
+  h+=H('엄마가 놓치기 쉬운 것');
+  h+='<p>이 사주는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>이 강해 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+' 쪽으로 먼저 나섭니다. 그래서 아이가 <b>조용히 다른 방향</b>을 택할 때 알아채기 늦습니다. 하루에 한 번, 아이가 정한 것을 그대로 따라가 보세요.</p>';
+  return h+K('한 줄','엄마와 아이의 궁합은 <b>설명보다 반복</b>으로 만들어집니다.');
 }
 function pa3(R,c,input,name){
-  var h=H('부딪히는 지점')+'<p>'+S.CONFLICT_BY_EL[R.dayEl]+'</p>';
-  h+=H('아이 앞에서')+'<p>이 사주는 화가 나면 말이 날카로워집니다. 아이 앞에서의 다툼은 <b>내용보다 분위기</b>가 오래 남습니다. 싸움이 길어질 것 같으면 자리를 옮기세요.</p>';
-  h+=H('서로의 방식을 존중하는 법')+UL(['상대의 양육 방식을 아이 앞에서 평가하지 않기','다른 방식을 쓰는 이유를 먼저 묻기','한 달에 한 번 양육 회의 — 감정 없이 30분']);
-  return h+K('한 줄','아이는 부모가 <b>서로를 대하는 방식</b>을 배웁니다.');
+  var pc=partnerChart(input), cc=chChart(input);
+  var h=H('아빠와 아이 — 여덟 글자로 보는 사이');
+  if(pc&&cc){
+    var key=pairKey(pc.R,cc.R), rel=S.branchRel(pc.R.dBranch,cc.R.dBranch);
+    h+='<p>아빠는 '+stemB(pc.R.dStem)+', 아이는 '+stemB(cc.R.dStem)+'로 만납니다. '+S.CHILD_PARENT_REL[key]+'</p>';
+    h+='<p>일지끼리는 <b>'+rel.k+'</b> — '+rel.t+'</p>';
+    h+='<p>아빠의 중심 기운은 <b>'+pc.c.topGrp+'</b>, 아이의 중심은 <b>'+cc.c.topGrp+'</b>입니다. '+(pc.c.topGrp===cc.c.topGrp?'같은 결이라 통하는 대화가 빠르고, 대신 <b>둘만 있으면 같은 방식으로 막히기도</b> 합니다.':'다른 결이라 아빠가 당연하게 여기는 것을 아이는 낯설어할 수 있습니다. 아빠가 <b>설명을 한 번 더</b> 붙이면 아이가 훨씬 편해집니다.')+'</p>';
+    h+=H('아빠가 힘을 실어주는 자리');
+    h+='<p>아이에게 가장 얇은 기운은 '+elB(cc.c.leastI)+'입니다. 아빠의 강한 기운이 '+elB(pc.c.mostI)+'이라면, 아이는 그 기운을 <b>가끔은 버겁게</b> 느낍니다. 같이 있는 시간에 아빠가 '+S.EL_DEEP[cc.c.leastI].habit+' 같은 <b>아이 쪽 결의 행동</b>을 먼저 해보세요. 아이는 말보다 그 장면을 기억합니다.</p>';
+  } else if(pc){
+    h+='<p>아이의 생년월일을 넣으면 아빠와 아이의 일간·일지까지 실제 글자로 계산합니다. 지금은 아빠의 결이 아이에게 닿을 자리부터 봅니다. 아빠의 중심은 <b>'+pc.c.topGrp+'</b>입니다.</p>';
+  } else {
+    h+='<p>아빠의 생년월일을 넣으면 아빠와 아이의 궁합을 계산합니다. 지금은 엄마의 사주로 보는 아빠의 자리입니다. 이 사주에게 아빠는 <b>'+(c.grp['관성']>=3?'기준을 세우는 사람':(c.grp['재성']>=3?'생활을 책임지는 사람':'같이 놀아주는 사람'))+'</b>으로 기억되기 쉽습니다.</p>';
+  }
+  h+=H('아빠와 아이 사이의 규칙')+UL([
+    '아이 앞에서 엄마의 방식을 평가하지 않기 — 아이는 두 사람을 다르게 보지 않습니다',
+    '하루 15분은 아이가 정하는 시간으로 — 무엇을 할지 아이가 고르게',
+    '아빠가 정한 규칙은 셋을 넘기지 않기 — 넘으면 아이는 규칙이 아니라 표정을 기억합니다'
+  ]);
+  return h+K('한 줄','아빠의 궁합은 <b>같이 있는 시간의 밀도</b>로 결정됩니다.');
 }
 function pa4(R,c,input,name){
-  var h=H('같은 편이 되는 법')+'<p>이 사주는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>이 강해 혼자 결론을 내리려 합니다. 배우자에게 <b>결론 전에 말하는</b> 습관 하나가 관계를 바꿉니다.</p>';
-  h+=H('아이에게 보이는 부모')+'<p>아이는 부모가 같은 편인지 아닌지를 <b>표정</b>으로 먼저 압니다. 의견이 다를 때도 “우리가 다시 이야기해볼게”라고 말하는 것만으로 아이는 안심합니다.</p>';
-  h+=H('한 주의 규칙')+UL(['아이가 아닌 이야기로 30분','한 번은 두 사람이 함께 아이를 맡기','고마운 일을 한 가지씩 말하기']);
-  return h+K('한 줄','부부가 같은 편이면 아이는 <b>혼자가 아니라는 것</b>을 배웁니다.');
+  var pc=partnerChart(input);
+  var h=H('부모 두 사람 사이의 결');
+  if(pc){
+    var key=pairKey(R,pc.R), rel=S.branchRel(R.dBranch,pc.R.dBranch);
+    h+='<p>엄마 '+stemB(R.dStem)+', 아빠 '+stemB(pc.R.dStem)+' — '+ (key==='me'?'같은 오행이라 설명하지 않아도 통합니다. 대신 <b>같은 약점</b>이 같이 올라옵니다.':(key==='give'?'엄마의 기운이 아빠를 살리는 구조입니다. 엄마가 챙기는 만큼 아빠가 안정됩니다.':(key==='take'?'아빠의 기운이 엄마를 살리는 구조입니다. 아빠 곁에서 엄마가 회복됩니다.':(key==='push'?'엄마의 기운이 아빠를 누르는 구조입니다. 엄마가 방향을 정하기 쉽고, 아빠는 말수가 줄어듭니다.':'아빠의 기운이 엄마를 누르는 구조입니다. 엄마가 맞추는 쪽이 되기 쉽습니다.'))))+'</p>';
+    h+='<p>일지끼리는 <b>'+rel.k+'</b> — '+rel.t+' 부부의 일지 관계는 아이 앞에서 드러나는 <b>분위기</b>를 만듭니다. 아이는 내용을 이해하지 못해도 이 분위기를 먼저 기억합니다.</p>';
+  } else {
+    h+='<p>아빠의 생년월일을 넣으면 두 사람의 궁합을 실제 글자로 계산합니다. 지금은 이 사주가 배우자에게 기대는 방식부터 봅니다. '+S.GROUP_MEAN[c.topGrp]+'</p>';
+  }
+  h+=H('아이 앞에서의 다툼');
+  h+='<p>이 사주는 화가 나면 말이 날카로워집니다('+S.CONFLICT_BY_EL[R.dayEl].split('.')[0]+'). 아이 앞에서의 다툼은 <b>내용보다 분위기</b>가 오래 남습니다. 싸움이 길어질 것 같으면 자리를 옮기세요. 아이는 “엄마 아빠가 싸웠다”가 아니라 <b>“우리 집이 불안하다”</b>로 기억합니다.</p>';
+  h+=H('같은 편이 되는 법')+UL([
+    '<b>결론 전에 말하기</b> — 이 사주는 혼자 정리한 뒤에 말하는 편이라, 배우자는 늘 뒤늦게 압니다',
+    '아이 앞에서 “다시 이야기해볼게”라고 말하기 — 이 한 문장이 아이를 안심시킵니다',
+    '한 달에 한 번, 아이가 아닌 이야기로 30분'
+  ]);
+  return h+K('한 줄','아이는 부모가 <b>서로를 대하는 방식</b>을 배웁니다.');
 }
 function pa5(R,c,input,name){
-  var cc=chChart(input);
-  var h=H('아이가 보는 부모')+'<p>이 사주는 아이에게 <b>'+S.EL_PERSON[R.dayEl]+'</b> 같은 인상을 줍니다. '+S.DM_DEEP[R.dStem].out+'</p>';
-  if(cc){
-    h+='<p>아이는 '+S.EL_PERSON[cc.R.dayEl]+'의 결이라, 부모의 이 인상을 <b>'+(cc.R.dayEl===R.dayEl?'그대로 받아들입니다':'다르게 해석합니다')+'</b>. '+(cc.R.dayEl===R.dayEl?'같은 결이라 통하기도 하고, 같은 약점이 부딪히기도 합니다.':'다른 결이라 부모의 다정함이 아이에게는 조용함으로, 부모의 규칙이 아이에게는 압박으로 느껴질 수 있습니다.')+'</p>';
-  }
-  h+=H('아이에게 가장 필요한 말')+'<p>“너는 네 속도로 자라도 괜찮아.” 이 사주가 이 말을 자주 하면 아이는 자기 결을 지킬 힘을 얻습니다.</p>';
-  return h+K('한 줄','아이는 부모의 말이 아니라 <b>부모의 반복</b>을 기억합니다.');
+  var pc=partnerChart(input), cc=chChart(input);
+  var h=H('아이에게 필요한 기운 — 세 사람을 겹쳐서');
+  var need=[];
+  if(cc) need.push({who:'아이', el:cc.c.leastI, cnt:cc.R.count[cc.c.leastI]});
+  if(pc) need.push({who:'아빠', el:pc.c.leastI, cnt:pc.R.count[pc.c.leastI]});
+  need.push({who:'엄마', el:c.leastI, cnt:R.count[c.leastI]});
+  h+='<p>부모·자녀 궁합에서 가장 쓸모 있는 계산은 <b>세 사람의 얇은 기운</b>을 겹쳐 보는 것입니다. 가족 안에서 한 기운이 비면, 그 자리는 대개 <b>누군가의 소모</b>로 채워집니다.</p>';
+  h+='<table class="tbl"><tr><th>자리</th><th>얇은 기운</th><th>가족 안에서</th></tr>';
+  need.forEach(function(n){
+    h+='<tr><td><b>'+n.who+'</b></td><td>'+elB(n.el)+'</td><td style="font-size:13px">'+S.EL_DEEP[n.el].under+'</td></tr>';
+  });
+  h+='</table>';
+  var same=need.length>1&&need.every(function(n){return n.el===need[0].el;});
+  h+='<p>'+(same?'세 사람의 얇은 기운이 <b>같은 '+S.EL_KO[need[0].el]+'</b>입니다. 이 가족에게 '+S.EL_DEEP[need[0].el].habit+' 같은 습관 하나가 세 사람을 동시에 채웁니다. ':'얇은 기운이 서로 다릅니다. 그래서 한 사람이 다른 사람의 빈자리를 대신 채우기 쉽습니다. <b>대신 채우는 것은 오래 가지 못합니다.</b> ')+'가족 전체의 환경으로 채우는 쪽이 훨씬 오래 갑니다 — '+S.EL_DEEP[need[0].el].color+', '+S.EL_DEEP[need[0].el].dir+', '+S.EL_DEEP[need[0].el].space+'.</p>';
+  h+=H('집 안에서 바로 바꿀 수 있는 것')+UL([
+    '아이 방의 방향과 조명을 '+S.EL_DEEP[need[0].el].dir+' 쪽으로',
+    '주말 한 끼는 '+S.EL_DEEP[need[0].el].food+' 쪽으로',
+    '가족이 같이 걷는 시간 — '+S.EL_KO[need[0].el]+'은 움직임에서 채워집니다'
+  ]);
+  return h+K('한 줄','가족의 빈 기운은 <b>한 사람의 희생</b>이 아니라 <b>집의 환경</b>으로 채우세요.');
 }
 function pa6(R,c,input,name){
-  return monthsBlock(R,c,'child',6,'앞으로 6개월, 가족의 리듬입니다.')+
+  var pc=partnerChart(input), cc=chChart(input);
+  var h=H('역할을 나누는 법 — 누가 무엇을 맡으면 좋은가');
+  var rows=[];
+  function pick(label, fn){ rows.push({label:label, who:fn()}); }
+  var momStrong=(c.grp['관성']+c.grp['인성'])>=2;
+  pick('생활·규칙', function(){ return momStrong?'엄마':'아빠'; });
+  pick('공부·대화', function(){ return (c.grp['식상']>=c.grp['인성'])?'엄마':'아빠'; });
+  pick('놀이·감정', function(){ if(cc) return (S.generates(cc.R.dayEl,R.dayEl)?'엄마':(S.generates(cc.R.dayEl,pc?pc.R.dayEl:R.dayEl)?'아빠':'아이의 속도를 기다릴 수 있는 쪽')); return '아이의 속도를 기다릴 수 있는 쪽'; });
+  pick('큰 결정', function(){ return '두 사람이 함께, 하루 쉬고'; });
+  h+='<table class="tbl"><tr><th>역할</th><th>맡기면 좋은 쪽</th></tr>';
+  rows.forEach(function(r){ h+='<tr><td><b>'+r.label+'</b></td><td>'+r.who+'</td></tr>'; });
+  h+='</table>';
+  h+='<p>이 표는 <b>잘하는 쪽</b>을 적은 것이지, <b>못하는 쪽</b>을 뺀 것이 아닙니다. 이 사주는 '+S.GROUP_MEAN[topGrpOf(c)].split('.')[0]+' 역할을 계속 맡는 편이라, 반대 역할을 <b>한 달에 한 번</b> 바꿔보면 아이가 두 사람을 다르게 보지 않습니다.</p>';
+  if(pc&&cc){
+    var gap=Math.abs(pc.c.grp['관성']-c.grp['관성']);
+    h+='<p>두 사람의 관성 차이는 <b>'+gap+'</b>입니다. '+(gap>=2?'한쪽이 기준을 세우고 다른 쪽이 풀어주는 구조가 자연스럽습니다. 다만 <b>기준이 한 사람에게만 몰리면</b> 그 사람이 먼저 지칩니다.':'관성 차이가 작아 규칙을 만드는 힘이 비슷합니다. 규칙을 만드는 일은 <b>한 사람이 정해서 알려주는</b> 쪽이 낫습니다.')+'</p>';
+  }
+  h+='<p>역할을 정할 때는 <b>“무엇을 맡을지”보다 “언제 쉴지”</b>를 같이 정하세요. 이 가족은 쉬는 날을 정해두지 않으면 한 사람이 계속 서 있게 됩니다.</p>';
+  return h+K('한 줄','역할은 고정하지 말고 <b>돌아가며</b> 맡으세요. 아이는 그걸 보고 배웁니다.');
+}
+function topGrpOf(c){ return c.topGrp; }
+function pa7(R,c,input,name){
+  return monthsBlock(R,c,'child',6,'앞으로 6개월, 이 가족의 리듬입니다.')+
     K('한 줄','가족 행사는 합의 달에, 아이의 큰 일정은 충의 달을 피하세요.');
 }
 
@@ -304,12 +399,13 @@ window.CTP.baby={
     {title:'12개월의 아이',sub:'달별 흐름',body:ch7}
   ],
   parent:[
-    {title:'부모 각자의 결',sub:'두 결이 만나는 자리',body:pa1},
-    {title:'역할 나누기',sub:'고정하지 말고 돌아가며',body:pa2},
-    {title:'부딪히는 지점',sub:'아이 앞에서의 다툼',body:pa3},
-    {title:'같은 편이 되는 법',sub:'결론 전에 말하기',body:pa4},
-    {title:'아이가 보는 부모',sub:'반복이 남는다',body:pa5},
-    {title:'6개월의 리듬',sub:'달별 흐름',body:pa6}
+    {title:'세 사람의 원국',sub:'엄마·아빠·아이가 만나는 자리',body:pa1},
+    {title:'엄마와 아이',sub:'일간·일지로 보는 사이',body:pa2},
+    {title:'아빠와 아이',sub:'힘을 실어주는 자리',body:pa3},
+    {title:'부모 두 사람 사이',sub:'아이 앞에서의 분위기',body:pa4},
+    {title:'아이에게 필요한 기운',sub:'세 사람을 겹쳐서',body:pa5},
+    {title:'역할을 나누는 법',sub:'고정하지 말고 돌아가며',body:pa6},
+    {title:'6개월의 가족',sub:'달별 흐름',body:pa7}
   ]
 };
 })();

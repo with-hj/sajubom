@@ -380,7 +380,8 @@ var SETS={
   parent:['ilju','elem','gaewun','people','life3','health','act'],
   money:['ilju','elem','gaewun','life3'],
   job:['ilju','gaewun','decade','life3','people'],
-  startup:['ilju','elem','gaewun','people','life3','act']
+  startup:['ilju','elem','gaewun','people','life3','act'],
+  estate:['ilju','elem','gaewun','decade','act']
 };
 
 window.DEEP={

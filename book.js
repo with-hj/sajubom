@@ -513,7 +513,11 @@ function docuPages(){
     }).join(''); })()+'</ul>'+
     '<p>계약을 잡을 첫 번째 창은 <b>'+(w.bestClean?w.bestClean.y+'년 '+w.bestClean.gz:'기신·공망이 겹치지 않는 해가 없어 가장 점수가 높은 해')+'</b>입니다. 기신·공망이 겹치는 해는 계약이 되어도 이자·세금·보수에서 지출이 늘어납니다.</p>'+
     '<p>달까지 좁히면 '+w.goodMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+' '+m.gz+'</b>'+(m.why.length?'('+m.why.join('·')+')':''); }).join(', ')+'입니다. 가계약·잔금·등기 접수 중 하나를 여기에 잡으세요.</p>'+
-    '<p>피할 달은 '+w.badMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+'</b>'; }).join(', ')+'입니다. '+(w.badMonths[0].why.length?w.badMonths[0].why.join('·')+'이라 그 달의 계약은 뒤에서 흔들립니다.':'')+'</p>'+
+    '<p>피할 달은 '+w.badMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+'</b>'; }).join(', ')+'입니다. '+(w.badMonths[0].why.length?w.badMonths[0].why.join('·')+'이라 그 달의 계약은 뒤에서 흔들립니다.':'')+'</p>',
+    {spread:true}));
+  /* v51 · 확인 목록과 실행 순서는 따로 한 장 — 한 지면에 몰아넣어 글씨를 줄이던 자리 */
+  push(page('10 / DOCUMENT',secLabel('10','DOCUMENT · 계약 전 점검')+'<h1>계약 전<br><span class="accent">확인 목록</span></h1>'+
+    '<p class="lead">서명하기 전에 이 목록을 소리 내어읽으세요. 이 사주에게 계약은 <b>기억</b>이 아니라 <b>종이</b>로 남겨야 하는 일입니다.</p>'+
     '<h3>계약·대출에서 조심할 것</h3><ul>'+w.traps.map(function(t){ return '<li>'+t+'</li>'; }).join('')+'</ul>'+
     '<h3>실행 순서</h3><ol><li>자금과 대출 한도를 먼저 숫자로 확정 — 상환액이 월 소득의 30%를 넘기지 않기</li><li>명의(단독·공동)와 등기 순서를 종이에 적기</li><li>잔금일·접수일·특약을 한 사람이 아닌 두 사람이 확인</li><li>이사와 계약을 같은 달에 몰지 않기</li></ol>'+
     callout('한 줄','<p>이 사주의 문서운은 <b>'+w.grade+'</b>입니다. '+(w.score>=60?'확인 목록만 지키면 자산이 남습니다.':'먼저 명의·등기·자금 순서를 정리하고 움직이세요.')+'</p>'),{spread:true}));
@@ -733,18 +737,17 @@ function fitPages(host){
       return bottom-br.bottom;
     };
     var fs=15.5, guard=0;
-    while(bd && over()>1 && fs>10.6 && guard<40){
-      fs-=0.25; guard++;
-      p.style.setProperty('--fs',fs.toFixed(2)+'px');
-    }
-    /* 지면 아래가 비면 문단 사이를 벌리는 대신 글씨를 키워 채운다(최대 17.4px).
-       space-between으로 벌리면 목차·짧은 지면에서 제목과 본문 사이가 크게 뜬다. */
-    if(bd){
-      var up=fs;
-      while(up<17.4 && guard<90){
-        up+=0.25; guard++;
-        p.style.setProperty('--fs',up.toFixed(2)+'px');
-        if(over()>1){ up-=0.25; p.style.setProperty('--fs',up.toFixed(2)+'px'); break; }
+    /* v51 · 지면마다 글씨를 키웠다 줄였다 하던 계산을 걷어냈다.
+       키우는 단계(17.4px까지)가 있어서 같은 책 안에서 어떤 장은 크고 어떤 장은 작아 보였다.
+       이제 본문은 어디서나 15.5px로 같다. 넘치는 지면은 ① 문단·표 여백을 먼저 좁히고(.tight)
+       ② 그래도 넘칠 때만 조금씩 줄인다(최대 13.2px). */
+    if(bd && over()>1){
+      p.classList.add('tight');
+      while(over()>1 && fs>15.4 && guard<10){ fs-=0.25; guard++; p.style.setProperty('--fs',fs.toFixed(2)+'px'); }
+      guard=0;
+      while(over()>1 && fs>13.5 && guard<40){
+        fs-=0.25; guard++;
+        p.style.setProperty('--fs',fs.toFixed(2)+'px');
       }
     }
     /* 남는 여백이 지면의 1/4 이하일 때만 문단 사이에 나눠 채운다.

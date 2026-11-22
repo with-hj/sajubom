@@ -297,16 +297,21 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 /* 세부 탭 : 금빛 알약 — 가운데 정렬 · 글자와 점 모두 광학적 정중앙 */
 .v8-tabs,.subtabs{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 7px;padding:0;overflow:visible}
 .subtab{
-  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
   flex:0 0 auto;border:1px solid rgba(201,164,90,.3);border-radius:999px;height:30px;padding:0 15px;
   font-family:var(--serif);font-size:13px;font-weight:400;line-height:1;color:#C7BBA3;background:rgba(255,255,255,.03);
   white-space:nowrap;transition:.2s;text-align:center;
 }
-.subtab .tx{display:block;line-height:1;transform:translateY(-.5px)}
+/* v51 · 글자를 위로 .5px 올리던 보정을 걷어냈다 — 알약 안에서 글자가 정확히 가운데 앉는다 */
+.subtab .tx{display:block;line-height:1}
 .subtab.on{background:linear-gradient(135deg,#EBD39A,#C9A45A);border-color:transparent;color:#20180A;font-weight:700;
   box-shadow:0 4px 14px rgba(0,0,0,.35)}
-.subtab .dot{display:block;flex:0 0 auto;width:4px;height:4px;border-radius:50%;background:#7a5410;margin:0;transform:translateY(-.5px)}
-.v8-tnote{margin:14px auto 0;max-width:322px;font-family:var(--serif);font-size:14.5px;font-weight:400;
+/* 선택 점은 흐름에서 빼고(absolute) 왼쪽에 앉춰 글자 중심이 움직이지 않게 한다 */
+.subtab .dot{position:absolute;left:7px;top:50%;width:4px;height:4px;border-radius:50%;background:#7a5410;margin-top:-2px}
+/* v51 · 알약이 4개인 탭(재물·직업)은 390px에서 2×2로 가지런히 */
+#subtabs.tabs-4{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-width:352px;margin:0 auto}
+#subtabs.tabs-4 .subtab{width:100%;padding:0 8px}
+.v8-tnote{margin:14px auto 0;max-width:344px;font-family:var(--serif);font-size:14px;font-weight:400;
   line-height:1.75;color:#C6BBA7;letter-spacing:-.01em;text-align:center}
 .v8-tnote b{color:#EEDBB3;font-weight:700}
 

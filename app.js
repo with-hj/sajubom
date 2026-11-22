@@ -88,7 +88,7 @@ function syncDays(ys,ms,ds){
 /* ---------------- 초기화 ---------------- */
 function init(){
   /* 연·월·일 */
-  [['by','bm','bd'],['py','pm','pd'],['lz-y','lz-m','lz-d']].forEach(function(ids){
+  [['by','bm','bd'],['py','pm','pd'],['cy','cm','cd'],['lz-y','lz-m','lz-d']].forEach(function(ids){
     var ys=$('#'+ids[0]),ms=$('#'+ids[1]),ds=$('#'+ids[2]);
     if(!ys) return;
     fillYears(ys,1920,'연도'); fillMonths(ms,true); fillDays(ds,true);
@@ -96,11 +96,11 @@ function init(){
     ms.addEventListener('change',function(){syncDays(ys,ms,ds);});
   });
   /* 시간 */
-  [['hour',true],['phour',true],['lz-hour',true]].forEach(function(a){
+  [['hour',true],['phour',true],['chour',true],['lz-hour',true]].forEach(function(a){
     var el=$('#'+a[0]); if(el) fillHours(el,a[1]);
   });
   /* 지역 */
-  ['region','pregion','lz-region'].forEach(function(id){ var el=$('#'+id); if(el) fillRegions(el,id==='region'); });
+  ['region','pregion','cregion','lz-region'].forEach(function(id){ var el=$('#'+id); if(el) fillRegions(el,id==='region'); });
 
   /* 히어로 배경 */
   var art=$('.hero-art'); if(art) art.style.backgroundImage='url(./assets/hero-art.jpg)';
@@ -108,7 +108,7 @@ function init(){
   bindChips('#calChips',function(b){return {cal:b.getAttribute('data-cal')};},function(v){
     state.cal=v.cal; $('#leapRow').style.display=(v.cal==='lunar')?'flex':'none';
   });
-  bindChips('#genderChips',function(b){return {g:b.getAttribute('data-g')};},function(v){ state.gender=v.g; });
+  bindChips('#genderChips',function(b){return {g:b.getAttribute('data-g')};},function(v){ state.gender=v.g; if(state.tab==='parent') syncParentLabels(); });
   bindChips('#stageChips',function(b){return {s:b.getAttribute('data-s')};},function(v){ state.stage=v.s; },{deselect:true,empty:{s:''}});
   bindChips('#marryChips',function(b){return {m:b.getAttribute('data-m')};},function(v){ state.marry=v.m; });
   bindChips('#kidChips',function(b){return {c:b.getAttribute('data-c')};},function(v){ state.kid=v.c; });
@@ -120,17 +120,14 @@ function init(){
   bindChips('#lzMarry',function(b){return {m:b.getAttribute('data-m')};},function(v){ state.marry=v.m; });
   bindChips('#lzChild',function(b){return {c:b.getAttribute('data-c')};},function(v){ state.kid=v.c; });
   bindChips('#pGenderChips',function(b){return {p:b.getAttribute('data-pg')};},function(v){ state.pg=v.p; });
+  bindChips('#cxGenderChips',function(b){return {p:b.getAttribute('data-cg')};},function(v){ state.cg=v.p; });
   bindIntro();
 
   /* 상대 정보 스위치 */
   var sw=$('#ctxSwitch');
-  if(sw) sw.addEventListener('click',function(){
-    state.ctx=!state.ctx;
-    sw.classList.toggle('on',state.ctx);
-    $('#ctxBody').classList.toggle('on',state.ctx);
-  });
+  if(sw) sw.addEventListener('click',function(){ setCtxOpen(!state.ctx); });
   /* 모름 체크 — v49 · 고른 시간을 비우고 잠근다. 표시는 숨겨둔 ‘시간 모름’ 자리가 맡는다 */
-  [['notime','hour'],['pnotime','phour'],['lz-notime','lz-hour']].forEach(function(a){
+  [['notime','hour'],['pnotime','phour'],['cnotime','chour'],['lz-notime','lz-hour']].forEach(function(a){
     var c=$('#'+a[0]),s=$('#'+a[1]);
     if(!c||!s) return;
     c.addEventListener('change',function(){ syncUnknown(c,s); });
@@ -326,6 +323,7 @@ function openTheme(key,silent){
 }
 function renderTabs(){
   var th=CT.THEMES[state.theme], box=$('#subtabs');
+  box.className='v8-tabs'+(th.tabs.length>=4?' tabs-4':'');
   box.innerHTML=th.tabs.map(function(k){
     var T=CT.TABS[k];
     return '<button type="button" class="subtab'+(k===state.tab?' on':'')+'" role="tab" data-tab="'+k+'">'+(k===state.tab?'<span class="dot"></span>':'')+'<span class="tx">'+T.name+'</span></button>';
@@ -348,15 +346,33 @@ var THEME_FIELDS={
 function fieldsFor(theme,tab){
   if(theme==='baby'){
     if(tab==='child') return {stage:0,marry:0,kid:0,ctx:'child'};
-    if(tab==='parent') return {stage:0,marry:1,kid:0,ctx:'partner'};
-    return {stage:0,marry:1,kid:1,ctx:0};
+    if(tab==='parent') return {stage:0,marry:0,kid:0,ctx:'family'};
+    return {stage:0,marry:1,kid:1,ctx:'partner'};
   }
   return THEME_FIELDS[theme]||THEME_FIELDS.general;
+}
+/* v51 · 상대방(배우자) 정보는 궁합·결혼·이혼·임신·자녀 탭에서 처음부터 펼쳐 둔다 */
+var CTX_OPEN={couple:1,wedding:1,divorce:1,birth:1,child:1,parent:1};
+function setCtxOpen(v){
+  state.ctx=!!v;
+  var sw=$('#ctxSwitch'); if(sw) sw.classList.toggle('on',state.ctx);
+  var b=$('#ctxBody'); if(b) b.classList.toggle('on',state.ctx);
 }
 function setCtxLabel(t,s){
   var tt=$('#ctxSwitch').parentNode.querySelector('.ct-t');
   var ts=$('#ctxSwitch').parentNode.querySelector('.ct-s');
   if(tt) tt.textContent=t; if(ts) ts.textContent=s;
+}
+function syncParentLabels(){
+  /* 부모·자녀 궁합 — 내가 엄마인지 아빠인지에 따라 세 칸의 이름을 바꾼다 */
+  var g=$('#genderChips .chip.on'); var gv=g?g.getAttribute('data-g'):'f';
+  var me=(gv==='m')?'아빠':'엄마', other=(gv==='m')?'엄마':'아빠';
+  var dt=$('#momLabelTx'); if(dt) dt.textContent=me+' 정보';
+  var ml=$('#momLabel'); if(ml) ml.style.display=(state.tab==='parent')?'flex':'none';
+  if(state.tab==='parent'){
+    setCtxLabel(other+' 정보',other+'의 생년월일을 넣으면 세 사람의 원국을 함께 읽습니다');
+    var pl=$('#pBirthLabel'); if(pl) pl.textContent=other+' 생년월일';
+  }
 }
 function applyFields(){
   var f=fieldsFor(state.theme,state.tab);
@@ -367,17 +383,25 @@ function applyFields(){
   if(kf) kf.style.display=f.kid?'block':'none';
   var cb=$('#ctxBlock');
   if(cb) cb.style.display=f.ctx?'block':'none';
+  var kb=$('#kidBlock');
+  if(kb) kb.style.display=(f.ctx==='family')?'block':'none';
   var gf=$('#pGenderField');
   if(gf) gf.style.display=(f.ctx==='child')?'block':'none';
+  var kg=$('#cxGenderField');
+  if(kg) kg.style.display=(f.ctx==='family')?'block':'none';
   var lb=$('#pBirthLabel');
   if(lb) lb.textContent=(f.ctx==='child')?'아이 생년월일':'상대방 생년월일';
   if(f.ctx==='child') setCtxLabel('아이 정보','아이의 생년월일을 넣으면 그 아이의 원국으로 읽습니다');
   else if(f.ctx==='partner'&&state.theme==='baby') setCtxLabel('배우자 정보','배우자의 생년월일을 넣으면 두 사람 결과 아이의 자리를 함께 봅니다');
-  else setCtxLabel('상대방 정보','상대의 생년월일을 넣으면 두 사람 글자를 함께 읽습니다');
+  else if(f.ctx!=='family') setCtxLabel('상대방 정보','상대의 생년월일을 넣으면 두 사람 글자를 함께 읽습니다');
+  /* v51 · 궁합·결혼·이혼·임신·자녀는 상대방 칸을 닫아두지 않고 처음부터 펼친다 */
+  if(f.ctx) setCtxOpen(!!CTX_OPEN[state.tab]);
+  var ml=$('#momLabel'); if(ml) ml.style.display=(state.tab==='parent')?'flex':'none';
+  if(state.tab==='parent') syncParentLabels();
 }
 function updatePanelCopy(){
   var T=CT.TABS[state.tab];
-  $('#pf-title').textContent=T.formTitle||(T.name+' — 내 사주 입력');
+  $('#pf-title').textContent=T.formTitle||(T.name+' — 내 정보 입력');
   $('#pf-note').textContent=T.note||'';
   /* v50 · 알약 아래 한 줄 — 탭이 정한 문장(sub)이 있으면 그것만, 없으면 ‘이름 · 설명’ */
   var tn=$('#v-tab-note');
@@ -561,7 +585,7 @@ function readForm(){
   if(!noTime&&hv==='') return {err:'태어난 시간을 고르거나 ‘시간 모름’을 체크해 주세요',focus:'hour'};
   var reg=regionOf($('#region').value);
   var gender=$('#genderChips .chip.on'); gender=gender?gender.getAttribute('data-g'):'f';
-  var c={stage:state.stage,marry:state.marry,kid:state.kid,partner:null,partnerErr:null};
+  var c={stage:state.stage,marry:state.marry,kid:state.kid,partner:null,partnerErr:null,child:null,childErr:null};
   var f=state.fields||fieldsFor(state.theme,state.tab);
   if(f.ctx&&state.ctx){
     var py=parseInt($('#py').value,10),pm=parseInt($('#pm').value,10),pd=parseInt($('#pd').value,10);
@@ -571,7 +595,19 @@ function readForm(){
       c.partner={y:py,m:pm,d:pd,hasTime:!pNo&&pHv!=='',hourIndex:(!pNo&&pHv!=='')?parseInt(pHv,10):0,
         gender:pgEl?pgEl.getAttribute('data-pg'):(state.pg||'m'),tsoff:(!pNo&&pHv!=='')?preg.off:0,regionName:preg.name};
     } else if(py||pm||pd){
-      c.partnerErr=(f.ctx==='child'?'아이 생년월일을 모두 골라주세요':'상대방 생년월일을 모두 골라주세요');
+      c.partnerErr=(f.ctx==='child'?'아이 생년월일을 모두 골라주세요':(f.ctx==='family'?'상대 부모 생년월일을 모두 골라주세요':'상대방 생년월일을 모두 골라주세요'));
+    }
+  }
+  /* v51 · 부모·자녀 궁합 — 아이 정보(세 번째 사람) */
+  if(f.ctx==='family'){
+    var ky=parseInt($('#cy').value,10), km=parseInt($('#cm').value,10), kd=parseInt($('#cd').value,10);
+    if(ky&&km&&kd){
+      var kreg=regionOf($('#cregion').value), kNo=$('#cnotime').checked, kHv=$('#chour').value;
+      var kgEl=$('#cxGenderChips .chip.on');
+      c.child={y:ky,m:km,d:kd,hasTime:!kNo&&kHv!=='',hourIndex:(!kNo&&kHv!=='')?parseInt(kHv,10):0,
+        gender:kgEl?kgEl.getAttribute('data-cg'):'m',tsoff:(!kNo&&kHv!=='')?kreg.off:0,regionName:kreg.name};
+    } else if(ky||km||kd){
+      c.childErr='아이 생년월일을 모두 골라주세요';
     }
   }
   return {y:solar.y,m:solar.m,d:solar.d,hasTime:!noTime,hourIndex:noTime?0:parseInt(hv,10),
@@ -639,6 +675,7 @@ function renderResult(R,input){
   h+='<div class="res-sum fade-in"><p><b>'+esc(name)+'</b> 님의 여덟 글자는 '+S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'일주, 일간 '+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')입니다. 오행은 <b>'+S.EL_KO[c.mostI]+'</b>'+S.josaP(S.EL_KO[c.mostI],'이가')+' 가장 두텁고 <b>'+S.EL_KO[c.leastI]+'</b>'+S.josaP(S.EL_KO[c.leastI],'이가')+' 가장 얇으며, 필요한 기운은 <b>'+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+')</b>입니다.</p>';
   h+='<p>'+S.DAY_MASTER[R.dStem][0]+'의 결로 태어나 '+S.GROUP_MEAN[c.topGrp]+' 이 사주의 중심 별은 <b>'+c.topGodInGrp+'</b>입니다. '+S.GOD_KEY[c.topGodInGrp]+'의 방식으로 살 때 가장 편안해집니다.</p>';
   if(input.ctx&&input.ctx.partnerErr) h+='<p style="color:#c94228">'+esc(input.ctx.partnerErr)+' — 내 사주만 읽었습니다.</p>';
+  if(input.ctx&&input.ctx.childErr) h+='<p style="color:#c94228">'+esc(input.ctx.childErr)+' — 아이의 사주는 비워 두었습니다.</p>';
   h+='</div>';
 
   /* ---------- v45 : 장 목차 탭 · 1~2장 무료 · 3장부터 첫 문장 + 핵심 가림 ---------- */

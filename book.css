@@ -44,6 +44,24 @@
 /* 남는 여백이 조금뿐인 지면은 문단 사이에 고르게 나눠 채운다(fit()이 .fill을 붙인다).
    여백이 많은 지면은 위에서부터 쌓아 제목과 본문 사이가 크게 벌어지지 않게 한다. */
 .pg-bd.fill{justify-content:space-between}
+/* v51 · 한 장을 넘치는 지면은 글씨를 줄이기 전에 여백을 먼저 좁힌다 (지면마다 글씨 크기가 달라지지 않게) */
+.pg.tight p{margin-bottom:2.2mm}
+.pg.tight h3{margin:3.6mm 0 1.2mm}
+.pg.tight h2{margin-bottom:2.4mm}
+.pg.tight h1{margin-bottom:4mm}
+.pg.tight ul{margin-bottom:2.6mm}
+.pg.tight ul li{margin-bottom:1.4mm}
+.pg.tight ol{margin-bottom:2.6mm}
+.pg.tight ol li{margin-bottom:1.9mm}
+.pg.tight .callout{margin:2.8mm 0;padding:2.8mm 4mm}
+.pg.tight table{margin:2mm 0 3.2mm}
+.pg.tight .dn p,.pg.tight .mcard p{line-height:1.7}
+/* 표가 많은 지면(세운·월운)은 표 여백을 먼저 좁혀 본문 크기를 지킨다 */
+.pg.tight table{font-size:calc(var(--fs) * .86)}
+.pg.tight table th{padding:1.4mm 1.6mm}
+.pg.tight table td{padding:1.2mm 1.6mm;line-height:1.5}
+.pg.tight p{line-height:1.78}
+.pg.tight ul li,.pg.tight ol li{line-height:1.72}
 .sec-label{
   font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   font-size:9.4px;letter-spacing:.2em;color:var(--b-orange);font-weight:700;margin-bottom:3mm;
@@ -228,6 +246,9 @@
      — iOS·안드로이드 브라우저의 글자 자동 확대(text-size-adjust)를 끄고,
        목록은 본문과 같은 1em으로 고정한다. 넘침·겹침이 생기지 않게 여백만 따로 잡는다. */
   html,body,#wl2-book,#wl2-book .pg,#wl2-book .pg *{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  /* v51 · 폰에서는 지면이 세로로 늘어나므로 A4에 맞춰 줄였던 글씨(--fs)를 쓰지 않는다.
+     모든 장이 똑같이 15.5px로 보이게 고정한다(PDF로 뽑을 때 쓰는 .pdf-shot은 제외). */
+  #wl2-book:not(.pdf-shot)>.pg{--fs:15.5px !important}
   #wl2-book>.pg{width:100%;height:auto;max-height:none;min-height:auto;padding:20px 18px 16px;border-radius:12px;font-size:var(--fs,15.5px)}
   #wl2-book>.pg.cover{height:295mm;max-height:none;padding:0}
   .pg h1{font-size:24px}

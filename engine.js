@@ -2642,7 +2642,8 @@ var CHILD_PARENT_REL={
 var EL_NUM=['3 · 8','2 · 7','5 · 10','4 · 9','1 · 6'];
 
 function childChart(input){
-  var p=input.ctx&&input.ctx.partner;
+  /* v51 · 부모·자녀 궁합은 아이를 세 번째 사람(ctx.child)으로 받는다. 그 외 탭은 기존처럼 ctx.partner가 아이 */
+  var p=(input.ctx&&input.ctx.child)||(input.tab!=='parent'&&input.ctx&&input.ctx.partner);
   if(!p||!p.y) return null;
   try{
     var Rc=computeSaju({y:p.y,m:p.m,d:p.d,hasTime:!!p.hasTime,hourIndex:p.hourIndex||0,gender:p.gender||'m',tsoff:p.tsoff||0,regionName:p.regionName||''});

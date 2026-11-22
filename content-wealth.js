@@ -389,33 +389,281 @@ function st6(R,c,input,name){
     K('한 줄','첫 결제·계약은 합의 달에, 확장은 충의 달을 피해서.');
 }
 
+/* =================================================================
+   v51 — 재물·금전운 / 직업·이직운 / 사업·부업운 / 부동산·문서운 확장
+   ================================================================= */
+var DAEPHASE={
+ '재성':{t:'돈이 직접 움직이는 10년',b:'수입의 크기가 판을 바꾸는 시기입니다. 벌이가 늘고 계약이 잦아지지만, 그만큼 새는 곳도 커집니다. 이 10년에 구조를 만들지 않으면 다음 대운에 남지 않습니다.'},
+ '식상':{t:'만들어서 버는 10년',b:'내가 만든 것이 돈이 되는 시기입니다. 직장 안에서도 성과물이 평가로 바뀌고, 부업·콘텐츠가 부쩍 커집니다. 대신 몸을 쓰는 일이 늘어 잠이 먼저 줄어듭니다.'},
+ '관성':{t:'자리를 통해 버는 10년',b:'돈이 자리에서 나옵니다. 승진·이직·계약으로 수입의 틀이 바뀌고, 안정되는 대신 책임이 먼저 늘어납니다.'},
+ '인성':{t:'자금줄이 정리되는 10년',b:'큰돈보다 문서·자금줄·보증이 정리되는 시기입니다. 대출·보증·연금처럼 오래 가는 결정이 여기서 나옵니다.'},
+ '비겁':{t:'나눠 갖는 10년',b:'사람과 경쟁이 많은 시기입니다. 같이 벌고 같이 쓰는 구조가 되기 쉬워, 몫을 정해두지 않으면 남는 것이 줄어듭니다.'}
+};
+function mo8(R,c,input,name){
+  var d=D(R), rows=[];
+  var SC={'재성':4.2,'식상':3.4,'관성':2.4,'인성':1.6,'비겁':0.8};
+  R.daeun.forEach(function(dn,i){
+    var g=S.tenGod(R.dStem,dn.idx%10), grp=S.GOD_GROUP[g];
+    var sc=SC[grp]||1;
+    if(S.STEM_EL[dn.idx%10]===d.yong||S.BR_EL[dn.idx%12]===d.yong) sc+=1.2;
+    if(S.STEM_EL[dn.idx%10]===d.gisin||S.BR_EL[dn.idx%12]===d.gisin) sc-=1.4;
+    rows.push({i:i,from:dn.from,to:dn.to,g:g,gz:C.gzP(dn.idx%10,dn.idx%12),grp:grp,sc:sc,cur:i===R.curDaeun});
+  });
+  var best=rows.slice().sort(function(a,b){ return b.sc-a.sc; })[0];
+  var now=rows[R.curDaeun]||rows[0];
+  var h='<p>평생 재물운은 <b>10년 단위</b>로 봅니다. 해마다의 등락은 세운이 만들지만, 돈의 그릇 자체는 대운이 바꿉니다. 이 사주는 지금 <b>'+now.from+'~'+now.to+'세 · '+now.gz+' '+now.g+'</b> 대운에 있고, 이 10년의 성격은 <b>'+(DAEPHASE[now.grp]||DAEPHASE.비겁).t+'</b>입니다.</p>';
+  h+='<p>'+(DAEPHASE[now.grp]||DAEPHASE.비겁).b+'</p>';
+  h+='<table class="tbl"><tr><th>나이</th><th>대운</th><th>십성</th><th>이 10년의 결</th></tr>';
+  rows.forEach(function(r){
+    h+='<tr'+(r.cur?' style="background:#f3ecdd"':'')+'><td><b>'+r.from+'~'+r.to+'</b>'+(r.cur?' <span style="font-size:10.5px;color:#c94228">지금</span>':'')+'</td><td>'+r.gz+'</td><td>'+r.g+'</td><td style="font-size:12.5px;line-height:1.65;color:#5a5145">'+(DAEPHASE[r.grp]||DAEPHASE.비겁).t+'</td></tr>';
+  });
+  h+='</table>';
+  h+=H('이 사주의 재물이 가장 커지는 10년');
+  h+='<p><b>'+best.from+'~'+best.to+'세 · '+best.gz+' '+best.g+'</b>입니다. '+ (best.cur?'지금이 그 10년 안에 있습니다. 이 시기에 만든 구조가 노후까지 남습니다.':(best.from>R.age?'앞으로 올 시기입니다. 그 전까지는 그릇을 키우는 10년으로 쓰세요.':'이미 지나온 시기입니다. 그때 만든 것이 지금의 바탕입니다.'))+'</p>';
+  h+='<p>'+S.strengthText(R).split('그래서')[0]+'그래서 이 사주는 <b>'+ (R.strength==='약'?'한 번에 크게':'번 만큼 지키는') +'</b> 방식으로 재물이 쌓입니다. '+(R.strength==='약'?'큰돈을 한 번에 받기보다 여러 번 나눠 받는 계약이 맞습니다.':'버는 힘이 있으니 지키는 구조만 만들면 됩니다.')+'</p>';
+  h+=H('노후의 재물 — 마지막 10년');
+  var last=rows[rows.length-1];
+  h+='<p>마지막 대운 <b>'+last.from+'~'+last.to+'세 '+last.gz+' '+last.g+'</b>은 <b>'+(DAEPHASE[last.grp]||DAEPHASE.비겁).t+'</b>입니다. 이 시기의 재물은 벌어서가 아니라 <b>이미 만든 것이 돌아오는</b> 형태로 옵니다. 그래서 지금의 10년에 무엇을 남기느냐가 그 10년의 크기를 정합니다.</p>';
+  return h+K('한 줄','평생 재물운은 <b>가장 센 10년</b>이 아니라 <b>그 10년에 무엇을 남겼는지</b>로 결정됩니다.');
+}
+function mo9(R,c,input,name){
+  var d=D(R), doc=d.docu, geum=d.sals.filter(function(s){return s.key==='geumyeo';});
+  var h=H('재산을 모으는 흐름 — 세 층으로 본다');
+  h+='<p>돈이 모이는 방식은 저축 습관 하나로 정해지지 않습니다. 이 사주는 <b>현금 · 자산 · 사람</b> 세 층이 어떻게 연결되는지로 봅니다.</p>';
+  h+='<table class="tbl"><tr><th>층</th><th>이 사주의 상태</th><th>할 일</th></tr>';
+  h+='<tr><td><b>현금</b></td><td>'+(c.grp['재성']>=2?'재성 '+c.grp['재성']+'개로 현금이 도는 힘이 있습니다.':'재성 '+c.grp['재성']+'개로 현금이 오래 머무는 구조는 아닙니다.')+'</td><td style="font-size:13px">월 소득의 '+(R.strength==='약'?'15%':'25%')+'를 받은 날 바로 떼어두기</td></tr>';
+  h+='<tr><td><b>자산</b></td><td>'+(geum.length?'금여가 '+geum.map(function(s){return s.pos;}).join('·')+'에 있어 형태가 남는 재산과 인연이 깊습니다.':'금여가 뚜렷하지 않아 현금이 자산으로 바뀌는 데 시간이 걸립니다.')+'</td><td style="font-size:13px">큰돈이 들어오면 절반은 예금·보증금·실물로 바꾸기</td></tr>';
+  h+='<tr><td><b>사람</b></td><td>'+(c.grp['비겁']>=3?'비겁이 두터워 사람을 통한 지출과 수입이 모두 큽니다.':'비겁이 '+(c.grp['비겁'])+'개로 사람에게 쓰는 돈은 관리되는 편입니다.')+'</td><td style="font-size:13px">빌려주는 돈은 없는 돈으로, 몫은 글로 남기기</td></tr>';
+  h+='</table>';
+  h+=H('모으는 순서 — 이 사주 전용');
+  h+='<p>1) <b>새는 곳을 먼저 막고</b>, 2) <b>자동으로 빠져나가는 구조</b>를 만들고, 3) 그다음에 <b>늘리는 판단</b>을 합니다. 순서를 바꾸면 늘린 돈이 새는 곳으로 먼저 갑니다. 이 사주는 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+' 쪽이라 2)를 미루는 경향이 있습니다.</p>';
+  h+='<p>문서 기준으로 보면 이 사주의 문서·자산 구조는 <b>'+doc.score+'점 · '+doc.grade+'</b>입니다. '+(doc.score>=58?'계약과 등기만 확인하면 자산이 남는 구조입니다.':'자산을 쌓기 전에 명의·등기·자금 순서를 먼저 정리해야 하는 구조입니다.')+'</p>';
+  h+=H('모으는 데 걸리는 시간');
+  h+='<p>이 사주가 같은 금액을 모으는 데 걸리는 시간은 <b>대운의 십성</b>에 따라 달라집니다. '+(S.GOD_GROUP[S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)]==='재성'?'지금 대운이 재성이라 같은 노력으로도 남는 비율이 높습니다. 지금이 구조를 만들기에 가장 좋은 10년입니다.':'지금 대운은 재성이 아니라, 모은 것이 잘 보이지 않는 시기입니다. 이때는 <b>금액보다 자동이체·분리통장 같은 장치</b>를 남기세요.')+'</p>';
+  return h+K('한 줄','재산은 <b>버는 힘</b>이 아니라 <b>남기는 순서</b>로 모입니다.');
+}
+
+/* ---------------- 직업 추가 장 (v51) ---------------- */
+function jb8(R,c,input,name){
+  var d=D(R), reads=[];
+  for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
+  var gwan=reads.filter(function(r){ return r.grp==='관성'; });
+  var in_=reads.filter(function(r){ return r.grp==='인성'; });
+  var h=H('취업·합격운 — 서류와 자리가 같이 오는 해');
+  h+='<p>취업과 합격은 <b>관성(자리)</b>과 <b>인성(서류·자격)</b>이 함께 들어올 때 가장 잘 풀립니다. 하나만 오면 면접까지 가고도 아쉽게 멈춥니다.</p>';
+  h+='<p>'+(gwan.length?'관성이 오는 해는 <b>'+gwan.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>입니다. 이 해에는 채용의 문이 실제로 열립니다. '+gwan[0].why:'앞으로 다섯 해에는 관성이 세운으로 뚜렷하게 들어오지 않습니다. 이때는 <b>자격·경력</b>을 먼저 쌓는 쪽이 맞습니다.')+'</p>';
+  h+='<p>'+(in_.length?'서류·자격을 뜻하는 인성은 <b>'+in_.map(function(r){return r.y+'년';}).join(', ')+'</b>에 들어옵니다. 시험·자격증·포트폴리오는 이 해에 마무리하세요.':'인성이 세운에 뚜렷하지 않아, 서류보다 <b>경험과 소개</b>로 들어가는 자리가 맞습니다.')+'</p>';
+  var both=reads.filter(function(r){ return r.grp==='관성'||r.grp==='인성'; });
+  h+=H('이 사주가 합격하는 방식');
+  h+='<p>중심 별이 <b>'+c.topGodInGrp+'</b>이라 '+S.GOD_KEY[c.topGodInGrp]+' 이 결로 준비할 때 가장 힘이 납니다. '+(c.grp['인성']>=2?'인성이 받쳐줘 <b>필기·서류</b>에서 강합니다.':'인성이 얇아 서류보다 <b>면접·실무 과제</b>에서 강합니다.')+' '+(c.grp['식상']>=2?'식상이 있어 <b>말로 설명하는 자리</b>에서 점수가 올라갑니다.':'식상이 얇아 말로 푸는 자리보다 <b>결과물로 보여주는</b> 전형이 유리합니다.')+'</p>';
+  h+=H('면접·시험에 힘이 실리는 달');
+  var now=new Date(), tops=[];
+  for(var k=0;k<10;k++){
+    var yy=now.getFullYear(), mm=now.getMonth()+1+k;
+    while(mm>12){ mm-=12; yy++; }
+    var mr=S.monthRead(R,yy,mm);
+    if(mr.grp==='관성'||mr.grp==='인성'||mr.rels.some(function(x){return x.type==='육합';})) tops.push({y:yy,m:mm,r:mr});
+  }
+  h+='<p>'+(tops.length?tops.slice(0,4).map(function(o){ return '<b>'+o.y+'.'+n2(o.m)+'</b>('+o.r.gz+'·'+o.r.g+')'; }).join(', ')+' — 이 달들은 서류 마감과 면접에 힘이 실립니다. 지원은 이 달의 <b>초순</b>에 넣으세요.':'앞으로 10개월은 관성·인성이나 합이 걸리는 달이 뚜렷하지 않습니다. 지원은 분기 초에 몰아 잡고, 나머지 달은 준비에 쓰세요.')+'</p>';
+  h+='<p>반대로 '+risky(R,c,6)+'</p>';
+  h+=monthsBlock(R,c,'wealth',6,'앞으로 6개월, 지원과 면접의 달입니다.');
+  return h+K('한 줄','합격은 <b>자리가 열리는 해</b>에 <b>서류가 준비돼 있는 사람</b>에게 옵니다.');
+}
+function jb9(R,c,input,name){
+  var d=D(R);
+  var gwan=c.grp['관성'], in_=c.grp['인성'];
+  var curG=S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10), curGrp=S.GOD_GROUP[curG];
+  var h=H('승진·평가운 — 조직에서 올라가는 방식');
+  h+='<p>이 사주의 관성은 <b>'+gwan+'개</b>, 인성은 <b>'+in_+'개</b>입니다. '+(gwan>=3?'관성이 두터워 조직 안에서 <b>자리를 올리는 방식</b>이 잘 맞습니다. 평가와 절차가 오히려 나를 지켜줍니다.':(gwan===0?'관성이 얇아 <b>직급보다 결과</b>로 평가받는 자리가 맞습니다. 연봉 협상도 직급보다 성과로 하는 쪽이 유리합니다.':'관성이 적당해 조직과 전문성이 반반입니다. 팀을 맡기보다 <b>전문 트랙</b>으로 올라가는 편이 빠릅니다.'))+'</p>';
+  h+='<p>지금 대운은 <b>'+curG+'('+curGrp+')</b>입니다. '+(curGrp==='관성'?'대운이 관성이라 <b>평가와 승진이 실제로 일어나는 10년</b>입니다. 이 10년 안에 한 단계는 반드시 올라갑니다.':(curGrp==='인성'?'대운이 인성이라 <b>자격·학위·전문성</b>으로 평가받는 시기입니다. 직급보다 전문 영역을 쌓으면 그게 다음 자리를 만듭니다.':(curGrp==='식상'?'대운이 식상이라 <b>성과물</b>로 평가받는 시기입니다. 눈에 보이는 결과를 남기세요.':(curGrp==='재성'?'대운이 재성이라 <b>숫자</b>로 평가받는 시기입니다. 매출·성과를 기록해 두세요.':'대운이 비겁이라 <b>경쟁이 많은</b> 시기입니다. 같은 일을 해도 누가 더 오래 버티는지로 갈립니다.'))))+'</p>';
+  h+=H('평가를 올리는 세 가지');
+  h+=UL([
+    '이 사주는 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>이 강해 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+' 쪽으로 먼저 보입니다. 상사에게는 <b>결과를 한 줄로 요약</b>해 보고하세요',
+    (d.deukRyeong?'월령이 받쳐줘 <b>꾸준함</b>이 무기입니다. 한 분기 동안 같은 지표를 계속 올리는 것이 가장 강한 신호입니다.':'월령이 받쳐주지 않아 꾸준함보다 <b>집중</b>이 무기입니다. 한 달에 하나를 확실히 끝내세요'),
+    '이 사주가 가장 미루는 것은 <b>자기 성과 기록</b>입니다. 월말에 세 줄만 남겨두면 평가 시즌에 그대로 쓰입니다'
+  ]);
+  h+=H('승진이 늦어지는 때');
+  h+='<p>'+risky(R,c,6)+' 이 달에는 큰 결정보다 <b>기록과 정리</b>에 쓰세요.</p>';
+  h+=monthsBlock(R,c,'wealth',6,'앞으로 6개월, 평가와 자리의 달입니다.');
+  return h+K('한 줄','승진은 <b>실력</b>이 아니라 <b>기록된 실력</b>으로 옵니다.');
+}
+
+/* ---------------- 사업 추가 장 (v51) ---------------- */
+function st7(R,c,input,name){
+  var d=D(R);
+  var sik=c.grp['식상'], jae=c.grp['재성'], bi=c.grp['비겁'];
+  var h=H('부업 성공 가능성 — 숫자로 본 결론');
+  h+='<p>부업은 <b>식상(만들 것)</b>과 <b>재성(팔릴 것)</b>이 같이 있어야 돈이 됩니다. 이 사주는 식상 <b>'+sik+'개</b>, 재성 <b>'+jae+'개</b>입니다. '+(sik>=2&&jae>=2?'둘 다 있어 <b>부업이 실제 수입이 되는 구조</b>입니다. 만들 수 있고, 팔 수 있습니다.':(sik>=2&&jae<2?'만드는 힘은 있는데 <b>파는 힘이 얇습니다</b>. 혼자 팔기보다 이미 팔리는 곳(플랫폼·거래처)에 얹으세요.':(sik<2&&jae>=2?'파는 감각은 있는데 <b>만들 것이 먼저</b> 필요합니다. 남이 만든 것을 유통하는 쪽이 빠릅니다.':'둘 다 얇아 <b>본업의 연장</b>으로만 부업이 됩니다. 완전히 다른 일은 오래 가지 못합니다.')))+'</p>';
+  h+='<p>중심 별이 <b>'+c.topGodInGrp+'</b>이라 '+S.GOD_KEY[c.topGodInGrp]+' 이 방식의 부업이 맞습니다.</p>';
+  var cos=S.careerMap?S.careerMap(R):null;
+  if(cos) h+='<p>이 사주에 맞는 실제 형태는 <b>'+cos.roles[0]+'</b> 쪽이고, 부업으로 줄이면 <b>'+cos.roles[2]+'</b> 같은 작은 형태가 맞습니다. 처음 6개월은 <b>수입보다 반복</b>을 보세요. 세 번 반복해서 팔리는지가 확장의 기준입니다.</p>';
+  h+=H('부업이 무너지는 방식')+UL([
+    (bi>=3?'<b>사람과 같이</b> 시작하는 것 — 이 사주는 몫을 정하지 않으면 3개월에 갈립니다':'<b>혼자 다 하려는 것</b> — 이 사주는 마감이 밀리면 부업 전체가 밀립니다'),
+    '<b>본업이 바쁜 달에 시작</b>하는 것 — 시작은 반드시 한가한 달에',
+    '<b>첫 수입이 들어오면 바로 키우는 것</b> — 6개월은 같은 크기로 버티세요'
+  ]);
+  var now=new Date(), tops=[];
+  for(var k=0;k<8;k++){
+    var yy=now.getFullYear(), mm=now.getMonth()+1+k;
+    while(mm>12){ mm-=12; yy++; }
+    var mr=S.monthRead(R,yy,mm);
+    if(mr.grp==='식상'||mr.grp==='재성'||mr.rels.some(function(x){return x.type==='육합';})) tops.push({y:yy,m:mm,r:mr});
+  }
+  h+=H('부업을 시작하기 좋은 달')+'<p>'+(tops.length?tops.slice(0,4).map(function(o){return '<b>'+o.y+'.'+n2(o.m)+'</b>('+o.r.gz+'·'+o.r.g+')';}).join(', ')+' — 이 달에 첫 판매·첫 공개를 잡으세요.':'앞으로 8개월은 식상·재성이 도는 달이 뚜렷하지 않습니다. 준비만 하고, 공개는 내년 초로 미루세요.')+'</p>';
+  return h+K('한 줄','부업은 <b>작게 시작해 세 번 반복</b>되는지로 판단하세요.');
+}
+function st8(R,c,input,name){
+  var d=D(R), bi=c.grp['비겁'], jae=c.grp['재성'];
+  var h=H('사업 확장운 — 키워도 되는 때');
+  h+='<p>확장은 <b>재성이 세운으로 들어오는 해</b>와 <b>대운이 재성·식상인 10년</b>이 겹칠 때 가장 안전합니다. 이 사주는 지금 <b>'+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</b> 대운에 있습니다.</p>';
+  var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
+  var grow=reads.filter(function(r){ return r.grp==='재성'||r.grp==='식상'; });
+  h+='<p>'+(grow.length?'확장의 문이 열리는 해는 <b>'+grow.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>입니다. '+grow[0].why:'앞으로 다섯 해에는 확장의 문이 크게 열리지 않습니다. 이때는 <b>같은 크기로 이익률을 올리는</b> 쪽이 맞습니다.')+'</p>';
+  h+=H('확장 전에 확인할 세 가지')+UL([
+    '<b>현금 6개월</b>이 버틸 수 있는가 — 이 사주는 '+(R.strength==='약'?'일간이 약해 버티는 힘이 작습니다. 9개월을 기준으로 잡으세요.':'버티는 힘은 있지만 고집이 되어 손절이 늦습니다. 숫자로 기한을 먼저 정하세요.'),
+    '<b>사람을 먼저 채용할 것인가, 일을 먼저 늘릴 것인가</b> — 이 사주는 사람을 먼저 뽑고 일이 오지 않는 쪽이 더 위험합니다',
+    '<b>비겁 '+bi+'개</b> — 동업·공동투자로 확장하면 몫이 흐려집니다. 확장은 혼자, 동업은 새 사업으로 분리하세요'
+  ]);
+  h+=H('확장이 어긋나는 달')+'<p>'+risky(R,c,12)+' 이 달에는 계약·채용·지점 오픈을 미루세요. 확장은 늦어도 되지만, 한 번 어긋나면 1년이 걸립니다.</p>';
+  h+=H('3년의 확장 계획');
+  h+='<table class="tbl"><tr><th>해</th><th>할 일</th><th>하지 말 것</th></tr>';
+  var y0=new Date().getFullYear();
+  h+='<tr><td><b>'+(y0)+'</b></td><td>이익률 확인·고정비 정리</td><td>지점·인력 확대</td></tr>';
+  h+='<tr><td><b>'+(y0+1)+'</b></td><td>'+(grow.length?grow[0].y+'년 창에 맞춰 한 단계 확장':'상품·채널 하나 추가')+'</td><td>동시에 두 가지 확장</td></tr>';
+  h+='<tr><td><b>'+(y0+2)+'</b></td><td>사람으로 넘기기 — 대표가 손을 떼는 구조</td><td>새 판 동시 오픈</td></tr>';
+  h+='</table>';
+  return h+K('한 줄','확장은 <b>현금</b>이 아니라 <b>기한</b>으로 결정하세요.');
+}
+
+/* ---------------- 부동산 · 문서운 (v51 신설 탭) ---------------- */
+function es1(R,c,input,name){
+  var d=D(R), w=d.docu;
+  var h='<p>내 집 마련은 <b>돈의 크기</b>보다 <b>명의·등기·자금 순서</b>로 결정됩니다. 이 사주는 인성 '+w.inCnt+' · 관성 '+w.gwanCnt+' · 재성 '+w.jaeCnt+' · 토 '+w.toCnt+'개로, 문서·부동산 구조 지수가 <b>'+w.score+'점 · '+w.grade+'</b>입니다.</p>';
+  h+='<div class="ch-key" style="margin-bottom:10px"><b>내 집 마련 지수 '+w.score+' / 100</b><span>인성(등기) '+w.inCnt+' · 관성(명의) '+w.gwanCnt+' · 재성(자금) '+w.jaeCnt+'</span></div>';
+  h+=H('이 사주가 집을 사는 방식');
+  h+='<p>'+(w.inCnt>=1&&w.gwanCnt>=1&&w.jaeCnt>=1?'세 요소가 모두 있어 <b>사서 명의를 넘기는 순서</b>가 자연스럽습니다. 계약서와 등기만 직접 확인하면 됩니다.':(w.jaeCnt===0?'재성이 얇아 <b>현금을 모아 한 채</b>가 맞습니다. 여러 채를 돌리는 방식은 이 사주에 맞지 않습니다.':(w.gwanCnt===0?'관성이 없어 <b>명의·등기 절차</b>에서 실수가 나기 쉽습니다. 등기 접수는 반드시 직접 확인하세요.':'인성·재성은 있는데 관성이 얇아, <b>계약은 되지만 명의가 늦어지는</b> 구조입니다.')))+'</p>';
+  h+='<p>'+(w.toCnt>=2?'토가 '+w.toCnt+'개로 부동산과 인연이 있는 사주입니다. 땅·집은 이 사주의 재물이 형태를 갖는 자리입니다.':(w.toCnt===1?'토가 하나라 부동산과 한 번은 인연이 됩니다. 그 한 번을 어디에 쓰느냐가 중요합니다.':'토가 얇아 부동산보다 금융·사람 쪽이 맞습니다. 집은 <b>사는 곳</b>으로만 두세요.'))+'</p>';
+  h+=H('어떤 방식이 가장 잘 맞는가');
+  h+='<table class="tbl"><tr><th>유형</th><th>적합도</th><th>이유</th></tr>';
+  w.types.forEach(function(t){ h+='<tr><td><b>'+t.label+'</b></td><td style="white-space:nowrap">'+t.s+'점</td><td style="font-size:13px">'+t.why+'</td></tr>'; });
+  h+='</table>';
+  h+=H('첫 집은 언제');
+  h+='<p>'+(w.bestClean?'계약을 잡을 첫 번째 창은 <b>'+w.bestClean.y+'년 '+w.bestClean.gz+'</b>입니다. 기신·공망이 겹치지 않아 잔금과 등기가 뒤에서 흔들리지 않습니다.':'앞으로 여섯 해 중 조건이 깨끗한 해가 없습니다. 이때는 <b>가장 점수가 높은 해</b>에 계약하되 잔금·등기·대출을 세 번 확인하세요.')+'</p>';
+  return h+K('한 줄','첫 집은 <b>싸게 사는 것</b>보다 <b>명의가 깨끗한 것</b>이 오래 남습니다.');
+}
+function es2(R,c,input,name){
+  var d=D(R), w=d.docu;
+  var h=H('부동산 매매운 — 사는 때와 파는 때');
+  h+='<p>매수와 매도는 같은 해에 잘 되지 않습니다. 매수는 <b>인성·관성</b>(문서·명의)이, 매도는 <b>재성·식상</b>(실물·현금화)이 들어오는 때가 맞습니다. 이 사주는 그 두 흐름이 <b>'+(w.inCnt>=1&&w.jaeCnt>=1?'번갈아 오는 구조':'한쪽으로 치우친 구조')+'</b>입니다.</p>';
+  h+=H('앞으로 여섯 해 — 매수와 매도');
+  h+='<table class="tbl"><tr><th>해</th><th>간지 · 십성</th><th>이 해에 맞는 행동</th></tr>';
+  var ys=w.years.slice().sort(function(a,b){ return a.y-b.y; });
+  ys.forEach(function(y){
+    var act=(y.score>=2.5?'<b>매수 검토</b> — 조건이 맞으면 계약':(y.score>=1?'관망 — 조건 확인':'<b>매도·정리</b> 검토'))+'<br><span style="font-size:11.5px;color:#7a6f5f">'+(y.why.length?y.why.join(' · '):'특별한 자극 없음')+'</span>';
+    h+='<tr><td><b>'+y.y+'</b></td><td>'+y.gz+' · '+y.g+'</td><td style="font-size:13px">'+act+'</td></tr>';
+  });
+  h+='</table>';
+  h+=H('매도가 급해지는 해');
+  h+='<p>'+(w.worst?'<b>'+w.worst.y+'년 '+w.worst.gz+'</b>이 가장 조건이 나쁜 해입니다. 이 해에 급하게 팔면 값이 아니라 <b>조건</b>에서 손해를 봅니다. 매도는 그 전 해에 준비하세요.':'앞으로 여섯 해에는 매도를 강요하는 해가 없습니다. 원할 때 팔 수 있는 구조입니다.')+'</p>';
+  h+=H('매매에서 이 사주가 놓치는 것')+UL([
+    '좋은 물건을 보면 <b>대출 조건</b>을 나중에 봅니다 — 금리·한도가 먼저입니다',
+    '매도할 때 <b>세금·중개 수수료</b>를 빼고 계산하지 않습니다',
+    '한 채를 팔고 한 채를 살 때 <b>순서</b>를 정하지 않아 잔금이 겹칩니다'
+  ]);
+  return h+K('한 줄','매수는 <b>문서</b>가, 매도는 <b>현금</b>이 준비됐을 때 하세요.');
+}
+function es3(R,c,input,name){
+  var d=D(R), w=d.docu;
+  var h=H('계약운 — 서명하는 날의 조건');
+  h+='<p>계약운은 좋고 나쁨보다 <b>어느 달에 서명하는지</b>로 갈립니다. 같은 조건이라도 형·파·공망이 겹치는 달의 계약은 뒤에서 한 번 더 흔들립니다.</p>';
+  h+=H('서명에 힘이 실리는 달');
+  h+='<p>'+w.goodMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+' '+m.gz+'</b>'+(m.why.length?'('+m.why.join('·')+')':''); }).join(', ')+' — 이 달에 가계약·잔금·등기 접수 중 하나를 잡으세요.</p>';
+  h+=H('피해야 하는 달');
+  h+='<p>'+w.badMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+'</b>'; }).join(', ')+'입니다. '+(w.badMonths[0].why.length?w.badMonths[0].why.join('·')+'이라 그 달의 서명은 뒤에서 흔들립니다.':'이 달에는 특약을 한 줄 더 넣으세요.')+'</p>';
+  h+=H('이 사주의 계약 습관');
+  h+='<p>'+S.gongmangText(R)+'</p>';
+  h+=H('계약 전 확인 목록 — 종이에 적고 가세요')+UL(w.traps);
+  h+='<p>이 사주는 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+' 쪽이라 '+(c.grp['인성']>=3?'확인을 오래 하다 타이밍을 놓칩니다. 검토 기한을 3일로 정하세요.':'확인을 뒤로 미루는 편입니다. 계약 당일 확인 목록을 소리 내어 읽으세요.')+'</p>';
+  return h+K('한 줄','계약은 <b>좋은 달</b>에, 서명은 <b>확인 목록</b>과 함께.');
+}
+function es4(R,c,input,name){
+  var d=D(R), w=d.docu;
+  var mun=d.sals.filter(function(s){return s.key==='munchang';});
+  var cheon=d.sals.filter(function(s){return s.key==='cheonul';});
+  var h=H('자격·문서운 — 시험과 증명의 자리');
+  h+='<p>자격과 문서는 <b>인성(배움·서류)</b>과 <b>관성(공적 인정)</b>의 조합입니다. 이 사주는 인성 '+w.inCnt+' · 관성 '+w.gwanCnt+'개로, '+(w.inCnt>=2&&w.gwanCnt>=1?'<b>자격이 실제로 자리를 바꾸는 구조</b>입니다.':(w.gwanCnt===0?'자격을 따도 <b>공적 인정</b>으로 이어지기까지 시간이 걸립니다. 자격보다 실무 기록이 먼저입니다.':(w.inCnt===0?'배움을 뒤로 미루는 구조입니다. 기한을 정해 학원·시험을 함께 걸어야 움직입니다.':'자격은 있으나 그것으로 평가받는 자리를 스스로 만들어야 합니다.')))+'</p>';
+  if(mun.length) h+='<p><b>문창(文昌)</b>이 '+mun.map(function(s){return s.pos;}).join('·')+'에 있습니다. '+mun[0].txt+'</p>';
+  if(cheon.length) h+='<p><b>천을귀인</b>이 '+cheon.map(function(s){return s.pos;}).join('·')+'에 있어, 시험·면접에서 <b>모르는 사람의 도움</b>을 받기 쉬운 자리입니다. 혼자 준비하기보다 스터디·멘토를 두세요.</p>';
+  h+=H('시험에 힘이 실리는 시기');
+  var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
+  var inYears=reads.filter(function(r){ return r.grp==='인성'; });
+  h+='<p>'+(inYears.length?'인성이 오는 <b>'+inYears.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 시험·자격에 가장 좋은 해입니다. '+inYears[0].why:'앞으로 다섯 해에는 인성이 뚜렷하게 들어오지 않습니다. 이때는 <b>작은 자격</b>부터 하나씩, 준비 기간을 길게 잡으세요.')+'</p>';
+  h+=H('이 사주가 문서로 남겨야 하는 것')+UL([
+    '업무 성과를 <b>월말 세 줄</b>로 — 평가·이직·협상의 재료가 됩니다',
+    '구두로 정한 것은 <b>카톡이라도</b> 남기기 — 이 사주는 기억을 신뢰하는 편이라 나중에 증명이 없습니다',
+    '자격·수료증은 <b>한 폴더</b>에 모아두기 — 필요할 때 바로 꺼내는 것이 문서운입니다'
+  ]);
+  return h+K('한 줄','문서운은 <b>따는 것</b>보다 <b>남겨두는 것</b>에서 완성됩니다.');
+}
+function es5(R,c,input,name){
+  return monthsBlock(R,c,'wealth',6,'앞으로 6개월, 집과 계약의 달입니다.')+
+    K('한 줄','가계약은 합의 달에, 잔금·등기는 충의 달을 피해서.');
+}
+function es6(R,c,input,name){
+  var d=D(R), w=d.docu;
+  var h=H('문서로 남기는 법 — 이 사주 전용 체크');
+  h+='<p>이 사주의 문서 구조는 <b>'+w.grade+'</b>입니다. 점수가 아니라 <b>습관</b>의 문제로 보세요. 아래 네 가지만 지키면 계약에서 지는 일이 거의 없어집니다.</p>';
+  h+='<table class="tbl"><tr><th>상황</th><th>남길 것</th><th>왜 이 사주에게</th></tr>'+
+     '<tr><td><b>집·보증금</b></td><td>등기부·건축물대장·선순위 확인 캡처</td><td style="font-size:13px">'+(w.inCnt?'인성이 받쳐줘 확인만 하면 사고가 적습니다':'확인을 미루는 구조라 목록이 필요합니다')+'</td></tr>'+
+     '<tr><td><b>돈을 빌려줄 때</b></td><td>금액·날짜·갚는 날 한 줄</td><td style="font-size:13px">'+(c.grp['비겁']>=2?'비겁이 두터워 사람에게 쓰는 돈이 큽니다':'정이 앞서는 자리에서 계산이 흐려집니다')+'</td></tr>'+
+     '<tr><td><b>업무 지시</b></td><td>메일·메신저로 한 번 더 확인</td><td style="font-size:13px">'+(w.gwanCnt>=1?'관성이 있어 공적 기록이 나를 지켜줍니다':'관성이 얇아 말로만 오간 일이 남지 않습니다')+'</td></tr>'+
+     '<tr><td><b>동업·공동구매</b></td><td>몫·역할·나가는 조건</td><td style="font-size:13px">'+(d.gmHits.length?'공망이 걸려 구두 약속은 상대도 기억하지 못합니다':'서류가 없으면 3년 뒤에 사람을 잃습니다')+'</td></tr>'+
+     '</table>';
+  h+='<p>마지막으로, 이 사주는 '+S.GROUP_MEAN[c.topGrp].split('.')[0]+' 쪽으로 결론을 먼저 내립니다. 계약 앞에서 <b>하루만 쉬고</b> 서명하세요. 이 하루가 문서운을 가장 크게 바꿉니다.</p>';
+  return h+K('한 줄','문서는 <b>기억을 대신하는</b> 장치입니다. 이 사주에게 가장 필요한 장치입니다.');
+}
+
 window.CTP.wealth={
   money:[
     {title:'재물의 그릇',sub:'재성의 자리와 일간의 힘',body:mo1},
+    {title:'평생 재물운',sub:'10년마다 바뀌는 돈의 그릇',body:mo8},
     {title:'새는 곳',sub:'반복되는 지출과 막는 법',body:mo2},
-    {title:'돈이 들어오는 해',sub:'재성이 오는 때와 이유',body:mo3},
+    {title:'돈이 들어오는 시기',sub:'재성이 오는 때와 이유',body:mo3},
     {title:'횡재의 결',sub:'큰돈이 오는 방식',body:mo4},
-    {title:'문서·부동산 취득운',sub:'계약·등기·매매의 문',body:md5},
+    {title:'재산을 모으는 흐름',sub:'현금·자산·사람의 세 층',body:mo9},
     {title:'금전 루틴',sub:'한 달의 순서',body:mo5},
     {title:'투자 주의',sub:'이기는 방식은 한도',body:mo6},
     {title:'12개월의 재물',sub:'달별 흐름',body:mo7}
   ],
   job:[
     {title:'천직의 방향',sub:'오래 해도 힘이 돌아오는 일',body:jb1},
+    {title:'취업·합격운',sub:'서류와 자리가 같이 오는 해',body:jb8},
     {title:'이직의 문',sub:'자리가 열리는 해와 달',body:jb2},
     {title:'남을까 옮길까',sub:'퇴사 판단 기준',body:jb3},
+    {title:'승진·평가운',sub:'조직에서 올라가는 방식',body:jb9},
     {title:'귀인',sub:'기회를 데려오는 사람',body:jb4},
     {title:'조건 협상',sub:'연봉과 근무 조건',body:jb5},
     {title:'6개월의 자리',sub:'달별 흐름',body:mo6b},
     {title:'5년의 커리어',sub:'해마다의 자리',body:jb7}
   ],
   startup:[
-    {title:'창업 적성',sub:'비겁·식상·재성의 조합',body:st1},
+    {title:'사업 적성',sub:'비겁·식상·재성의 조합',body:st1},
     {title:'무엇으로 시작할까',sub:'아이템을 고르는 기준',body:st2},
-    {title:'시작의 문',sub:'언제 여는가',body:st3},
+    {title:'창업의 문',sub:'언제 여는가',body:st3},
+    {title:'부업 성공 가능성',sub:'작게 시작해 반복하기',body:st7},
     {title:'실패하는 지점',sub:'무너지는 방식',body:st4},
+    {title:'사업 확장운',sub:'키워도 되는 때',body:st8},
     {title:'동업과 파트너',sub:'서류가 우정을 지킨다',body:st5},
     {title:'6개월의 사업',sub:'달별 흐름',body:st6}
+  ],
+  estate:[
+    {title:'내 집 마련',sub:'명의·등기·자금의 순서',body:es1},
+    {title:'부동산 매매운',sub:'사는 때와 파는 때',body:es2},
+    {title:'계약운',sub:'서명하는 날의 조건',body:es3},
+    {title:'자격·문서운',sub:'시험과 증명의 자리',body:es4},
+    {title:'문서·부동산 취득운',sub:'인성·관성·재성·토의 구조',body:md5},
+    {title:'문서로 남기는 법',sub:'이 사주 전용 체크',body:es6},
+    {title:'6개월의 계약',sub:'달별 흐름',body:es5}
   ]
 };
 })();

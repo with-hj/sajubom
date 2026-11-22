@@ -34,8 +34,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="./styles.css?v=50c">
-<link rel="stylesheet" href="./book.css?v=50c">
+<link rel="stylesheet" href="./styles.css?v=51a">
+<link rel="stylesheet" href="./book.css?v=51a">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 </head>
 <body>
@@ -98,10 +98,12 @@
 
         <!-- 첫 화면이 종합운세 → 신년운세(영상 인트로)이므로 잠깐의 깜빡임을 막기 위해 hidden으로 시작한다. 다른 탭에서는 스크립트가 바로 연다. -->
         <div class="panel" id="panelForm" hidden>
-          <h3 id="pf-title">내 사주 입력</h3>
+          <h3 id="pf-title">내 정보 입력</h3>
           <p class="ph" id="pf-note"></p>
           <!-- v48 · 손그림 시안대로 두 칸 배치로 묶어 세로 길이를 줄인 입력 폼 -->
           <form id="sajuForm" autocomplete="on">
+            <!-- v51 · 부모·자녀 궁합에서만 보이는 머리말(엄마/아빠) -->
+            <div class="divider" id="momLabel" style="display:none;margin-top:0"><span id="momLabelTx">엄마 정보</span></div>
             <div class="field f-nm">
               <label for="nm">이름 <span class="hint" style="display:inline">(부르실 이름)</span></label>
               <input type="text" id="nm" placeholder="예) 서연" maxlength="12" autocomplete="given-name">
@@ -180,6 +182,37 @@
                     <button type="button" class="chip" data-pg="f">여아</button>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div id="kidBlock" style="display:none">
+              <div class="divider" style="margin-top:14px"><span>아이 정보</span></div>
+              <p class="hint" style="margin:-2px 0 8px">아이의 생년월일을 넣으면 그 아이의 원국으로 읽습니다.</p>
+              <div class="field">
+                <span class="lb" id="cBirthLabel">아이 생년월일</span>
+                <div class="row">
+                  <select id="cy" aria-label="아이 태어난 해"></select>
+                  <select id="cm" aria-label="아이 태어난 달"></select>
+                  <select id="cd" aria-label="아이 태어난 일"></select>
+                </div>
+              </div>
+              <div class="field">
+                <span class="lb">태어난 시간 <span>선택</span></span>
+                <div class="row">
+                  <select id="chour" aria-label="아이 태어난 시간"></select>
+                  <label class="chk" style="flex:0 0 auto"><input type="checkbox" id="cnotime"> 모름</label>
+                </div>
+              </div>
+              <div class="field" id="cxGenderField" style="display:none">
+                <span class="lb">아이 성별</span>
+                <div class="chips" id="cxGenderChips">
+                  <button type="button" class="chip on" data-cg="m">남아</button>
+                  <button type="button" class="chip" data-cg="f">여아</button>
+                </div>
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <span class="lb">태어난 지역</span>
+                <select id="cregion" aria-label="아이 출생 지역"></select>
               </div>
             </div>
 
@@ -549,17 +582,17 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=50c"></script>
-<script src="./deep-core.js?v=50c"></script>
-<script src="./content.js?v=50c"></script>
-<script src="./content-deep.js?v=50c"></script>
-<script src="./content-general.js?v=50c"></script>
-<script src="./content-love.js?v=50c"></script>
-<script src="./content-marriage.js?v=50c"></script>
-<script src="./content-baby.js?v=50c"></script>
-<script src="./content-wealth.js?v=50c"></script>
-<script src="./book.js?v=50c"></script>
-<script src="./book-more.js?v=50c"></script>
-<script src="./app.js?v=50c"></script>
+<script src="./engine.js?v=51a"></script>
+<script src="./deep-core.js?v=51a"></script>
+<script src="./content.js?v=51a"></script>
+<script src="./content-deep.js?v=51a"></script>
+<script src="./content-general.js?v=51a"></script>
+<script src="./content-love.js?v=51a"></script>
+<script src="./content-marriage.js?v=51a"></script>
+<script src="./content-baby.js?v=51a"></script>
+<script src="./content-wealth.js?v=51a"></script>
+<script src="./book.js?v=51a"></script>
+<script src="./book-more.js?v=51a"></script>
+<script src="./app.js?v=51a"></script>
 </body>
 </html>
