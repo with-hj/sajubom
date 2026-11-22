@@ -115,7 +115,7 @@ function daeunStarsOf(R,grp){
   return out;
 }
 /* v47 · 60갑자를 한글(한자)로 — 정미(丁未) */
-function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+gzP(st%10,br%12)+')'; }
+function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+S.STEM_HAN[st%10]+S.BR_HAN[br%12]+')'; }
 B.gzP=gzP;
 function seunTxt(o){ return '<b>'+o.y+'년('+S.STEM_KO[o.s]+S.BR_KO[o.b]+' · '+o.g+', '+o.age+'세)</b>'; }
 function monthTxt(o){ return '<b>'+o.y+'년 '+o.m+'월('+S.STEM_KO[o.s]+S.BR_KO[o.b]+' · '+o.g+(o.tag==='합'?' · 일지와 합':'')+')</b>'; }

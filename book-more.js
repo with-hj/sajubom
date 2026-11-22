@@ -5,7 +5,7 @@
 (function(){
 'use strict';
 var S=window.SJ, B=window.BOOK;
-function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+gzP(st%10,br%12)+')'; }
+function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+S.STEM_HAN[st%10]+S.BR_HAN[br%12]+')'; }
 var M={};
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function n2(n){return n<10?'0'+n:''+n;}
