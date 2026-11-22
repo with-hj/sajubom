@@ -32,7 +32,7 @@ var state={
   theme:null, tab:null, gender:'f', cal:'solar', leap:false,
   ctx:false, pg:'m', pcal:'solar', stage:'', marry:'single', kid:'none',
   R:null, input:null, email:'',
-  introDone:false
+  introDone:{}            /* 영상 인트로를 이미 연 탭 (탭별로 기억) */
 };
 
 /* ---------------- 셀렉트 채우기 ---------------- */
@@ -388,7 +388,7 @@ function syncIntro(){
     vid.setAttribute('src',src);
     try{ vid.load(); }catch(e){}
   }
-  if(state.introDone){                    /* 한 번 열린 뒤에는 입력창을 계속 열어 둔다 */
+  if(state.introDone[state.tab]){         /* 한 번 연 탭은 입력창을 계속 열어 둔다 */
     if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.remove('reveal-in'); }
     return;
   }
@@ -401,7 +401,7 @@ function bindIntro(){
   if(!vid) return;
   vid.addEventListener('ended',function(){
     if(!introSrc()) return;
-    state.introDone=true;
+    state.introDone[state.tab]=true;
     revealForm(true);
   });
   vid.addEventListener('click',function(){
@@ -409,7 +409,7 @@ function bindIntro(){
   });
   var cta=$('#introCta');
   if(cta) cta.addEventListener('click',function(){
-    state.introDone=true;
+    state.introDone[state.tab]=true;
     try{ vid.pause(); }catch(e){}
     revealForm(true);
   });
