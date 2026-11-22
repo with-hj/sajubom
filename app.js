@@ -169,6 +169,8 @@ function init(){
   });
   if($('#pdfPrint')) $('#pdfPrint').addEventListener('click',function(){ window.print(); });
   if($('#pdfDl')) $('#pdfDl').addEventListener('click',downloadBookPdf);
+  /* 미리보기 3장 — 클릭하면 원본 크기로 크게 보기 */
+  initLightbox();
 
   /* URL 파라미터 */
   try{
@@ -177,6 +179,36 @@ function init(){
     if(/[?&]track=life/.test(location.search)) setTrack('life');
   }catch(e){}
 }
+/* ---------------- 미리보기 크게 보기(라이트박스) ---------------- */
+function initLightbox(){
+  var lb=$('#lightbox'); if(!lb) return;
+  var img=$('#lbImg'), cap=$('#lbCap');
+  function open(src,text){
+    if(img) img.setAttribute('src',src);
+    if(cap) cap.textContent=text||'';
+    lb.classList.add('on'); lb.setAttribute('aria-hidden','false');
+    document.body.classList.add('lock');
+    var x=$('#lbClose'); if(x){ try{ x.focus(); }catch(e){} }
+  }
+  function close(){
+    lb.classList.remove('on'); lb.setAttribute('aria-hidden','true');
+    document.body.classList.remove('lock');
+  }
+  $$('.lr-prev figure').forEach(function(f){
+    var im=f.querySelector('img'); if(!im) return;
+    var fig=f.querySelector('figcaption');
+    function go(e){
+      if(e&&e.preventDefault) e.preventDefault();
+      open(im.getAttribute('src'),fig?fig.textContent.replace(/\s+/g,' ').trim():'');
+    }
+    f.addEventListener('click',go);
+    f.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ go(e); } });
+  });
+  lb.addEventListener('click',function(e){ if(e.target===lb) close(); });
+  if($('#lbClose')) $('#lbClose').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&lb.classList.contains('on')) close(); });
+}
+
 function bindChips(sel,get,on){
   var box=$(sel); if(!box) return;
   var btns=$$('.chip',box);
@@ -431,7 +463,7 @@ function renderResult(R,input){
        '<div class="pw-veil" id="pwVeil"><div class="pw-card" id="pwCard"></div></div></div>';
     window.__pwInfo=pwInfo;
   }
-  h+='<div class="panel" style="margin-top:18px;text-align:center">'+
+  h+='<div class="panel" id="rdMore" style="margin-top:18px;text-align:center">'+
      '<h3 style="font-size:17px">'+(lockH?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
      '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <s style="color:#8A93A4">119,000원</s> <b>39,800원</b>(67% 할인)입니다.</p>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
@@ -444,10 +476,25 @@ function renderResult(R,input){
   try{ var rv=$('#resultView'); var y=rv.getBoundingClientRect().top+window.pageYOffset-146; window.scrollTo({top:y,behavior:'smooth'}); }catch(e){}
 }
 /* ---------- 결제 게이트(테스트) : 2장까지 무료, 3장부터 흐림 ---------- */
+/* 테마별 페이월 문구 — 무엇이 남아 있는지 궁금하게 만드는 한 줄 */
+var PW_HOOK={
+  general:{t:'올해 터지는 달과<br>피해야 할 달이 남아 있습니다',
+           p:'지금까지는 타고난 결이었고,<br>남은 장에는 <b>언제</b> 그 일이 오는지가 있습니다.'},
+  love:{t:'재회가 열리는 시기와<br>끌리는 사람의 결이 남아 있습니다',
+        p:'그 사람이 마음을 여는 달,<br>연락이 끊기는 달까지 짚어드립니다.'},
+  marriage:{t:'결혼이 열리는 해와<br>흔들리는 해가 남아 있습니다',
+            p:'배우자의 결, 시댁·처가와의 자리,<br>결정을 미뤄야 하는 달까지 있습니다.'},
+  baby:{t:'아이와의 인연이 열리는 시기가<br>남아 있습니다',
+        p:'임신·출산에 유리한 달,<br>몸을 먼저 돌봐야 하는 달까지 짚어드립니다.'},
+  wealth:{t:'돈이 모이는 시기와<br>새는 구멍이 남아 있습니다',
+          p:'문서·부동산 취득 타이밍,<br>계약을 피해야 할 달까지 있습니다.'}
+};
 function pwBuyMarkup(info){
+  var hk=PW_HOOK[state.theme]||PW_HOOK.general;
   return '<div class="pw-price">9,900원 · 전체 풀이</div>'+
-    '<h3>여기서부터 전체 풀이가<br>펼쳐집니다</h3>'+
-    '<p>이어지는 전체 풀이에서<br>'+esc(info.tab)+'의 나머지 결을 더 깊이 읽어보세요.</p>'+
+    '<h3>'+hk.t+'</h3>'+
+    '<p>'+hk.p+'</p>'+
+    '<p class="pw-num">'+esc(info.tab)+' · 남은 '+(info.total>2?(info.total-2):6)+'장</p>'+
     '<button type="button" class="btn btn-gold btn-block" id="pwBuy">9,900원 결제하고 전체 풀이 보기</button>'+
     '<p class="pw-note">테스트 사이트 — 결제 없이 전체 풀이가 열립니다</p>';
 }
@@ -480,8 +527,11 @@ function setThemeCredit(v){
   try{ if(v) localStorage.setItem('wlh_theme_paid','1'); else localStorage.removeItem('wlh_theme_paid'); }catch(e){}
 }
 function upsellMarkup(){
-  return '<p class="tt">이미 9,900원을 결제하셨다면?</p>'+
-    '<p class="pp">인생사주 리포트는 정가 <b>119,000원</b>, 지금은 <b>39,800원</b>(67% 할인)입니다.<br>방금 결제한 <b>9,900원</b>을 빼고 <b>29,900원</b>만 더 내시면 됩니다.</p>'+
+  return '<p class="up-tag">테마 결제 9,900원 차감 적용</p>'+
+    '<p class="tt">여기서 멈추면<br>내 인생의 큰 흐름은 못 봅니다</p>'+
+    '<p class="pp">타고난 기질부터 평생 대운·앞으로 10년·문서와 부동산까지 한 권에 담았습니다.<br>정가 <b>119,000원</b>인 리포트를 지금 <b>39,800원</b>에, 방금 결제한 <b>9,900원</b>을 빼면 이 가격입니다.</p>'+
+    '<div class="up-price"><s>119,000원</s><b>29,900원</b><em>75% 할인</em></div>'+
+    '<div class="up-list"><span>평생 대운 9구간</span><span>앞으로 10년</span><span>문서·부동산</span><span>맞춤 질문 답변</span></div>'+
     '<button type="button" class="btn btn-gold btn-block" data-theme-upgrade>+29,900원으로 인생사주 리포트 받기</button>'+
     '<p class="small">방금 입력한 사주 정보 그대로 이어집니다</p>';
 }
@@ -605,6 +655,7 @@ function unlockReading(){
     flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · 테스트 결제 9,900원';
     wrap.parentNode.insertBefore(flag,wrap);
   }
+  var more=$('#rdMore'); if(more){ more.style.display='none'; }
   var host=wrap?wrap.parentNode:$('#resultView');
   addUpsellCard(host);
   try{ if(wrap) wrap.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}

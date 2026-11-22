@@ -11,7 +11,7 @@
   --body:#2b2620; --body2:#4a4238; --mute:#7d7364; --mute2:#9a8f7e;
   --line:#e2d7c2; --line2:#d3c5ab;
   --serif:'Nanum Myeongjo','Gowun Batang','AppleMyungjo','Noto Serif KR',serif;
-  --sans:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  --sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;
   --mok:#4f8a66; --hwa:#c9553f; --to:#b98a3c; --geum:#8b93a0; --su:#4a76b0;
   --sh:0 18px 44px rgba(0,0,0,.28);
 }
@@ -586,7 +586,7 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
   background:
     linear-gradient(90deg,#010a1c 0%,rgba(1,10,28,0) 11%,rgba(1,10,28,0) 89%,#010a1c 100%),
     linear-gradient(180deg,rgba(8,13,24,.96) 0%,rgba(8,13,24,.86) 16%,rgba(9,15,26,.52) 30%,rgba(10,17,32,.08) 44%,rgba(10,17,32,0) 62%,rgba(10,17,32,.30) 100%)}
-.lr-hero-in{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;justify-content:flex-start;padding:20px 18px 0}
+.lr-hero-in{position:absolute;left:0;right:0;bottom:62%;display:flex;flex-direction:column;justify-content:flex-end;padding:0 18px 6px}
 .lr-hero-top{text-align:center}
 .lr-eyebrow{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:.26em;color:#C0A468}
 .lr-hero h2{font-family:var(--serif);font-size:29px;line-height:1.28;color:#F8EED9;margin:9px 0 0;letter-spacing:-.02em;text-shadow:0 2px 14px rgba(0,0,0,.55)}
@@ -728,3 +728,60 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
   .pw-card h3{font-size:17.5px}
   .pw-locked{max-height:520px}
 }
+
+/* =====================================================================
+   v44 : 데스크톱(Windows) 글자 깨짐 완화
+   얇은 명조는 Windows Chrome에서 작은 크기일 때 뭉개져 보인다.
+   큰 제목만 명조로 남기고, 라벨·탭·작은 문구는 산세리프로 그린다.
+   ===================================================================== */
+.hero .kicker,.track-btn b,.subtab,.sec-head .no,.tcard .front .nm,.v8-lede,.tp-card .tx b,
+.tp-card .tx i,.v8-han,.v8-bcopy p,.res-head .rh-t,.ch-bd h4,.rb-yr .yh b,.pdf-hero .bd,
+.trust b,.pdfprog b,.sendbox h4,.loading p,.lr-tag,.lr-head .no,.lr-cards b,.lr-toc>b,
+.brand-note .no,.pw-card .pw-price,.upsell .tt,.brand .bs,.lr-eyebrow,.v8-tnote{font-family:var(--sans)}
+.track-btn b,.tp-card .tx b,.lr-cards b,.trust b,.sendbox h4,.pdfprog b,.upsell .tt{font-weight:600}
+.ch-bd h4{font-weight:700;letter-spacing:-.01em}
+.lr-tag,.v8-lede,.v8-bcopy p{font-weight:400}
+/* 명조를 쓰는 큰 제목은 굵기를 확실히 줘야 Windows에서 또렷하게 보인다 */
+.lr-hero h2,.res-head h2,.pdf-hero h2,.pay-box h3,.done-box h3,.free-card h3,.f-card h4,
+.panel h3,.ch-hd h3,.pwbox h3,.sheet-hd h2,.lr-head h3,.fast-box h3,.pw-card h3,.brand .bn{font-weight:700}
+.v8-hero h1{font-weight:700}
+/* 본문·라벨은 산세리프로 또렷하게 */
+body,.ch-bd p,.ch-bd li,.lr-p,.pay-row,.field>label,.field .lb,.chip,.hint,.lr-note,.lr-micro{letter-spacing:-.005em}
+input,select,textarea,button{font-family:var(--sans)}
+
+/* ---------- 미리보기 : 클릭해서 크게 보기 ---------- */
+.lr-prev figure{position:relative;cursor:zoom-in;border-radius:9px;outline-offset:3px}
+.lr-prev figure:hover img,.lr-prev figure:focus-visible img{border-color:rgba(216,179,106,.72);box-shadow:0 14px 28px rgba(0,0,0,.5)}
+.lr-prev figure:focus-visible{outline:2px solid var(--gold)}
+.lr-prev .zoom-hint{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);
+  display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;
+  font-size:10px;font-weight:600;color:#20180A;background:rgba(235,211,154,.92);
+  box-shadow:0 4px 12px rgba(0,0,0,.35);pointer-events:none;white-space:nowrap}
+.lightbox{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  background:rgba(4,8,15,.92);padding:20px 14px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.lightbox.on{display:flex}
+.lightbox .lb-in{margin:0;max-width:min(680px,94vw);max-height:86vh;display:flex;flex-direction:column;align-items:center}
+.lightbox .lb-in img{max-width:100%;max-height:78vh;width:auto;height:auto;border-radius:10px;
+  background:#f7f2e8;box-shadow:0 26px 60px rgba(0,0,0,.6)}
+.lightbox .lb-in figcaption{margin-top:10px;font-size:13px;color:#E8DCC2;text-align:center;line-height:1.6}
+.lightbox .lb-tip{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:11px;color:#8C96A6;margin:0}
+.lightbox .lb-x{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.1);color:#F3EAD8;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center}
+.lightbox .lb-x:hover{background:rgba(255,255,255,.2)}
+@media screen and (max-width:520px){
+  .lightbox .lb-in img{max-height:74vh}
+  .lr-prev .zoom-hint{font-size:9.5px;padding:3px 8px;bottom:26px}
+}
+
+/* ---------- 테마 풀이 업셀 : 카드 하나로 ---------- */
+.upsell{padding:18px 16px 16px}
+.upsell .up-tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:#20180A;
+  background:#EBD39A;border-radius:999px;padding:3px 9px;margin:0 0 9px}
+.upsell .tt{font-size:17px;line-height:1.45;margin:0 0 8px}
+.upsell .pp{font-size:12.5px;line-height:1.7;margin:0 0 12px}
+.upsell .up-price{display:flex;align-items:baseline;justify-content:center;gap:7px;flex-wrap:wrap;margin:0 0 13px}
+.upsell .up-price s{font-size:13px;color:#8A93A4;text-decoration:line-through}
+.upsell .up-price b{font-family:var(--serif);font-size:27px;font-weight:700;color:#F6E7C4;letter-spacing:-.01em}
+.upsell .up-price em{font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px}
+.upsell .up-list{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:0 0 13px}
+.upsell .up-list span{font-size:11px;color:#C8BFAC;background:rgba(255,255,255,.05);border:1px solid rgba(216,179,106,.22);border-radius:999px;padding:3px 9px}
