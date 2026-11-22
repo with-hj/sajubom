@@ -132,7 +132,7 @@ function life4(R,c,input,name){
   h+=H('지장간 — 겉으로 드러나지 않은 재료');
   var rows='<table class="tbl"><tr><th>지지</th><th>지장간</th><th>이 사주에서</th></tr>';
   dd.live.forEach(function(p){
-    rows+='<tr><td><b>'+p.pos+' '+S.BR_HAN[p.branch]+'</b></td><td>'+p.hidden.map(function(x){return S.STEM_HAN[x.stem]+'('+x.god+')';}).join(' · ')+'</td><td style="font-size:12.5px">'+p.hidden[0].label+' '+S.STEM_HAN[p.hidden[0].stem]+'이 '+(p.bGod===p.hidden[0].god?'그대로':'다른 결로')+' 작동합니다</td></tr>';
+    rows+='<tr><td><b>'+p.pos+' '+S.BR_KO[p.branch]+'('+S.BR_HAN[p.branch]+')</b></td><td>'+p.hidden.map(function(x){return S.STEM_KO[x.stem]+'('+x.god+')';}).join(' · ')+'</td><td style="font-size:12.5px">'+p.hidden[0].label+' '+S.STEM_KO[p.hidden[0].stem]+S.josaP(S.STEM_KO[p.hidden[0].stem],'이가')+' '+(p.bGod===p.hidden[0].god?'그대로':'다른 결로')+' 작동합니다</td></tr>';
   });
   h+=rows+'</table>';
   h+='<p>지장간은 <b>“말하지 않은 마음”</b>입니다. 이 사주는 '+dd.live.map(function(p){ return S.BR_KO[p.branch]+'('+S.BR_HAN[p.branch]+')에 '+p.hidden.map(function(x){return x.god;}).join('·'); }).join(', ')+'이 숨어 있어, 겉으로 보이는 성격과 실제 계산이 다를 수 있습니다.</p>';

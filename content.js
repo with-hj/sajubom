@@ -123,8 +123,8 @@ function pillarDetail(R){
   d.pillars.forEach(function(p){
     if(p.ix==null){ h+='<tr><td><b>'+p.pos+'</b></td><td colspan="4" style="color:#8a7f6d">시간 미상</td></tr>'; return; }
     h+='<tr><td><b>'+p.pos+'</b><br><span style="font-size:11px;color:#8a7f6d">'+p.range.split(' ·')[0]+'</span></td>'+
-      '<td style="text-align:center">'+S.STEM_KO[p.stem]+'<br><span style="font-size:10px;color:#8a7f6d">'+S.STEM_HAN[p.stem]+'</span><br><span style="font-size:11.5px;color:#5a5145">'+(p.key==='day'?'일간':p.sGod)+'</span></td>'+
-      '<td style="text-align:center">'+S.BR_KO[p.branch]+'<br><span style="font-size:10px;color:#8a7f6d">'+S.BR_HAN[p.branch]+'</span><br><span style="font-size:11.5px;color:#5a5145">'+p.bGod+'</span></td>'+
+      '<td style="text-align:center"><b>'+S.STEM_KO[p.stem]+'</b><span style="font-size:10.5px;color:#8a7f6d">('+S.STEM_HAN[p.stem]+')</span><br><span style="font-size:11.5px;color:#5a5145">'+(p.key==='day'?'일간':p.sGod)+'</span></td>'+
+      '<td style="text-align:center"><b>'+S.BR_KO[p.branch]+'</b><span style="font-size:10.5px;color:#8a7f6d">('+S.BR_HAN[p.branch]+')</span><br><span style="font-size:11.5px;color:#5a5145">'+p.bGod+'</span></td>'+
       '<td style="text-align:center;font-size:12.5px">'+p.stage+'</td>'+
       '<td style="font-size:11.5px;line-height:1.6">'+p.hidden.map(function(x){return S.STEM_KO[x.stem]+'('+x.god+')';}).join(' · ')+'</td></tr>';
   });
