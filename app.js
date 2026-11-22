@@ -252,13 +252,14 @@ function markThemeCredit(){
 }
 /* ---------------- 테마 · 탭 ---------------- */
 function renderThemes(){
-  var box=$('#themeList'), h='';
+  var box=$('#themeList'), h='', i=0;
   for(var k in CT.THEMES){
     var th=CT.THEMES[k];
+    i++;
     var on=(state.theme||'general')===k;
     h+='<button type="button" class="tp-card'+(on?' on':'')+'" data-theme="'+k+'" role="tab" aria-selected="'+(on?'true':'false')+'">'+
       '<span class="thumb"><img src="./assets/themes-web/t-'+(th.img||k)+'.jpg" alt="'+esc(th.name)+' 일러스트" width="240" height="240" loading="lazy"></span>'+
-      '<span class="tx"><b>'+esc(th.short||th.name).replace(/\n/g,'<br>')+'</b><i>'+th.han+'</i></span></button>';
+      '<span class="tx"><b>'+esc(th.short||th.name).replace(/\n/g,'<br>')+'</b><i>'+(i<10?'0'+i:''+i)+'</i></span></button>';
   }
   box.innerHTML=h;
   $$('.tp-card',box).forEach(function(b){
@@ -268,11 +269,6 @@ function renderThemes(){
 function openTheme(key,silent){
   var th=CT.THEMES[key]; if(!th) return;
   state.theme=key; state.tab=th.tabs[0];
-  $('#v-theme-han').textContent=th.han;
-  $('#v-theme-name').textContent=th.name;
-  $('#v-theme-tag').textContent=th.tagline;
-  var bi=$('#v-banner-img');
-  if(bi){ bi.setAttribute('src','./assets/themes-web/'+(th.img||key)+'.jpg'); bi.setAttribute('alt',th.name+' 일러스트'); }
   $$('.tp-card').forEach(function(b){
     var on=b.getAttribute('data-theme')===key;
     b.classList.toggle('on',on);
@@ -358,19 +354,46 @@ function introSrc(){
   var T=CT.TABS[state.tab];
   return (T&&T.video)?T.video:null;
 }
-function revealForm(scroll){
-  var p=$('#panelForm'); if(!p) return;
-  if(p.hasAttribute('hidden')){
-    p.removeAttribute('hidden');
-    p.classList.remove('reveal-in');
-    void p.offsetWidth;            /* 애니메이션 다시 시작 */
-    p.classList.add('reveal-in');
-  }
-  if(!scroll) return;
+/* v47 · 영상이 끝나면 입력창이 '툭' 올라오지 않고, 높이·투명도·이동을 함께 0.74초에 걸쳐 펼친다.
+   스크롤은 입력창이 자라기 전에 미리 부드럽게 걸어 두어, 화면이 튀지 않는다. */
+function reducedMotion(){
+  try{ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
+}
+function scrollToPanel(p){
   try{
     var top=p.getBoundingClientRect().top+window.pageYOffset-124;  /* 상단 헤더+트랙 바 아래로 */
-    window.scrollTo({top:top<0?0:top,behavior:'smooth'});
+    window.scrollTo({top:top<0?0:top,behavior:reducedMotion()?'auto':'smooth'});
   }catch(e){}
+}
+function revealForm(scroll){
+  var p=$('#panelForm'); if(!p) return;
+  if(!p.hasAttribute('hidden')){          /* 이미 열려 있으면 스크롤만 */
+    if(scroll) scrollToPanel(p);
+    return;
+  }
+  p.removeAttribute('hidden');
+  if(reducedMotion()){
+    p.classList.add('reveal-settled');
+    if(scroll) scrollToPanel(p);
+    return;
+  }
+  var h=p.offsetHeight;                   /* 다 펼쳤을 때의 높이 */
+  p.classList.add('reveal-in');
+  p.style.height='0px';
+  p.style.opacity='0';
+  p.style.transform='translateY(20px)';
+  void p.offsetWidth;                     /* 0 높이를 먼저 그려 두고 */
+  if(scroll) scrollToPanel(p);            /* 스크롤을 먼저 걸어 두면 도중에 튀지 않는다 */
+  requestAnimationFrame(function(){
+    p.style.height=h+'px';
+    p.style.opacity='1';
+    p.style.transform='translateY(0)';
+  });
+  setTimeout(function(){
+    p.style.height=''; p.style.opacity=''; p.style.transform='';
+    p.classList.remove('reveal-in');
+    p.classList.add('reveal-settled');
+  },800);
 }
 function syncIntro(){
   var card=$('#introCard'), vid=$('#introVideo'), panel=$('#panelForm');
@@ -379,7 +402,7 @@ function syncIntro(){
   if(!src){
     card.hidden=true;
     try{ vid.pause(); }catch(e){}
-    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.remove('reveal-in'); }
+    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.add('reveal-settled'); }
     return;
   }
   card.hidden=false;
@@ -389,7 +412,7 @@ function syncIntro(){
     try{ vid.load(); }catch(e){}
   }
   if(state.introDone[state.tab]){         /* 한 번 연 탭은 입력창을 계속 열어 둔다 */
-    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.remove('reveal-in'); }
+    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.add('reveal-settled'); }
     return;
   }
   panel.setAttribute('hidden','');
@@ -480,7 +503,7 @@ function pillarCells(R){
   var h='';
   for(var i=0;i<4;i++){
     var ix=cols[i][1];
-    if(ix==null){ h+='<div class="pillar"><div class="pl">시주</div><div class="pg">時未知</div><div class="pc" style="color:#6b6255">—</div><div class="pk">시간 모름</div><div class="pc" style="color:#6b6255">—</div><div class="pk">&nbsp;</div><div class="pe">미상</div></div>'; continue; }
+    if(ix==null){ h+='<div class="pillar"><div class="pl">시주</div><div class="pg">시간 미상</div><div class="pc" style="color:#6b6255">—</div><div class="pk">시간 모름</div><div class="pc" style="color:#6b6255">—</div><div class="pk">&nbsp;</div><div class="pe">미상</div></div>'; continue; }
     var s=ix%10,b=ix%12;
     h+='<div class="pillar'+(i===2?' me':'')+'">'+
       '<div class="pl">'+cols[i][0]+'</div>'+
@@ -499,15 +522,15 @@ function renderResult(R,input){
   var chapters=CT.chaptersOf(input.tab);
   var name=input.name;
   var h='<div class="res-head fade-in">';
-  h+='<div class="rh-t">'+th.han+' · '+esc(T.name)+'</div>';
-  h+='<h2>'+esc(name)+' 님의 '+(R.dStem%2?'':'')+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주</h2>';
+  h+='<div class="rh-t">'+esc(T.name)+'</div>';
+  h+='<h2>'+esc(name)+' 님의 '+S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'일주</h2>';
   h+='<div class="rh-s">'+S.ILJU[R.dIdx][0]+' — '+S.ILJU[R.dIdx][2]+'</div>';
   h+='<div class="pillars">'+pillarCells(R)+'</div>';
-  var meta=S.STEM_HAN[R.dStem]+'('+S.STEM_KO[R.dStem]+') 일간 · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+' · 용신 '+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+') · 대운 '+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세';
+  var meta=S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+') 일간 · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+' · 용신 '+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+') · 대운 '+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세';
   h+='<div class="rh-meta">'+meta+'<br>'+R.y+'년 '+R.m+'월 '+R.d+'일 '+(input.cal==='lunar'?'음력':'양력')+' · '+(R.hasTime?solarNote(R,input):'시간 모름(시주 제외)')+'</div>';
   h+='</div>';
 
-  h+='<div class="res-sum fade-in"><p><b>'+esc(name)+'</b> 님의 여덟 글자는 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주, 일간 '+S.STEM_HAN[R.dStem]+'('+S.STEM_KO[R.dStem]+')입니다. 오행은 <b>'+S.EL_KO[c.mostI]+'</b>이 가장 두텁고 <b>'+S.EL_KO[c.leastI]+'</b>이 가장 얇으며, 필요한 기운은 <b>'+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+')</b>입니다.</p>';
+  h+='<div class="res-sum fade-in"><p><b>'+esc(name)+'</b> 님의 여덟 글자는 '+S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'일주, 일간 '+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')입니다. 오행은 <b>'+S.EL_KO[c.mostI]+'</b>이 가장 두텁고 <b>'+S.EL_KO[c.leastI]+'</b>이 가장 얇으며, 필요한 기운은 <b>'+S.EL_KO[c.yongEl]+'('+S.EL_HAN[c.yongEl]+')</b>입니다.</p>';
   h+='<p>'+S.DAY_MASTER[R.dStem][0]+'의 결로 태어나 '+S.GROUP_MEAN[c.topGrp]+' 이 사주의 중심 별은 <b>'+c.topGodInGrp+'</b>입니다. '+S.GOD_KEY[c.topGodInGrp]+'의 방식으로 살 때 가장 편안해집니다.</p>';
   if(input.ctx&&input.ctx.partnerErr) h+='<p style="color:#c94228">'+esc(input.ctx.partnerErr)+' — 내 사주만 읽었습니다.</p>';
   h+='</div>';
@@ -1116,7 +1139,7 @@ function setSheetMode(mode){
   mode=(mode==='admin')?'admin':'cust';
   sh.setAttribute('data-mode',mode);
   var t=$('#sheetTitle');
-  if(t) t.textContent=(mode==='admin')?'管理 · 관리자 검수함':'천령당 · 내 인생사주 리포트';
+  if(t) t.textContent=(mode==='admin')?'관리자 검수함':'천령당 · 내 인생사주 리포트';
   var lv=$('#admListView'); if(lv) lv.style.display=(mode==='admin')?'block':'none';
   var bk=$('#admBack'); if(bk) bk.style.display=(mode==='admin')?'':'none';
 }
@@ -1244,7 +1267,7 @@ function openBook(o,mode,after){
         setTimeout(function(){ window.BOOK.fit(host); },900);
       }
       $('#admBookMeta').innerHTML='<b style="color:#ecd6a6">'+esc(o.name)+'</b> · '+o.date+' · '+(o.hasTime?hourLabel(o.hourIndex):'시간 모름')+' · '+
-        'A4 '+res.pages+'장 · 원국 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주';
+        'A4 '+res.pages+'장 · 원국 '+S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'일주';
       if(typeof after==='function') setTimeout(after,60);
     }catch(ex){
       host.innerHTML='<p style="color:#e79a72">책자를 만들지 못했습니다: '+esc(ex.message)+'</p>';

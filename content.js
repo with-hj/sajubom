@@ -12,14 +12,17 @@ function H(t){return '<h4>'+t+'</h4>';}
 function UL(a){return '<ul>'+a.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';}
 function K(a,b){return '<div class="ch-key"><b>'+a+'</b><span>'+b+'</span></div>';}
 function elB(i){return '<b style="color:'+S.EL_COLOR[i]+'">'+S.EL_KO[i]+'('+S.EL_HAN[i]+')</b>';}
-function stemB(s){return '<b>'+S.STEM_HAN[s]+'('+S.STEM_KO[s]+')</b>';}
-function brB(b){return '<b>'+S.BR_HAN[b]+'('+S.BR_KO[b]+')</b>';}
-/* 조사까지 맞춘 글자 표기 — 子(자)가 · 丑(축)이 */
-function bj(b,p){return '<b>'+S.BR_HAN[b]+'('+S.BR_KO[b]+')</b>'+S.josaP(S.BR_KO[b],p);}
-function sj(s,p){return '<b>'+S.STEM_HAN[s]+'('+S.STEM_KO[s]+')</b>'+S.josaP(S.STEM_KO[s],p);}
-function bp(b){return '<b>'+S.BR_HAN[b]+'('+S.BR_KO[b]+')</b>';}
-function sp(s){return '<b>'+S.STEM_HAN[s]+'('+S.STEM_KO[s]+')</b>';}
+function stemB(s){return '<b>'+S.STEM_KO[s]+'('+S.STEM_HAN[s]+')</b>';}
+function brB(b){return '<b>'+S.BR_KO[b]+'('+S.BR_HAN[b]+')</b>';}
+/* 조사까지 맞춘 글자 표기 — 자(子)가 · 축(丑)이 */
+function bj(b,p){return '<b>'+S.BR_KO[b]+'('+S.BR_HAN[b]+')</b>'+S.josaP(S.BR_KO[b],p);}
+function sj(s,p){return '<b>'+S.STEM_KO[s]+'('+S.STEM_HAN[s]+')</b>'+S.josaP(S.STEM_KO[s],p);}
+function bp(b){return '<b>'+S.BR_KO[b]+'('+S.BR_HAN[b]+')</b>';}
+function sp(s){return '<b>'+S.STEM_KO[s]+'('+S.STEM_HAN[s]+')</b>';}
 function n2(n){return n<10?'0'+n:''+n;}
+/* 60갑자 한 벌을 읽기 쉬운 한글(한자)로 — 정미(丁未) */
+function gz(ix){var s=ix%10,b=ix%12;return S.STEM_KO[s]+S.BR_KO[b]+'('+S.STEM_HAN[s]+S.BR_HAN[b]+')';}
+function gzS(ix){var s=ix%10,b=ix%12;return '<b>'+S.STEM_KO[s]+S.BR_KO[b]+'</b> <span style="font-size:11.5px;color:#7d7364">'+S.STEM_HAN[s]+S.BR_HAN[b]+'</span>';}
 function ctx(input){return (input&&input.ctx)||{};}
 function marryOf(input){return ctx(input).marry||'unknown';}
 function kidOf(input){return ctx(input).kid||'unknown';}
@@ -67,7 +70,7 @@ function seunTable(R,c,n){
     var sn=R.seun[i], s=sn.idx%10,b=sn.idx%12,g=S.tenGod(R.dStem,s);
     var diff=S.mod(b-R.dBranch,12);
     var tag=(diff===6?'충':(diff===0?'동일':((diff===4||diff===8)?'합':'무난')));
-    h+='<tr><td><b>'+sn.year+'</b></td><td>'+S.STEM_HAN[s]+S.BR_HAN[b]+'</td><td>'+g+' <span style="font-size:11px;color:#8a7f6d">'+tag+'</span></td><td style="font-size:13px;line-height:1.7">'+(S.SEUN_DEEP[g]||'')+'</td></tr>';
+    h+='<tr><td><b>'+sn.year+'</b></td><td>'+gz(sn.idx)+'</td><td>'+g+' <span style="font-size:11px;color:#8a7f6d">'+tag+'</span></td><td style="font-size:13px;line-height:1.7">'+(S.SEUN_DEEP[g]||'')+'</td></tr>';
   }
   return h+'</table>';
 }
@@ -76,7 +79,7 @@ function daeunTable(R,c){
   var h='<table class="tbl"><tr><th>나이</th><th>간지</th><th>십성</th><th>10년의 결</th></tr>';
   for(var i=0;i<R.daeun.length;i++){
     var d=R.daeun[i], g=S.tenGod(R.dStem,d.idx%10), cur=(i===R.curDaeun);
-    h+='<tr'+(cur?' style="background:#f3ecdd"':'')+'><td><b>'+d.from+'~'+d.to+'</b>'+(cur?' <span style="font-size:10.5px;color:#c94228">지금</span>':'')+'</td><td>'+S.STEM_HAN[d.idx%10]+S.BR_HAN[d.idx%12]+'</td><td>'+g+'</td><td style="font-size:12.5px;line-height:1.65;color:#5a5145">'+(S.GOD_DAEUN[g]||'')+'</td></tr>';
+    h+='<tr'+(cur?' style="background:#f3ecdd"':'')+'><td><b>'+d.from+'~'+d.to+'</b>'+(cur?' <span style="font-size:10.5px;color:#c94228">지금</span>':'')+'</td><td>'+gz(d.idx)+'</td><td>'+g+'</td><td style="font-size:12.5px;line-height:1.65;color:#5a5145">'+(S.GOD_DAEUN[g]||'')+'</td></tr>';
   }
   return h+'</table>';
 }
@@ -132,7 +135,7 @@ function facts(R){
   var sal=d.sals.length?d.sals.map(function(s){return s.name;}).join(' · '):'없음';
   var gm=d.gmHits.length?d.gmHits.map(function(x){return x.pos;}).join('·')+' 공망':'공망 없음';
   return '<div class="ch-key" style="margin:2px 0 12px"><b>원국 증거</b><span>'+
-    S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+
+    S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'('+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+')일주 · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+
     ' · 용신 '+S.EL_KO[d.yong]+' · 기신 '+S.EL_KO[d.gisin]+'<br>합충 '+rel+' · '+gm+' · 신살 '+sal+'</span></div>';
 }
 function luckYears(R,n){
@@ -158,63 +161,63 @@ window.CH={P:P,H:H,UL:UL,K:K,elB:elB,stemB:stemB,brB:brB,bj:bj,sj:sj,bp:bp,sp:sp
   kidOf:kidOf,noKids:noKids,singleOf:singleOf,pillars:pillars,elMeter:elMeter,godTable:godTable,
   seunTable:seunTable,monthsBlock:monthsBlock,daeunTable:daeunTable,gaewunBlock:gaewunBlock,
   riskyMonths:riskyMonths,riskyMonthsText:riskyMonthsText,elCount:elCount,yearOfStar:yearOfStar,
-  partnerChart:partnerChart,pillarDetail:pillarDetail,facts:facts,luckYears:luckYears,luckMonths:luckMonths,S:S};
+  partnerChart:partnerChart,pillarDetail:pillarDetail,facts:facts,luckYears:luckYears,luckMonths:luckMonths,gz:gz,gzS:gzS,S:S};
 
 /* =====================================================================
    5대 테마 · 세부 탭
    ===================================================================== */
 var THEMES={
-  general:{name:'종합운세',short:'종합운세',han:'總',img:'general',tagline:'한 해의 흐름부터 타고난 그릇까지, 큰 그림을 먼저',
+  general:{name:'종합운세',short:'종합운세',img:'general',tagline:'한 해의 흐름부터 타고난 그릇까지, 큰 그림을 먼저',
     tabs:['newyear','life','daeunflow']},
-  love:{name:'썸 · 연애 · 재회',short:'썸·연애\n재회',han:'緣',img:'love',tagline:'마음이 오가는 속도를 여덟 글자로 읽어요',
+  love:{name:'썸 · 연애 · 재회',short:'썸·연애\n재회',img:'love',tagline:'마음이 오가는 속도를 여덟 글자로 읽어요',
     tabs:['sseom','reunion','pattern'],ctx:'partner'},
-  marriage:{name:'궁합 · 결혼 · 이혼',short:'궁합·결혼\n이혼',han:'婚',img:'marriage',tagline:'함께 앉을 사람인지, 언제 앉을 시기인지',
+  marriage:{name:'궁합 · 결혼 · 이혼',short:'궁합·결혼\n이혼',img:'marriage',tagline:'함께 앉을 사람인지, 언제 앉을 시기인지',
     tabs:['couple','wedding','divorce'],ctx:'partner'},
-  baby:{name:'임신 · 자녀',short:'임신·자녀',han:'孕',img:'baby',tagline:'아이를 맞는 때와 그 아이의 결을',
+  baby:{name:'임신 · 자녀',short:'임신·자녀',img:'baby',tagline:'아이를 맞는 때와 그 아이의 결을',
     tabs:['birth','child','parent'],ctx:'baby',
     warn:'사주 명리 기반의 참고 해석이며 의학적 진단이 아닙니다.'},
-  wealth:{name:'재물 · 직업',short:'재물·직업',han:'財',img:'wealth',tagline:'돈이 들어오는 문과 일이 맞는 자리',
+  wealth:{name:'재물 · 직업',short:'재물·직업',img:'wealth',tagline:'돈이 들어오는 문과 일이 맞는 자리',
     tabs:['money','job','startup'],ctx:'work'}
 };
 
 var TABS={
-  newyear:{theme:'general',name:'신년운세',han:'年',tag:'다가오는 한 해, 어디로 문이 열리는지',
+  newyear:{theme:'general',name:'신년운세',tag:'다가오는 한 해, 어디로 문이 열리는지',
     note:'다가오는 한 해의 세운을 중심으로 상반기·하반기의 방향을 먼저 짚어요.',
     video:'./assets/videos/newyear.mp4'},   /* v46 · 탭별 인트로 영상 (있으면 입력창 앞에 9:16 카드로 재생) */
-  life:{theme:'general',name:'평생사주',han:'命',tag:'타고난 그릇과 평생의 결',
+  life:{theme:'general',name:'평생사주',tag:'타고난 그릇과 평생의 결',
     note:'한 해의 운이 아니라 평생 따라다니는 바탕을 읽어요.'},
-  daeunflow:{theme:'general',name:'대운 흐름',han:'運',tag:'10년마다 바뀌는 판의 방향',
+  daeunflow:{theme:'general',name:'대운 흐름',tag:'10년마다 바뀌는 판의 방향',
     note:'지금 대운과 다음 대운을 나란히 놓고 전환의 시기를 봐요.'},
 
-  sseom:{theme:'love',name:'썸 속마음',han:'心',tag:'그 사람이 나를 어떻게 보고 있는지',
+  sseom:{theme:'love',name:'썸 속마음',tag:'그 사람이 나를 어떻게 보고 있는지',
     note:'상대의 생년월일을 넣으면 두 사람의 일간·일지까지 함께 읽어요.'},
-  reunion:{theme:'love',name:'재회·연락운',han:'返',tag:'끊긴 연락이 다시 이어질 수 있는지',
+  reunion:{theme:'love',name:'재회·연락운',tag:'끊긴 연락이 다시 이어질 수 있는지',
     note:'상대의 생년월일이 있으면 일지가 부딪히는지 어울리는지까지 봐요.'},
-  pattern:{theme:'love',name:'내 연애 패턴',han:'戀',tag:'왜 같은 사람에게 반복해서 끌리는지',
+  pattern:{theme:'love',name:'내 연애 패턴',tag:'왜 같은 사람에게 반복해서 끌리는지',
     note:'끌림과 이별의 이유를 여덟 글자에서 찾아요.'},
 
-  couple:{theme:'marriage',name:'커플 궁합',han:'合',tag:'두 사람의 사주가 만나는 자리',
+  couple:{theme:'marriage',name:'커플 궁합',tag:'두 사람의 사주가 만나는 자리',
     note:'상대방 생년월일을 넣으면 일간·일지·오행 궁합을 계산해 드려요.'},
-  wedding:{theme:'marriage',name:'결혼 시기',han:'期',tag:'결혼의 문이 열리는 해와 조건',
+  wedding:{theme:'marriage',name:'결혼 시기',tag:'결혼의 문이 열리는 해와 조건',
     note:'배우자성이 들어오는 해와 결혼 전 점검할 조건을 봐요.'},
-  divorce:{theme:'marriage',name:'이혼·위기',han:'危',tag:'갈등이 커지는 시기와 결정 기준',
+  divorce:{theme:'marriage',name:'이혼·위기',tag:'갈등이 커지는 시기와 결정 기준',
     note:'위기의 신호와 흔들리는 해를 짚고, 결정 전 세 질문을 드려요.'},
 
-  birth:{theme:'baby',name:'임신·출산운',han:'孕',tag:'임신이 열리는 때부터 산후까지',
+  birth:{theme:'baby',name:'임신·출산운',tag:'임신이 열리는 때부터 산후까지',
     note:'자녀성이 들어오는 해와 달, 몸의 물·불 균형, 부부의 합, 태교와 출산·산후의 흐름을 한 번에 봐요.',
     formTitle:'임신·출산운 — 내 사주 입력'},
-  child:{theme:'baby',name:'자녀 사주',han:'子',tag:'아이의 기질·재능·공부 방식',
+  child:{theme:'baby',name:'자녀 사주',tag:'아이의 기질·재능·공부 방식',
     note:'부모의 사주로 아이와의 관계를, 아이의 생년월일로 그 아이의 결을 읽어요.',
     formTitle:'자녀 사주 — 부모 사주 입력'},
-  parent:{theme:'baby',name:'엄마·아빠 궁합',han:'父',tag:'부모와 아이가 만나는 자리',
-    note:'배우자의 생년월일과 결혼 상태를 넣으면 두 사람 결과 아이의 자리를 함께 봐요.',
+  parent:{theme:'baby',name:'엄마·아빠 궁합',tag:'부모와 아이가 만나는 자리',
+    note:'배우자의 생년월일과 결혼 상태를 넣으면 두 사람의 결, 아이의 자리까지 함께 봐요.',
     formTitle:'엄마·아빠 궁합 — 내 사주 입력'},
 
-  money:{theme:'wealth',name:'재물·횡재',han:'財',tag:'돈이 들어오는 문과 새는 곳',
+  money:{theme:'wealth',name:'재물·횡재',tag:'돈이 들어오는 문과 새는 곳',
     note:'재물의 그릇, 새는 지점, 큰돈이 들어오는 해를 봐요.'},
-  job:{theme:'wealth',name:'직업·이직',han:'職',tag:'천직과 옮겨야 할 시기',
+  job:{theme:'wealth',name:'직업·이직',tag:'천직과 옮겨야 할 시기',
     note:'맞는 일, 이직의 문, 남을지 옮길지를 봐요.'},
-  startup:{theme:'wealth',name:'창업·부업',han:'始',tag:'시작해도 되는지, 무엇으로',
+  startup:{theme:'wealth',name:'창업·부업',tag:'시작해도 되는지, 무엇으로',
     note:'창업 적성, 아이템의 방향, 시작 시기를 봐요.'}
 };
 

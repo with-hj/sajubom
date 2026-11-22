@@ -48,7 +48,7 @@ function pg1(R,c,input,name){
   });
   var h=window.CH.facts(R);
   h+='<p>임신의 시기는 <b>'+starName(input)+'이 들어오는 해</b>와 <b>몸의 리듬</b>을 함께 봅니다. '+(hits.length
-    ? '앞으로 다섯 해 중 '+hits.map(function(r){return '<b>'+r.y+'년('+r.gz+')</b>';}).join(', ')+'이 그 문에 해당합니다. '+hits[0].why
+    ? '앞으로 다섯 해 중 '+hits.map(function(r){return '<b>'+r.y+'년 '+r.gz+'</b>';}).join(', ')+'이 그 문에 해당합니다. '+hits[0].why
     : '앞으로 다섯 해에는 자녀성이 세운으로 뚜렷하게 들어오지 않습니다. 이때는 해보다 <b>몸과 생활의 조건</b>이 중요합니다.')+'</p>';
   h+='<p>원국에서 자녀성이 놓인 자리는 '+(where.length?where.join(', '):'뚜렷하지 않음')+'입니다. '+(where.length?'자녀성이 원국에 있어 <b>아이의 자리가 이미 열려 있는</b> 사주입니다.':'자녀성이 원국에 얇아, 아이의 일은 <b>세운·대운이 데려오는</b> 구조입니다.')+'</p>';
   if(dd.gmHits.length) h+='<p>다만 '+dd.gmHits.map(function(x){return x.pos;}).join('·')+'가 공망이라, <b>일정·서류·검사 기록</b>을 직접 챙기는 습관이 필요합니다. 맡기면 빠지는 자리입니다.</p>';
@@ -283,33 +283,33 @@ function pa6(R,c,input,name){
 window.CTP.baby={
   /* 임신운 + 태교·출산 → 임신·출산운 (한 탭으로 합침) */
   birth:[
-    {han:'孕',title:'임신이 열리는 해',sub:'자녀성이 들어오는 때',body:pg1},
-    {han:'水火',title:'물과 불의 균형',sub:'몸이 먼저 알리는 신호',body:pg2},
-    {han:'合',title:'부부의 합',sub:'준비는 두 사람의 생활',body:pg3},
-    {han:'慎',title:'조심할 달',sub:'비워두어야 하는 시기',body:pg4},
-    {han:'備',title:'준비의 순서',sub:'잠 → 식사 → 움직임',body:pg5},
-    {han:'胎',title:'태교의 결',sub:'배 속 아이의 기운',body:tg1},
-    {han:'時',title:'출산의 흐름',sub:'문이 열리는 달',body:tg2},
-    {han:'後',title:'산후 회복',sub:'잠과 온기',body:tg3},
-    {han:'家',title:'가족의 역할',sub:'다시 짜이는 분담',body:tg4},
-    {han:'月',title:'12개월의 몸',sub:'달별 흐름',body:pg7}
+    {title:'임신이 열리는 해',sub:'자녀성이 들어오는 때',body:pg1},
+    {title:'물과 불의 균형',sub:'몸이 먼저 알리는 신호',body:pg2},
+    {title:'부부의 합',sub:'준비는 두 사람의 생활',body:pg3},
+    {title:'조심할 달',sub:'비워두어야 하는 시기',body:pg4},
+    {title:'준비의 순서',sub:'잠 → 식사 → 움직임',body:pg5},
+    {title:'태교의 결',sub:'배 속 아이의 기운',body:tg1},
+    {title:'출산의 흐름',sub:'문이 열리는 달',body:tg2},
+    {title:'산후 회복',sub:'잠과 온기',body:tg3},
+    {title:'가족의 역할',sub:'다시 짜이는 분담',body:tg4},
+    {title:'12개월의 몸',sub:'달별 흐름',body:pg7}
   ],
   child:[
-    {han:'性',title:'아이의 기질',sub:'타고난 결',body:ch1},
-    {han:'才',title:'재능의 방향',sub:'힘이 나는 상황',body:ch2},
-    {han:'學',title:'공부의 방식',sub:'집중이 오래 가는 조건',body:ch3},
-    {han:'交',title:'사회성과 사춘기',sub:'친구와 방문',body:ch4},
-    {han:'父',title:'부모와의 합',sub:'두 사람이 만나는 자리',body:ch5},
-    {han:'育',title:'양육의 원칙',sub:'규칙 셋, 칭찬은 과정',body:ch6},
-    {han:'月',title:'12개월의 아이',sub:'달별 흐름',body:ch7}
+    {title:'아이의 기질',sub:'타고난 결',body:ch1},
+    {title:'재능의 방향',sub:'힘이 나는 상황',body:ch2},
+    {title:'공부의 방식',sub:'집중이 오래 가는 조건',body:ch3},
+    {title:'사회성과 사춘기',sub:'친구와 방문',body:ch4},
+    {title:'부모와의 합',sub:'두 사람이 만나는 자리',body:ch5},
+    {title:'양육의 원칙',sub:'규칙 셋, 칭찬은 과정',body:ch6},
+    {title:'12개월의 아이',sub:'달별 흐름',body:ch7}
   ],
   parent:[
-    {han:'合',title:'부모 각자의 결',sub:'두 결이 만나는 자리',body:pa1},
-    {han:'分',title:'역할 나누기',sub:'고정하지 말고 돌아가며',body:pa2},
-    {han:'異',title:'부딪히는 지점',sub:'아이 앞에서의 다툼',body:pa3},
-    {han:'同',title:'같은 편이 되는 법',sub:'결론 전에 말하기',body:pa4},
-    {han:'子',title:'아이가 보는 부모',sub:'반복이 남는다',body:pa5},
-    {han:'月',title:'6개월의 리듬',sub:'달별 흐름',body:pa6}
+    {title:'부모 각자의 결',sub:'두 결이 만나는 자리',body:pa1},
+    {title:'역할 나누기',sub:'고정하지 말고 돌아가며',body:pa2},
+    {title:'부딪히는 지점',sub:'아이 앞에서의 다툼',body:pa3},
+    {title:'같은 편이 되는 법',sub:'결론 전에 말하기',body:pa4},
+    {title:'아이가 보는 부모',sub:'반복이 남는다',body:pa5},
+    {title:'6개월의 리듬',sub:'달별 흐름',body:pa6}
   ]
 };
 })();

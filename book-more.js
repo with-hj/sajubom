@@ -5,14 +5,15 @@
 (function(){
 'use strict';
 var S=window.SJ, B=window.BOOK;
+function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+gzP(st%10,br%12)+')'; }
 var M={};
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function n2(n){return n<10?'0'+n:''+n;}
 function elK(i){return S.EL_KO[i]+'('+S.EL_HAN[i]+')';}
 function elS(i){return '<b>'+S.EL_KO[i]+'</b>('+S.EL_HAN[i]+')';}
 function elKj(i,p){ return elK(i)+S.josaP(S.EL_KO[i],p||'이가'); }
-function stemS(s){return S.STEM_HAN[s]+'('+S.STEM_KO[s]+')';}
-function brS(b){return S.BR_HAN[b]+'('+S.BR_KO[b]+')';}
+function stemS(s){return S.STEM_KO[s]+'('+S.STEM_HAN[s]+')';}
+function brS(b){return S.BR_KO[b]+'('+S.BR_HAN[b]+')';}
 function page(label,body,opt){
   opt=opt||{};
   return '<section class="pg"><div class="pg-hd"><span class="l">天靈堂 · LIFE SAJU REPORT</span><span class="r">'+label+'</span></div>'+
@@ -61,7 +62,7 @@ function daeunIntro(){
     (function(){var h='';R.daeun.forEach(function(d){
       var g=S.tenGod(R.dStem,d.idx%10);
       var keep={'비겁':'내 이름으로 만든 것','식상':'작품과 기록','재성':'현금흐름과 자산','관성':'직함과 신뢰','인성':'실력과 사람'}[S.GOD_GROUP[g]];
-      h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+S.STEM_HAN[d.idx%10]+S.BR_HAN[d.idx%12]+'</td><td>'+g+'</td><td>'+keep+'</td></tr>';});return h;})()+'</table>'+
+      h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+gzP(d.idx%10,d.idx%12)+'</td><td>'+g+'</td><td>'+keep+'</td></tr>';});return h;})()+'</table>'+
     '<p>대운이 바뀌는 실제 변화는 <b>그 전후 2년</b>에 걸쳐 옵니다. 그래서 표의 나이는 “몇 살에 딱 바뀐다”기보다 “그 무렵부터 판이 달라진다”로 읽으세요.</p>'+
     callout('대운을 읽는 순서','<p>1. 지금 구간의 십성을 확인한다. 2. 그 십성이 내 사주에서 어떤 재료인지 본다. 3. 다음 구간의 재료를 미리 준비한다. 이 세 단계면 충분합니다.</p>'),{spread:true}));
   chapter('daeun','15','평생 대운','9구간 · 10년마다');
@@ -74,7 +75,7 @@ function daeunCycle(i){
   var label='15 / DAEWOON';
   /* A */
   push(page(label,secLabel('15','DAEWOON · '+(i+1)+' / 9')+
-    '<h1><span class="accent">'+d.from+'~'+d.to+'세</span><br>'+S.STEM_HAN[d.idx%10]+S.BR_HAN[d.idx%12]+' · '+g+'</h1>'+
+    '<h1><span class="accent">'+d.from+'~'+d.to+'세</span><br>'+gzP(d.idx%10,d.idx%12)+' · '+g+'</h1>'+
     '<p class="lead">'+(S.GOD_DAEUN[g]||'')+'</p>'+
     '<div style="margin:2mm 0 4mm"><span class="tag">'+grp+'</span><span class="tag navy">'+elK(el)+'</span><span class="tag navy">지지 '+elK(brEl)+'</span><span class="tag soft">일지와 '+rel.k+'</span>'+(i===R.curDaeun?'<span class="tag">지금</span>':'')+'</div>'+
     '<h3>이 10년의 재료</h3><p>'+DAEUN_GROUP[grp]+'</p>'+
@@ -91,7 +92,7 @@ function daeunCycle(i){
     var idx=S.mod(y-4,60), gg=S.tenGod(R.dStem,idx%10);
     var diff=S.mod(idx%12-R.dBranch,12);
     var tag=(diff===6?'충':(diff===0?'동일':((diff===4||diff===8)?'합':'무난')));
-    years+='<tr><td class="k">'+y+'</td><td>'+(y-R.y)+'세</td><td>'+S.STEM_HAN[idx%10]+S.BR_HAN[idx%12]+' · '+gg+'</td><td>'+tag+'</td><td style="font-size:11.5px">'+S.SEUN_KEY[gg]+'</td></tr>';
+    years+='<tr><td class="k">'+y+'</td><td>'+(y-R.y)+'세</td><td>'+gzP(idx%10,idx%12)+' · '+gg+'</td><td>'+tag+'</td><td style="font-size:11.5px">'+S.SEUN_KEY[gg]+'</td></tr>';
   }
   push(page(label,secLabel('15','DAEWOON · 네 영역')+'<h2>이 10년, 영역별로</h2>'+
     '<table><tr><th>영역</th><th>이 10년의 결</th></tr>'+
@@ -131,7 +132,7 @@ function seunIntro(){
     '<table><tr><th>해</th><th>간지</th><th>십성</th><th>일지</th><th>한 줄</th></tr>'+
     (function(){var h='';for(var y=start;y<start+5;y++){var idx=S.mod(y-4,60),g=S.tenGod(R.dStem,idx%10),diff=S.mod(idx%12-R.dBranch,12);
       var tag=(diff===6?'충':(diff===0?'동일':((diff===4||diff===8)?'합':'무난')));
-      h+='<tr><td class="k">'+y+'</td><td>'+S.STEM_HAN[idx%10]+S.BR_HAN[idx%12]+'</td><td>'+g+'</td><td>'+tag+'</td><td style="font-size:12px">'+S.SEUN_DEEP[g]+'</td></tr>';}return h;})()+'</table>'+
+      h+='<tr><td class="k">'+y+'</td><td>'+gzP(idx%10,idx%12)+'</td><td>'+g+'</td><td>'+tag+'</td><td style="font-size:12px">'+S.SEUN_DEEP[g]+'</td></tr>';}return h;})()+'</table>'+
     '<p>이 다섯 해는 지금 대운(<b>'+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</b>)의 재료 위에서 읽어야 정확합니다. 다음 장부터 해마다 두 장씩 펼칩니다.</p>'+
     callout('5년을 쓰는 순서','<p>1년차는 <b>정리</b>, 2~3년차는 <b>실행</b>, 4~5년차는 <b>수확</b>입니다. 이 사주는 실행에 강하고 정리에 약하니, 첫 해를 정리에 쓰는 것이 전체 속도를 올립니다.</p>'),{spread:true}));
   chapter('sewoon','16','향후 5년 세운','2027~2031');
@@ -142,7 +143,7 @@ function seunPages(){
     var y=2027+k, idx=S.mod(y-4,60), s=idx%10, b=idx%12, g=S.tenGod(R.dStem,s), grp=S.GOD_GROUP[g];
     var diff=S.mod(b-R.dBranch,12), rel=(diff===6?'충(沖)':(diff===0?'동일':((diff===4||diff===8)?'합(合)':'무난')));
     var F=SEUN_FIELD[g]||SEUN_FIELD[grp]||SEUN_FIELD['비겁'];
-    push(page('16 / SEWOON',secLabel('16','SEWOON · '+y)+'<h1><span class="accent">'+y+'년</span> · '+S.STEM_HAN[s]+S.BR_HAN[b]+'</h1>'+
+    push(page('16 / SEWOON',secLabel('16','SEWOON · '+y)+'<h1><span class="accent">'+y+'년</span> · '+gzP(s,b)+'</h1>'+
       '<p class="lead">'+S.SEUN_DEEP[g]+'</p>'+
       '<div style="margin:2mm 0 4mm"><span class="tag">'+g+'</span><span class="tag navy">'+grp+'</span><span class="tag navy">일지 '+rel+'</span><span class="tag soft">'+S.SEUN_KEY[g]+'</span></div>'+
       '<h3>이 해의 기운</h3><p>'+S.SEUN_EL[S.BR_EL[b]]+'</p>'+
@@ -155,7 +156,7 @@ function seunPages(){
       var mp=S.monthPillarOf(y,m), mg=S.tenGod(R.dStem,mp.stem);
       var mrel=S.branchRel(R.dBranch,mp.branch), mtag=S.monthTag(mrel);
       if(mtag==='합'||mtag==='충'){
-        mrows+='<tr><td class="k">'+m+'월</td><td>'+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+' · '+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(((S.MONTH_TIPS.general||{})[S.GOD_GROUP[mg]]||[])[0]||'')+'</td></tr>';
+        mrows+='<tr><td class="k">'+m+'월</td><td>'+gzP(mp.stem,mp.branch)+' · '+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(((S.MONTH_TIPS.general||{})[S.GOD_GROUP[mg]]||[])[0]||'')+'</td></tr>';
       }
     }
     push(page('16 / SEWOON',secLabel('16','SEWOON · '+y+' 네 영역')+'<h2>'+y+'년, 영역별로</h2>'+
@@ -281,8 +282,8 @@ function monthPages(){
       docu:docuField(grp)+' '+(mp.branch===4||mp.branch===1||mp.branch===7||mp.branch===10?'토의 달이라 등기·잔금·확인일자를 이 달에 두면 좋습니다.':(tag==='충'?'충의 달이라 계약서 수정·특약 확인을 먼저 하세요.':(tag==='합'?'합의 달이라 중개·소개를 거치면 빨라집니다.':'급한 계약은 피하고 서류를 정리하는 달입니다.'))),
       health:F.health+(tail.health?' '+tail.health:'')
     };
-    push(page('17 / 2027',secLabel('17','2027 MONTHLY · '+m+'월')+'<h1><span class="accent">2027년 '+m+'월</span><br>'+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+' · '+g+'</h1>'+
-      '<p class="lead">'+m+'월은 '+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+'월, '+name_of_month(m)+'입니다. 십성은 <b>'+g+'</b>, 일지와의 관계는 <b>'+tag+'</b>입니다.</p>'+
+    push(page('17 / 2027',secLabel('17','2027 MONTHLY · '+m+'월')+'<h1><span class="accent">2027년 '+m+'월</span><br>'+gzP(mp.stem,mp.branch)+' · '+g+'</h1>'+
+      '<p class="lead">'+m+'월은 '+gzP(mp.stem,mp.branch)+'월, '+name_of_month(m)+'입니다. 십성은 <b>'+g+'</b>, 일지와의 관계는 <b>'+tag+'</b>입니다.</p>'+
       '<p>'+season+' '+tip+(relNote?' '+relNote:'')+'</p>'+
       '<h3>이 달의 네 영역</h3>'+
       '<table><tr><th>영역</th><th>이 달의 결</th></tr>'+
@@ -369,7 +370,7 @@ function qaMonthLine(R,pred,label){
   for(var m=1;m<=12;m++){
     var mp=S.monthPillarOf(2027,m), g=S.tenGod(R.dStem,mp.stem);
     var rr=monthRelMore(R.dBranch,mp.branch);
-    if(pred(mp,g,rr.tag)) out.push('2027년 '+m+'월('+S.STEM_HAN[mp.stem]+S.BR_HAN[mp.branch]+'·'+rr.tag+')');
+    if(pred(mp,g,rr.tag)) out.push('2027년 '+m+'월('+gzP(mp.stem,mp.branch)+'·'+rr.tag+')');
   }
   return out.length?(label+'은 '+out.join(', ')+'입니다.'):('2027년에는 '+label+'이 뚜렷하게 겹치는 달이 없습니다.');
 }
@@ -480,7 +481,7 @@ function answerFor(kind,R,c,q){
     var yl=[];
     for(var i6=0;i6<Math.min(3,R.seun.length);i6++){
       var s6=R.seun[i6], gg6=S.tenGod(R.dStem,s6.idx%10);
-      yl.push('<li><b>'+s6.year+'년 '+S.STEM_HAN[s6.idx%10]+S.BR_HAN[s6.idx%12]+'('+gg6+')</b> — '+S.SEUN_DEEP[gg6]+'</li>');
+      yl.push('<li><b>'+s6.year+'년 '+gzP(s6.idx%10,s6.idx%12)+'('+gg6+')</b> — '+S.SEUN_DEEP[gg6]+'</li>');
     }
     h+='<p class="lead">한 가지로 답하기 어려운 질문이라, 이 사주의 <b>중심</b>과 <b>지금의 대운</b>에서 순서를 잡았습니다. 결론은 <b>'+c.topGrp+'을 쓰는 일을 먼저 정하고, '+S.EL_KO[c.yongEl]+'을 채우는 생활을 그 위에 얹는 것</b>입니다.</p>';
     h+='<p>이 사주는 <b>'+c.topGodInGrp+'</b>이 중심이고 필요한 기운은 '+elK(c.yongEl)+'입니다. '+S.GOD_KEY[c.topGodInGrp]+'의 방식으로 살 때 가장 편안하고, '+S.EL_DEEP[c.yongEl].habit+'이 그 힘을 받쳐줍니다.</p>';
@@ -511,9 +512,9 @@ function signPages(){
     '<table><tr><th>항목</th><th>확인</th></tr>'+
     '<tr><td class="k">이름</td><td>'+esc(B.name)+'</td></tr>'+
     '<tr><td class="k">생년월일</td><td>'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' ('+(B.input.cal==='lunar'?'음력':'양력')+')</td></tr>'+
-    '<tr><td class="k">태어난 시간</td><td>'+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시 무렵':'시간 미상')+'</td></tr>'+
+    '<tr><td class="k">태어난 시간</td><td>'+(R.hIdxP!=null?S.BR_KO[R.hIdxP%12]+'시 무렵':'시간 미상')+'</td></tr>'+
     '<tr><td class="k">출생 지역</td><td>'+(R.solarAdj?R.solarAdj.region+' 출생 — 시주 보정 반영':((B.input.regionName&&B.input.regionName!=='출생지 모름')?B.input.regionName:'출생지 미상 — 보정 없음'))+'</td></tr>'+
-    '<tr><td class="k">원국</td><td>'+S.STEM_HAN[R.yIdx%10]+S.BR_HAN[R.yIdx%12]+' · '+S.STEM_HAN[R.mIdx%10]+S.BR_HAN[R.mIdx%12]+' · '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+(R.hIdxP!=null?' · '+S.STEM_HAN[R.hIdxP%10]+S.BR_HAN[R.hIdxP%12]:'')+'</td></tr>'+
+    '<tr><td class="k">원국</td><td>'+gzP(R.yIdx%10,R.yIdx%12)+' · '+gzP(R.mIdx%10,R.mIdx%12)+' · '+gzP(R.dStem,R.dBranch)+(R.hIdxP!=null?' · '+gzP(R.hIdxP%10,R.hIdxP%12):'')+'</td></tr>'+
     '<tr><td class="k">일간</td><td>'+stemS(R.dStem)+' · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+'</td></tr>'+
     '<tr><td class="k">용신</td><td>'+elK(c.yongEl)+'</td></tr>'+
     '<tr><td class="k">현재 대운</td><td>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세 · '+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</td></tr>'+
@@ -522,7 +523,7 @@ function signPages(){
     '<div class="sign"><div class="row"><span>검수</span><span class="sig">天靈堂</span></div><div class="row"><span>판독</span><span>사주명리 기반 참고 해석</span></div><div class="row"><span>문의</span><span>with-hj@users.noreply.github.com</span></div></div>',{spread:true}));
   push(page('20 / REVIEW',secLabel('20','CLOSING · 맺음말')+'<h1>이 책을 덮으며</h1>'+
     '<p class="lead">사주는 바꿀 수 없지만, 어느 쪽으로 기울여 살지는 매일 정할 수 있습니다.</p>'+
-    '<p>'+esc(B.name)+' 님의 여덟 글자는 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주입니다. 이 책에서 가장 중요한 문장은 아마 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>에 대한 설명일 것입니다. 그 힘이 쓰이는 자리에서 이 사주는 오래 갑니다.</p>'+
+    '<p>'+esc(B.name)+' 님의 여덟 글자는 '+gzP(R.dStem,R.dBranch)+'일주입니다. 이 책에서 가장 중요한 문장은 아마 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>에 대한 설명일 것입니다. 그 힘이 쓰이는 자리에서 이 사주는 오래 갑니다.</p>'+
     '<p>두 번째로 중요한 것은 '+elK(c.yongEl)+'입니다. '+S.EL_DEEP[c.yongEl].habit+' — 이 한 가지를 3개월 지켜보세요. 사주는 큰 사건으로 바뀌지 않고, 매일의 작은 기울기로 바뀝니다.</p>'+
     '<p>세 번째는 시간입니다. 가장 힘이 실리는 10년은 <b>'+R.daeun[S.bestDaeun(R,c).i].from+'~'+R.daeun[S.bestDaeun(R,c).i].to+'세</b>입니다. 그때까지 무엇을 심어두는지가 결과를 바꿉니다.</p>'+
     callout('마지막 한 줄','<p>좋은 삶은 좋은 운에서 오지 않습니다. 좋은 <b>순서</b>에서 옵니다. 이 책이 그 순서를 정하는 데 쓰이길 바랍니다.</p>')+
@@ -555,7 +556,7 @@ function appendPages(){
     '<li>주의 — 의학적 진단, 법률·투자 판단, 결혼·이혼 등 중대한 결정의 근거로 사용할 수 없습니다.</li>'+
     '<li>재발행 — 생년월일·시간·지역이 달라지면 같은 책을 다시 만들 수 있습니다.</li></ul>'+
     '<p class="note">天靈堂 · 천령당 · 2026 · with-hj@users.noreply.github.com</p>'+
-    callout('기록','<p>이 책의 원국은 '+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시':'시간 미상')+' · '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 기준입니다.</p>'),{spread:true}));
+    callout('기록','<p>이 책의 원국은 '+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시':'시간 미상')+' · '+gzP(R.dStem,R.dBranch)+'일주 기준입니다.</p>'),{spread:true}));
   var d=S.EL_DEEP[c.yongEl];
   chapter('appendix2','22','서른 날의 실천','관찰·이행·경계·재독');
   push(page('22 / 30 DAYS',secLabel('22','THIRTY DAYS · 실천')+'<h1>이 책을 덮은 뒤,<br><span class="accent">서른 번의 선택</span></h1>'+

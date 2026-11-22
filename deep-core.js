@@ -92,7 +92,7 @@ function idxOf(stem,branch){
   for(var i=0;i<60;i++) if(i%10===stem&&i%12===branch) return i;
   return null;
 }
-function ganzhiOf(ix){ return STEM_HAN[ix%10]+BR_HAN[ix%12]; }
+function ganzhiOf(ix){ return STEM_KO[ix%10]+BR_KO[ix%12]+'('+STEM_HAN[ix%10]+BR_HAN[ix%12]+')'; }
 function j(s,pair){ return S.josaP(String(s),pair); }
 function elTxt(i){ return EL_KO[i]+'('+EL_HAN[i]+')'; }
 function stage12(stem,branch){
@@ -310,7 +310,7 @@ function deepOf(R){
 function lineup(R){
   var d=deepOf(R);
   return d.live.map(function(p){
-    return p.pos+' '+p.gz+'('+p.sGod+'·'+p.bGod+')';
+    return p.pos+' '+p.gz+' · '+p.sGod+'·'+p.bGod;
   }).join(' · ');
 }
 function interList(R){
@@ -338,9 +338,9 @@ function interHTML(R){
 }
 function gongmangText(R){
   var d=deepOf(R), gm=d.gmDay;
-  var head='일주 '+ganzhiOf(R.dIdx)+'의 순(旬)에서 <b>'+BR_HAN[gm[0]]+'·'+BR_HAN[gm[1]]+'</b> 두 글자가 비어 있습니다(공망).';
+  var head='일주 '+ganzhiOf(R.dIdx)+'의 순(旬)에서 <b>'+BR_KO[gm[0]]+'('+BR_HAN[gm[0]]+')·'+BR_KO[gm[1]]+'('+BR_HAN[gm[1]]+')</b> 두 글자가 비어 있습니다(공망).';
   if(!d.gmHits.length) return head+' 이 사주의 기둥에는 그 두 글자가 없어, 공망이 실제 생활을 흔드는 자리는 크지 않습니다.';
-  var t=d.gmHits.map(function(x){ return x.pos+' '+BR_HAN[x.br]; }).join(', ');
+  var t=d.gmHits.map(function(x){ return x.pos+' '+BR_KO[x.br]+'('+BR_HAN[x.br]+')'; }).join(', ');
   var lastBr=d.gmHits[d.gmHits.length-1].br;
   var gods=d.gmGods.map(function(g){ return g.god; });
   var mean='공망은 “없다”가 아니라 <b>그 자리의 것이 늦게 채워지거나, 마음처럼 남지 않는</b> 자리입니다.';
@@ -357,7 +357,7 @@ function sinsalHTML(R){
   var out=d.sals.slice().sort(function(a,b){ return order.indexOf(a.key)-order.indexOf(b.key); });
   var h='<ul>';
   out.forEach(function(s){
-    h+='<li><b>'+s.name+'('+s.han+')</b> · '+s.pos+' '+BR_HAN[s.br]+' — '+s.txt+'</li>';
+    h+='<li><b>'+s.name+'('+s.han+')</b> · '+s.pos+' '+BR_KO[s.br]+'('+BR_HAN[s.br]+') — '+s.txt+'</li>';
   });
   return h+'</ul>';
 }
@@ -434,7 +434,7 @@ function monthRead(R,y,m){
 }
 function monthWhy(R,y,m){
   var r=monthRead(R,y,m);
-  var bits=[y+'.'+(m<10?'0'+m:m)+' '+r.gz+'('+r.g+')'];
+  var bits=[y+'.'+(m<10?'0'+m:m)+' '+r.gz+' · '+r.g];
   if(r.rels.length) bits.push(r.rels.map(function(x){ return x.pos+'와 '+x.type; }).join('·'));
   return bits.join(' · ');
 }

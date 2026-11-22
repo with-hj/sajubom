@@ -12,8 +12,8 @@ function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'
 function n2(n){return n<10?'0'+n:''+n;}
 function elK(i){return S.EL_KO[i]+'('+S.EL_HAN[i]+')';}
 function elS(i){return '<b>'+S.EL_KO[i]+'</b>('+S.EL_HAN[i]+')';}
-function stemS(s){return S.STEM_HAN[s]+'('+S.STEM_KO[s]+')';}
-function brS(b){return S.BR_HAN[b]+'('+S.BR_KO[b]+')';}
+function stemS(s){return S.STEM_KO[s]+'('+S.STEM_HAN[s]+')';}
+function brS(b){return S.BR_KO[b]+'('+S.BR_HAN[b]+')';}
 function josa(s,pair){var c=s.charCodeAt(s.length-1);var has=(c>=0xAC00&&c<=0xD7A3)&&((c-0xAC00)%28)!==0;return has?pair[0]:pair[1];}
 function elKj(i,p){ return elK(i)+josa(S.EL_KO[i],p||'이가'); }
 function bj(b,pair){ return brS(b)+josa(S.BR_KO[b],pair); }
@@ -52,7 +52,7 @@ var UNSUNG_MEAN={
 /* ---------------- 신살 ---------------- */
 var SAMHAP={0:['신','자','진'],1:['사','유','축'],2:['인','오','술'],3:['해','묘','미']};
 function samOf(b){
-  var h=S.BR_HAN[b];
+  var h=S.BR_KO[b];   /* 한자 글자로 비교하면 늘 실패해 늘 3이 되던 자리 */
   if('신자진'.indexOf(h)>=0) return 0;
   if('사유축'.indexOf(h)>=0) return 1;
   if('인오술'.indexOf(h)>=0) return 2;
@@ -114,8 +114,11 @@ function daeunStarsOf(R,grp){
   R.daeun.forEach(function(d,i){ var g=S.tenGod(R.dStem,d.idx%10); if(S.GOD_GROUP[g]===grp) out.push({i:i,from:d.from,to:d.to,g:g,s:d.idx%10,b:d.idx%12,cur:i===R.curDaeun}); });
   return out;
 }
-function seunTxt(o){ return '<b>'+o.y+'년('+S.STEM_HAN[o.s]+S.BR_HAN[o.b]+' · '+o.g+', '+o.age+'세)</b>'; }
-function monthTxt(o){ return '<b>'+o.y+'년 '+o.m+'월('+S.STEM_HAN[o.s]+S.BR_HAN[o.b]+' · '+o.g+(o.tag==='합'?' · 일지와 합':'')+')</b>'; }
+/* v47 · 60갑자를 한글(한자)로 — 정미(丁未) */
+function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+gzP(st%10,br%12)+')'; }
+B.gzP=gzP;
+function seunTxt(o){ return '<b>'+o.y+'년('+S.STEM_KO[o.s]+S.BR_KO[o.b]+' · '+o.g+', '+o.age+'세)</b>'; }
+function monthTxt(o){ return '<b>'+o.y+'년 '+o.m+'월('+S.STEM_KO[o.s]+S.BR_KO[o.b]+' · '+o.g+(o.tag==='합'?' · 일지와 합':'')+')</b>'; }
 
 /* ---------------- 표지 ---------------- */
 function coverPage(){
@@ -126,12 +129,12 @@ function coverPage(){
     '<div class="epi"><span class="orn"></span><p>여덟 글자에 새겨진 하늘의 뜻을<br>한 사람의 설계도로 옮겼습니다</p></div>'+
     '<div class="box"><div class="nm">'+esc(B.name)+'</div>'+
     '<div class="d">'+R.y+'.'+n2(R.m)+'.'+n2(R.d)+(R.hasTime?' · '+hourText(R):' · 시간 모름')+'<br>'+
-    S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주 · '+S.ILJU[R.dIdx][0]+'</div></div>'+
+    gzP(R.dStem,R.dBranch)+'일주 · '+S.ILJU[R.dIdx][0]+'</div></div>'+
     '<div class="cover-ft">2026 · CHEONRYEONGDANG · SEOUL · __TOT__ PAGES</div></div></section>';
 }
 function hourText(R){
   if(R.hIdxP==null) return '시간 모름';
-  return S.BR_HAN[R.hIdxP%12]+'시 무렵';
+  return S.BR_KO[R.hIdxP%12]+'시 무렵';
 }
 
 /* ---------------- 서문 ---------------- */
@@ -140,7 +143,7 @@ function introPage(){
   var body=secLabel('PROLOGUE','발간에 부쳐')+
    '<h1>당신의 여덟 글자를<br><span class="accent">한 사람의 설계도로</span></h1>'+
    '<p class="lead">사주는 미래를 정해둔 예언이 아닙니다. 태어난 순간의 하늘을 여덟 글자로 적어둔 <b>기록</b>이고, 그 기록은 ‘어떤 조건에서 이 사람이 가장 잘 자라는가’를 알려줍니다.</p>'+
-   '<p>'+esc(B.name)+' 님의 원국은 '+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주입니다. 일간 '+stemS(R.dStem)+'은 '+S.DAY_MASTER[R.dStem][0]+'의 결이고, 가장 두터운 기운은 '+elS(c.mostI)+', 가장 얇은 기운은 '+elS(c.leastI)+'입니다. 이 책은 그 여덟 글자 위에 평생의 대운과 5년의 세운, 12개월의 달력을 얹어 한 사람의 인생 전체를 한 권으로 엮었습니다.</p>'+
+   '<p>'+esc(B.name)+' 님의 원국은 '+gzP(R.dStem,R.dBranch)+'일주입니다. 일간 '+stemS(R.dStem)+'은 '+S.DAY_MASTER[R.dStem][0]+'의 결이고, 가장 두터운 기운은 '+elS(c.mostI)+', 가장 얇은 기운은 '+elS(c.leastI)+'입니다. 이 책은 그 여덟 글자 위에 평생의 대운과 5년의 세운, 12개월의 달력을 얹어 한 사람의 인생 전체를 한 권으로 엮었습니다.</p>'+
    '<p>이 책을 읽는 방법은 간단합니다. 1장 총평에서 여덟 글자의 요약을 먼저 보고, 2장에서 원국을, 7장에서 네 기둥을 한 칸씩 읽으세요. 8장부터 14장은 삶의 영역별 해설이고, 15장부터는 시간의 지도입니다. 급하면 15장(평생 대운)과 17장(2027년 월력)부터 펼치셔도 좋습니다.</p>'+
    '<p>읽는 동안 세 가지 질문을 마음에 두시면 좋습니다. “나는 어떤 조건에서 힘이 나는가”, “나는 어떤 상황에서 먼저 지치는가”, “지금 내가 미루고 있는 결정은 무엇인가”. 이 책의 모든 장은 모두 이 세 질문에 서로 다른 각도에서 답하는 글입니다. 그래서 한 번에 다 읽지 않아도 괜찮습니다. 마음에 걸리는 장부터 펼치세요.</p>'+
    callout('이 책을 읽는 태도','<p>여기 적힌 문장은 정답이 아니라 <b>질문</b>입니다. “내가 왜 이 자리에서 지치는지”, “왜 같은 관계를 반복하는지”에 대한 하나의 설명으로 읽어주세요. 맞지 않는 문장은 넘기시면 됩니다.</p>')+
@@ -171,7 +174,7 @@ function tocPages(){
 function summaryPage(){
   var R=B.R,c=B.c;
   var best=S.bestDaeun(R,c);
-  var tags='<div style="margin:2mm 0 5mm"><span class="tag">'+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+'일주</span><span class="tag navy">'+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+'</span><span class="tag">용신 '+elK(c.yongEl)+'</span><span class="tag soft">중심 '+c.topGrp+'</span><span class="tag soft">'+c.topGodInGrp+'</span></div>';
+  var tags='<div style="margin:2mm 0 5mm"><span class="tag">'+gzP(R.dStem,R.dBranch)+'일주</span><span class="tag navy">'+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+'</span><span class="tag">용신 '+elK(c.yongEl)+'</span><span class="tag soft">중심 '+c.topGrp+'</span><span class="tag soft">'+c.topGodInGrp+'</span></div>';
   var body=secLabel('01','EXECUTIVE SUMMARY · 총평')+
    '<h1>한 장으로 보는<br><span class="accent">'+esc(B.name)+' 님의 설계도</span></h1>'+tags+
    '<p class="lead">'+S.DAY_MASTER[R.dStem][0]+'의 결로 태어났고, 여기에 '+brS(R.dBranch)+'가 앉아 <b>'+S.ILJU[R.dIdx][0]+'</b>이 되었습니다. '+S.STRENGTH_TXT[R.strength].out+'</p>'+
@@ -190,11 +193,11 @@ function summaryPage(){
 /* ---------------- 2장 원국 ---------------- */
 function chartPage(){
   var R=B.R,c=B.c;
-  var cells=[['년주',R.yIdx,'祖 · 초년'],['월주',R.mIdx,'父母 · 청년'],['일주',R.dIdx,'我 · 배우자'],['시주',R.hIdxP,'子 · 말년']];
+  var cells=[['년주',R.yIdx,'조상 · 초년'],['월주',R.mIdx,'부모 · 청년'],['일주',R.dIdx,'나 · 배우자'],['시주',R.hIdxP,'자식 · 말년']];
   var h='<div class="chart4">';
   cells.forEach(function(x,i){
     var ix=x[1];
-    if(ix==null){ h+='<div class="c"><div class="lab">'+x[0]+'</div><div class="god">時未知</div><div class="st" style="color:#7C6E58">—</div><div class="ko">시간 모름</div><div class="st" style="color:#7C6E58">—</div><div class="ko">&nbsp;</div></div>'; return; }
+    if(ix==null){ h+='<div class="c"><div class="lab">'+x[0]+'</div><div class="god">시간 미상</div><div class="st" style="color:#7C6E58">—</div><div class="ko">시간 모름</div><div class="st" style="color:#7C6E58">—</div><div class="ko">&nbsp;</div></div>'; return; }
     var s=ix%10,b=ix%12;
     h+='<div class="c'+(i===2?' me':'')+'"><div class="lab">'+x[0]+'</div>'+
       '<div class="god">'+(i===2?'일간':S.tenGod(R.dStem,s))+'</div>'+
@@ -220,7 +223,7 @@ function chartPage(){
    '<h1>여덟 글자의 <span class="accent">지도</span></h1>'+
    '<p class="lead">'+R.y+'년 '+n2(R.m)+'월 '+n2(R.d)+'일'+(R.hasTime?' · 시주 기록':' · 시간 미상(육자)')+'. 일간은 '+stemS(R.dStem)+'이며, 일지를 기준으로 나머지 글자의 십성을 읽습니다.</p>'+h+
    '<p>년주는 조상과 초년(0~15세), 월주는 부모와 청년(16~30세), 일주는 나와 배우자(31~45세), 시주는 자녀와 말년(46세 이후)을 상징합니다. 네 기둥 중 <b>일간</b>이 이 사주의 주인이고, <b>일지</b>는 배우자궁이자 내가 앉는 자리입니다.</p>'+
-   callout('원국을 읽는 첫 문장','<p>이 사주는 <b>'+S.STEM_HAN[R.dStem]+'('+S.STEM_KO[R.dStem]+')</b> 일간이 '+brS(R.dBranch)+' 위에 앉아 <b>'+S.ILJU[R.dIdx][0]+'</b>의 결을 만들었습니다. '+S.ILJU[R.dIdx][1]+'</p>');
+   callout('원국을 읽는 첫 문장','<p>이 사주는 <b>'+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')</b> 일간이 '+brS(R.dBranch)+' 위에 앉아 <b>'+S.ILJU[R.dIdx][0]+'</b>의 결을 만들었습니다. '+S.ILJU[R.dIdx][1]+'</p>');
   chapter('chart','02','원국 · 여덟 글자','사주 원국표와 십성·운성');
   push(page('02 / CHART',body,{spread:true}));
 }
@@ -355,7 +358,7 @@ function pillarPages(){
       return;
     }
     var s=ix%10,b=ix%12,g=S.tenGod(R.dStem,s);
-    body+='<h1>'+df.name+' — <span class="accent">'+S.STEM_HAN[s]+S.BR_HAN[b]+'</span></h1>'+
+    body+='<h1>'+df.name+' — <span class="accent">'+gzP(s,b)+'</span></h1>'+
       '<p class="lead">'+df.desc+'</p>'+
       '<div class="chart4"><div class="c"><div class="lab">천간</div><div class="god">'+g+'</div><div class="st">'+S.STEM_HAN[s]+'</div><div class="ko">'+S.STEM_KO[s]+' · '+S.EL_KO[S.STEM_EL[s]]+'</div></div>'+
       '<div class="c"><div class="lab">지지</div><div class="god">'+unsung(R.dStem,b)+'</div><div class="st">'+S.BR_HAN[b]+'</div><div class="ko">'+S.BR_KO[b]+' · '+S.EL_KO[S.BR_EL[b]]+'</div></div>'+
@@ -368,7 +371,7 @@ function pillarPages(){
       '<p>'+S.BR_INNER[b]+' 이 기둥에서 이 글자가 놓인 자리는 '+df.range.split(' · ')[1]+'의 시기입니다. 그래서 이 시기에 '+S.GOD_KEY[g]+'의 성향이 삶의 방식으로 굳어집니다.</p>'+
       '<p>'+UNSUNG_MEAN[unsung(R.dStem,b)]+'</p>'+
       callout('이 기둥을 쓰는 법','<p>'+df.name+'는 '+S.GOD_KEY[g]+'의 자리입니다. '+S.GROUP_MEAN[S.GOD_GROUP[g]]+' 이 재료를 '+df.range.split(' · ')[1]+'에 어떻게 썼는지가 지금의 습관이 되었습니다.</p>');
-    chapter(df.key,'07-'+(i+1),df.name+' · '+df.range,S.STEM_HAN[s]+S.BR_HAN[b]+' · '+g);
+    chapter(df.key,'07-'+(i+1),df.name+' · '+df.range,gzP(s,b)+' · '+g);
     push(page('07 / PILLARS',body,{spread:true}));
   });
 }
@@ -468,7 +471,7 @@ function moneyPages(){
     var g=S.tenGod(R.dStem,dn.idx%10), grp=S.GOD_GROUP[g];
     var note=({'정재':'쌓이는 돈의 구간. 저축·계약·자격처럼 남는 일이 재산이 됩니다.','편재':'큰 돈이 도는 구간. 판이 넓어지지만 씀씀이도 함께 커집니다.','비견':'내 힘으로 버는 구간. 동업은 몫을 먼저 정하세요.','겁재':'사람을 통해 버는 구간. 장부가 없으면 남지 않습니다.','식신':'좋아하는 일이 수입이 되는 구간.','상관':'재능이 돈이 되는 구간. 구설을 조심하세요.','편관':'압박이 커지는 구간. 자리를 지키는 것이 곧 돈입니다.','정관':'자리가 돈을 만드는 구간. 조직·자격이 곧 재산입니다.','편인':'혼자 깊어지는 구간. 준비에 돈을 씁니다.','정인':'배움에 돈을 쓰는 구간. 큰 투자보다 실력을 사는 쪽이 남습니다.'})[g]||'';
     var rel=S.relType(R.dBranch,dn.idx%12);
-    rows+='<tr><td class="k">'+dn.from+'~'+dn.to+'</td><td>'+S.STEM_HAN[dn.idx%10]+S.BR_HAN[dn.idx%12]+' · '+g+(rel&&rel!=='동일'?'<br><span style="font-size:11px">일지와 '+rel+'</span>':'')+'</td><td style="font-size:12px">'+note+'</td></tr>';
+    rows+='<tr><td class="k">'+dn.from+'~'+dn.to+'</td><td>'+gzP(dn.idx%10,dn.idx%12)+' · '+g+(rel&&rel!=='동일'?'<br><span style="font-size:11px">일지와 '+rel+'</span>':'')+'</td><td style="font-size:12px">'+note+'</td></tr>';
   });
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 3')+'<h1>10년마다 바뀌는<br><span class="accent">돈의 그릇</span></h1>'+
     '<p class="lead">같은 노력도 대운의 결에 따라 결과가 달라집니다. 이 사주의 재물은 아래 구간에서 크기가 달라집니다.</p>'+
@@ -506,7 +509,7 @@ function docuPages(){
   push(page('10 / DOCUMENT',secLabel('10','DOCUMENT · 시기와 함정')+'<h1>언제,<br><span class="accent">무엇을 조심할까</span></h1>'+
     '<p class="lead">시기는 <b>인성(문서)·관성(명의)·재성(자금)</b>이 세운으로 들어오는 해와, <b>지지가 내 기둥과 합·충</b>을 이루는 해로 좁힙니다.</p>'+
     '<ul>'+(function(){ var L=w.years.slice(0,3); if(w.bestClean&&L.indexOf(w.bestClean)<0) L.push(w.bestClean); return L.map(function(y){
-      return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(' · '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>첫 번째 창</b>':'')+'</li>';
+      return '<li><b>'+y.y+'년 '+y.gz+' · '+y.g+'</b> — '+(y.why.length?y.why.join(' · '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>첫 번째 창</b>':'')+'</li>';
     }).join(''); })()+'</ul>'+
     '<p>계약을 잡을 첫 번째 창은 <b>'+(w.bestClean?w.bestClean.y+'년 '+w.bestClean.gz:'기신·공망이 겹치지 않는 해가 없어 가장 점수가 높은 해')+'</b>입니다. 기신·공망이 겹치는 해는 계약이 되어도 이자·세금·보수에서 지출이 늘어납니다.</p>'+
     '<p>달까지 좁히면 '+w.goodMonths.map(function(m){ return '<b>'+m.y+'.'+n2(m.m)+' '+m.gz+'</b>'+(m.why.length?'('+m.why.join('·')+')':''); }).join(', ')+'입니다. 가계약·잔금·등기 접수 중 하나를 여기에 잡으세요.</p>'+
@@ -556,7 +559,7 @@ function careerPages(){
     '<p>이 사주는 조건을 말할 때 감정이 섞입니다. 협상 전에 <b>세 줄</b>로 적어가세요. 적은 사람은 흔들리지 않습니다.</p>',{spread:true}));
   push(page('11 / CAREER',secLabel('11','CAREER · 일 4')+'<h1>5년의<br><span class="accent">자리</span></h1>'+
     '<table><tr><th>해</th><th>간지</th><th>십성</th><th>일의 결</th></tr>'+
-    (function(){var h='';for(var i=0;i<R.seun.length;i++){var sn=R.seun[i],g=S.tenGod(R.dStem,sn.idx%10);h+='<tr><td class="k">'+sn.year+'</td><td>'+S.STEM_HAN[sn.idx%10]+S.BR_HAN[sn.idx%12]+'</td><td>'+g+'</td><td style="font-size:12px">'+S.SEUN_DEEP[g]+'</td></tr>';}return h;})()+'</table>'+
+    (function(){var h='';for(var i=0;i<R.seun.length;i++){var sn=R.seun[i],g=S.tenGod(R.dStem,sn.idx%10);h+='<tr><td class="k">'+sn.year+'</td><td>'+gzP(sn.idx%10,sn.idx%12)+'</td><td>'+g+'</td><td style="font-size:12px">'+S.SEUN_DEEP[g]+'</td></tr>';}return h;})()+'</table>'+
     '<h3>이 5년의 순서</h3><ul><li><b>1년차</b> — 실력을 정리하고 기록으로 남기기</li><li><b>2~3년차</b> — 자리 또는 이름을 하나 얻기</li><li><b>4~5년차</b> — 얻은 자리에서 사람을 만들기</li></ul>'+
     '<p>이 사주는 <b>기록</b>이 남을 때 다음 자리로 이어집니다. 머릿속에 있는 것을 문서와 말로 꺼내는 습관이 커리어의 속도를 바꿉니다.</p>'+
     callout('한 줄','<p>커리어는 재능이 아니라 <b>남긴 기록</b>으로 이어집니다.</p>'),{spread:true}));
@@ -643,7 +646,7 @@ function familyPages(){
   push(page('13 / FAMILY',secLabel('13','FAMILY · 가족')+'<h1>가족 안에서의<br><span class="accent">자리</span></h1>'+
     '<p class="lead">'+(hasKid?'이미 아이가 있는 사주입니다. 이 장은 아이와의 관계와 부모로서의 결을 다룹니다.':'이 장은 앞으로 맞이할 가족의 결을 미리 보는 내용입니다.')+'</p>'+
     '<h3>자녀성</h3><p>이 사주의 자녀성은 '+elK(S.mod(R.dayEl+1,5))+'입니다. '+S.CHILD_NATURE_EL[S.mod(R.dayEl+1,5)]+'</p>'+
-    (cc?'<h3>아이의 결</h3><p>아이의 사주는 '+S.STEM_HAN[cc.R.dStem]+S.BR_HAN[cc.R.dBranch]+'일주입니다. '+S.CHILD_NATURE_EL[cc.R.dayEl]+'</p>':'')+
+    (cc?'<h3>아이의 결</h3><p>아이의 사주는 '+gzP(cc.R.dStem,cc.R.dBranch)+'일주입니다. '+S.CHILD_NATURE_EL[cc.R.dayEl]+'</p>':'')+
     '<h3>가족 안에서 이 사주가 맡는 것</h3><p>이 사주는 가족 안에서 <b>'+c.topGrp+'</b>의 자리를 맡기 쉽습니다. '+S.GROUP_MEAN[c.topGrp]+' '+S.STRENGTH_TXT[R.strength].adv+'</p>'+
     '<h3>가족과의 거리</h3><p>이 사주는 가까운 사람에게 다정하지만 문을 여는 데 시간이 걸립니다. '+S.BR_INNER[R.dBranch]+'</p>',{spread:true}));
   // 임신·자녀 (context)
@@ -658,7 +661,7 @@ function familyPages(){
       callout('준비의 순서','<p>잠 → 식사 → 움직임 → 마음. 이 순서를 바꾸면 같은 노력이 두 배로 남습니다. 특히 이 사주는 <b>혼자 다 감당하려는 습관</b>이 있어, 한 가지는 반드시 배우자에게 맡기세요.</p>'),{spread:true}));
   } else {
     push(page('13 / FAMILY',secLabel('13','CHILD · 자녀와의 관계')+'<h1>아이와의<br><span class="accent">거리</span></h1>'+
-      '<p class="lead">'+(cc?'아이의 일주는 '+S.STEM_HAN[cc.R.dStem]+S.BR_HAN[cc.R.dBranch]+'입니다. ':'')+'이 사주는 아이에게 <b>'+S.EL_PERSON[R.dayEl]+'</b> 같은 인상을 줍니다.</p>'+
+      '<p class="lead">'+(cc?'아이의 일주는 '+gzP(cc.R.dStem,cc.R.dBranch)+'입니다. ':'')+'이 사주는 아이에게 <b>'+S.EL_PERSON[R.dayEl]+'</b> 같은 인상을 줍니다.</p>'+
       '<h3>아이에게 해야 할 말</h3><ul><li>“너는 네 속도로 자라도 괜찮아.”</li><li>“오늘 끝까지 해본 것이 제일 좋았어.”</li><li>“네가 말해줘서 고마워.”</li></ul>'+
       '<h3>조심할 것</h3><p>이 사주는 '+S.GOD_KEY[c.topGodInGrp]+'이 강해 아이를 가르치려는 마음이 앞섭니다. 가르침이 길어지면 아이는 닫힙니다. <b>질문 하나</b>로 끝내세요.</p>'+
       '<h3>부부의 역할</h3><p>역할을 반으로 나누되, 한 달에 한 번은 서로 바꿔보세요. 아이가 두 사람을 다르게 보지 않습니다.</p>',{spread:true}));

@@ -35,12 +35,13 @@ function ny(R,c,input,name){
   var dd=D(R), y=new Date().getFullYear()+1, r=S.yearRead(R,y);
   var cur=dRead(R,R.curDaeun);
   var h=facts(R);
-  h+='<p><b>'+y+'년 '+r.gz+'</b> — '+r.why+'</p>';
-  h+='<p>그래서 '+y+'년은 <b>'+r.short+'</b>입니다. '+(r.tone==='open'
-    ? '미뤄둔 것을 꺼내고 문을 두드리기 좋습니다. 이 해에 시작한 일은 다음 해의 재료가 됩니다.'
-    : (r.tone==='hold'?'벌이기보다 지키는 해입니다. 새 계약·새 대출·새 판은 다음 해로 미루세요.':'오르내리는 해입니다. 되는 일과 막히는 일이 번갈아 오니, 한 번에 하나만 잡으세요.'))+'</p>';
+  var toneLine=(r.tone==='open'
+    ? '미뤄둔 것을 꺼내고 문을 두드리기 좋은 해입니다. 이 해에 시작한 일은 다음 해의 재료가 됩니다.'
+    : (r.tone==='hold'?'벌이기보다 지키는 해입니다. 새 계약·새 대출·새 판은 다음 해로 미루세요.':'되는 일과 막히는 일이 번갈아 오는 해입니다. 한 번에 하나만 잡으세요.'));
+  h+='<p>'+r.why+'</p>';
+  h+='<p>그래서 '+y+'년은 <b>'+r.short+'</b>입니다. '+toneLine+'</p>';
   h+=H('이 해를 받치는 10년');
-  h+='<p>한 해의 날씨는 <b>대운</b>이라는 기후 위에 얹힙니다. 지금은 <b>'+cur.dn.from+'~'+cur.dn.to+'세 · '+cur.gz+'('+cur.g+')</b>의 10년, 그중 <b>'+(R.age-cur.dn.from+1)+'년 차</b>입니다. '+(S.GOD_DAEUN[cur.g]||'')+'</p>';
+  h+='<p>한 해의 날씨는 <b>대운</b>이라는 기후 위에 얹힙니다. 지금은 <b>'+cur.dn.from+'~'+cur.dn.to+'세 · '+cur.gz+' · '+cur.g+'</b>의 10년, 그중 <b>'+(R.age-cur.dn.from+1)+'년 차</b>입니다. '+(S.GOD_DAEUN[cur.g]||'')+'</p>';
   h+='<p>이 대운의 지지는 '+relWords(cur.rels)+'. '+(cur.yong?'용신 '+EL_KO[dd.yong]+S.josaP(EL_KO[dd.yong],'이가')+' 걸린 10년이라 <b>막힌 것이 풀리는</b> 구간입니다.':(cur.gi?'기신 '+EL_KO[dd.gisin]+S.josaP(EL_KO[dd.gisin],'이가')+' 걸린 10년이라 <b>버티는 힘</b>이 결과를 만듭니다.':'용신도 기신도 걸리지 않아, 세운의 날씨가 그대로 드러나는 10년입니다.'))+'</p>';
   h+=H('상반기와 하반기 — 달로 본 순서');
   var ms=C.luckMonths(R,12), first=ms.slice(0,6), second=ms.slice(6,12);
@@ -59,7 +60,7 @@ function ny(R,c,input,name){
   function line(grp,label){
     var hit=reads.filter(function(x){return x.grp===grp;});
     if(!hit.length) return '앞으로 다섯 해에는 뚜렷하게 들어오지 않습니다. 사람과 자리의 밀도가 중요합니다.';
-    return hit.map(function(x){return '<b>'+x.y+'년('+x.gz+')</b>';}).join(', ')+' — '+label+'입니다.';
+    return hit.map(function(x){return '<b>'+x.y+'년 '+x.gz+'</b>';}).join(', ')+' — '+label+'입니다.';
   }
   h+='<table class="tbl"><tr><th>영역</th><th>열리는 해</th></tr>'+
      '<tr><td>돈</td><td>'+line('재성','수입의 문이 열리는 해')+'</td></tr>'+
@@ -180,7 +181,7 @@ function life7(R,c,input,name){
   h+=H('평생의 대운 지도')+'<p>아홉 번의 10년을 한눈에 놓았습니다. 지금 구간을 기준으로 앞뒤를 함께 보세요.</p>';
   h+=daeunTable(R,c);
   var best=S.bestDaeun(R,c), br=dRead(R,best.i);
-  h+='<p>가장 힘이 실리는 구간은 <b>'+br.dn.from+'~'+br.dn.to+'세 · '+br.gz+'('+br.g+')</b>입니다. '+(S.GOD_DAEUN[br.g]||'')+' 이때 '+relWords(br.rels)+'.</p>';
+  h+='<p>가장 힘이 실리는 구간은 <b>'+br.dn.from+'~'+br.dn.to+'세 · '+br.gz+' · '+br.g+'</b>입니다. '+(S.GOD_DAEUN[br.g]||'')+' 이때 '+relWords(br.rels)+'.</p>';
   return h+K('가장 힘이 실리는 구간', '<b>'+br.dn.from+'~'+br.dn.to+'세 · '+br.g+'</b> — '+(S.GOD_DAEUN[br.g]||''));
 }
 
@@ -200,7 +201,7 @@ function dn2(R,c,input,name){
   var i=R.curDaeun;
   if(i<=0) return '<p>이 사주는 첫 대운을 지나고 있습니다. 아직 이전 10년이 쌓이지 않았으니 지금 쌓는 것이 곧 바탕이 됩니다.</p>'+K('한 줄','첫 대운은 <b>재료를 모으는 시간</b>입니다. 크게 벌이기보다 배우고 시도하는 쪽이 남습니다.');
   var r=dRead(R,i-1);
-  var h='<p>지난 10년은 <b>'+r.dn.from+'~'+r.dn.to+'세 · '+r.gz+'('+r.g+')</b>의 구간이었습니다. '+(S.GOD_DAEUN[r.g]||'')+'</p>';
+  var h='<p>지난 10년은 <b>'+r.dn.from+'~'+r.dn.to+'세 · '+r.gz+' · '+r.g+'</b>의 구간이었습니다. '+(S.GOD_DAEUN[r.g]||'')+'</p>';
   h+='<p>'+S.GROUP_MEAN[r.grp]+' 그래서 그 10년 동안 '+name+' 님은 <b>'+S.GROUP_MEAN[r.grp].split('.')[0]+'</b>을 중심으로 자라왔습니다. 지지는 '+relWords(r.rels)+'.</p>';
   h+=H('아직 남은 숙제')+'<p>'+S.REL_NOTE[r.grp]+' 이 재료는 아직 다 쓰이지 않았습니다. 지금의 대운에서 이 재료를 어떻게 쓰느냐가 다음 10년의 출발점을 바꿉니다.</p>';
   h+=K('한 줄','지난 10년의 결은 <b>버릴 것이 아니라 옮겨 담을 것</b>입니다. 무엇을 가져갈지 지금 정하세요.');
@@ -210,7 +211,7 @@ function dn3(R,c,input,name){
   var nx=R.daeun[R.curDaeun+1];
   if(!nx) return '<p>지금 대운이 마지막 구간입니다. 이후는 세운과 일상의 선택으로 읽습니다.</p>';
   var r=dRead(R,R.curDaeun+1);
-  var h='<p>다음은 <b>'+nx.from+'~'+nx.to+'세 · '+r.gz+'('+r.g+')</b> 대운입니다. '+(S.GOD_DAEUN[r.g]||'')+'</p>';
+  var h='<p>다음은 <b>'+nx.from+'~'+nx.to+'세 · '+r.gz+' · '+r.g+'</b> 대운입니다. '+(S.GOD_DAEUN[r.g]||'')+'</p>';
   h+='<p>'+S.GROUP_MEAN[r.grp]+' 지지는 '+relWords(r.rels)+'. '+(r.rels.some(function(x){return x.type==='충';})?'충이 걸려 <b>판이 바뀌는</b> 10년입니다. 그 전에 정리할 것을 정리하세요.':'')+'</p>';
   h+=H('지금 준비할 세 가지');
   var grp=r.grp;
@@ -264,7 +265,7 @@ function dn6(R,c,input,name){
 function dn7(R,c,input,name){
   var best=S.bestDaeun(R,c), br=dRead(R,best.i);
   var h=H('아홉 구간 지도')+'<p>지금 구간을 기준으로 앞뒤를 함께 보세요.</p>'+daeunTable(R,c);
-  h+=H('가장 힘이 실리는 구간')+'<p><b>'+br.dn.from+'~'+br.dn.to+'세 · '+br.gz+'('+br.g+')</b> — '+(S.GOD_DAEUN[br.g]||'')+' 지지는 '+relWords(br.rels)+'.</p>';
+  h+=H('가장 힘이 실리는 구간')+'<p><b>'+br.dn.from+'~'+br.dn.to+'세 · '+br.gz+' · '+br.g+'</b> — '+(S.GOD_DAEUN[br.g]||'')+' 지지는 '+relWords(br.rels)+'.</p>';
   h+=H('구간별로 남는 것')+UL(R.daeun.slice(0,9).map(function(d){
     var g=S.tenGod(R.dStem,d.idx%10);
     return '<b>'+d.from+'~'+d.to+'세</b> — '+S.DAEUN_KEY[g]+': '+S.GOD_DAEUN[g].split('.')[0]+'.';
@@ -275,33 +276,33 @@ function dn7(R,c,input,name){
 
 window.CTP.general={
   newyear:[
-    {han:'年',title:'다가오는 한 해의 문',sub:'세운·대운·상하반기',body:ny},
-    {han:'運',title:'이 해를 받치는 10년',sub:'지금 대운의 몇 년 차인가',body:dn1},
-    {han:'月',title:'12개월 월별 흐름',sub:'달마다 밀 것과 미룰 것',body:function(R,c,input,name){return monthsBlock(R,c,'general',12,'앞으로 12개월, 이 사주에게 들어오는 달의 결입니다.')+K('한 줄','합의 달에 사람을 만나고, 충의 달에 정리하세요.');}},
-    {han:'財',title:'올해의 돈',sub:'들어오는 달과 새는 달',body:function(R,c,input,name){
+    {title:'다가오는 한 해의 문',sub:'세운·대운·상하반기',body:ny},
+    {title:'이 해를 받치는 10년',sub:'지금 대운의 몇 년 차인가',body:dn1},
+    {title:'12개월 월별 흐름',sub:'달마다 밀 것과 미룰 것',body:function(R,c,input,name){return monthsBlock(R,c,'general',12,'앞으로 12개월, 이 사주에게 들어오는 달의 결입니다.')+K('한 줄','합의 달에 사람을 만나고, 충의 달에 정리하세요.');}},
+    {title:'올해의 돈',sub:'들어오는 달과 새는 달',body:function(R,c,input,name){
       var dd=D(R);
       var h=H('재물의 흐름')+'<p>이 사주는 재성이 '+dd.docu.jaeCnt+'개, 문서·부동산 지수는 '+dd.docu.score+'점입니다.</p>';
       h+='<p>올해 세운은 <b>'+S.tenGod(R.dStem,R.seun[0].idx%10)+'</b>이며, '+S.yearRead(R,R.seun[0].year).why+'</p>';
       h+=H('새는 지점')+'<p>'+(S.WEALTH_LEAK_GOD[c.topGodInGrp]||'')+'</p>';
       h+=monthsBlock(R,c,'wealth',6,'돈이 구체적으로 움직이는 달만 골랐습니다.');
       return h+K('한 줄','들어온 날 바로 <b>절반</b>을 떼어두는 규칙 하나면 충분합니다.');}},
-    {han:'緣',title:'올해의 인연',sub:'만남의 문이 열리는 해와 달',body:function(R,c,input,name){
+    {title:'올해의 인연',sub:'만남의 문이 열리는 해와 달',body:function(R,c,input,name){
       var dd=D(R);
       var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
       var ys=reads.filter(function(r){return r.grp==='관성'||r.grp==='재성';});
-      var h=H('인연의 문')+'<p>'+(ys.length?ys.map(function(r){return '<b>'+r.y+'년('+r.gz+')</b>';}).join(', ')+'이 관계가 구체적으로 움직이는 해입니다. '+ys[0].why:'앞으로 다섯 해에는 관계성이 세운으로 크게 들어오지 않아, 해보다 만남의 밀도가 중요합니다.')+'</p>';
+      var h=H('인연의 문')+'<p>'+(ys.length?ys.map(function(r){return '<b>'+r.y+'년 '+r.gz+'</b>';}).join(', ')+'이 관계가 구체적으로 움직이는 해입니다. '+ys[0].why:'앞으로 다섯 해에는 관계성이 세운으로 크게 들어오지 않아, 해보다 만남의 밀도가 중요합니다.')+'</p>';
       h+='<p>'+S.gongmangText(R)+'</p>';
       h+=H('만남의 달')+monthsBlock(R,c,'love',6,'사람을 만나기 좋은 달을 짚었습니다.');
       h+=H('올해 조심할 것')+'<p>'+risky(R,c,12)+'</p>';
       return h;}},
-    {han:'身',title:'올해의 몸',sub:'주의할 달과 회복 루틴',body:function(R,c,input,name){
+    {title:'올해의 몸',sub:'주의할 달과 회복 루틴',body:function(R,c,input,name){
       var dd=D(R);
       var h=H('올해 몸의 신호')+'<p>가장 얇은 기운은 '+elB(c.leastI)+'입니다. '+S.EL_DEEP[c.leastI].under+'</p>';
       h+='<p>올해 세운의 오행은 '+elB(S.BR_EL[R.seun[0].idx%12])+'입니다. '+S.SEUN_EL[S.BR_EL[R.seun[0].idx%12]]+'</p>';
       h+=H('조심할 달')+'<p>'+risky(R,c,12)+'</p>';
       h+=H('회복 루틴')+'<p>'+S.EL_DEEP[dd.yong].habit+' · '+S.EL_DEEP[dd.yong].food+'.</p>';
       return h+K('한 줄','잠드는 시간만 고정해도 올해의 절반은 지킨 것입니다.');}},
-    {han:'備',title:'새해 준비',sub:'비울 것과 들일 것',body:function(R,c,input,name){
+    {title:'새해 준비',sub:'비울 것과 들일 것',body:function(R,c,input,name){
       var dd=D(R);
       var h=H('먼저 비울 것')+'<p>'+name+' 님은 '+S.ILJU[R.dIdx][0]+'의 결이라, 새해를 열 때 “무엇을 새로 벌일까”보다 <b>무엇을 비울까</b>를 먼저 정하면 그해가 훨씬 가벼워집니다.</p>';
       h+='<ul><li>1월에 책상과 일정을 한 번 비우기</li><li>구독·약속 중 쓰지 않는 것 세 개 정리</li><li>지난해 미뤄둔 결정 하나를 끝내기</li></ul>';
@@ -310,22 +311,22 @@ window.CTP.general={
       return h;}}
   ],
   life:[
-    {han:'命',title:'원국의 바탕',sub:'일간·일지·강약·합충',body:life1},
-    {han:'性',title:'겉과 속',sub:'보이는 나와 아는 나',body:life2},
-    {han:'器',title:'타고난 그릇',sub:'오행의 무게와 필요한 기운',body:life3},
-    {han:'十',title:'십성의 구조',sub:'무엇으로 이루어진 사람인가',body:life4},
-    {han:'財',title:'평생의 재물',sub:'벌이의 구조와 새는 곳',body:life5},
-    {han:'緣',title:'평생의 인연',sub:'배우자궁과 사랑의 언어',body:life6},
-    {han:'運',title:'평생의 일과 대운',sub:'천직과 아홉 번의 10년',body:life7}
+    {title:'원국의 바탕',sub:'일간·일지·강약·합충',body:life1},
+    {title:'겉과 속',sub:'보이는 나와 아는 나',body:life2},
+    {title:'타고난 그릇',sub:'오행의 무게와 필요한 기운',body:life3},
+    {title:'십성의 구조',sub:'무엇으로 이루어진 사람인가',body:life4},
+    {title:'평생의 재물',sub:'벌이의 구조와 새는 곳',body:life5},
+    {title:'평생의 인연',sub:'배우자궁과 사랑의 언어',body:life6},
+    {title:'평생의 일과 대운',sub:'천직과 아홉 번의 10년',body:life7}
   ],
   daeunflow:[
-    {han:'現',title:'지금 대운',sub:'이 10년의 재료와 위치',body:dn1},
-    {han:'前',title:'지난 10년',sub:'무엇이 쌓였는가',body:dn2},
-    {han:'後',title:'다음 대운',sub:'무엇을 준비할 것인가',body:dn3},
-    {han:'轉',title:'전환기',sub:'바뀌는 2년을 쓰는 법',body:dn4},
-    {han:'擇',title:'대운으로 보는 선택',sub:'이직·창업·투자·배움',body:dn5},
-    {han:'身',title:'대운과 몸',sub:'10년의 건강 리듬',body:dn6},
-    {han:'圖',title:'아홉 구간 지도',sub:'평생을 한눈에',body:dn7}
+    {title:'지금 대운',sub:'이 10년의 재료와 위치',body:dn1},
+    {title:'지난 10년',sub:'무엇이 쌓였는가',body:dn2},
+    {title:'다음 대운',sub:'무엇을 준비할 것인가',body:dn3},
+    {title:'전환기',sub:'바뀌는 2년을 쓰는 법',body:dn4},
+    {title:'대운으로 보는 선택',sub:'이직·창업·투자·배움',body:dn5},
+    {title:'대운과 몸',sub:'10년의 건강 리듬',body:dn6},
+    {title:'아홉 구간 지도',sub:'평생을 한눈에',body:dn7}
   ]
 };
 })();

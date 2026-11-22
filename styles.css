@@ -122,7 +122,7 @@ a{color:inherit}
 .row>*{flex:1 1 0;min-width:0}
 select,input[type=text],input[type=tel],input[type=email],textarea{
   width:100%;border:1px solid var(--line2);background:#fffdf8;border-radius:10px;
-  padding:9px 10px;font-size:16px;line-height:1.4;color:var(--body);font-family:var(--sans);
+  padding:8px 10px;font-size:14px;line-height:1.4;color:var(--body);font-family:var(--sans);
   appearance:none;-webkit-appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239a8f7e' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;
@@ -130,18 +130,23 @@ select,input[type=text],input[type=tel],input[type=email],textarea{
 input[type=text],input[type=tel],input[type=email],textarea{background-image:none;padding-right:10px}
 textarea{resize:vertical;min-height:84px;line-height:1.65}
 select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(216,179,106,.18)}
-.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--body2)}
-.chk input{width:16px;height:16px;accent-color:var(--verm2)}
+/* iOS Safari는 16px 미만 입력값에 초점을 주면 화면을 확대한다.
+   평소에는 14px로 조밀하게 보이다, iOS에서 초점이 들어올 때만 16px로 올려 화면 확대를 막는다. */
+@supports (-webkit-touch-callout: none){
+  select:focus,input[type=text]:focus,input[type=tel]:focus,input[type=email]:focus,textarea:focus{font-size:16px}
+}
+.chk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--body2)}
+.chk input{width:15px;height:15px;accent-color:var(--verm2)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{
-  border:1px solid var(--line2);border-radius:999px;padding:5px 10px;font-size:12.5px;
+  border:1px solid var(--line2);border-radius:999px;padding:4px 10px;font-size:12px;
   background:#fffdf8;color:var(--body2);letter-spacing:-.01em;line-height:1.4;
 }
 .chip.on{background:var(--ink2);border-color:var(--ink2);color:var(--gold-l)}
 .hint{font-size:12.5px;color:var(--mute2);margin-top:6px;line-height:1.6}
 .err{color:var(--verm2);font-size:13px;font-weight:700;margin-top:6px}
 .err[hidden]{display:none}
-.note-box{background:var(--paper3);border-radius:12px;padding:13px 14px;font-size:13.5px;color:var(--body2);line-height:1.75;margin-top:10px}
+.note-box{background:var(--paper3);border-radius:12px;padding:13px 14px;font-size:13.5px;color:var(--body2);line-height:1.78;margin-top:10px}
 .note-box.verm{border-left:3px solid var(--verm);background:#fdf1eb}
 .note-box b{color:var(--body)}
 
@@ -250,9 +255,9 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .tp-card .thumb{width:100%;aspect-ratio:1/1;border-radius:9px;overflow:hidden;border:1px solid rgba(201,164,90,.18)}
 .tp-card .thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.82) brightness(.74);transition:.24s}
 .tp-card .tx{display:flex;flex-direction:column;align-items:center;gap:1px;width:100%}
-.tp-card .tx b{font-family:var(--serif);font-size:11px;font-weight:700;color:#B5AB95;line-height:1.32;
+.tp-card .tx b{font-family:var(--serif);font-size:11.5px;font-weight:700;color:#B5AB95;line-height:1.32;
   text-align:center;letter-spacing:-.03em}
-.tp-card .tx i{font-style:normal;font-family:var(--serif);font-size:9.5px;color:rgba(201,164,90,.55);letter-spacing:.06em}
+.tp-card .tx i{font-style:normal;font-family:var(--serif);font-size:9.5px;letter-spacing:.14em;color:rgba(201,164,90,.6);font-variant-numeric:tabular-nums}
 .tp-card.on{border-color:rgba(230,201,134,.85);
   background:linear-gradient(180deg,rgba(201,164,90,.2),rgba(201,164,90,.04));
   box-shadow:0 8px 20px rgba(0,0,0,.35),inset 0 0 0 1px rgba(230,201,134,.14)}
@@ -260,34 +265,27 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .tp-card.on .tx b{color:#F7EACA}
 .tp-card.on .tx i{color:var(--gold)}
 
-/* 선택 테마 배너 */
-.v8-tpanel{margin:13px 0 0;border-radius:18px;border:1px solid rgba(201,164,90,.3);overflow:hidden;
-  background:linear-gradient(180deg,rgba(21,39,64,.94),rgba(11,23,39,.97));box-shadow:0 20px 40px rgba(0,0,0,.45)}
-.v8-banner{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0C1726}
-.v8-banner img{width:100%;height:100%;object-fit:cover;display:block}
-.v8-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,13,21,.08) 0%,rgba(9,17,28,.32) 46%,rgba(8,17,29,.94) 100%)}
-.v8-bcopy{position:absolute;left:16px;right:16px;bottom:12px}
-.v8-han{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid rgba(230,201,134,.7);border-radius:4px;
-  font-family:var(--serif);font-size:12.5px;color:var(--gold-l);transform:rotate(-3deg)}
-.v8-bcopy h2{font-family:var(--serif);font-size:21px;font-weight:800;color:#FBF1DC;margin:7px 0 0;
-  letter-spacing:-.01em;text-shadow:0 2px 10px rgba(0,0,0,.65)}
-.v8-bcopy p{margin:4px 0 0;font-family:var(--serif);font-size:13px;line-height:1.6;color:#D6C9AF;
-  text-shadow:0 1px 6px rgba(0,0,0,.7)}
+/* v47 · 세부 탭 카드 : 가운데 큰 배너 사진을 걷어내고
+   알약 세 개 + 선택한 탭에 맞춰 바뀌는 가운데 설명 한 줄만 남긴다. */
+.v8-tpanel{margin:14px 0 0;border-radius:18px;border:1px solid rgba(201,164,90,.32);
+  background:linear-gradient(180deg,rgba(21,39,64,.94),rgba(11,23,39,.97));
+  box-shadow:0 16px 34px rgba(0,0,0,.4);padding:15px 14px 17px;text-align:center}
 
-/* 세부 탭 : 금빛 알약 — 카드 좌우 여백 확보 · 가운데 정렬 · 글자와 점 모두 광학적 정중앙 */
-.v8-tabs,.subtabs{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:7px 6px;padding:12px 16px 0;overflow:visible}
+/* 세부 탭 : 금빛 알약 — 가운데 정렬 · 글자와 점 모두 광학적 정중앙 */
+.v8-tabs,.subtabs{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 7px;padding:0;overflow:visible}
 .subtab{
   display:inline-flex;align-items:center;justify-content:center;gap:4px;
-  flex:0 0 auto;border:1px solid rgba(201,164,90,.28);border-radius:999px;height:26px;padding:0 12px;
-  font-family:var(--serif);font-size:12px;line-height:1;color:#C3B79F;background:rgba(255,255,255,.03);
+  flex:0 0 auto;border:1px solid rgba(201,164,90,.3);border-radius:999px;height:30px;padding:0 15px;
+  font-family:var(--serif);font-size:13px;font-weight:400;line-height:1;color:#C7BBA3;background:rgba(255,255,255,.03);
   white-space:nowrap;transition:.2s;text-align:center;
 }
 .subtab .tx{display:block;line-height:1;transform:translateY(-.5px)}
 .subtab.on{background:linear-gradient(135deg,#EBD39A,#C9A45A);border-color:transparent;color:#20180A;font-weight:700;
   box-shadow:0 4px 14px rgba(0,0,0,.35)}
 .subtab .dot{display:block;flex:0 0 auto;width:4px;height:4px;border-radius:50%;background:#7a5410;margin:0;transform:translateY(-.5px)}
-.v8-tnote{padding:10px 15px 14px;font-size:12.5px;line-height:1.7;color:#9FB0C2;margin:0}
-.v8-tnote b{color:#DDCBAA}
+.v8-tnote{margin:14px auto 0;max-width:322px;font-family:var(--serif);font-size:14.5px;font-weight:400;
+  line-height:1.75;color:#C6BBA7;letter-spacing:-.01em;text-align:center}
+.v8-tnote b{color:#EEDBB3;font-weight:700}
 
 /* 오늘 화면 : 모래빛 시트 */
 .v8-sheet{margin:18px 0 0;background:var(--paper);border-radius:22px 22px 14px 14px;padding:16px 13px 14px;
@@ -730,23 +728,30 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 }
 
 /* =====================================================================
-   v44 : 데스크톱(Windows) 글자 깨짐 완화
-   얇은 명조는 Windows Chrome에서 작은 크기일 때 뭉개져 보인다.
-   큰 제목만 명조로 남기고, 라벨·탭·작은 문구는 산세리프로 그린다.
+   v47 : 고딕 느낌을 덜고 명조의 결을 돌려놓는다.
+   다만 Windows Chrome에서 얇은 명조가 뭉개지지 않도록
+   읽는 본문은 15px 이상 · 굵기 400~700만 쓴다(300 금지).
+   숫자·아주 작은 마이크로 라벨만 산세리프로 남긴다.
    ===================================================================== */
-.hero .kicker,.track-btn b,.subtab,.sec-head .no,.tcard .front .nm,.v8-lede,.tp-card .tx b,
-.tp-card .tx i,.v8-han,.v8-bcopy p,.res-head .rh-t,.ch-bd h4,.rb-yr .yh b,.pdf-hero .bd,
-.trust b,.pdfprog b,.sendbox h4,.loading p,.lr-tag,.lr-head .no,.lr-cards b,.lr-toc>b,
-.brand-note .no,.pw-card .pw-price,.upsell .tt,.brand .bs,.lr-eyebrow,.v8-tnote{font-family:var(--sans)}
-.track-btn b,.tp-card .tx b,.lr-cards b,.trust b,.sendbox h4,.pdfprog b,.upsell .tt{font-weight:600}
-.ch-bd h4{font-weight:700;letter-spacing:-.01em}
-.lr-tag,.v8-lede,.v8-bcopy p{font-weight:400}
-/* 명조를 쓰는 큰 제목은 굵기를 확실히 줘야 Windows에서 또렷하게 보인다 */
+/* 작은 라벨·숫자는 산세리프로 또렷하게 */
+.sec-head .no,.res-head .rh-t,.ch-no,.ch-tab b,.pillar .pl,.pillar .pg,.pillar .pk,.pillar .pe,
+.rb-yr .yh .y,.rb-yr .yh .g,.pdf-hero .bd,.trust b,.pdfprog b,.sendbox h4,.loading p,
+.lr-head .no,.lr-eyebrow,.brand .bs,.pw-card .pw-price,.lr-micro,.v8-eyebrow,.hint,.field .lb,
+.field>label,.chip,.chk,.tbl th,.ch-s,.gate-kicker,.gate-note{font-family:var(--sans)}
+.track-btn b,.lr-cards b,.trust b,.sendbox h4,.pdfprog b,.upsell .tt{font-weight:600}
+
+/* 읽는 글 — 명조 */
+.v8-hero h1,.v8-lede,.v8-tnote,.subtab,.tp-card .tx b,.v8-tpanel,
+.ch-hd h3,.ch-bd p,.ch-bd li,.ch-bd h4,.ch-key span,.ch-teaser .teaser-p,
+.res-sum,.res-sum p,.res-head .rh-s,.note-box,.lr-p,.lr-note,.lr-tag,.lr-toc strong,.lr-toc span,
+.f-card p,.panel .ph,.upsell .pp,.rb-yr p,.rb-yr p.bn,.brand-note p{font-family:var(--serif)}
+.ch-bd p,.ch-bd li,.res-sum p,.ch-key span,.note-box,.lr-p,.ch-teaser .teaser-p{font-weight:400}
 .lr-hero h2,.res-head h2,.pdf-hero h2,.pay-box h3,.done-box h3,.free-card h3,.f-card h4,
 .panel h3,.ch-hd h3,.pwbox h3,.sheet-hd h2,.lr-head h3,.fast-box h3,.pw-card h3,.brand .bn{font-weight:700}
 .v8-hero h1{font-weight:700}
-/* 본문·라벨은 산세리프로 또렷하게 */
+/* 본문·라벨 자간 */
 body,.ch-bd p,.ch-bd li,.lr-p,.pay-row,.field>label,.field .lb,.chip,.hint,.lr-note,.lr-micro{letter-spacing:-.005em}
+.ch-bd p,.ch-bd li{letter-spacing:0}
 input,select,textarea,button{font-family:var(--sans)}
 
 /* ---------- 미리보기 : 클릭해서 크게 보기 ---------- */
@@ -952,17 +957,19 @@ input,select,textarea,button{font-family:var(--sans)}
 .intro-cta:active{transform:translateY(1px)}
 .intro-note{margin:0;text-align:center;font-size:12.5px;color:#8C95A6;letter-spacing:-.01em}
 
-/* 입력창 열림 */
+/* 입력창 열림 — v47 : 높이 · 투명도 · 살짝 올라오는 이동을 함께 부드럽게 */
 #panelForm[hidden]{display:none}
-.panel.reveal-in{animation:formReveal .6s cubic-bezier(.2,.7,.2,1) both}
+.panel.reveal-in{overflow:hidden;will-change:height,opacity,transform;
+  transition:height .74s cubic-bezier(.2,.8,.22,1),opacity .5s ease-out .04s,transform .74s cubic-bezier(.2,.8,.22,1)}
+.panel.reveal-settled{overflow:visible;transition:none}
 @keyframes introCardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes introCtaPulse{
   0%,100%{box-shadow:0 10px 22px rgba(0,0,0,.35),0 0 0 0 rgba(216,179,106,.38)}
   50%{box-shadow:0 10px 22px rgba(0,0,0,.35),0 0 0 7px rgba(216,179,106,0)}
 }
-@keyframes formReveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
-  .intro-card,.intro-cta,.panel.reveal-in{animation:none}
+  .intro-card,.intro-cta{animation:none}
+  .panel.reveal-in,.panel.reveal-settled{transition:none}
 }
 @media (max-width:420px){
   .intro-card{width:min(100%,calc(78vh * 9 / 16))}

@@ -67,7 +67,7 @@ function sm4(R,c,input,name){
   var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
   var open=reads.filter(function(r){return r.grp==='재성'||r.grp==='관성';});
   var h=H('지금 움직여도 되는가');
-  h+='<p>'+(open.length?open.map(function(r){return '<b>'+r.y+'년('+r.gz+')</b>';}).join(', ')+'이 관계가 구체적으로 움직이는 해입니다. '+open[0].why:'앞으로 다섯 해에는 관계성이 세운으로 크게 들어오지 않아, 해보다 만남의 밀도가 중요합니다.')+'</p>';
+  h+='<p>'+(open.length?open.map(function(r){return '<b>'+r.y+'년 '+r.gz+'</b>';}).join(', ')+'이 관계가 구체적으로 움직이는 해입니다. '+open[0].why:'앞으로 다섯 해에는 관계성이 세운으로 크게 들어오지 않아, 해보다 만남의 밀도가 중요합니다.')+'</p>';
   h+='<p>'+S.gongmangText(R)+'</p>';
   h+=H('연락의 순서')+UL([
     '<b>1단계</b> — 안부 한 줄, 질문은 하나만.',
@@ -79,7 +79,7 @@ function sm4(R,c,input,name){
     var yy=now.getFullYear(), mo=mm+k;
     while(mo>12){ mo-=12; yy++; }
     var mr=S.monthRead(R,yy,mo);
-    if(mr.rels.some(function(x){return x.type==='육합'||x.type==='삼합';})||mr.grp==='재성'||mr.grp==='관성') tops.push(yy+'.'+(mo<10?'0'+mo:mo)+'('+mr.gz+')');
+    if(mr.rels.some(function(x){return x.type==='육합'||x.type==='삼합';})||mr.grp==='재성'||mr.grp==='관성') tops.push(yy+'.'+(mo<10?'0'+mo:mo)+' '+mr.gz);
   }
   if(tops.length) h+='<p>연락·고백에 힘이 실리는 달은 <b>'+tops.slice(0,3).join(', ')+'</b>입니다.</p>';
   h+=H('흔들리는 지점')+'<p>'+S.LOVE_SHADOW[R.dayEl]+'</p>';
@@ -141,14 +141,14 @@ function re3(R,c,input,name){
   var reads=[]; for(var i=0;i<R.seun.length;i++) reads.push(S.yearRead(R,R.seun[i].year));
   var ys=reads.filter(function(r){return r.grp==='재성'||r.grp==='관성';});
   var h=H('연락의 문');
-  h+='<p>연락은 <b>배우자성</b>이 세운으로 들어오는 해에 열립니다. '+(ys.length?('앞으로 다섯 해 중 <b>'+ys.map(function(r){return r.y+'년('+r.gz+')';}).join(', ')+'</b>이 그 해입니다. '+ys[0].why):'앞으로 다섯 해에는 그 문이 뚜렷하지 않습니다. 이 시기는 기다림보다 내 생활을 세우는 쪽이 맞습니다.')+'</p>';
+  h+='<p>연락은 <b>배우자성</b>이 세운으로 들어오는 해에 열립니다. '+(ys.length?('앞으로 다섯 해 중 <b>'+ys.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 그 해입니다. '+ys[0].why):'앞으로 다섯 해에는 그 문이 뚜렷하지 않습니다. 이 시기는 기다림보다 내 생활을 세우는 쪽이 맞습니다.')+'</p>';
   h+=seunTable(R,c,5);
   var now=new Date(), tops=[];
   for(var k=0;k<8;k++){
     var yy=now.getFullYear(), mo=now.getMonth()+1+k;
     while(mo>12){ mo-=12; yy++; }
     var mr=S.monthRead(R,yy,mo);
-    if(mr.rels.some(function(x){return x.type==='육합';})) tops.push(yy+'.'+(mo<10?'0'+mo:mo)+'('+mr.gz+')');
+    if(mr.rels.some(function(x){return x.type==='육합';})) tops.push(yy+'.'+(mo<10?'0'+mo:mo)+' '+mr.gz);
   }
   h+='<p>'+(tops.length?'일지와 합이 걸리는 달은 <b>'+tops.slice(0,3).join(', ')+'</b>입니다. 이 달의 연락은 상대도 마음이 열려 있습니다.':'앞으로 8개월은 일지와 합이 걸리는 달이 뚜렷하지 않습니다. 연락보다 만남의 자리를 먼저 만드세요.')+'</p>';
   h+=H('달 단위로 보기')+monthsBlock(R,c,'love',6,'앞으로 6개월 중 연락이 오갈 달입니다.');
@@ -233,31 +233,31 @@ function pt7(R,c,input,name){
 
 window.CTP.love={
   sseom:[
-    {han:'心',title:'좋아할 때 드러나는 신호',sub:'나의 연애 언어와 상대가 읽는 나',body:sm1},
-    {han:'他',title:'상대의 지금',sub:'상대가 보고 있는 것',body:sm2},
-    {han:'合',title:'두 사람의 온도',sub:'지금 어느 쪽이 앞서 있는가',body:sm3},
-    {han:'時',title:'지금 밀어도 되는가',sub:'연락의 순서와 기한',body:sm4},
-    {han:'言',title:'대화의 기술',sub:'부딪히는 방식과 화해법',body:sm5},
-    {han:'險',title:'오해가 생기는 지점',sub:'반복하는 실수',body:sm6},
-    {han:'月',title:'인연의 6개월',sub:'만남이 열리는 달',body:sm7}
+    {title:'좋아할 때 드러나는 신호',sub:'나의 연애 언어와 상대가 읽는 나',body:sm1},
+    {title:'상대의 지금',sub:'상대가 보고 있는 것',body:sm2},
+    {title:'두 사람의 온도',sub:'지금 어느 쪽이 앞서 있는가',body:sm3},
+    {title:'지금 밀어도 되는가',sub:'연락의 순서와 기한',body:sm4},
+    {title:'대화의 기술',sub:'부딪히는 방식과 화해법',body:sm5},
+    {title:'오해가 생기는 지점',sub:'반복하는 실수',body:sm6},
+    {title:'인연의 6개월',sub:'만남이 열리는 달',body:sm7}
   ],
   reunion:[
-    {han:'返',title:'재회의 조건',sub:'돌아오면 무엇이 달라지는가',body:re1},
-    {han:'他',title:'상대의 마음',sub:'지금 상대의 자리',body:re2},
-    {han:'時',title:'연락이 열리는 시기',sub:'해와 달로 보는 창',body:re3},
-    {han:'文',title:'첫 연락의 문장',sub:'보낼 말과 보내지 말 말',body:re4},
-    {han:'止',title:'그만두어야 할 신호',sub:'정리의 순서',body:re5},
-    {han:'再',title:'다시 이어졌을 때',sub:'무너지는 지점과 새 규칙',body:re6},
-    {han:'月',title:'연락의 6개월',sub:'문이 열리는 달',body:re7}
+    {title:'재회의 조건',sub:'돌아오면 무엇이 달라지는가',body:re1},
+    {title:'상대의 마음',sub:'지금 상대의 자리',body:re2},
+    {title:'연락이 열리는 시기',sub:'해와 달로 보는 창',body:re3},
+    {title:'첫 연락의 문장',sub:'보낼 말과 보내지 말 말',body:re4},
+    {title:'그만두어야 할 신호',sub:'정리의 순서',body:re5},
+    {title:'다시 이어졌을 때',sub:'무너지는 지점과 새 규칙',body:re6},
+    {title:'연락의 6개월',sub:'문이 열리는 달',body:re7}
   ],
   pattern:[
-    {han:'戀',title:'끌리는 사람',sub:'왜 그 사람에게 마음이 가는가',body:pt1},
-    {han:'慣',title:'반복되는 장면',sub:'이별의 이유가 같은 이유',body:pt2},
-    {han:'傷',title:'상처가 되는 말',sub:'다치는 지점과 회복법',body:pt3},
-    {han:'魅',title:'매력의 무기',sub:'커지는 조건, 죽는 조건',body:pt4},
-    {han:'擇',title:'설렘과 맞음',sub:'끌리는 사람 vs 오래 가는 사람',body:pt5},
-    {han:'改',title:'패턴을 끊는 법',sub:'세 가지 연습',body:pt6},
-    {han:'月',title:'연애의 6개월',sub:'달별 흐름',body:pt7}
+    {title:'끌리는 사람',sub:'왜 그 사람에게 마음이 가는가',body:pt1},
+    {title:'반복되는 장면',sub:'이별의 이유가 같은 이유',body:pt2},
+    {title:'상처가 되는 말',sub:'다치는 지점과 회복법',body:pt3},
+    {title:'매력의 무기',sub:'커지는 조건, 죽는 조건',body:pt4},
+    {title:'설렘과 맞음',sub:'끌리는 사람 vs 오래 가는 사람',body:pt5},
+    {title:'패턴을 끊는 법',sub:'세 가지 연습',body:pt6},
+    {title:'연애의 6개월',sub:'달별 흐름',body:pt7}
   ]
 };
 })();

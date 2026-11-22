@@ -353,14 +353,14 @@ function chAct(R,c,input,name){
 
 /* ---------------- 조립 ---------------- */
 var CH={
-  ilju:{han:'柱',title:'일주 — 두 글자가 만든 자리',sub:'일간·일지·십이운성·신살',body:chIlju},
-  elem:{han:'衡',title:'오행의 저울 — 넘치는 것과 모자란 것',sub:'다섯 기운의 분포와 용신',body:chElem},
-  gaewun:{han:'補',title:'기운을 채우는 생활 처방',sub:'색·방위·시간·사람',body:chGaewun},
-  decade:{han:'運',title:'앞으로 10년의 문',sub:'지금 대운과 다섯 해의 날씨',body:chDecade},
-  life3:{han:'生',title:'평생의 큰 흐름',sub:'청년·중년·노후',body:chLife3},
-  health:{han:'身',title:'몸의 리듬',sub:'약한 자리와 계절의 신호',body:chHealth},
-  people:{han:'人',title:'사람의 자리',sub:'가족·동료·귀인',body:chPeople},
-  act:{han:'行',title:'서른 날의 실천',sub:'읽은 것을 습관으로',body:chAct}
+  ilju:{title:'일주 — 두 글자가 만든 자리',sub:'일간·일지·십이운성·신살',body:chIlju},
+  elem:{title:'오행의 저울 — 넘치는 것과 모자란 것',sub:'다섯 기운의 분포와 용신',body:chElem},
+  gaewun:{title:'기운을 채우는 생활 처방',sub:'색·방위·시간·사람',body:chGaewun},
+  decade:{title:'앞으로 10년의 문',sub:'지금 대운과 다섯 해의 날씨',body:chDecade},
+  life3:{title:'평생의 큰 흐름',sub:'청년·중년·노후',body:chLife3},
+  health:{title:'몸의 리듬',sub:'약한 자리와 계절의 신호',body:chHealth},
+  people:{title:'사람의 자리',sub:'가족·동료·귀인',body:chPeople},
+  act:{title:'서른 날의 실천',sub:'읽은 것을 습관으로',body:chAct}
 };
 
 /* 탭별로 붙는 심화 장 (테마 본문과 겹치지 않게 고른 조합) */
@@ -387,7 +387,7 @@ window.DEEP={
     var list=SETS[tab]||['elem','gaewun','act'], out=[];
     for(var i=0;i<list.length;i++){
       var c=CH[list[i]];
-      if(c) out.push({han:c.han,title:c.title,sub:c.sub,body:c.body});
+      if(c) out.push({title:c.title,sub:c.sub,body:c.body});
     }
     return out;
   },

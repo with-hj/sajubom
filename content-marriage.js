@@ -89,7 +89,7 @@ function wd1(R,c,input,name){
   dd.live.forEach(function(p){ if(S.GOD_GROUP[p.bGod]===w.star||S.GOD_GROUP[p.sGod]===w.star) mate.push(p.pos); });
   var h=window.CH.facts(R);
   h+='<p>이 사주에서 결혼의 문은 <b>'+w.star+'</b>이 열어요. '+(hits.length
-    ? '앞으로 다섯 해 중 <b>'+hits.map(function(r){return r.y+'년('+r.gz+')';}).join(', ')+'</b>이 그 문이 열리는 해입니다. '+hits[0].why
+    ? '앞으로 다섯 해 중 <b>'+hits.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 그 문이 열리는 해입니다. '+hits[0].why
     : '앞으로 다섯 해에는 '+w.star+'이 세운으로 뚜렷하게 들어오지 않아, 해보다 사람을 만나는 자리의 밀도가 중요합니다.')+'</p>';
   h+='<p>원국에서 '+w.star+'이 놓인 자리는 '+(mate.length?mate.join('·'):'뚜렷하지 않음')+'입니다. '+(mate.indexOf('일지')>=0?'<b>배우자궁 안에</b> 배우자성이 있어 결혼이 생활 속에서 자연스럽게 결정되는 사주입니다.':'배우자성이 배우자궁 바깥에 있어, <b>소개·모임</b>을 통해 들어오는 인연이 결혼으로 이어집니다.')+'</p>';
   h+='<p>일지 '+window.CH.bj(R.dBranch,'은는')+' <b>'+S.stage12(R.dStem,R.dBranch)+'</b>의 자리입니다. '+S.STAGE_MEAN[S.stage12(R.dStem,R.dBranch)]+' 이 자리가 결혼생활의 온도를 정합니다.</p>';
@@ -221,31 +221,31 @@ function dv7(R,c,input,name){
 
 window.CTP.marriage={
   couple:[
-    {han:'合',title:'두 사람의 기본 궁합',sub:'일간·일지·오행',body:cp1},
-    {han:'性',title:'생활 리듬의 차이',sub:'시간표가 먼저 부딪힌다',body:cp2},
-    {han:'情',title:'정서 온도',sub:'애정을 표현하는 방식',body:cp3},
-    {han:'家',title:'돈과 역할',sub:'살림의 현실 궁합',body:cp4},
-    {han:'異',title:'부딪히는 지점',sub:'반복되는 갈등',body:cp5},
-    {han:'和',title:'화해의 순서',sub:'싸운 뒤 다시 말 거는 법',body:cp6},
-    {han:'五',title:'5년과 12개월',sub:'두 사람의 날씨',body:cp7}
+    {title:'두 사람의 기본 궁합',sub:'일간·일지·오행',body:cp1},
+    {title:'생활 리듬의 차이',sub:'시간표가 먼저 부딪힌다',body:cp2},
+    {title:'정서 온도',sub:'애정을 표현하는 방식',body:cp3},
+    {title:'돈과 역할',sub:'살림의 현실 궁합',body:cp4},
+    {title:'부딪히는 지점',sub:'반복되는 갈등',body:cp5},
+    {title:'화해의 순서',sub:'싸운 뒤 다시 말 거는 법',body:cp6},
+    {title:'5년과 12개월',sub:'두 사람의 날씨',body:cp7}
   ],
   wedding:[
-    {han:'期',title:'결혼의 문',sub:'문이 열리는 해와 달',body:wd1},
-    {han:'人',title:'배우자의 결',sub:'배우자궁이 말하는 사람',body:wd2},
-    {han:'家',title:'결혼 전 조건',sub:'정리해야 하는 세 가지',body:wd3},
-    {han:'式',title:'날짜와 형식',sub:'어느 달, 어떤 자리',body:wd4},
-    {han:'親',title:'양가와의 거리',sub:'규칙이 감정보다 오래',body:wd5},
-    {han:'後',title:'결혼 후 3년',sub:'초반의 규칙이 10년을 정한다',body:wd6},
-    {han:'月',title:'12개월 준비',sub:'결혼 이야기가 움직이는 달',body:wd7}
+    {title:'결혼의 문',sub:'문이 열리는 해와 달',body:wd1},
+    {title:'배우자의 결',sub:'배우자궁이 말하는 사람',body:wd2},
+    {title:'결혼 전 조건',sub:'정리해야 하는 세 가지',body:wd3},
+    {title:'날짜와 형식',sub:'어느 달, 어떤 자리',body:wd4},
+    {title:'양가와의 거리',sub:'규칙이 감정보다 오래',body:wd5},
+    {title:'결혼 후 3년',sub:'초반의 규칙이 10년을 정한다',body:wd6},
+    {title:'12개월 준비',sub:'결혼 이야기가 움직이는 달',body:wd7}
   ],
   divorce:[
-    {han:'危',title:'위기의 신호',sub:'어디서부터 어긋나는가',body:dv1},
-    {han:'年',title:'흔들리는 해',sub:'충의 해와 달',body:dv2},
-    {han:'因',title:'갈등의 구조',sub:'서로가 원하는 것',body:dv3},
-    {han:'擇',title:'결정 기준',sub:'결정 전 세 질문',body:dv4},
-    {han:'子',title:'아이가 있을 때',sub:'아이에게 해야 할 말',body:dv5},
-    {han:'後',title:'결정 후의 흐름',sub:'3개월과 1년',body:dv6},
-    {han:'月',title:'6개월의 기압',sub:'대화의 길이',body:dv7}
+    {title:'위기의 신호',sub:'어디서부터 어긋나는가',body:dv1},
+    {title:'흔들리는 해',sub:'충의 해와 달',body:dv2},
+    {title:'갈등의 구조',sub:'서로가 원하는 것',body:dv3},
+    {title:'결정 기준',sub:'결정 전 세 질문',body:dv4},
+    {title:'아이가 있을 때',sub:'아이에게 해야 할 말',body:dv5},
+    {title:'결정 후의 흐름',sub:'3개월과 1년',body:dv6},
+    {title:'6개월의 기압',sub:'대화의 길이',body:dv7}
   ]
 };
 })();

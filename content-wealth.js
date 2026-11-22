@@ -93,7 +93,7 @@ function mo3(R,c,input,name){
   });
   h+='</table>';
   h+='<p>'+(open.length
-    ? '이 중 <b>'+open.map(function(r){return r.y+'년('+r.gz+')';}).join(', ')+'</b>이 돈의 문이 실제로 열리는 해입니다. '+open[0].why
+    ? '이 중 <b>'+open.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 돈의 문이 실제로 열리는 해입니다. '+open[0].why
     : '앞으로 다섯 해에는 재물의 문이 크게 열리는 해가 없습니다. 이때는 벌이를 키우기보다 <b>새는 곳을 막고 구조를 세우는</b> 시기로 쓰는 편이 맞습니다.')+'</p>';
   if(hold.length) h+='<p>반대로 <b>'+hold.map(function(r){return r.y+'년';}).join(', ')+'</b>은 결정이 늦게 오는 해입니다. 이 해에는 큰 지출·보증·새 대출을 만들지 마세요.</p>';
   h+=seunTable(R,c,5);
@@ -107,7 +107,7 @@ function mo3(R,c,input,name){
   }
   if(tops.length){
     h+='<ul>'+tops.slice(0,4).map(function(o){
-      return '<li><b>'+o.y+'.'+n2(o.m)+' '+o.r.gz+'('+o.r.g+')</b> — '+(o.r.rels.length?o.r.rels.map(function(x){return x.pos+'와 '+x.type;}).join(', ')+'이라 ':'')+(o.r.grp==='재성'?'수입과 계약이 구체적으로 움직이는 달입니다.':(o.r.grp==='인성'?'문서·자금줄이 정리되는 달입니다.':'자리와 절차가 돈을 만드는 달입니다.'))+'</li>';
+      return '<li><b>'+o.y+'.'+n2(o.m)+' '+o.r.gz+' · '+o.r.g+'</b> — '+(o.r.rels.length?o.r.rels.map(function(x){return x.pos+'와 '+x.type;}).join(', ')+'이라 ':'')+(o.r.grp==='재성'?'수입과 계약이 구체적으로 움직이는 달입니다.':(o.r.grp==='인성'?'문서·자금줄이 정리되는 달입니다.':'자리와 절차가 돈을 만드는 달입니다.'))+'</li>';
     }).join('')+'</ul>';
   } else {
     h+='<p>앞으로 12개월은 재성·인성·관성이 도는 달이 뚜렷하지 않습니다. 달을 고르기보다 <b>분기마다 한 번</b> 정산하는 리듬이 맞습니다.</p>';
@@ -170,7 +170,7 @@ function md5(R,c,input,name){
   if(w.bestClean&&dshow.indexOf(w.bestClean)<0) dshow.push(w.bestClean);
   h+='<ul>'+dshow.map(function(y){
     var clean=!y.why.some(function(x){return x.indexOf('기신')>=0||x.indexOf('공망')>=0;});
-    return '<li><b>'+y.y+'년 '+y.gz+'('+y.g+')</b> — '+(y.why.length?y.why.join(' · '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>이 해가 첫 번째 창</b>입니다.':'')+(clean?'':' — <span style="color:#B5533F">조건이 겹쳐 부담이 큽니다.</span>')+'</li>';
+    return '<li><b>'+y.y+'년 '+y.gz+' · '+y.g+'</b> — '+(y.why.length?y.why.join(' · '):'특별한 자극 없음')+(w.bestClean&&y.y===w.bestClean.y?' → <b>이 해가 첫 번째 창</b>입니다.':'')+(clean?'':' — <span style="color:#B5533F">조건이 겹쳐 부담이 큽니다.</span>')+'</li>';
   }).join('')+'</ul>';
   h+='<p>'+(w.bestClean?'실제로 계약을 잡을 첫 번째 창은 <b>'+w.bestClean.y+'년 '+w.bestClean.gz+'</b>입니다. 기신·공망이 겹치지 않는 해라 잔금과 등기가 뒤에서 흔들리지 않습니다.':'앞으로 여섯 해 중 기신·공망이 겹치지 않는 해가 없습니다. 이때는 <b>가장 점수가 높은 해</b>에 계약하되 잔금·등기·대출 조건을 세 번 확인하세요.')+'</p>';
   h+='<p>달까지 좁히면 '+w.goodMonths.map(function(m){
@@ -230,7 +230,7 @@ function jb1(R,c,input,name){
   h+='<p>그래서 이 사주에게 실제로 맞는 자리는 이런 이름들입니다:</p>';
   h+='<ul>'+cm.roles.map(function(x,i){ return '<li>'+(i===0?'<b>'+x+'</b>':'+x')+'</li>'; }).join('')+'</ul>';
   h+='<p>두 번째 줄은 <b>'+cm.secondGrp+'</b>('+cm.secondGod+')입니다 — '+cm.sub.join(' · ')+'. 수입이 한 줄로만 들어오면 이 사주는 금방 지칩니다. 두 줄을 <b>본업과 부업</b>으로 나눠 가지세요.</p>';
-  h+='<p>일간의 결이 맞는 영역은 '+cm.domain+' 쪽입니다. 여기에 '+(wol?'월주 '+wol.gz+'('+wol.sGod+')가 직업의 재료를 대고 있습니다. '+S.GOD_DEEP[wol.sGod]:'월주가 직업의 재료를 댑니다.')+'</p>';
+  h+='<p>일간의 결이 맞는 영역은 '+cm.domain+' 쪽입니다. 여기에 '+(wol?'월주 '+wol.gz+'에서 '+S.josaP(wol.sGod,'이가')+' 직업의 재료를 대고 있습니다. '+S.GOD_DEEP[wol.sGod]:'월주가 직업의 재료를 댑니다.')+'</p>';
   h+=H('일하는 방식');
   h+='<p>'+(S.WORK_MODE[c.topGrp]||'역할이 분명할 때 가장 오래 갑니다.')+'</p>';
   h+='<p>'+(d.deukRyeong?'월령이 받쳐주는 사주라 <b>조직·계절의 리듬</b> 안에서 힘이 납니다.':'월령이 받쳐주지 않아 <b>내가 리듬을 만드는 자리</b>에서 힘이 납니다.')+' '+(c.grp['관성']>=2?'관성이 있어 위계가 있는 곳에서 안정됩니다.':'관성이 얇아 위계가 강한 곳에서는 소모가 큽니다.')+'</p>';
@@ -246,7 +246,7 @@ function jb2(R,c,input,name){
   var gwan=reads.filter(function(r){return r.grp==='관성';});
   var h=H('이직의 문 — 관성이 오는 해');
   h+='<p>이직의 문은 <b>관성(자리)</b>이 세운으로 들어오는 해에 열립니다. '+(gwan.length
-    ? '앞으로 다섯 해 중 <b>'+gwan.map(function(r){return r.y+'년('+r.gz+')';}).join(', ')+'</b>이 그 해입니다. '+gwan[0].why
+    ? '앞으로 다섯 해 중 <b>'+gwan.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 그 해입니다. '+gwan[0].why
     : '앞으로 다섯 해에는 관성이 세운으로 뚜렷하게 들어오지 않습니다. 이때는 <b>준비의 시기</b>로 보는 편이 맞습니다.')+'</p>';
   h+='<p>지금 대운은 <b>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세 · '+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</b>입니다. '+(S.GOD_GROUP[S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)]==='관성'?'대운까지 관성이라 <b>자리가 실제로 바뀌는 10년</b>입니다. 세운이 관성인 해는 그중에서도 문이 크게 열립니다.':'대운은 관성이 아니라, 세운이 관성인 해에 <b>한 번의 창</b>이 열리는 구조입니다. 그 해를 놓치면 다음 대운까지 기다려야 합니다.')+'</p>';
   h+=seunTable(R,c,5);
@@ -355,7 +355,7 @@ function st3(R,c,input,name){
   var start=reads.filter(function(r){return r.grp==='비겁'||r.grp==='식상';});
   var h=H('시작의 문');
   h+='<p>창업은 <b>비겁(내 힘)</b> 또는 <b>식상(만들 것)</b>이 세운으로 들어오는 해에 시작하는 것이 좋습니다. '+(start.length
-    ? '앞으로 다섯 해 중 <b>'+start.map(function(r){return r.y+'년('+r.gz+')';}).join(', ')+'</b>이 그 해입니다. '+start[0].why
+    ? '앞으로 다섯 해 중 <b>'+start.map(function(r){return r.y+'년 '+r.gz;}).join(', ')+'</b>이 그 해입니다. '+start[0].why
     : '앞으로 다섯 해에는 그 문이 뚜렷하지 않습니다. 이때는 준비와 검증에 쓰세요.')+'</p>';
   h+='<p>지금 대운 <b>'+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</b>은 '+(S.GOD_GROUP[S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)]==='비겁'||S.GOD_GROUP[S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)]==='식상'?'시작의 문이 <b>대운에도 열려 있는</b> 10년입니다. 세운이 받쳐주는 해에 여세요.':'대운에는 시작의 문이 크게 열려 있지 않습니다. <b>세운이 비겁·식상인 해</b>가 실질적인 창입니다.')+'</p>';
   h+=seunTable(R,c,5);
@@ -391,31 +391,31 @@ function st6(R,c,input,name){
 
 window.CTP.wealth={
   money:[
-    {han:'器',title:'재물의 그릇',sub:'재성의 자리와 일간의 힘',body:mo1},
-    {han:'漏',title:'새는 곳',sub:'반복되는 지출과 막는 법',body:mo2},
-    {han:'時',title:'돈이 들어오는 해',sub:'재성이 오는 때와 이유',body:mo3},
-    {han:'橫',title:'횡재의 결',sub:'큰돈이 오는 방식',body:mo4},
-    {han:'券',title:'문서·부동산 취득운',sub:'계약·등기·매매의 문',body:md5},
-    {han:'法',title:'금전 루틴',sub:'한 달의 순서',body:mo5},
-    {han:'險',title:'투자 주의',sub:'이기는 방식은 한도',body:mo6},
-    {han:'月',title:'12개월의 재물',sub:'달별 흐름',body:mo7}
+    {title:'재물의 그릇',sub:'재성의 자리와 일간의 힘',body:mo1},
+    {title:'새는 곳',sub:'반복되는 지출과 막는 법',body:mo2},
+    {title:'돈이 들어오는 해',sub:'재성이 오는 때와 이유',body:mo3},
+    {title:'횡재의 결',sub:'큰돈이 오는 방식',body:mo4},
+    {title:'문서·부동산 취득운',sub:'계약·등기·매매의 문',body:md5},
+    {title:'금전 루틴',sub:'한 달의 순서',body:mo5},
+    {title:'투자 주의',sub:'이기는 방식은 한도',body:mo6},
+    {title:'12개월의 재물',sub:'달별 흐름',body:mo7}
   ],
   job:[
-    {han:'職',title:'천직의 방향',sub:'오래 해도 힘이 돌아오는 일',body:jb1},
-    {han:'轉',title:'이직의 문',sub:'자리가 열리는 해와 달',body:jb2},
-    {han:'擇',title:'남을까 옮길까',sub:'퇴사 판단 기준',body:jb3},
-    {han:'貴',title:'귀인',sub:'기회를 데려오는 사람',body:jb4},
-    {han:'價',title:'조건 협상',sub:'연봉과 근무 조건',body:jb5},
-    {han:'月',title:'6개월의 자리',sub:'달별 흐름',body:mo6b},
-    {han:'五',title:'5년의 커리어',sub:'해마다의 자리',body:jb7}
+    {title:'천직의 방향',sub:'오래 해도 힘이 돌아오는 일',body:jb1},
+    {title:'이직의 문',sub:'자리가 열리는 해와 달',body:jb2},
+    {title:'남을까 옮길까',sub:'퇴사 판단 기준',body:jb3},
+    {title:'귀인',sub:'기회를 데려오는 사람',body:jb4},
+    {title:'조건 협상',sub:'연봉과 근무 조건',body:jb5},
+    {title:'6개월의 자리',sub:'달별 흐름',body:mo6b},
+    {title:'5년의 커리어',sub:'해마다의 자리',body:jb7}
   ],
   startup:[
-    {han:'始',title:'창업 적성',sub:'비겁·식상·재성의 조합',body:st1},
-    {han:'品',title:'무엇으로 시작할까',sub:'아이템을 고르는 기준',body:st2},
-    {han:'時',title:'시작의 문',sub:'언제 여는가',body:st3},
-    {han:'險',title:'실패하는 지점',sub:'무너지는 방식',body:st4},
-    {han:'伴',title:'동업과 파트너',sub:'서류가 우정을 지킨다',body:st5},
-    {han:'月',title:'6개월의 사업',sub:'달별 흐름',body:st6}
+    {title:'창업 적성',sub:'비겁·식상·재성의 조합',body:st1},
+    {title:'무엇으로 시작할까',sub:'아이템을 고르는 기준',body:st2},
+    {title:'시작의 문',sub:'언제 여는가',body:st3},
+    {title:'실패하는 지점',sub:'무너지는 방식',body:st4},
+    {title:'동업과 파트너',sub:'서류가 우정을 지킨다',body:st5},
+    {title:'6개월의 사업',sub:'달별 흐름',body:st6}
   ]
 };
 })();
