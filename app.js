@@ -438,6 +438,7 @@ function renderResult(R,input){
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
+  if(S.fixPost) h=S.fixPost(h);
   $('#resultView').innerHTML=h;
   if($('#pwWrap')&&window.__pwInfo) bindPaywall(window.__pwInfo);
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });

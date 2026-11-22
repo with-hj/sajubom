@@ -633,6 +633,20 @@ S.groupRank=groupRank;
 S.careerMap=careerMap;
 S.CAREER26=CAREER26;
 
+/* ---------------------------------------------------------------- 표기 교정
+   오행 글자 뒤의 조사는 한글 음(목·금은 받침 있음, 화·토·수는 없음)을 따라야 한다.
+   (火)이 · (土)이 처럼 괄호 뒤에 붙은 조사를 문장 단위로 바로잡는다. */
+S.fixPost=function(html){
+  if(!html) return html;
+  var KO={'木':'목','火':'화','土':'토','金':'금','水':'수'};
+  return String(html).replace(/\((木|火|土|金|水)\)(이|가|은|는|을|를|과|와)(?=[\s<.,·)\]!?]|$)/g,function(m,h,p){
+    var k=KO[h], jong=('목금'.indexOf(k)>=0);
+    var map={'이':jong?'이':'가','가':jong?'이':'가','은':jong?'은':'는','는':jong?'은':'는',
+             '을':jong?'을':'를','를':jong?'을':'를','과':jong?'과':'와','와':jong?'과':'와'};
+    return '('+h+')'+map[p];
+  });
+};
+
 /* ---------------------------------------------------------------- 내보내기 */
 S.deep=deepOf;
 S.pillarsOf=pillarsOf;

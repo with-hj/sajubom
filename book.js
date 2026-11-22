@@ -15,6 +15,7 @@ function elS(i){return '<b>'+S.EL_KO[i]+'</b>('+S.EL_HAN[i]+')';}
 function stemS(s){return S.STEM_HAN[s]+'('+S.STEM_KO[s]+')';}
 function brS(b){return S.BR_HAN[b]+'('+S.BR_KO[b]+')';}
 function josa(s,pair){var c=s.charCodeAt(s.length-1);var has=(c>=0xAC00&&c<=0xD7A3)&&((c-0xAC00)%28)!==0;return has?pair[0]:pair[1];}
+function elKj(i,p){ return elK(i)+josa(S.EL_KO[i],p||'이가'); }
 function bj(b,pair){ return brS(b)+josa(S.BR_KO[b],pair); }
 function sj(s,pair){ return stemS(s)+josa(S.STEM_KO[s],pair); }
 function DD(){ return S.deep(B.R); }
@@ -783,6 +784,7 @@ B.build=function(R,input,name){
   /* 쪽번호 — 표지 다음부터 순서대로 */
   var pn=1;
   html=html.replace(/<span class="pn">[^<]*<\/span>/g,function(){ pn++; return '<span class="pn">'+n2(pn)+' / '+total+'</span>'; });
+  if(S.fixPost) html=S.fixPost(html);
   return {html:html,pages:total};
 };
 B.fit=fitPages;
