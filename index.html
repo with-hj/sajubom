@@ -34,8 +34,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="./styles.css?v=47.8">
-<link rel="stylesheet" href="./book.css?v=47.8">
+<link rel="stylesheet" href="./styles.css?v=48">
+<link rel="stylesheet" href="./book.css?v=48">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 </head>
 <body>
@@ -100,41 +100,49 @@
         <div class="panel" id="panelForm" hidden>
           <h3 id="pf-title">내 사주 입력</h3>
           <p class="ph" id="pf-note"></p>
+          <!-- v48 · 손그림 시안대로 두 칸 배치로 묶어 세로 길이를 줄인 입력 폼 -->
           <form id="sajuForm" autocomplete="on">
-            <div class="field">
-              <label for="nm">이름 <span class="hint" style="display:inline">부르실 이름</span></label>
+            <div class="field f-nm">
+              <label for="nm">이름 <span class="hint" style="display:inline">(부르실 이름)</span></label>
               <input type="text" id="nm" placeholder="예) 서연" maxlength="12" autocomplete="given-name">
             </div>
-            <div class="field">
-              <span class="lb">생년월일 <span>양력·음력</span></span>
-              <div class="chips" id="calChips" style="margin-bottom:8px">
-                <button type="button" class="chip on" data-cal="solar">양력</button>
-                <button type="button" class="chip" data-cal="lunar">음력</button>
+
+            <div class="f-2col">
+              <div class="field">
+                <span class="lb">생년월일</span>
+                <div class="chips" id="calChips">
+                  <button type="button" class="chip on" data-cal="solar">양력</button>
+                  <button type="button" class="chip" data-cal="lunar">음력</button>
+                </div>
               </div>
-              <div class="row">
-                <select id="by" aria-label="태어난 해"></select>
-                <select id="bm" aria-label="태어난 달"></select>
-                <select id="bd" aria-label="태어난 일"></select>
+              <div class="field">
+                <span class="lb">성별</span>
+                <div class="chips" id="genderChips">
+                  <button type="button" class="chip" data-g="m">남</button>
+                  <button type="button" class="chip on" data-g="f">여</button>
+                </div>
               </div>
-              <label class="chk" id="leapRow" style="margin-top:8px;display:none"><input type="checkbox" id="leap"> 윤달입니다</label>
             </div>
+            <div class="row f-ymd">
+              <select id="by" aria-label="태어난 해"></select>
+              <select id="bm" aria-label="태어난 달"></select>
+              <select id="bd" aria-label="태어난 일"></select>
+            </div>
+            <label class="chk" id="leapRow" style="margin-top:6px;display:none"><input type="checkbox" id="leap"> 윤달입니다</label>
+
             <div class="field">
-              <span class="lb">태어난 시간 <span>모르면 비워두세요</span></span>
-              <div class="row">
+              <span class="lb">태어난 시간</span>
+              <div class="row f-withchk">
                 <select id="hour" aria-label="태어난 시간"></select>
-                <label class="chk" style="flex:0 0 auto"><input type="checkbox" id="notime"> 시간 모름</label>
-              </div>
-            </div>
-            <div class="field">
-              <span class="lb">성별</span>
-              <div class="chips" id="genderChips">
-                <button type="button" class="chip on" data-g="f">여성</button>
-                <button type="button" class="chip" data-g="m">남성</button>
+                <label class="chk"><input type="checkbox" id="notime"> 시간 모름</label>
               </div>
             </div>
             <div class="field">
               <span class="lb">출생 지역</span>
-              <select id="region" aria-label="출생 지역"></select>
+              <div class="row f-withchk">
+                <select id="region" aria-label="출생 지역"></select>
+                <label class="chk"><input type="checkbox" id="noregion"> 지역 모름</label>
+              </div>
             </div>
 
             <div id="ctxBlock" style="display:none">
@@ -177,31 +185,33 @@
 
             <div id="stageField">
               <div class="divider" id="stageDivider"><span>현재 상황</span></div>
-              <div class="chips" id="stageChips">
-                <button type="button" class="chip" data-s="">선택 안 함</button>
+              <!-- v48 · 한 줄 고정 : 넘치면 가로로만 부드럽게 밀린다 -->
+              <div class="chips chips-line" id="stageChips">
+                <button type="button" class="chip" data-s="">선택안함</button>
+                <button type="button" class="chip" data-s="job">취준생</button>
                 <button type="button" class="chip" data-s="student">학생</button>
-                <button type="button" class="chip" data-s="job">취업 준비</button>
-                <button type="button" class="chip" data-s="work">직장 생활</button>
-                <button type="button" class="chip" data-s="own">사업·프리랜서</button>
-                <button type="button" class="chip" data-s="home">가정·육아</button>
-                <button type="button" class="chip" data-s="rest">쉬는 중</button>
+                <button type="button" class="chip" data-s="work">직장인</button>
+                <button type="button" class="chip" data-s="own">사업가</button>
+                <button type="button" class="chip" data-s="home">주부</button>
+                <button type="button" class="chip" data-s="rest">쉬는중</button>
               </div>
             </div>
-            <div class="field" id="marryField" style="margin-top:12px;margin-bottom:8px">
-              <span class="lb">결혼 상태</span>
-              <div class="chips" id="marryChips">
-                <button type="button" class="chip on" data-m="single">미혼</button>
-                <button type="button" class="chip" data-m="dating">연애 중</button>
-                <button type="button" class="chip" data-m="married">기혼</button>
-                <button type="button" class="chip" data-m="etc">말하지 않음</button>
+            <div class="f-2col f-2col-end">
+              <div class="field" id="marryField">
+                <span class="lb">결혼 상태</span>
+                <div class="chips" id="marryChips">
+                  <button type="button" class="chip on" data-m="single">미혼</button>
+                  <button type="button" class="chip" data-m="married">기혼</button>
+                  <button type="button" class="chip" data-m="dating">연애중</button>
+                </div>
               </div>
-            </div>
-            <div class="field" id="kidField">
-              <span class="lb">자녀</span>
-              <div class="chips" id="kidChips">
-                <button type="button" class="chip on" data-c="none">없음</button>
-                <button type="button" class="chip" data-c="plan">계획 중</button>
-                <button type="button" class="chip" data-c="have">있음</button>
+              <div class="field" id="kidField">
+                <span class="lb">자녀</span>
+                <div class="chips" id="kidChips">
+                  <button type="button" class="chip on" data-c="none">없음</button>
+                  <button type="button" class="chip" data-c="plan">계획중</button>
+                  <button type="button" class="chip" data-c="have">있음</button>
+                </div>
               </div>
             </div>
             <p class="err" id="formErr" hidden></p>
@@ -533,17 +543,17 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=47.8"></script>
-<script src="./deep-core.js?v=47.8"></script>
-<script src="./content.js?v=47.8"></script>
-<script src="./content-deep.js?v=47.8"></script>
-<script src="./content-general.js?v=47.8"></script>
-<script src="./content-love.js?v=47.8"></script>
-<script src="./content-marriage.js?v=47.8"></script>
-<script src="./content-baby.js?v=47.8"></script>
-<script src="./content-wealth.js?v=47.8"></script>
-<script src="./book.js?v=47.8"></script>
-<script src="./book-more.js?v=47.8"></script>
-<script src="./app.js?v=47.8"></script>
+<script src="./engine.js?v=48"></script>
+<script src="./deep-core.js?v=48"></script>
+<script src="./content.js?v=48"></script>
+<script src="./content-deep.js?v=48"></script>
+<script src="./content-general.js?v=48"></script>
+<script src="./content-love.js?v=48"></script>
+<script src="./content-marriage.js?v=48"></script>
+<script src="./content-baby.js?v=48"></script>
+<script src="./content-wealth.js?v=48"></script>
+<script src="./book.js?v=48"></script>
+<script src="./book-more.js?v=48"></script>
+<script src="./app.js?v=48"></script>
 </body>
 </html>

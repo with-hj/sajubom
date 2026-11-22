@@ -122,6 +122,20 @@ function init(){
     if(!c||!s) return;
     c.addEventListener('change',function(){ s.disabled=c.checked; if(c.checked) s.value=''; });
   });
+  /* v48 · 지역 모름 — 체크하면 출생 지역을 '출생지 모름'으로 맞추고 잠그며, 풀면 직전 지역으로 돌린다 */
+  var nrg=$('#noregion'), rg=$('#region');
+  if(nrg&&rg){
+    var prevReg=rg.value||'seoul';
+    nrg.addEventListener('change',function(){
+      if(nrg.checked){
+        if(rg.value&&rg.value!=='unknown') prevReg=rg.value;
+        rg.value='unknown'; rg.disabled=true;
+      }else{
+        rg.disabled=false;
+        rg.value=(prevReg&&prevReg!=='unknown')?prevReg:'seoul';
+      }
+    });
+  }
   /* 트랙 */
   $$('.track-btn').forEach(function(b){
     b.addEventListener('click',function(){ setTrack(b.getAttribute('data-track')); });
@@ -221,7 +235,9 @@ function bindChips(sel,get,on){
       on(get(b));
     });
   });
-  if(btns.length) on(get(btns[0]));
+  /* 화면에 이미 켜져 있는 알약이 있으면 그것을 기준으로 삼는다 (v48: 남/여 순서가 바뀌어도 기본값이 흘러가지 않게) */
+  var cur=btns.filter(function(b){ return b.classList.contains('on'); })[0]||btns[0];
+  if(cur) on(get(cur));
 }
 
 /* ---------------- 트랙 ---------------- */
@@ -251,6 +267,8 @@ function markThemeCredit(){
   box.innerHTML=lifePriceHTML(themeCredit());
 }
 /* ---------------- 테마 · 탭 ---------------- */
+/* v48 · 테마 카드 아래 표식을 01~05 숫자에서 원래의 한자로 되돌린다 */
+var THEME_HA={general:'總',love:'緣',marriage:'婚',baby:'孕',wealth:'財'};
 function renderThemes(){
   var box=$('#themeList'), h='', i=0;
   for(var k in CT.THEMES){
@@ -259,7 +277,8 @@ function renderThemes(){
     var on=(state.theme||'general')===k;
     h+='<button type="button" class="tp-card'+(on?' on':'')+'" data-theme="'+k+'" role="tab" aria-selected="'+(on?'true':'false')+'">'+
       '<span class="thumb"><img src="./assets/themes-web/t-'+(th.img||k)+'.jpg" alt="'+esc(th.name)+' 일러스트" width="240" height="240" loading="lazy"></span>'+
-      '<span class="tx"><b>'+esc(th.short||th.name).replace(/\n/g,'<br>')+'</b><i>'+(i<10?'0'+i:''+i)+'</i></span></button>';
+      '<span class="tx"><b>'+esc(th.short||th.name).replace(/\n/g,'<br>')+'</b>'+
+      '<i class="ha">'+THEME_HA[k]+'</i></span></button>';
   }
   box.innerHTML=h;
   $$('.tp-card',box).forEach(function(b){
@@ -354,15 +373,57 @@ function introSrc(){
   var T=CT.TABS[state.tab];
   return (T&&T.video)?T.video:null;
 }
-/* v47 · 영상이 끝나면 입력창이 '툭' 올라오지 않고, 높이·투명도·이동을 함께 0.74초에 걸쳐 펼친다.
-   스크롤은 입력창이 자라기 전에 미리 부드럽게 걸어 두어, 화면이 튀지 않는다. */
+/* v47 · 영상이 끝나면 입력창이 '툭' 올라오지 않고, 높이·투명도·이동을 함께 부드럽게 펼친다.
+   v48 · 브라우저 기본 smooth 스크롤(0.3~0.5초)이 여전히 빨라 보인다는 지적에 따라,
+   입력창으로 가는 이동을 1.5초짜리 직접 그린 감속 곡선(requestAnimationFrame + cubic ease-in-out)으로 바꾸고,
+   펼침은 1.2초 ease-out으로 늘려 영상에서 입력창으로 천천히 흘러가듯 잇는다. */
+var SCROLL_MS=1500, REVEAL_MS=1200;
 function reducedMotion(){
   try{ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
 }
-function scrollToPanel(p){
+function easeInOutCubic(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+var glideRAF=0, glideTok=0;
+function endGlide(tok){
+  if(tok===glideTok){
+    try{ document.documentElement.classList.remove('gliding'); }catch(e){}
+  }
+}
+function stopGlide(){
+  glideTok++;
+  try{ if(glideRAF) cancelAnimationFrame(glideRAF); }catch(e){}
+  glideRAF=0;
+  try{ document.documentElement.classList.remove('gliding'); }catch(e){}
+}
+function glideTo(y,dur){
+  y=Math.max(0,Math.round(y));
+  if(reducedMotion()){ try{ window.scrollTo(0,y); }catch(e){} return; }
+  try{ if(glideRAF) cancelAnimationFrame(glideRAF); }catch(e){}
+  var start=window.pageYOffset||document.documentElement.scrollTop||0;
+  var dist=y-start;
+  dur=(dur==null)?SCROLL_MS:dur;
+  if(Math.abs(dist)<2||!dur){ try{ window.scrollTo(0,y); }catch(e){} return; }
+  var tok=++glideTok;
+  document.documentElement.classList.add('gliding');   /* html의 기본 smooth와 겹치지 않게 */
+  function userTakeover(){ stopGlide(); }               /* 손으로 먼저 끌면 그리로 넘긴다 */
+  try{
+    window.addEventListener('touchstart',userTakeover,{passive:true,once:true});
+    window.addEventListener('wheel',userTakeover,{passive:true,once:true});
+  }catch(e){}
+  var t0=null;
+  function step(ts){
+    if(tok!==glideTok) return;
+    if(t0===null) t0=ts;
+    var p=Math.min(1,(ts-t0)/dur);
+    try{ window.scrollTo(0, start+dist*easeInOutCubic(p)); }catch(e){}
+    if(p<1){ glideRAF=requestAnimationFrame(step); }
+    else { glideRAF=0; endGlide(tok); }
+  }
+  glideRAF=requestAnimationFrame(step);
+}
+function scrollToPanel(p,dur){
   try{
     var top=p.getBoundingClientRect().top+window.pageYOffset-124;  /* 상단 헤더+트랙 바 아래로 */
-    window.scrollTo({top:top<0?0:top,behavior:reducedMotion()?'auto':'smooth'});
+    glideTo(top,dur);
   }catch(e){}
 }
 function revealForm(scroll){
@@ -374,23 +435,25 @@ function revealForm(scroll){
   p.removeAttribute('hidden');
   if(reducedMotion()){
     p.classList.add('reveal-settled');
-    if(scroll) scrollToPanel(p);
+    if(scroll) scrollToPanel(p,0);
     return;
   }
   var h=p.offsetHeight;                   /* 다 펼쳤을 때의 높이 */
   p.classList.add('reveal-in');
   p.style.height='0px';
   p.style.opacity='0';
-  p.style.transform='translateY(20px)';
+  p.style.transform='translateY(12px)';
   void p.offsetWidth;                     /* 0 높이를 먼저 그려 두고 */
   /* 입력창을 펼치기 전에는 문서가 짧아 목표 위치까지 스크롤할 수 없다.
      잠시 같은 높이의 아래 여백을 두어 목표를 확보한 뒤, 다 펼치면 걷어낸다. */
   var padBase=document.body.style.paddingBottom;
-  if(scroll){ document.body.style.paddingBottom=h+'px'; scrollToPanel(p); }
+  if(scroll){ document.body.style.paddingBottom=h+'px'; scrollToPanel(p,SCROLL_MS); }
   requestAnimationFrame(function(){
-    p.style.height=h+'px';
-    p.style.opacity='1';
-    p.style.transform='translateY(0)';
+    requestAnimationFrame(function(){
+      p.style.height=h+'px';
+      p.style.opacity='1';
+      p.style.transform='translateY(0)';
+    });
   });
   setTimeout(function(){
     p.style.height=''; p.style.opacity=''; p.style.transform='';
@@ -399,9 +462,9 @@ function revealForm(scroll){
     if(scroll){
       document.body.style.paddingBottom=padBase;
       var t=p.getBoundingClientRect().top;   /* 상단 바 바로 아래(124px)에 와 있어야 한다 */
-      if(t>150||t<90) scrollToPanel(p);      /* 어긋났으면 한 번 더 부드럽게 */
+      if(t>150||t<90) scrollToPanel(p,700);  /* 어긋났으면 한 번 더 천천히 */
     }
-  },800);
+  },REVEAL_MS+120);
 }
 function syncIntro(){
   var card=$('#introCard'), vid=$('#introVideo'), panel=$('#panelForm');
