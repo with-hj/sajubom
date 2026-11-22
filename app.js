@@ -444,38 +444,245 @@ function renderResult(R,input){
   if(input.ctx&&input.ctx.partnerErr) h+='<p style="color:#c94228">'+esc(input.ctx.partnerErr)+' — 내 사주만 읽었습니다.</p>';
   h+='</div>';
 
-  /* ---------- 2장 무료 + 3장부터 흐림 결제 게이트 ---------- */
-  var FREE=2, freeH='', lockH='', lockChars=0;
-  for(var i=0;i<chapters.length;i++){
-    var ch=chapters[i], body='';
-    try{ body=ch.body(R,c,input,name); }catch(ex){ body='<p class="hint">이 장은 준비 중입니다.</p>'; if(window.console) console.error(ch.title,ex); }
-    var sec='<section class="ch fade-in"><div class="ch-hd"><span class="ch-no">'+pad2(i+1)+'</span>'+
-       '<div class="ch-t"><h3>'+ch.title+'</h3><div class="ch-s">'+ch.sub+'</div></div></div>'+
-       '<div class="ch-bd">'+body+'</div></section>';
-    if(i<FREE) freeH+=sec;
-    else { lockH+=sec; lockChars+=body.replace(/<[^>]*>/g,'').replace(/\s+/g,'').length; }
+  /* ---------- v45 : 장 목차 탭 · 1~2장 무료 · 3장부터 첫 문장 + 핵심 가림 ---------- */
+  var FREE=FREE_CH, bodies=[], i, total=chapters.length, lockedTotal=0;
+  for(i=0;i<total;i++){
+    var body='';
+    try{ body=chapters[i].body(R,c,input,name); }
+    catch(ex){ body='<p class="hint">이 장은 준비 중입니다.</p>'; if(window.console) console.error(chapters[i].title,ex); }
+    bodies.push(body);
   }
-  if(freeH) h+='<div class="free-flag"><b>무료로 읽는 '+FREE+'장</b> · 사주 원국과 첫 풀이</div>'+freeH;
-  if(lockH){
-    var pwInfo={total:chapters.length,chars:lockChars,tab:T.name};
-    h+='<div class="pw-wrap" id="pwWrap">'+
-       '<div class="pw-locked" id="pwLocked">'+lockH+'</div>'+
-       '<div class="pw-veil" id="pwVeil"><div class="pw-card" id="pwCard"></div></div></div>';
-    window.__pwInfo=pwInfo;
+  window.__chBodies=bodies;
+  lockedTotal=Math.max(0,total-FREE);
+  h+=chapterTabs(chapters,FREE);
+  if(FREE>0) h+='<div class="free-flag"><b>무료로 읽는 '+Math.min(FREE,total)+'장</b> · 사주 원국과 첫 풀이</div>';
+  for(i=0;i<Math.min(FREE,total);i++) h+=chapterSection(chapters,i,bodies[i],false,total);
+  if(lockedTotal>0){
+    window.__pwInfo={total:total,tab:T.name};
+    h+='<div class="lock-note" id="lockNote">'+ICON_LOCK+'<span><b>남은 '+lockedTotal+'장</b>은 결제 후에 열립니다 · 지금은 장마다 첫 문장과 결론만 가려 두었습니다</span></div>';
+    for(i=FREE;i<total;i++) h+=chapterSection(chapters,i,bodies[i],true,total);
   }
   h+='<div class="panel" id="rdMore" style="margin-top:18px;text-align:center">'+
-     '<h3 style="font-size:17px">'+(lockH?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
+     '<h3 style="font-size:17px">'+(lockedTotal?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
      '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <s style="color:#8A93A4">119,000원</s> <b>39,800원</b>(67% 할인)입니다.</p>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   h=h.replace(/당신 님/g,'당신');
   if(S.fixPost) h=S.fixPost(h);
   $('#resultView').innerHTML=h;
-  if($('#pwWrap')&&window.__pwInfo) bindPaywall(window.__pwInfo);
+  bindChapterUI(total);
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });
   try{ var rv=$('#resultView'); var y=rv.getBoundingClientRect().top+window.pageYOffset-146; window.scrollTo({top:y,behavior:'smooth'}); }catch(e){}
 }
-/* ---------- 결제 게이트(테스트) : 2장까지 무료, 3장부터 흐림 ---------- */
+/* ---------- v45 : 장 탭 · 첫 문장 미리보기 · 핵심 가림 결제 게이트 ---------- */
+var FREE_CH=2;
+var ICON_LOCK='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6.5A2.5 2.5 0 0 0 4 12.5v7A2.5 2.5 0 0 0 6.5 22h11a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 17.5 10H17V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z"/></svg>';
+
+function shortTitle(t){
+  var s=String(t||'').split('—')[0].replace(/\s+/g,' ').trim();
+  if(s.length>11) s=s.slice(0,11);
+  return s;
+}
+/* 결과 상단 : 장 목차 탭 (3장부터 자물쇠) */
+function chapterTabs(chapters,free){
+  var h='<div class="ch-tabs" id="chTabs" role="tablist" aria-label="장 바로가기">';
+  for(var i=0;i<chapters.length;i++){
+    var n=i+1, locked=i>=free;
+    h+='<button type="button" class="ch-tab'+(n===1?' on':'')+(locked?' lk':'')+'" role="tab" data-chtab="'+n+'"'+
+       ' aria-selected="'+(n===1?'true':'false')+'"><b>'+n+'</b><span>'+esc(shortTitle(chapters[i].title))+'</span>'+
+       (locked?ICON_LOCK:'')+'</button>';
+  }
+  return h+'</div>';
+}
+function chapterSection(chapters,i,body,locked,total){
+  var ch=chapters[i], n=i+1;
+  var h='<section class="ch fade-in'+(locked?' ch-off':'')+'" id="ch'+n+'" data-ch="'+i+'"'+(locked?' data-lock="1"':'')+'>';
+  h+='<div class="ch-hd"><span class="ch-no">'+pad2(n)+'</span>'+
+     '<div class="ch-t"><h3>'+ch.title+'</h3><div class="ch-s">'+ch.sub+'</div></div>'+
+     (locked?'<span class="ch-lk" aria-label="결제 후 공개">'+ICON_LOCK+'</span>':'')+'</div>';
+  if(locked) h+='<div class="ch-bd ch-teaser">'+teaserHTML(body)+'</div>'+gateHTML(i===FREE_CH);
+  else h+='<div class="ch-bd">'+body+'</div>';
+  return h+chapterNav(chapters,n,total)+'</section>';
+}
+function chapterNav(chapters,n,total){
+  var h='<div class="ch-nav">';
+  if(n>1) h+='<button type="button" class="chnav" data-goto="'+(n-1)+'"><i>←</i><span>'+(n-1)+'. '+esc(shortTitle(chapters[n-2].title))+'</span></button>';
+  else h+='<span class="chnav-void"></span>';
+  if(n<total) h+='<button type="button" class="chnav" data-goto="'+(n+1)+'"><span>'+(n+1)+'. '+esc(shortTitle(chapters[n].title))+'</span><i>→</i></button>';
+  return h+'</div>';
+}
+function gateHTML(lead){
+  var hk=PW_HOOK[state.theme]||PW_HOOK.general;
+  if(lead){
+    return '<div class="ch-gate lead">'+
+      '<p class="gate-hook">'+hk.t+'</p>'+
+      '<p class="gate-kicker">전체 풀이를 열면 정확한 시기와 구체적 이유, 피해야 할 함정까지 모두 확인됩니다.</p>'+
+      '<div class="gate-price">9,900원 · 전체 풀이</div>'+
+      '<button type="button" class="btn btn-gold btn-block gate-btn" data-pw-open>결제 후 전체 보기</button>'+
+      '<p class="gate-note">테스트 사이트 — 결제 없이 전체 풀이가 열립니다</p></div>';
+  }
+  return '<div class="ch-gate mini">'+
+    '<div class="gm-tx"><b>이 장의 결론과 시기</b><span>9,900원 · 전체 풀이</span></div>'+
+    '<button type="button" class="btn-gate" data-pw-open>결제 후 전체 보기</button></div>';
+}
+/* ---------- 첫 문장만 보여주고, 결론이 되는 대목은 가린다 ---------- */
+function teaserText(html){
+  var box=document.createElement('div'); box.innerHTML=html||'';
+  var nodes=box.querySelectorAll('p,li'), out='';
+  for(var i=0;i<nodes.length;i++){
+    var el=nodes[i];
+    if(el.closest('table')) continue;
+    var t=(el.textContent||'').replace(/\s+/g,' ').trim();
+    if(t.length<12) continue;
+    out+=(out?' ':'')+t;
+    if(out.length>=95) break;
+  }
+  if(!out) out=(box.textContent||'').replace(/\s+/g,' ').trim();
+  var sents=out.match(/[^.?!。]*[.?!。]+/g)||[], keep='';
+  for(var j=0;j<sents.length&&j<3;j++){
+    if(keep&&keep.length+sents[j].length>150) break;
+    keep+=sents[j];
+    if(keep.length>=60) break;
+  }
+  keep=(keep||out).replace(/\s+/g,' ').trim();
+  if(keep.length>165){ keep=keep.slice(0,165).replace(/\s+\S*$/,'')+'…'; }
+  return keep;
+}
+/* 가릴 것은 시기와 결론이다. 주제어(부동산·계약)는 문장이 깨져 보이므로 가리지 않는다 */
+var MASK_RE=/(\d{1,2}개월|\d{4}년|\d{1,2}월|\d{1,2}일|\d{1,2}세|\d{1,2}살|\d+년|\d+번째|상반기|하반기|연말|연초|봄|여름|가을|겨울)/g;
+function barHTML(len){
+  var w=Math.min(5.4,Math.max(1.7,len*0.62+0.7));
+  return '<span class="redact" style="width:'+w.toFixed(2)+'em" aria-label="결제 후 공개"></span>';
+}
+function maskTail(s){
+  var marks=[', ','— ','· ','고 ','며 ','지만 ','는데 ','면서 ','이 ','가 ','을 ','를 ','은 ','는 ','도 ','면 ','로 ','서 '];
+  var best=-1, bestLen=0;
+  for(var i=0;i<marks.length;i++){
+    var p=s.lastIndexOf(marks[i]);
+    if(p<=s.length*0.2) continue;
+    var st=p+marks[i].length, tl=s.slice(st).replace(/[.!?。\s]+$/,'');
+    if(tl.length<4||tl.length>16) continue;
+    if(tl.length>bestLen){ bestLen=tl.length; best=st; }
+  }
+  var sp=s.lastIndexOf(' ');
+  if(best<0&&sp>0){
+    var t2=s.slice(sp+1).replace(/[.!?。\s]+$/,'');
+    if(t2.length>=3){ best=sp+1; bestLen=t2.length; }
+  }
+  if(best<0) return null;
+  return {head:s.slice(0,best),tail:s.slice(best).replace(/[.!?。\s]+$/,'')};
+}
+function teaserHTML(body){
+  var text=teaserText(body);
+  if(!text) return '';
+  var sents=(text.match(/[^.?!。]*[.?!。]+/g)||[text]).map(function(x){ return x.trim(); });
+  var last=sents.length?sents.pop():'';
+  var head=sents.join(' ');
+  var out='', lastIdx=0, m, nBar=0;
+  MASK_RE.lastIndex=0;
+  while((m=MASK_RE.exec(head))!==null){
+    if(nBar>=3) break;
+    out+=esc(head.slice(lastIdx,m.index))+barHTML(m[0].length);
+    lastIdx=m.index+m[0].length; nBar++;
+  }
+  out+=esc(head.slice(lastIdx));
+  if(last){
+    var mk=maskTail(last);
+    if(mk) out+=(out?' ':'')+esc(mk.head)+barHTML(mk.tail.length)+'.';
+    else out+=(out?' ':'')+esc(last);
+  }
+  return '<p class="teaser-p">'+out+'</p>';
+}
+/* ---------- 장 이동 · 스크롤 위치에 따라 탭 강조 ---------- */
+function chapterOffset(){
+  var hd=$('.hd'), tr=$('.tracks'), tabs=$('#chTabs');
+  return ((hd&&hd.offsetHeight)||60)+((tr&&tr.offsetHeight)||0)+((tabs&&tabs.offsetHeight)||0)+8;
+}
+function centerTab(n){
+  var wrap=$('#chTabs'), tab=wrap&&wrap.querySelector('[data-chtab="'+n+'"]');
+  if(!wrap||!tab) return;
+  var t=tab.offsetLeft-(wrap.clientWidth-tab.offsetWidth)/2;
+  try{ wrap.scrollTo({left:Math.max(0,t),behavior:'smooth'}); }catch(e){ wrap.scrollLeft=Math.max(0,t); }
+}
+function setActiveTab(n){
+  var tabs=$$('#chTabs .ch-tab'), changed=false;
+  for(var i=0;i<tabs.length;i++){
+    var on=parseInt(tabs[i].getAttribute('data-chtab'),10)===n;
+    if(on!==tabs[i].classList.contains('on')) changed=true;
+    tabs[i].classList.toggle('on',on);
+    tabs[i].setAttribute('aria-selected',on?'true':'false');
+  }
+  if(changed) centerTab(n);
+}
+function goChapter(n,smooth){
+  var el=document.getElementById('ch'+n); if(!el) return;
+  var y=el.getBoundingClientRect().top+window.pageYOffset-chapterOffset();
+  if(y<0) y=0;
+  try{ window.scrollTo({top:y,behavior:(smooth===false?'auto':'smooth')}); }
+  catch(e){ window.scrollTo(0,y); }
+  setActiveTab(n);
+}
+function updateChapterTab(){
+  var secs=$$('#resultView .ch'); if(!secs.length) return;
+  var line=chapterOffset()+16, cur=1;
+  for(var i=0;i<secs.length;i++){ if(secs[i].getBoundingClientRect().top<=line) cur=i+1; }
+  setActiveTab(cur);
+}
+var __chSpyOn=false;
+function bindChapterUI(total){
+  var rv=$('#resultView'); if(!rv) return;
+  if(!__chSpyOn){
+    window.addEventListener('scroll',function(){
+      if(window.__chSpyTick) return;
+      window.__chSpyTick=1;
+      (window.requestAnimationFrame||function(f){ return setTimeout(f,50); })(function(){ window.__chSpyTick=0; updateChapterTab(); });
+    },{passive:true});
+    __chSpyOn=true;
+  }
+  rv.addEventListener('click',function(e){
+    var tab=e.target.closest('[data-chtab]');
+    if(tab){ goChapter(parseInt(tab.getAttribute('data-chtab'),10)); return; }
+    var nav=e.target.closest('[data-goto]');
+    if(nav){ goChapter(parseInt(nav.getAttribute('data-goto'),10)); return; }
+    if(e.target.closest('[data-pw-open]')) openPayGate();
+  });
+  var tabs=$('#chTabs'), hd=$('.hd'), tr=$('.tracks');
+  if(tabs&&hd) tabs.style.top=((hd.offsetHeight||60)+((tr&&tr.offsetHeight)||0))+'px';
+  updateChapterTab();
+}
+/* ---------- 테스트 결제 확인 창 ---------- */
+function payCardMarkup(){
+  var info=window.__pwInfo||{total:0,tab:''};
+  var rest=info.total>FREE_CH?info.total-FREE_CH:6;
+  return '<div class="pw-price">9,900원 · 전체 풀이</div>'+
+    '<h3>결제 없이 열어볼까요?</h3>'+
+    '<p>지금은 PG 연동 전 테스트 사이트입니다. <b>실제 결제는 이루어지지 않습니다.</b><br>확인을 누르면 남은 '+rest+'장이 바로 열립니다.</p>'+
+    '<button type="button" class="btn btn-gold btn-block" id="pwDo">테스트로 전체 풀이 열기</button>'+
+    '<button type="button" class="pw-x" id="pwCancel">취소</button>';
+}
+function openPayGate(){
+  var el=$('#payGate');
+  if(!el){
+    el=document.createElement('div');
+    el.id='payGate'; el.className='paygate';
+    el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','전체 풀이 열기');
+    el.innerHTML='<div class="pw-card pay-card">'+payCardMarkup()+'</div>';
+    el.addEventListener('click',function(e){
+      if(e.target===el){ closePayGate(); return; }
+      var t=e.target.closest('button'); if(!t) return;
+      if(t.id==='pwDo'){ closePayGate(); unlockReading(); }
+      else if(t.id==='pwCancel'){ closePayGate(); }
+    });
+    document.body.appendChild(el);
+  }
+  el.classList.add('on'); document.body.classList.add('lock');
+  var b=$('#pwDo',el); if(b&&b.focus){ try{ b.focus(); }catch(e){} }
+}
+function closePayGate(){
+  var el=$('#payGate'); if(el) el.classList.remove('on');
+  document.body.classList.remove('lock');
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePayGate(); });
 /* 테마별 페이월 문구 — 무엇이 남아 있는지 궁금하게 만드는 한 줄 */
 var PW_HOOK={
   general:{t:'올해 터지는 달과<br>피해야 할 달이 남아 있습니다',
@@ -489,36 +696,6 @@ var PW_HOOK={
   wealth:{t:'돈이 모이는 시기와<br>새는 구멍이 남아 있습니다',
           p:'문서·부동산 취득 타이밍,<br>계약을 피해야 할 달까지 있습니다.'}
 };
-function pwBuyMarkup(info){
-  var hk=PW_HOOK[state.theme]||PW_HOOK.general;
-  return '<div class="pw-price">9,900원 · 전체 풀이</div>'+
-    '<h3>'+hk.t+'</h3>'+
-    '<p>'+hk.p+'</p>'+
-    '<p class="pw-num">'+esc(info.tab)+' · 남은 '+(info.total>2?(info.total-2):6)+'장</p>'+
-    '<button type="button" class="btn btn-gold btn-block" id="pwBuy">9,900원 결제하고 전체 풀이 보기</button>'+
-    '<p class="pw-note">테스트 사이트 — 결제 없이 전체 풀이가 열립니다</p>';
-}
-function pwConfirmMarkup(){
-  return '<div class="pw-price">테스트 결제 · 9,900원</div>'+
-    '<h3>결제 없이 열어볼까요?</h3>'+
-    '<p>지금은 PG 연동 전 테스트 사이트입니다. <b>실제 결제는 이루어지지 않습니다.</b> 확인을 누르면 나머지 풀이가 바로 열립니다.</p>'+
-    '<button type="button" class="btn btn-gold btn-block" id="pwDo">결제 없이 전체 풀이 열기</button>'+
-    '<button type="button" class="pw-x" id="pwCancel">취소</button>';
-}
-function bindPaywall(info){
-  var card=$('#pwCard'); if(!card) return;
-  card.innerHTML=pwBuyMarkup(info);
-  card.addEventListener('click',function(e){
-    var t=e.target.closest('button'); if(!t) return;
-    if(t.id==='pwBuy'){
-      card.innerHTML=pwConfirmMarkup();
-    } else if(t.id==='pwDo'){
-      unlockReading();
-    } else if(t.id==='pwCancel'){
-      card.innerHTML=pwBuyMarkup(info);
-    }
-  });
-}
 /* ---------------- 테마 결제 → 인생사주 리포트 업셀 ---------------- */
 function themeCredit(){
   try{ return localStorage.getItem('wlh_theme_paid')==='1'; }catch(e){ return false; }
@@ -645,20 +822,40 @@ function fastSubmit(){
   showPayStep(makeOrder(b,email,savedPhone(),'fast'));
 }
 
+/* v45 : 가려 둔 장을 실제 본문으로 바꾸고 잠금 표시를 걷어낸다 */
 function unlockReading(){
-  var locked=$('#pwLocked'), veil=$('#pwVeil'), wrap=$('#pwWrap');
-  if(locked) locked.classList.add('open');
-  if(veil&&veil.parentNode) veil.parentNode.removeChild(veil);
-  if(wrap&&!$('.pw-open-flag')){
+  var fulls=window.__chBodies||[];
+  var lockSecs=$$('#resultView .ch[data-lock="1"]');
+  var first=null;
+  for(var i=0;i<lockSecs.length;i++){
+    var sec=lockSecs[i], idx=parseInt(sec.getAttribute('data-ch'),10);
+    if(!first) first=sec;
+    var teaser=sec.querySelector('.ch-teaser');
+    if(teaser){
+      var bd=document.createElement('div');
+      bd.className='ch-bd';
+      bd.innerHTML=fulls[idx]||'<p class="hint">이 장은 준비 중입니다.</p>';
+      teaser.parentNode.replaceChild(bd,teaser);
+    }
+    var gate=sec.querySelector('.ch-gate'); if(gate) gate.parentNode.removeChild(gate);
+    var lk=sec.querySelector('.ch-lk'); if(lk) lk.parentNode.removeChild(lk);
+    sec.removeAttribute('data-lock');
+    sec.classList.remove('ch-off');
+  }
+  $$('#resultView .ch-tab.lk').forEach(function(b){
+    b.classList.remove('lk');
+    var s=b.querySelector('svg'); if(s) s.parentNode.removeChild(s);
+  });
+  var note=$('#lockNote'); if(note) note.parentNode.removeChild(note);
+  if(first&&!$('.pw-open-flag')){
     var flag=document.createElement('div');
     flag.className='pw-open-flag';
     flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · 테스트 결제 9,900원';
-    wrap.parentNode.insertBefore(flag,wrap);
+    first.insertBefore(flag,first.firstChild);
   }
   var more=$('#rdMore'); if(more){ more.style.display='none'; }
-  var host=wrap?wrap.parentNode:$('#resultView');
-  addUpsellCard(host);
-  try{ if(wrap) wrap.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+  addUpsellCard($('#resultView'));
+  if(first) goChapter(parseInt(first.id.replace('ch',''),10));
 }
 
 function solarNote(R,input){

@@ -785,3 +785,129 @@ input,select,textarea,button{font-family:var(--sans)}
 .upsell .up-price em{font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px}
 .upsell .up-list{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:0 0 13px}
 .upsell .up-list span{font-size:11px;color:#C8BFAC;background:rgba(255,255,255,.05);border:1px solid rgba(216,179,106,.22);border-radius:999px;padding:3px 9px}
+
+/* =====================================================================
+   v45 : 장 목차 탭 + 첫 문장 미리보기 + 핵심 가림 결제 게이트
+   전체 흐림 대신, 각 장의 시작 문장을 보여주고 결론만 가린다.
+   ===================================================================== */
+.ch-tabs-wrap{margin:14px 0 0}
+.ch-tabs{
+  position:sticky;top:112px;z-index:40;display:flex;gap:6px;
+  overflow-x:auto;overflow-y:hidden;padding:9px 0 10px;margin:14px 0 2px;
+  background:#080F1A;border-bottom:1px solid rgba(216,179,106,.14);
+  box-shadow:0 8px 14px -10px rgba(0,0,0,.9);
+  scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;
+}
+.ch-tabs::-webkit-scrollbar{display:none}
+.ch-tab{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:7px 11px 7px 9px;
+  border-radius:999px;border:1px solid rgba(216,179,106,.28);background:rgba(255,255,255,.045);
+  color:#D6CAB0;font-family:var(--sans);font-size:12.5px;font-weight:500;line-height:1;
+  white-space:nowrap;transition:background .2s,border-color .2s,color .2s;
+}
+.ch-tab b{font-family:var(--serif);font-size:11.5px;font-weight:700;color:#C9A45A;letter-spacing:0}
+.ch-tab.on{background:linear-gradient(180deg,#EBD39A,#D9B966);border-color:#EBD39A;color:#20180A}
+.ch-tab.on b{color:#6A5019}
+.ch-tab.lk{color:#8B8272;border-style:dashed;border-color:rgba(216,179,106,.2);background:rgba(255,255,255,.02)}
+.ch-tab svg{width:9px;height:9px;flex:0 0 auto;opacity:.6}
+.ch-tab.on svg{opacity:.9}
+
+/* 가림 막대 : 남색 바탕 + 금빛 실선 */
+.redact{
+  display:inline-block;height:.9em;vertical-align:-.08em;border-radius:3px;margin:0 .1em;
+  position:relative;overflow:hidden;background:linear-gradient(180deg,#2C374C,#161F2E 55%,#232D3E);
+  box-shadow:inset 0 0 0 1px rgba(216,179,106,.44),0 1px 0 rgba(255,255,255,.05);
+}
+.redact:after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(235,211,154,.14),rgba(235,211,154,0) 55%);
+}
+.ch-teaser .teaser-p{margin:0;font-size:16.5px;line-height:1.95;color:#2b2620}
+.ch-teaser{padding-bottom:0}
+
+.ch-lk{
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;margin-left:auto;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(169,133,63,.12);border:1px solid rgba(169,133,63,.34);color:#8A6E2E;
+}
+.ch-lk svg{width:11px;height:11px}
+
+.ch-off{background:linear-gradient(180deg,#FFFCF6,#FAF4E9 90%)}
+.lock-note{
+  display:flex;align-items:flex-start;gap:7px;margin:16px 2px 0;
+  font-size:12px;line-height:1.65;color:#A2947C;
+}
+.lock-note svg{width:11px;height:11px;flex:0 0 auto;margin-top:4px;color:#C9A45A}
+.lock-note b{color:#E9D9B4;font-weight:700}
+
+.ch-gate{margin-top:15px}
+.ch-gate.lead{
+  border-radius:15px;padding:17px 15px 14px;text-align:center;
+  background:linear-gradient(180deg,#16223C,#0E1826 80%);
+  border:1px solid rgba(216,179,106,.42);box-shadow:0 12px 26px rgba(0,0,0,.18);
+}
+.ch-gate .gate-hook{
+  font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.55;
+  color:#F7EACA;margin:0 0 7px;letter-spacing:-.01em;
+}
+.ch-gate .gate-kicker{font-size:12.5px;line-height:1.7;color:#B9C2CF;margin:0 0 12px}
+.ch-gate .gate-price{
+  font-family:var(--sans);font-size:11.5px;font-weight:600;letter-spacing:.14em;
+  color:#D8B36A;margin:0 0 9px;
+}
+.ch-gate .gate-btn{margin:0}
+.ch-gate .gate-note{font-size:11px;color:#7F8B9C;margin:8px 0 0;letter-spacing:.01em}
+.ch-gate.mini{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px 12px;border-radius:12px;
+  background:rgba(169,133,63,.08);border:1px solid rgba(169,133,63,.24);
+}
+.ch-gate.mini .gm-tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ch-gate.mini .gm-tx b{font-family:var(--sans);font-size:12.5px;font-weight:700;color:#3B3226}
+.ch-gate.mini .gm-tx span{font-size:11px;color:#8A7E6A;letter-spacing:.06em}
+.btn-gate{
+  flex:0 0 auto;padding:10px 13px;border-radius:10px;white-space:nowrap;
+  background:linear-gradient(180deg,#EBD39A,#D4B364);color:#20180A;
+  font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:-.01em;
+  box-shadow:0 3px 10px rgba(0,0,0,.14);
+}
+.btn-gate:active{transform:translateY(1px)}
+
+.ch-nav{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-top:14px;padding-top:11px;border-top:1px dashed rgba(140,120,90,.26);
+}
+.chnav{
+  display:inline-flex;align-items:center;gap:6px;max-width:48%;padding:5px 2px;
+  background:none;border:0;font-family:var(--sans);font-size:12px;font-weight:600;color:#6B6155;
+  text-align:left;line-height:1.4;
+}
+.chnav:last-child{text-align:right}
+.chnav span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chnav i{font-style:normal;color:#A98B4E;font-size:12px;flex:0 0 auto}
+.chnav:active{opacity:.55}
+.chnav-void{flex:1 1 auto}
+
+.paygate{
+  position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;padding:20px 16px;
+  background:rgba(6,9,15,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.paygate.on{display:flex}
+.paygate .pay-card{max-width:352px;text-align:center;animation:pgIn .22s ease-out}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+@media (max-width:400px){
+  .ch-tab{font-size:12px;padding:7px 10px 7px 8px}
+  .ch-gate .gate-hook{font-size:16px}
+  .ch-teaser .teaser-p{font-size:16px}
+}
+
+/* v45 데스크톱 : 탭 줄과 결제 게이트를 본문 폭에 맞춘다 */
+@media (min-width:900px){
+  .ch-tab{font-size:13px;padding:8px 13px 8px 10px}
+  .ch-gate.lead{padding:20px 20px 16px}
+  .ch-gate .gate-hook{font-size:18px}
+}
+/* 결제 후 알림 : 잠긴 첫 장 안쪽에 붙는다 (밝은 카드 위 대비) */
+.ch .pw-open-flag{margin:0 0 14px;color:#6B5724;background:rgba(201,164,90,.16);border-color:rgba(169,133,63,.42)}
+.ch .pw-open-flag b{color:#3A2D11}
