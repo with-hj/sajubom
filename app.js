@@ -558,7 +558,8 @@ function renderResult(R,input){
      '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>9,900원</b> · 인생사주 리포트는 <s style="color:#8A93A4">119,000원</s> <b>39,800원</b>(67% 할인)입니다.</p>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
-  h=h.replace(/당신 님/g,'당신');
+  /* 이름을 비워 두면 '당신'으로 부르는데, '당신 님'처럼 겹치지 않게 ' 님'을 덜어낸다 (굵게 감싼 경우 포함) */
+  h=h.replace(/(<b[^>]*>)?당신(<\/b>)?\s*님/g,function(m,a,b){ return (a||'')+'당신'+(b||''); });
   if(S.fixPost) h=S.fixPost(h);
   $('#resultView').innerHTML=h;
   bindChapterUI(total);

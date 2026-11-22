@@ -81,7 +81,7 @@ function life1(R,c,input,name){
   h+='<p>'+S.DAY_MASTER[R.dStem][0]+' — 이것이 이 사주의 바탕입니다. '+S.ILJU[R.dIdx][1]+'</p>';
   h+='<p>가장 두터운 기운은 <b>'+c.topGrp+'</b>('+c.grp[c.topGrp]+'개)이고, 그 안의 중심 별은 <b>'+c.topGodInGrp+'</b>입니다. '+S.GROUP_MEAN[c.topGrp]+' '+S.GOD_DEEP[c.topGodInGrp]+'</p>';
   h+=H('기둥이 서로 만나는 자리');
-  h+='<p>여덟 글자를 따로 보면 반쪽입니다. 이 사주는 '+S.interHTML(R)+'</p>';
+  h+='<p>여덟 글자를 따로 보면 반쪽입니다. 이 사주는 기둥 사이에 이런 관계가 있습니다.</p>'+S.interHTML(R);
   h+='<p>'+S.gongmangText(R)+'</p>';
   h+=H('평생 바뀌지 않는 세 가지');
   h+=UL([

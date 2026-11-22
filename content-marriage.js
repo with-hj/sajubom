@@ -24,7 +24,7 @@ function cp1(R,c,input,name){
     h+=H('일지가 만나는 자리');
     var rel=S.branchRel(R.dBranch,R2.dBranch);
     h+='<p><b>'+rel.k+'</b> — '+rel.t+'</p>';
-    h+='<p>이 사주 안에서도 '+S.interHTML(R)+'</p>';
+    h+='<p>이 사주 안에서도 기둥 사이의 관계가 결을 만듭니다.</p>'+S.interHTML(R);
     h+=H('서로에게 없는 것');
     h+='<p>이 사주에게 얇은 기운은 '+window.CH.elB(c.leastI)+', 상대에게 얇은 기운은 '+window.CH.elB(pc.c.leastI)+'. '+(c.leastI===pc.c.leastI?'두 사람 모두 같은 기운이 얇아 그 부분은 서로 채워주지 못합니다. 생활에서 의식적으로 만들어야 합니다.':'서로 다른 기운이 비어 있어 채워줄 수 있습니다. 이 사주가 상대에게 '+S.EL_KO[pc.c.leastI]+'의 환경을 만들어주면 관계가 편해집니다.')+'</p>';
     if(dd.gmHits.length||dd2.gmHits.length) h+='<p>'+(dd.gmHits.length?S.gongmangText(R):'')+' 상대 쪽에서도 '+(dd2.gmHits.length?dd2.gmHits.map(function(x){return x.pos;}).join('·')+'가 공망이라 ':'')+'약속이 문서로 남지 않으면 기억이 달라집니다.</p>';

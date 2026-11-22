@@ -232,7 +232,7 @@ function elPage(){
   var R=B.R,c=B.c;
   var h='';
   for(var i=0;i<5;i++){
-    h+='<div class="elrow"><span class="n">'+S.EL_KO[i]+' '+S.EL_HAN[i]+'</span><span class="bar"><i style="width:'+Math.max(2,R.pct[i])+'%;background:'+S.EL_COLOR[i]+'"></i></span><span class="v">'+R.pct[i].toFixed(1)+'% · '+R.count[i]+'</span></div>';
+    h+='<div class="elrow"><span class="n">'+S.EL_KO[i]+'('+S.EL_HAN[i]+')</span><span class="bar"><i style="width:'+Math.max(2,R.pct[i])+'%;background:'+S.EL_COLOR[i]+'"></i></span><span class="v">'+R.pct[i].toFixed(1)+'% · '+R.count[i]+'</span></div>';
   }
   var body=secLabel('03','FIVE ELEMENTS · 오행')+
    '<h1>다섯 기운의 <span class="accent">무게</span></h1>'+
@@ -797,6 +797,8 @@ B.build=function(R,input,name){
   var pn=1;
   html=html.replace(/<span class="pn">[^<]*<\/span>/g,function(){ pn++; return '<span class="pn">'+n2(pn)+' / '+total+'</span>'; });
   if(S.fixPost) html=S.fixPost(html);
+  /* 이름이 비어 '고객'·'당신'으로 부르는 경우 ' 님'이 겹치지 않게 */
+  html=html.replace(/(<b[^>]*>)?(고객|당신)(<\/b>)?\s*님/g,function(m,a,nm,b){ return (a||'')+nm+(b||''); });
   return {html:html,pages:total};
 };
 B.fit=fitPages;
