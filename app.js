@@ -53,12 +53,22 @@ function fillDays(sel,ph){
   sel.innerHTML=h;
 }
 function fillHours(sel,withEmpty){
-  var h=withEmpty?'<option value="">시간 모름</option>':'';
+  /* v49 · ‘모름’은 옆 체크박스가 맡는다. 목록(휠)에는 시간만 두고, 표시용 자리 한 칸만 숨겨 둔다 */
+  var h=withEmpty?'<option value="" hidden disabled>시간 모름</option>':'';
   for(var i=0;i<12;i++) h+='<option value="'+i+'">'+hourLabel(i)+'</option>';
   sel.innerHTML=h;
 }
-function fillRegions(sel){
-  sel.innerHTML=REGIONS.map(function(r){return '<option value="'+r.k+'">'+r.name+'</option>';}).join('');
+function fillRegions(sel,hideUnknown){
+  /* v49 · ‘지역 모름’ 체크박스가 있는 폼에서는 목록에서 감추고, 체크했을 때 표시용으로만 쓴다 */
+  sel.innerHTML=REGIONS.map(function(r){
+    return '<option value="'+r.k+'"'+(hideUnknown&&r.unknown?' hidden disabled':'')+'>'+r.name+'</option>';
+  }).join('');
+}
+function syncUnknown(c,s){
+  if(!c||!s) return;
+  s.disabled=c.checked;
+  s.classList.toggle('is-off',c.checked);
+  if(c.checked) s.value='';
 }
 function regionOf(k){
   for(var i=0;i<REGIONS.length;i++) if(REGIONS[i].k===k) return REGIONS[i];
@@ -87,7 +97,7 @@ function init(){
     var el=$('#'+a[0]); if(el) fillHours(el,a[1]);
   });
   /* 지역 */
-  ['region','pregion','lz-region'].forEach(function(id){ var el=$('#'+id); if(el) fillRegions(el); });
+  ['region','pregion','lz-region'].forEach(function(id){ var el=$('#'+id); if(el) fillRegions(el,id==='region'); });
 
   /* 히어로 배경 */
   var art=$('.hero-art'); if(art) art.style.backgroundImage='url(./assets/hero-art.jpg)';
@@ -96,7 +106,7 @@ function init(){
     state.cal=v.cal; $('#leapRow').style.display=(v.cal==='lunar')?'flex':'none';
   });
   bindChips('#genderChips',function(b){return {g:b.getAttribute('data-g')};},function(v){ state.gender=v.g; });
-  bindChips('#stageChips',function(b){return {s:b.getAttribute('data-s')};},function(v){ state.stage=v.s; });
+  bindChips('#stageChips',function(b){return {s:b.getAttribute('data-s')};},function(v){ state.stage=v.s; },{deselect:true,empty:{s:''}});
   bindChips('#marryChips',function(b){return {m:b.getAttribute('data-m')};},function(v){ state.marry=v.m; });
   bindChips('#kidChips',function(b){return {c:b.getAttribute('data-c')};},function(v){ state.kid=v.c; });
   bindChips('#lzGender',function(b){return {g:b.getAttribute('data-g')};},function(v){ state.pg=v.g; });
@@ -116,11 +126,11 @@ function init(){
     sw.classList.toggle('on',state.ctx);
     $('#ctxBody').classList.toggle('on',state.ctx);
   });
-  /* 모름 체크 */
+  /* 모름 체크 — v49 · 고른 시간을 비우고 잠근다. 표시는 숨겨둔 ‘시간 모름’ 자리가 맡는다 */
   [['notime','hour'],['pnotime','phour'],['lz-notime','lz-hour']].forEach(function(a){
     var c=$('#'+a[0]),s=$('#'+a[1]);
     if(!c||!s) return;
-    c.addEventListener('change',function(){ s.disabled=c.checked; if(c.checked) s.value=''; });
+    c.addEventListener('change',function(){ syncUnknown(c,s); });
   });
   /* v48 · 지역 모름 — 체크하면 출생 지역을 '출생지 모름'으로 맞추고 잠그며, 풀면 직전 지역으로 돌린다 */
   var nrg=$('#noregion'), rg=$('#region');
@@ -129,9 +139,9 @@ function init(){
     nrg.addEventListener('change',function(){
       if(nrg.checked){
         if(rg.value&&rg.value!=='unknown') prevReg=rg.value;
-        rg.value='unknown'; rg.disabled=true;
+        rg.value='unknown'; rg.disabled=true; rg.classList.add('is-off');
       }else{
-        rg.disabled=false;
+        rg.disabled=false; rg.classList.remove('is-off');
         rg.value=(prevReg&&prevReg!=='unknown')?prevReg:'seoul';
       }
     });
@@ -143,14 +153,9 @@ function init(){
   $$('[data-goto-track]').forEach(function(a){
     a.addEventListener('click',function(){ setTimeout(function(){ setTrack(a.getAttribute('data-goto-track')); },60); });
   });
-  /* 인생사주 리포트 표지 → 구매 안내 */
+  /* 인생사주 리포트 신청 CTA → 신청서를 열고 그 자리로 내려간다 (v49) */
   $$('[data-life-cta]').forEach(function(b){
-    b.addEventListener('click',function(){
-      var el=$('#life-buy');
-      if(!el) return;
-      var y=el.getBoundingClientRect().top+window.pageYOffset-110;
-      window.scrollTo({top:y<0?0:y,behavior:'smooth'});
-    });
+    b.addEventListener('click',function(){ openLifeForm(); });
   });
   /* 테마 */
   renderThemes();
@@ -225,19 +230,25 @@ function initLightbox(){
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&lb.classList.contains('on')) close(); });
 }
 
-function bindChips(sel,get,on){
+function bindChips(sel,get,on,opt){
   var box=$(sel); if(!box) return;
   var btns=$$('.chip',box);
+  var deselect=!!(opt&&opt.deselect), empty=(opt&&opt.empty)||{};
   btns.forEach(function(b){
     b.addEventListener('click',function(){
+      /* v49 · 켜진 알약을 다시 누르면 해제 (현재 상황) */
+      if(deselect&&b.classList.contains('on')){
+        b.classList.remove('on'); on(empty); return;
+      }
       btns.forEach(function(x){x.classList.remove('on');});
       b.classList.add('on');
       on(get(b));
     });
   });
   /* 화면에 이미 켜져 있는 알약이 있으면 그것을 기준으로 삼는다 (v48: 남/여 순서가 바뀌어도 기본값이 흘러가지 않게) */
-  var cur=btns.filter(function(b){ return b.classList.contains('on'); })[0]||btns[0];
+  var cur=btns.filter(function(b){ return b.classList.contains('on'); })[0];
   if(cur) on(get(cur));
+  else if(deselect) on(empty);
 }
 
 /* ---------------- 트랙 ---------------- */
@@ -895,7 +906,7 @@ function themeUpgradeToLife(){
     if($('#lz-d')) $('#lz-d').value=inp.d;
     if($('#lz-name')&&!$('#lz-name').value&&inp.name&&inp.name!=='당신') $('#lz-name').value=inp.name;
     if($('#lz-hour')) $('#lz-hour').value=inp.hasTime?String(inp.hourIndex):'';
-    if($('#lz-notime')) $('#lz-notime').checked=!inp.hasTime;
+    if($('#lz-notime')){ $('#lz-notime').checked=!inp.hasTime; syncUnknown($('#lz-notime'),$('#lz-hour')); }
     if($('#lz-region')&&inp.regionKey){
       var ok=false;
       for(var i=0;i<$('#lz-region').options.length;i++){ if($('#lz-region').options[i].value===inp.regionKey) ok=true; }
@@ -941,7 +952,26 @@ function fastSummaryHTML(){
     '<div class="fs-chips">'+chips.map(function(c){ return '<span>'+c+'</span>'; }).join('')+'</div>'+
     (q?'<div class="fs-q">질문 — '+esc(q)+'</div>':'');
 }
+/* v49 · 인생사주 신청서는 CTA를 눌렀을 때 열린다 (랜딩을 먼저 보여주기 위해) */
+function revealLifePanel(){
+  var p=$('#lifeFormPanel'); if(p) p.classList.add('on');
+  var cta=$('#lifeApplyCta'); if(cta) cta.classList.add('opened');
+}
+function openLifeForm(){
+  revealLifePanel();
+  var fast=$('#lzFast'), pay=$('#pdfPay'), done=$('#pdfDone');
+  var busy=(fast&&fast.classList.contains('on'))||(pay&&pay.classList.contains('on'))||(done&&done.classList.contains('on'));
+  if(!busy){
+    var f=$('#pdfForm'); if(f) f.style.display='';
+    var st=$('#pdfSteps'); if(st) st.style.display='';
+  }
+  setTimeout(function(){
+    var el=$('#lifeFormPanel'); if(!el) return;
+    try{ var y=el.getBoundingClientRect().top+window.pageYOffset-104; window.scrollTo({top:y<0?0:y,behavior:'smooth'}); }catch(e){}
+  },80);
+}
 function openFastConfirm(){
+  revealLifePanel();
   var box=$('#lzFast');
   if(!box) return;
   fastPay=true;
@@ -961,6 +991,7 @@ function openFastConfirm(){
   },120);
 }
 function backToWizard(){
+  revealLifePanel();
   fastPay=false;
   var box=$('#lzFast'); if(box) box.classList.remove('on');
   var f=$('#pdfForm'); if(f) f.style.display='';
@@ -1135,6 +1166,7 @@ function payRowsHTML(o){
   return h;
 }
 function showPayStep(o){
+  revealLifePanel();
   pendingOrder=o;
   $$('.step-body').forEach(function(x){ x.classList.remove('on'); });
   try{ $('#pdfSteps').style.display='none'; }catch(e){}
@@ -1174,6 +1206,7 @@ function completePayment(){
   showDone(o);
 }
 function showDone(order){
+  revealLifePanel();
   var b={name:order.name};
   $$('.step-body').forEach(function(x){ x.classList.remove('on'); });
   try{ $('#pdfSteps').style.display='none'; }catch(e){}

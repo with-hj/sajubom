@@ -135,13 +135,10 @@ a{color:inherit}
 .row.f-withchk{align-items:center;gap:9px}
 .row.f-withchk>select{flex:1 1 auto;min-width:0}
 .row.f-withchk>.chk{flex:0 0 auto;white-space:nowrap;font-size:12px}
-/* 현재 상황 — 두 줄로 감기지 않는 한 줄 알약 (넘치면 가로로만 밀린다) */
-.chips.chips-line{flex-wrap:nowrap !important;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;-ms-overflow-style:none;padding:0 2px 1px 0;scroll-behavior:smooth;
-  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%);
-  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%)}
-.chips.chips-line::-webkit-scrollbar{display:none}
-.chips.chips-line>.chip{flex:0 0 auto;white-space:nowrap}
+/* v49 · 현재 상황 — 6개를 한 줄에 꽉 맞춘다 (가로 스크롤·페이드 없음, 360px에서도 넘치지 않음) */
+.chips.chips-line{flex-wrap:nowrap !important;gap:4px;justify-content:space-between;overflow:visible}
+.chips.chips-line>.chip{flex:1 1 0;min-width:0;text-align:center;white-space:nowrap;
+  padding:5px 2px;font-size:11.5px;letter-spacing:-.03em}
 select,input[type=text],input[type=tel],input[type=email],textarea{
   width:100%;border:1px solid var(--line2);background:#fffdf8;border-radius:10px;
   padding:8px 10px;font-size:14px;line-height:1.4;color:var(--body);font-family:var(--sans);
@@ -152,6 +149,8 @@ select,input[type=text],input[type=tel],input[type=email],textarea{
 input[type=text],input[type=tel],input[type=email],textarea{background-image:none;padding-right:10px}
 textarea{resize:vertical;min-height:84px;line-height:1.65}
 select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(216,179,106,.18)}
+/* 모름 체크로 잠긴 칸은 ‘비어 있음’이 아니라 ‘정해 둔 상태’로 보이게 */
+select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);cursor:default}
 /* iOS Safari는 16px 미만 입력값에 초점을 주면 화면을 확대한다.
    평소에는 14px로 조밀하게 보이다, iOS에서 초점이 들어올 때만 16px로 올려 화면 확대를 막는다. */
 @supports (-webkit-touch-callout: none){
@@ -669,6 +668,13 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .lr-tbl td{color:#C4CDDA;border-bottom:1px solid rgba(255,255,255,.1);line-height:1.7}
 .lr-tbl td b{color:var(--gold-l)}
 .lr-form{margin-top:18px}
+/* v49 · 인생사주 리포트 — 신청서는 CTA를 눌렀을 때 열린다 */
+.lr-apply{margin-top:20px}
+#lifeFormPanel{display:none}
+#lifeFormPanel.on{display:block;animation:lrFormIn .38s ease-out both}
+@keyframes lrFormIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#lifeApplyCta.opened{display:none}
+@media (prefers-reduced-motion:reduce){#lifeFormPanel.on{animation:none}}
 
 /* ---------- 테마 결제 후 바로 결제(빠른 확인) ---------- */
 .fast-box{display:none}

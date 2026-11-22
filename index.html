@@ -34,8 +34,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="./styles.css?v=48">
-<link rel="stylesheet" href="./book.css?v=48">
+<link rel="stylesheet" href="./styles.css?v=49">
+<link rel="stylesheet" href="./book.css?v=49">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 </head>
 <body>
@@ -185,9 +185,8 @@
 
             <div id="stageField">
               <div class="divider" id="stageDivider"><span>현재 상황</span></div>
-              <!-- v48 · 한 줄 고정 : 넘치면 가로로만 부드럽게 밀린다 -->
+              <!-- v49 · 6개를 한 줄에 꽉 채운다 (가로 스크롤 없음) · 켜진 알약을 다시 누르면 해제 -->
               <div class="chips chips-line" id="stageChips">
-                <button type="button" class="chip" data-s="">선택안함</button>
                 <button type="button" class="chip" data-s="job">취준생</button>
                 <button type="button" class="chip" data-s="student">학생</button>
                 <button type="button" class="chip" data-s="work">직장인</button>
@@ -300,6 +299,13 @@
           <tr><th>환불 기준</th><td>제작 착수 전에는 전액 환불, 착수 후에는 진행 단계에 따라 부분 환불됩니다. 완성본을 받으신 뒤에는 디지털 콘텐츠 특성상 환불이 어렵습니다.</td></tr>
         </table>
         <p class="lr-note">사주명리 상징을 생활의 언어로 옮긴 참고 해석입니다.<br>의학적 진단·법률·투자 판단을 대신하지 않습니다.</p>
+
+        <!-- v49 · 신청서는 CTA를 누를 때 열린다 — 처음에는 5단계 소개만 보이게 -->
+        <div class="lr-buy lr-apply" id="lifeApplyCta">
+          <div class="lr-price"><s>119,000원</s><em>67%</em><b>39,800원</b><span>1부 · 프리미엄 소장본 PDF</span></div>
+          <button type="button" class="btn btn-gold btn-block" data-life-cta>인생사주 리포트 신청하기</button>
+          <p class="lr-micro">원국 검수 후 영업일 2~3일 · 결제는 검수 완료 후 안내</p>
+        </div>
 
         <div class="panel lr-form" id="lifeFormPanel">
         <div class="steps" id="pdfSteps">
@@ -543,17 +549,17 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=48"></script>
-<script src="./deep-core.js?v=48"></script>
-<script src="./content.js?v=48"></script>
-<script src="./content-deep.js?v=48"></script>
-<script src="./content-general.js?v=48"></script>
-<script src="./content-love.js?v=48"></script>
-<script src="./content-marriage.js?v=48"></script>
-<script src="./content-baby.js?v=48"></script>
-<script src="./content-wealth.js?v=48"></script>
-<script src="./book.js?v=48"></script>
-<script src="./book-more.js?v=48"></script>
-<script src="./app.js?v=48"></script>
+<script src="./engine.js?v=49"></script>
+<script src="./deep-core.js?v=49"></script>
+<script src="./content.js?v=49"></script>
+<script src="./content-deep.js?v=49"></script>
+<script src="./content-general.js?v=49"></script>
+<script src="./content-love.js?v=49"></script>
+<script src="./content-marriage.js?v=49"></script>
+<script src="./content-baby.js?v=49"></script>
+<script src="./content-wealth.js?v=49"></script>
+<script src="./book.js?v=49"></script>
+<script src="./book-more.js?v=49"></script>
+<script src="./app.js?v=49"></script>
 </body>
 </html>
