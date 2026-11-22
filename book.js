@@ -617,10 +617,22 @@ function fitPages(host){
     if(p.classList.contains('cover')) continue;
     /* 폰에서 미리보기·인쇄해도 A4 조판이 같아지도록, 잠깐 인쇄 지면(210mm × 295mm)으로 재어 본다 */
     p.style.width='210mm';p.style.height='295mm';p.style.maxHeight='295mm';p.style.minHeight='295mm';
+    /* 인쇄·PDF 지면과 같은 여백으로 재어야 폰 미리보기 여백(20px 18px) 때문에 글씨를 과하게 키우지 않는다 */
+    p.style.padding='14mm 14.5mm 11mm';
     p.style.removeProperty('--fs');
     var bd=p.querySelector('.pg-bd');
+    /* scrollHeight는 flex 안에서 늘어난 높이를 반영하지 못하므로, 마지막 자식의 아래끝으로 넘침을 잰다 */
+    var over=function(){
+      if(!bd) return 0;
+      var br=bd.getBoundingClientRect(), bottom=0;
+      for(var q=0;q<bd.children.length;q++){
+        var r=bd.children[q].getBoundingClientRect();
+        if(r.height>0 && r.bottom>bottom) bottom=r.bottom;
+      }
+      return bottom-br.bottom;
+    };
     var fs=15.5, guard=0;
-    while(bd && (bd.scrollHeight>bd.clientHeight+1) && fs>10.6 && guard<40){
+    while(bd && over()>1 && fs>10.6 && guard<40){
       fs-=0.25; guard++;
       p.style.setProperty('--fs',fs.toFixed(2)+'px');
     }
@@ -631,7 +643,7 @@ function fitPages(host){
       while(up<17.4 && guard<90){
         up+=0.25; guard++;
         p.style.setProperty('--fs',up.toFixed(2)+'px');
-        if(bd.scrollHeight>bd.clientHeight+1){ up-=0.25; p.style.setProperty('--fs',up.toFixed(2)+'px'); break; }
+        if(over()>1){ up-=0.25; p.style.setProperty('--fs',up.toFixed(2)+'px'); break; }
       }
     }
     /* 남는 여백이 지면의 1/4 이하일 때만 문단 사이에 나눠 채운다.
@@ -652,7 +664,7 @@ function fitPages(host){
     if(bd && bd.scrollHeight>bd.clientHeight+1) bd.style.overflow='visible';
     else if(bd) bd.style.removeProperty('overflow');
     p.style.removeProperty('width');p.style.removeProperty('height');
-    p.style.removeProperty('max-height');p.style.removeProperty('min-height');
+    p.style.removeProperty('max-height');p.style.removeProperty('min-height');p.style.removeProperty('padding');
   }
 }
 
