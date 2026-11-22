@@ -183,7 +183,7 @@ function buildDeep(R){
     if(t) branchRels.push({a:A.pos,b:B.pos,aBr:A.branch,bBr:B.branch,type:t,
       pair:BR_HAN[A.branch]+BR_HAN[B.branch],mean:REL_MEAN[t],w:relWeight(t)});
     if(A.stem===B.stem&&A.key!=='day'&&B.key!=='day')
-      stemRels.push({a:A.pos,b:B.pos,type:'동일',pair:STEM_HAN[A.stem]});
+      stemRels.push({a:A.pos,b:B.pos,type:'동일',pair:STEM_HAN[A.stem],mean:'같은 글자가 두 자리에 나란히 서 있습니다. 비슷한 일이 두 곳에서 겹치거나, 같은 성향이 두 번 드러나는 자리입니다.'});
     for(var h=0;h<STEM_HAP.length;h++){
       if((A.stem===STEM_HAP[h][0]&&B.stem===STEM_HAP[h][1])||(A.stem===STEM_HAP[h][1]&&B.stem===STEM_HAP[h][0])){
         var he=STEM_HAP[h][2];
@@ -321,7 +321,7 @@ function interList(R){
     out.push(r.a+' '+brT(r.aBr)+j(BR_KO[r.aBr],'와과')+' '+r.b+' '+brT(r.bBr)+' — '+r.type+'('+r.pair+'), '+r.mean+'.');
   });
   d.stemRels.forEach(function(r){
-    out.push(r.a+'·'+r.b+' 천간 — '+r.type+'('+r.pair+'), '+r.mean+'.');
+    out.push(r.a+' · '+r.b+' 천간 — '+r.type+'('+r.pair+'), '+r.mean+'.');
   });
   return out;
 }
@@ -334,7 +334,7 @@ function interHTML(R){
     h+='<li>'+r.a+' '+brT(r.aBr)+j(BR_KO[r.aBr],'와과')+' '+r.b+' '+brT(r.bBr)+' — <b>'+r.type+'</b>. '+r.mean+'.</li>';
   });
   d.stemRels.forEach(function(r){
-    h+='<li>'+r.a+''+r.b+'의 천간 — <b>'+r.type+'</b>. '+r.mean+'</li>';
+    h+='<li>'+r.a+' · '+r.b+'의 천간 — <b>'+r.type+'</b>. '+r.mean+'</li>';
   });
   return h+'</ul>';
 }
