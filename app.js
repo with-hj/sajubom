@@ -742,7 +742,7 @@ function downloadBookPdf(){
   if(!host||!host.querySelector('.pg')){ alert('리포트를 먼저 열어주세요.'); return; }
   if(host.getAttribute('data-busy')==='1') return;
   host.setAttribute('data-busy','1');
-  progOn('PDF 준비 중…','A4 104쪽을 한 장씩 그립니다. 잠시만 기다려 주세요.');
+  progOn('PDF 준비 중…','A4 지면을 한 장씩 그립니다. 잠시만 기다려 주세요.');
   loadPdfLibs().then(function(){
     return makePdf(host,curBookName);
   }).then(function(){
@@ -777,7 +777,7 @@ function makePdf(host,name){
     }
     function step(){
       if(i>=total){ finish(); return; }
-      prog('PDF 생성 중 ('+(i+1)+'/'+total+')…', i/total, '이 화면을 닫지 마세요. 폰에서는 20~60초 걸립니다.');
+      prog('PDF 생성 중 ('+(i+1)+'/'+total+')…', i/total, '이 화면을 닫지 마세요. 보통 1~2분 걸립니다.');
       window.html2canvas(pages[i],{scale:scale,backgroundColor:'#F6F1E7',useCORS:true,logging:false,removeContainer:true}).then(function(cv){
         var img=cv.toDataURL('image/jpeg',0.86);
         if(i>0) doc.addPage('a4','portrait');

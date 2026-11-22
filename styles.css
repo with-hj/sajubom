@@ -465,9 +465,9 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 #adminSheet[data-mode="cust"] .adm-tabs{display:none !important}
 #adminSheet[data-mode="cust"] .pdf-toolbar{margin-top:2px}
 /* PDF 생성 진행 표시 */
-.pdfprog{position:fixed;inset:0;z-index:200;display:none;background:rgba(9,13,22,.94)}
+.pdfprog{position:fixed;inset:0;z-index:200;display:none;background:#080c14;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .pdfprog.on{display:flex;align-items:center;justify-content:center}
-.pdfprog .box{width:min(76vw,320px);text-align:center;color:#f1e3c8}
+.pdfprog .box{width:min(80vw,330px);text-align:center;color:#f1e3c8;padding:22px 18px;border:1px solid rgba(216,179,106,.22);border-radius:16px;background:rgba(18,16,14,.92)}
 .pdfprog b{font-family:var(--serif);font-size:16px;display:block;margin-bottom:12px;letter-spacing:.02em}
 .pdfprog .bar{height:6px;border-radius:99px;background:rgba(216,179,106,.2);overflow:hidden}
 .pdfprog .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e2c07a,#c39a4f);transition:width .18s}
