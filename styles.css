@@ -136,7 +136,7 @@ a{color:inherit}
 .row.f-withchk>select{flex:1 1 auto;min-width:0}
 .row.f-withchk>.chk{flex:0 0 auto;white-space:nowrap;font-size:12px}
 /* v49 · 현재 상황 — 6개를 한 줄에 꽉 맞춘다 (가로 스크롤·페이드 없음, 360px에서도 넘치지 않음) */
-.chips.chips-line{flex-wrap:nowrap !important;gap:4px;justify-content:space-between;overflow:visible}
+.chips.chips-line{flex-wrap:nowrap !important;gap:4px;justify-content:space-between;overflow:visible;max-width:360px}
 .chips.chips-line>.chip{flex:1 1 0;min-width:0;text-align:center;white-space:nowrap;
   padding:5px 2px;font-size:11.5px;letter-spacing:-.03em}
 select,input[type=text],input[type=tel],input[type=email],textarea{
