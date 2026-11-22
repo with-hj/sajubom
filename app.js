@@ -833,13 +833,15 @@ function renderPageOnce(page,scale){
       logging:false,
       removeContainer:true,
       imageTimeout:3500,
-      /* 이 지면 밖(랜딩 화면·다른 쪽·진행 카드)은 복제하지 않는다 — 아이폰이 여기서 멈춘다 */
+      /* 이 지면 밖(랜딩 화면·다른 쪽·진행 카드)은 복제하지 않는다 — 아이폰이 여기서 멈춘다.
+         단 head의 스타일·폰트 링크는 반드시 남긴다(지우면 지면이 CSS 없이 조판된다). */
       ignoreElements:function(el){
         if(!el||el===page) return false;
         try{
+          if(!document.body||!document.body.contains(el)) return false;
           if(page.contains&&page.contains(el)) return false;
           if(el.contains&&el.contains(page)) return false;
-        }catch(e){ return true; }
+        }catch(e){ return false; }
         return true;
       }
     };
