@@ -13,6 +13,8 @@ if(!S) return;
 var mod=S.mod;
 
 /* ---------------------------------------------------------------- 기본 표 */
+/* engine.js 안의 옛 헬퍼(tagEl 등)가 참조하는 elColor — 없으면 보정 */
+try{ if(typeof window.elColor!=='function') window.elColor=function(i){ return S.EL_COLOR[i]; }; }catch(e){}
 var STEM_HAN=S.STEM_HAN, STEM_KO=S.STEM_KO, BR_HAN=S.BR_HAN, BR_KO=S.BR_KO;
 var STEM_EL=S.STEM_EL, BR_EL=S.BR_EL, EL_KO=S.EL_KO, EL_HAN=S.EL_HAN;
 var GOD_GROUP=S.GOD_GROUP, tenGod=S.tenGod;
