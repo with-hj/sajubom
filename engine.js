@@ -1337,7 +1337,8 @@ function nextMonths(n){
 }
 /* 간이 월주(절기 기준 근사: 2월 입춘~) */
 function monthPillarOf(year,month){
-  var yy=(month<=2)?year-1:year;
+  /* 절기 기준: 인월(2월)부터 그해, 축월(1월)은 전년 */
+  var yy=(month<=1)?year-1:year;
   var br=mod(month,12);
   var yStem=mod(yy-4,10);
   var mNum=(br===0)?11:(br===1?12:br-1);
