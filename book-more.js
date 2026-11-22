@@ -10,6 +10,7 @@ function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'
 function n2(n){return n<10?'0'+n:''+n;}
 function elK(i){return S.EL_KO[i]+'('+S.EL_HAN[i]+')';}
 function elS(i){return '<b>'+S.EL_KO[i]+'</b>('+S.EL_HAN[i]+')';}
+function elKj(i,p){ return elK(i)+S.josaP(S.EL_KO[i],p||'이가'); }
 function stemS(s){return S.STEM_HAN[s]+'('+S.STEM_KO[s]+')';}
 function brS(b){return S.BR_HAN[b]+'('+S.BR_KO[b]+')';}
 function page(label,body,opt){
