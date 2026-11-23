@@ -558,6 +558,10 @@ function bindIntro(){
   vid.addEventListener('ended',function(){
     if(!introSrc()) return;
     state.introDone[state.tab]=true;
+    /* v53 · 서랍으로 인생사주 리포트 등 다른 트랙을 보는 중에 영상이 끝나면,
+       보고 있는 화면을 입력창 위치로 끌고 내려가지 않는다 */
+    var tr=$('#track-read');
+    if(tr&&!tr.classList.contains('on')) return;
     revealForm(true);
   });
   vid.addEventListener('click',function(){
