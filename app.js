@@ -199,6 +199,9 @@ function init(){
   /* 미리보기 3장 — 클릭하면 원본 크기로 크게 보기 */
   initLightbox();
 
+  /* v53 · 우측 서랍 메뉴(≡) */
+  initDrawer();
+
   /* URL 파라미터 */
   try{
     if(/[?&]admin=1/.test(location.search)) askAdminPassword(/[?&]book=sample/.test(location.search)?'sample':'list');
@@ -1712,6 +1715,232 @@ function makePdf(host,name){
     fontsReady(1500).then(function(){ return calibratePdfText(scale); }).then(function(){ parkPages(); setTimeout(step,60); });
   });
 }
+/* =====================================================================
+   v53 · 우측 서랍 메뉴(≡)
+   홈 · 인생사주 리포트 · 5대 테마 아코디언 · 마이페이지 · 문의하기
+   ===================================================================== */
+var drFocus=null;
+function drSyncLock(){
+  var any=false;
+  ['#drawer','#mpModal','#ctModal'].forEach(function(s){ var e=$(s); if(e&&e.classList.contains('on')) any=true; });
+  document.body.classList.toggle('dr-open',any);
+}
+/* 5대 테마 아코디언 — content.js의 테마·탭 순서를 그대로 따른다 */
+function buildDrawerAcc(){
+  var box=$('#drAcc');
+  if(!box||!window.CT) return;
+  var h='';
+  for(var k in CT.THEMES){
+    var th=CT.THEMES[k];
+    h+='<li class="dr-item" data-theme="'+k+'">'+
+         '<button type="button" class="dr-theme" aria-expanded="false" aria-controls="drSub-'+k+'">'+
+           '<span class="th"><i class="ha" aria-hidden="true">'+(THEME_HA[k]||'')+'</i>'+(th.short||th.name)+'</span>'+
+           '<span class="car" aria-hidden="true"></span>'+
+         '</button>'+
+         '<ul class="dr-subs" id="drSub-'+k+'">'+
+           th.tabs.map(function(t){
+             return '<li><button type="button" class="dr-sub" data-theme="'+k+'" data-tab="'+t+'" data-dr-sub="1">'+esc(CT.TABS[t].name)+'</button></li>';
+           }).join('')+
+         '</ul></li>';
+  }
+  box.innerHTML=h;
+}
+function drSetAcc(li,open){
+  var subs=li.querySelector('.dr-subs'), btn=li.querySelector('.dr-theme');
+  if(!subs||!btn) return;
+  var was=li.classList.contains('open');
+  li.classList.toggle('open',open);
+  btn.setAttribute('aria-expanded',open?'true':'false');
+  if(open===was) return;
+  if(open){
+    subs.style.height=subs.scrollHeight+'px';
+    var done=function(e){
+      if(e&&e.target!==subs) return;
+      subs.removeEventListener('transitionend',done);
+      if(li.classList.contains('open')) subs.style.height='auto';
+    };
+    subs.addEventListener('transitionend',done);
+  }else{
+    subs.style.height=subs.scrollHeight+'px';
+    void subs.offsetHeight;
+    subs.style.height='0px';
+  }
+}
+function openDrawer(){
+  var dr=$('#drawer'), veil=$('#drVeil'), mb=$('#menuBtn');
+  if(!dr) return;
+  drFocus=document.activeElement;
+  if(veil){ veil.classList.add('on'); veil.setAttribute('aria-hidden','false'); }
+  dr.classList.add('on'); dr.setAttribute('aria-hidden','false');
+  if(mb) mb.setAttribute('aria-expanded','true');
+  drSyncLock();
+  try{ $('#drClose').focus({preventScroll:true}); }catch(e){}
+}
+function closeDrawer(focusBack){
+  var dr=$('#drawer'), veil=$('#drVeil'), mb=$('#menuBtn');
+  if(!dr||!dr.classList.contains('on')) return;
+  dr.classList.remove('on'); dr.setAttribute('aria-hidden','true');
+  if(veil){ veil.classList.remove('on'); veil.setAttribute('aria-hidden','true'); }
+  if(mb) mb.setAttribute('aria-expanded','false');
+  drSyncLock();
+  if(focusBack!==false){
+   var to=(drFocus&&drFocus.focus)?drFocus:mb;
+   try{ to.focus({preventScroll:true}); }catch(e){}
+  }
+}
+/* 서랍에서 고른 탭으로 바로 이동 — 테마를 세우고 그 탭을 연 뒤 탭 카드로 스크롤 */
+function drJump(themeKey,tabKey){
+  var th=CT.THEMES[themeKey]; if(!th) return;
+  state.theme=themeKey;
+  state.tab=(tabKey&&th.tabs.indexOf(tabKey)>=0)?tabKey:th.tabs[0];
+  $$('.tp-card').forEach(function(b){
+    var on=b.getAttribute('data-theme')===state.theme;
+    b.classList.toggle('on',on); b.setAttribute('aria-selected',on?'true':'false');
+  });
+  var cb=$('#ctxBlock');
+  if(cb) cb.style.display=fieldsFor(state.theme,state.tab).ctx?'block':'none';
+  renderTabs();
+  var rv=$('#resultView'); if(rv) rv.innerHTML='';
+  setTrack('read');
+  setTimeout(function(){
+    try{
+      var tv=$('.v8-tpanel')||$('#themeView');
+      var ty=tv.getBoundingClientRect().top+window.pageYOffset-140;
+      window.scrollTo({top:ty<0?0:ty,behavior:'smooth'});
+    }catch(e){}
+  },90);
+}
+function drGo(what){
+  closeDrawer(false);
+  if(what==='home'){
+    setTrack('read');
+    try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+  }else if(what==='life'){
+    setTrack('life');
+  }else if(what==='mypage'){
+    openMyPage();
+  }else if(what==='contact'){
+    openContact();
+  }
+}
+/* ---------------- 마이페이지 ---------------- */
+function fmtDay(iso){
+  if(!iso) return '-';
+  var d=new Date(iso);
+  if(isNaN(d.getTime())) return String(iso).replace(/-/g,'.');
+  return d.getFullYear()+'.'+pad2(d.getMonth()+1)+'.'+pad2(d.getDate());
+}
+function myPageHTML(){
+  var os=orders(), paid=themeCredit(), em=savedEmail(), ph=savedPhone();
+  var h='';
+  h+='<div class="mp-sec"><h4>인생사주 리포트</h4>';
+  if(os.length){
+    h+=os.map(function(o){
+      return '<div class="mp-ord">'+
+        '<div class="n"><b>'+esc(o.name||'이름 없음')+'</b><span class="st">'+esc(o.status||'접수')+'</span></div>'+
+        '<span class="m">'+esc(o.id||'-')+' · '+esc(fmtDay(o.at||o.paidAt||o.date))+'</span>'+
+        '<div class="row"><span class="pr">'+won(o.price||39800)+'</span>'+
+        '<button type="button" class="go" data-mp-open="'+esc(o.id||'')+'">리포트 열람</button></div>'+
+      '</div>';
+    }).join('');
+  }else{
+    h+='<p class="mp-empty">아직 신청한 리포트가 없습니다.</p>';
+  }
+  h+='</div>';
+
+  h+='<div class="mp-sec"><h4>테마 풀이</h4>'+
+     '<p class="mp-line"><span>테마 풀이 이용권</span><b class="'+(paid?'gold':'')+'">'+(paid?'보유 중':'없음')+'</b></p>'+
+     (paid?'<p class="mp-line"><span>인생사주 리포트 결제가</span><b class="gold">29,900원</b></p>':'')+
+     '</div>';
+
+  h+='<div class="mp-sec"><h4>저장된 연락처</h4>';
+  if(em||ph){
+    if(em) h+='<p class="mp-line"><span>이메일</span><b>'+esc(em)+'</b></p>';
+    if(ph) h+='<p class="mp-line"><span>연락처</span><b>'+esc(ph)+'</b></p>';
+  }else{
+    h+='<p class="mp-empty">리포트를 신청할 때 입력한 연락처가 여기에 저장됩니다.</p>';
+  }
+  h+='</div>';
+  return h;
+}
+function bindMyPage(){
+  $$('#mpBody [data-mp-open]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var id=b.getAttribute('data-mp-open'), list=orders(), o=null;
+      for(var i=0;i<list.length;i++){ if(list[i].id===id){ o=list[i]; break; } }
+      if(!o) return;
+      lastOrder=o;
+      closeMyPage(false);
+      try{ openCustomerReport(); }catch(e){}
+    });
+  });
+}
+function openMyPage(){
+  var m=$('#mpModal'), body=$('#mpBody');
+  if(!m) return;
+  if(body) body.innerHTML=myPageHTML();
+  m.classList.add('on'); m.setAttribute('aria-hidden','false');
+  drSyncLock(); bindMyPage();
+  try{ $('#mpClose').focus({preventScroll:true}); }catch(e){}
+}
+function closeMyPage(focusBack){
+  var m=$('#mpModal'); if(!m||!m.classList.contains('on')) return;
+  m.classList.remove('on'); m.setAttribute('aria-hidden','true');
+  drSyncLock();
+  if(focusBack!==false){ try{ $('#menuBtn').focus({preventScroll:true}); }catch(e){} }
+}
+/* ---------------- 문의하기 ---------------- */
+function openContact(){
+  var m=$('#ctModal'); if(!m) return;
+  m.classList.add('on'); m.setAttribute('aria-hidden','false');
+  drSyncLock();
+  try{ $('#ctClose').focus({preventScroll:true}); }catch(e){}
+}
+function closeContact(focusBack){
+  var m=$('#ctModal'); if(!m||!m.classList.contains('on')) return;
+  m.classList.remove('on'); m.setAttribute('aria-hidden','true');
+  drSyncLock();
+  if(focusBack!==false){ try{ $('#menuBtn').focus({preventScroll:true}); }catch(e){} }
+}
+function initDrawer(){
+  var dr=$('#drawer'), mb=$('#menuBtn'), veil=$('#drVeil');
+  if(!dr||!mb) return;
+  buildDrawerAcc();
+  mb.addEventListener('click',function(){ openDrawer(); });
+  if($('#drClose')) $('#drClose').addEventListener('click',function(){ closeDrawer(); });
+  if(veil) veil.addEventListener('click',function(){ closeDrawer(); });
+  $$('.dr-link').forEach(function(b){
+    b.addEventListener('click',function(){ drGo(b.getAttribute('data-dr')); });
+  });
+  var acc=$('#drAcc');
+  if(acc) acc.addEventListener('click',function(e){
+    var t=e.target;
+    var th=t.closest?t.closest('.dr-theme'):null;
+    if(th){
+      var li=th.parentNode, open=!li.classList.contains('open');
+      /* 한 번에 하나만 펼친다 */
+      $$('.dr-item.open',acc).forEach(function(x){ if(x!==li) drSetAcc(x,false); });
+      drSetAcc(li,open);
+      return;
+    }
+    var sb=t.closest?t.closest('.dr-sub'):null;
+    if(sb){
+      closeDrawer(false);
+      drJump(sb.getAttribute('data-theme'),sb.getAttribute('data-tab'));
+    }
+  });
+  if($('#mpClose')) $('#mpClose').addEventListener('click',function(){ closeMyPage(); });
+  if($('#mpModal')) $('#mpModal').addEventListener('click',function(e){ if(e.target&&e.target.id==='mpModal') closeMyPage(); });
+  if($('#ctClose')) $('#ctClose').addEventListener('click',function(){ closeContact(); });
+  if($('#ctModal')) $('#ctModal').addEventListener('click',function(e){ if(e.target&&e.target.id==='ctModal') closeContact(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape') return;
+    if(dr.classList.contains('on')) closeDrawer();
+    else if($('#mpModal').classList.contains('on')) closeMyPage();
+    else if($('#ctModal').classList.contains('on')) closeContact();
+  });
+}
+
 window.APP={init:init,state:state};
 document.addEventListener('DOMContentLoaded',function(){
   try{ init(); }catch(e){ if(window.console) console.error('init',e); }
