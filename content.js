@@ -240,12 +240,17 @@ var TABS={
 
   money:{theme:'wealth',name:'재물·금전운',tag:'돈이 들어오는 문과 새는 곳',sub:'내게 재물이 들어오는 시기와 부의 흐름',
     note:'재물이 들어오는 시기를 봐요.'},
+  /* v52 · 재물·직업 두 탭(직업·이직운, 부동산·문서운)에 인트로 영상을 붙인다 */
   job:{theme:'wealth',name:'직업·이직운',tag:'천직과 옮겨야 할 시기',sub:'나에게 맞는 직업과 새로운 기회의 시기',
-    note:'맞는 일과 옮길 시기를 봐요.'},
+    note:'맞는 일과 옮길 시기를 봐요.',
+    video:'./assets/videos/job.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    intro:{badge:'직업·이직운 · 天靈堂',hook:'나에게 맞는 일과<br>자리를 옮길 시기를<br><b>먼저</b> 보고 가세요',cta:'내 직업·이직운 · 사주 정보 입력하기'}},
   startup:{theme:'wealth',name:'사업·부업운',tag:'시작해도 되는지, 무엇으로',sub:'내 사업의 성공 가능성과 재물이 따르는 시기',
     note:'사업과 부업의 가능성을 봐요.'},
   estate:{theme:'wealth',name:'부동산·문서운',tag:'집과 계약, 문서가 움직이는 때',sub:'부동산과 계약, 재산이 움직이는 시기',
-    note:'집과 계약의 시기를 봐요.'}
+    note:'집과 계약의 시기를 봐요.',
+    video:'./assets/videos/estate.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    intro:{badge:'부동산·문서운 · 天靈堂',hook:'집과 계약, 문서가<br>움직이는 때를<br><b>미리</b> 보고 가세요',cta:'내 부동산운 · 사주 정보 입력하기'}}
 };
 
 /* 챕터 조립 : 테마 본문 뒤에 심화 장(content-deep.js)을 붙입니다 */
