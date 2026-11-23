@@ -321,8 +321,9 @@ function openTheme(key,silent){
   renderTabs();
   if(!silent){
     try{
-      var tv=$('.v8-tpanel')||$('#themeView');
-      var ty=tv.getBoundingClientRect().top+window.pageYOffset-140;
+      /* v55 · 배너를 걷어낸 뒤에는 5대 테마 탭이 상단 바에 가리지 않도록 탭 줄을 기준으로 앉힌다 */
+      var tv=$('.v8-pick')||$('.v8-tpanel')||$('#themeView');
+      var ty=tv.getBoundingClientRect().top+window.pageYOffset-128;
       window.scrollTo({top:ty,behavior:'smooth'});
     }catch(e){}
   }
@@ -1811,8 +1812,9 @@ function drJump(themeKey,tabKey){
   setTrack('read');
   setTimeout(function(){
     try{
-      var tv=$('.v8-tpanel')||$('#themeView');
-      var ty=tv.getBoundingClientRect().top+window.pageYOffset-140;
+      /* v55 · 배너를 걷어낸 뒤에는 5대 테마 탭이 상단 바에 가리지 않도록 탭 줄을 기준으로 앉힌다 */
+      var tv=$('.v8-pick')||$('.v8-tpanel')||$('#themeView');
+      var ty=tv.getBoundingClientRect().top+window.pageYOffset-128;
       window.scrollTo({top:ty<0?0:ty,behavior:'smooth'});
     }catch(e){}
   },90);
