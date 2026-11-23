@@ -1095,7 +1095,8 @@ input,select,textarea,button{font-family:var(--sans)}
   border-right:1.5px solid rgba(216,184,120,.7);border-bottom:1.5px solid rgba(216,184,120,.7);
   transform:rotate(45deg);transition:transform .24s ease,margin .24s ease;
 }
-.drawer .dr-item.open .dr-theme{color:#F8EFDB;background:rgba(216,184,120,.055)}
+.drawer .dr-item.open .dr-theme{color:#F8EFDB}
+.drawer .dr-item.open .dr-theme .ha{color:var(--gold)}
 .drawer .dr-item.open .dr-theme .car{transform:rotate(-135deg);margin-top:3px}
 .drawer .dr-subs{
   list-style:none;margin:0 0 2px 17px;padding:0 0 0 12px;
