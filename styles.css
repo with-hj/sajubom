@@ -1214,7 +1214,10 @@ body{background:var(--hanji)}
 
 /* ---------- 상단 헤더 · 트랙 (밝은 나무빛) ---------- */
 .hd{background:rgba(250,247,242,.94);border-bottom:1px solid rgba(92,70,48,.14)}
-.brand .bn{color:#2E2318}
+.brand .bn{color:#2D2218;font-family:'Yeon Sung',var(--serif);font-size:25px;font-weight:400;
+  letter-spacing:.07em;line-height:1.15;padding-bottom:2px;-webkit-text-stroke:.25px #2D2218}
+/* v55 · 머리 좌상단은 붓글씨 로고 한 줄만 (사각 인장·한자 제거) */
+.brand{padding:2px 0}
 .brand .bs{color:#9A7B45}
 .brand .seal{border-color:#B08A46;color:#8A6524}
 .hd-menu{border-color:rgba(92,70,48,.22);background:rgba(92,70,48,.05);color:#5C4630}
@@ -1230,17 +1233,10 @@ body{background:var(--hanji)}
 .v8-screen{background:var(--hanji);color:#2B2620}
 .v8-sky{display:none}
 
-/* 한옥 서재 배너 */
-.v54-banner{position:relative;max-width:596px;margin:0 auto;background:var(--hanji3);overflow:hidden}
-.v54-banner img{width:100%;height:auto;display:block}
-.v54-banner:after{content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(26,16,8,.14) 0%,rgba(26,16,8,0) 30%,rgba(26,16,8,.12) 100%)}
-.v54-cap{position:absolute;left:0;right:0;bottom:9px;margin:0;text-align:center;
-  font-family:var(--serif);font-size:11.5px;letter-spacing:.04em;color:rgba(252,244,228,.95);
-  text-shadow:0 1px 3px rgba(0,0,0,.75),0 1px 12px rgba(0,0,0,.7);z-index:1}
+/* 한옥 서재 배너 (v55에서 화면에서 걷어냄 — 스타일은 남겨두지 않는다) */
 
-/* 5대 테마 — 사진 카드 대신 밑줄 탭 */
-.v8-pick{display:flex;gap:0;padding:0;margin:16px 0 0;
+/* v55 · 트랙 → 5대 테마 탭 사이 호흡 */
+.v8-pick{display:flex;gap:0;padding:0;margin:24px 0 0;
   border-bottom:1px solid rgba(92,70,48,.18)}
 .tp-card{flex:1 1 0;min-width:0;display:flex;align-items:flex-end;justify-content:center;gap:0;
   background:none;border:0;border-radius:0;padding:0;box-shadow:none;transition:none}
@@ -1290,10 +1286,9 @@ body{background:var(--hanji)}
 .panel{background:#FFFDF8;border-color:#E7DBC6;box-shadow:0 10px 24px rgba(104,80,50,.08)}
 
 @media (min-width:700px){
-  /* 데스크톱 : 머리 · 트랙 바 · 배너를 본문 폭(560)에 맞춰 한 줄로 세운다 */
+  /* 데스크톱 : 머리 · 트랙 바 · 테마 탭을 본문 폭(560)에 맞춰 한 줄로 세운다 */
   .hd .wrap{max-width:560px}
   .tracks .wrap{max-width:560px;padding:7px 24px}
-  .v54-banner{max-width:512px}
   .tp-card .tx b{font-size:14.5px}
   .intro-card{width:min(430px,100%,calc(74vh * 9 / 16))}
 }
@@ -1316,41 +1311,44 @@ html.no-gate .gate{display:none}
 }
 .gate-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0A0705}
 .gate-veil{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(10,7,4,.66) 0%,rgba(10,7,4,.16) 15%,rgba(10,7,4,0) 30%,
-    rgba(10,7,4,0) 46%,rgba(10,7,4,.40) 66%,rgba(10,7,4,.80) 80%,rgba(10,7,4,.96) 92%)}
-.gate-top{position:absolute;top:calc(18px + env(safe-area-inset-top));left:20px;z-index:2;
-  display:flex;align-items:center;gap:7px;pointer-events:none}
-.gate-seal{width:26px;height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;
-  border:1px solid rgba(233,206,152,.72);border-radius:4px;font-family:var(--serif);font-size:15px;
-  color:#EFD9A9;line-height:1;padding-top:1px}
-.gate-brand{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:.1em;color:#FFF8EA;
-  text-shadow:0 2px 12px rgba(0,0,0,.7)}
-.gate-han{font-family:var(--serif);font-size:9.5px;letter-spacing:.26em;color:rgba(233,206,152,.9);
-  margin-top:5px}
+  background:linear-gradient(180deg,rgba(10,7,4,.62) 0%,rgba(10,7,4,.12) 14%,rgba(10,7,4,0) 28%,
+    rgba(10,7,4,0) 44%,rgba(10,7,4,.46) 64%,rgba(10,7,4,.84) 78%,rgba(10,7,4,.97) 90%)}
+/* v55 · 좌상단은 붓글씨 로고 한 줄만 (사각 인장·한자 제거) */
+.gate-top{position:absolute;top:calc(20px + env(safe-area-inset-top));left:22px;z-index:2;pointer-events:none}
+.gate-brand{font-family:'Yeon Sung',var(--serif);font-size:30px;font-weight:400;letter-spacing:.07em;
+  line-height:1.12;color:#FAF3E3;-webkit-text-stroke:.3px #FAF3E3;
+  text-shadow:0 2px 14px rgba(0,0,0,.78),0 0 34px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.6)}
 .gate-skip{position:absolute;top:calc(17px + env(safe-area-inset-top));right:16px;z-index:3;
   font-size:11.5px;letter-spacing:.05em;color:rgba(250,240,222,.74);
   border:1px solid rgba(250,240,222,.22);border-radius:999px;padding:5px 12px;
   background:rgba(10,7,4,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .gate-skip:active{background:rgba(10,7,4,.5)}
-.gate-in{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 20px calc(18px + env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;align-items:stretch;gap:9px;text-align:center;
+.gate-in{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 22px calc(22px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:stretch;gap:11px;text-align:center;
   animation:gateRise .9s .12s cubic-bezier(.2,.7,.2,1) both}
-.gate-copy{margin:0 0 3px;font-family:var(--serif);font-size:20.5px;line-height:1.5;letter-spacing:-.01em;
-  color:#FFF6E6;text-shadow:0 2px 16px rgba(0,0,0,.72)}
+.gate-copy{margin:0 0 14px;font-family:var(--serif);font-size:27px;font-weight:700;line-height:1.42;
+  letter-spacing:-.025em;color:#FAEFD8;
+  text-shadow:0 3px 20px rgba(0,0,0,.86),0 1px 4px rgba(0,0,0,.62)}
 .gate:focus{outline:none}
 .gate-cta:focus,.gate-life:focus,.gate-skip:focus,.gate-never:focus{outline:none}
 .gate-cta:focus-visible,.gate-life:focus-visible,.gate-skip:focus-visible,.gate-never:focus-visible{
   outline:2px solid rgba(255,240,210,.8);outline-offset:2px}
 .gate-copy b{color:#F2D9A4;font-weight:700}
-.gate-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;
-  border-radius:13px;background:linear-gradient(135deg,#F2DCA6,#DCB76C 55%,#C9A45A);color:#241705;
-  font-size:16.5px;font-weight:800;letter-spacing:-.01em;box-shadow:0 12px 26px rgba(0,0,0,.45)}
+/* v55 · 금박 버튼 — 두번째 시안의 따뜻한 금속 그라데이션 + 먹색 글자 */
+.gate-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#E0C486 0%,#D5B36B 34%,#C7A45B 62%,#B89146 100%);
+  color:#1A1410;font-size:16.5px;font-weight:800;letter-spacing:-.01em;
+  box-shadow:0 12px 26px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,247,222,.55),inset 0 -1px 0 rgba(84,57,18,.3)}
 .gate-cta:active{transform:translateY(1px)}
 .gate-life{display:inline-flex;align-items:center;justify-content:center;gap:6px;align-self:center;
-  padding:3px 2px;font-size:13px;color:#EBD7AC;letter-spacing:-.01em}
+  margin-top:6px;padding:3px 2px;font-size:13.5px;letter-spacing:.005em;color:#F4E9D4;
+  text-decoration:underline;text-decoration-color:rgba(244,233,212,.62);
+  text-underline-offset:4px;text-decoration-thickness:1px;
+  text-shadow:0 2px 10px rgba(0,0,0,.7)}
 .gate-life:active{color:#FFF1D2}
-.gate-never{align-self:center;margin:1px 0 0;font-size:11px;letter-spacing:.02em;
-  color:rgba(250,240,222,.52);text-decoration:underline;text-underline-offset:3px}
+.gate-never{align-self:center;margin:6px 0 0;font-size:11px;letter-spacing:.02em;
+  color:rgba(250,240,222,.5);text-decoration:underline;text-underline-offset:3px}
 @keyframes gateIn{to{opacity:1}}
 @keyframes gateRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .gate.gate-out{opacity:0;transition:opacity .55s ease-out;pointer-events:none}
@@ -1359,16 +1357,22 @@ html.no-gate .gate{display:none}
   .gate.gate-out{transition:none}
 }
 /* 가로 모드 · 낮은 화면에서는 대문 글자를 한 단계 줄여 영상과 겹치지 않게 */
+/* 짧은 화면(iPhone SE 등) — 글자를 한 단계 줄여 펼친 책과 겹치지 않게 */
+@media (max-height:760px){
+  .gate-in{gap:9px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  .gate-copy{font-size:23px;margin-bottom:11px}
+  .gate-cta{min-height:50px;font-size:15.5px}
+  .gate-life{font-size:12.5px;margin-top:4px}
+  .gate-never{font-size:10.5px;margin-top:4px}
+}
 @media (max-height:620px){
-  .gate-in{gap:6px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
-  .gate-copy{font-size:15px;margin-bottom:1px;white-space:nowrap;line-height:1.4}
+  .gate-in{gap:7px;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+  .gate-copy{font-size:19px;margin-bottom:8px;line-height:1.4}
   .gate-cta{min-height:46px;font-size:15px;border-radius:11px}
   .gate-life{font-size:12px}
-  .gate-never{font-size:10.5px}
-  /* 낮은 화면 : 브랜드를 줄이고 건너뛰기와 겹치지 않게 */
-  .gate-brand{font-size:17px;letter-spacing:.06em}
-  .gate-han{display:none}
-  .gate-seal{width:22px;height:22px;flex:0 0 22px;font-size:13px}
-  .gate-top{left:14px;gap:5px}
+  .gate-never{font-size:10.5px;margin-top:3px}
+  /* 낮은 화면 : 로고를 줄이고 건너뛰기와 겹치지 않게 */
+  .gate-brand{font-size:21px}
+  .gate-top{left:16px}
   .gate-skip{right:12px;font-size:10.5px;padding:4px 9px}
 }
