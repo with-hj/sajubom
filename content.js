@@ -239,14 +239,20 @@ var TABS={
     intro:{badge:'부모·자녀 궁합 · 天靈堂',hook:'엄마, 아빠, 아이<br>세 사주가 만나는<br>자리를 봐요',cta:'우리 가족 궁합 · 사주 정보 입력하기'}},
 
   money:{theme:'wealth',name:'재물·금전운',tag:'돈이 들어오는 문과 새는 곳',sub:'내게 재물이 들어오는 시기와 부의 흐름',
-    note:'재물이 들어오는 시기를 봐요.'},
+    note:'재물이 들어오는 시기를 봐요.',
+    /* v54 · 재물·금전운 인트로 영상 */
+    video:'./assets/videos/money.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    intro:{badge:'재물·금전운 · 天靈堂',hook:'돈이 들어오는 문과<br>새는 곳을<br><b>먼저</b> 보고 가세요',cta:'내 재물·금전운 · 사주 정보 입력하기'}},
   /* v52 · 재물·직업 두 탭(직업·이직운, 부동산·문서운)에 인트로 영상을 붙인다 */
   job:{theme:'wealth',name:'직업·이직운',tag:'천직과 옮겨야 할 시기',sub:'나에게 맞는 직업과 새로운 기회의 시기',
     note:'맞는 일과 옮길 시기를 봐요.',
     video:'./assets/videos/job.mp4',poster:'./assets/themes-web/t-wealth.jpg',
     intro:{badge:'직업·이직운 · 天靈堂',hook:'나에게 맞는 일과<br>자리를 옮길 시기를<br><b>먼저</b> 보고 가세요',cta:'내 직업·이직운 · 사주 정보 입력하기'}},
   startup:{theme:'wealth',name:'사업·부업운',tag:'시작해도 되는지, 무엇으로',sub:'내 사업의 성공 가능성과 재물이 따르는 시기',
-    note:'사업과 부업의 가능성을 봐요.'},
+    note:'사업과 부업의 가능성을 봐요.',
+    /* v54 · 사업·부업운 인트로 영상 */
+    video:'./assets/videos/biz.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    intro:{badge:'사업·부업운 · 天靈堂',hook:'지금 시작해도 되는지,<br>무엇으로 시작할지<br><b>사주로</b> 짚어드립니다',cta:'내 사업·부업운 · 사주 정보 입력하기'}},
   estate:{theme:'wealth',name:'부동산·문서운',tag:'집과 계약, 문서가 움직이는 때',sub:'부동산과 계약, 재산이 움직이는 시기',
     note:'집과 계약의 시기를 봐요.',
     video:'./assets/videos/estate.mp4',poster:'./assets/themes-web/t-wealth.jpg',

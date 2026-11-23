@@ -1199,3 +1199,162 @@ body.dr-open{overflow:hidden}
   .mpbox{animation:none}
   .drawer .dr-subs{transition:none}
 }
+
+/* =====================================================================
+   v54 · 밝은 한지 톤(한지빛) 메인 + 한옥 배너 + 첫 대문(게이트)
+   — 2026-11-23 확정 시안: #FAF7F2 / #F3ECE1 바탕, 먹빛 갈색 글자,
+     상단은 한옥 서재 배너, 테마는 밑줄 탭, 세부 탭은 알약, 9:16 영상 카드.
+   ===================================================================== */
+:root{
+  --hanji:#FAF7F2; --hanji2:#F3ECE1; --hanji3:#EDE4D6;
+  --ink-brown:#3A2A18; --ink-brown2:#5C4630; --ink-soft:#7A674F;
+  --bak:#EFE7DA;
+}
+body{background:var(--hanji)}
+
+/* ---------- 상단 헤더 · 트랙 (밝은 나무빛) ---------- */
+.hd{background:rgba(250,247,242,.94);border-bottom:1px solid rgba(92,70,48,.14)}
+.brand .bn{color:#2E2318}
+.brand .bs{color:#9A7B45}
+.brand .seal{border-color:#B08A46;color:#8A6524}
+.hd-menu{border-color:rgba(92,70,48,.22);background:rgba(92,70,48,.05);color:#5C4630}
+.hd-menu:active{background:rgba(92,70,48,.14);border-color:rgba(92,70,48,.42)}
+.tracks{background:rgba(243,236,225,.96);border-top:1px solid rgba(92,70,48,.10);border-bottom:1px solid rgba(92,70,48,.16)}
+.track-btn{background:rgba(255,255,255,.55);border-color:rgba(92,70,48,.18);color:#6B573E}
+.track-btn small{color:#9A8A72}
+.track-btn.on{background:linear-gradient(160deg,#4C3826,#2F2317);border-color:#3A2A18;color:#FBF4E6;
+  box-shadow:0 6px 16px rgba(58,42,24,.22),inset 0 0 0 1px rgba(255,240,212,.08)}
+.track-btn.on small{color:#D9BE86}
+
+/* ---------- 테마별 사주 화면 : 한지 바탕 ---------- */
+.v8-screen{background:var(--hanji);color:#2B2620}
+.v8-sky{display:none}
+
+/* 한옥 서재 배너 */
+.v54-banner{position:relative;max-width:596px;margin:0 auto;background:var(--hanji3);overflow:hidden}
+.v54-banner img{width:100%;height:auto;display:block}
+.v54-banner:after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(26,16,8,.14) 0%,rgba(26,16,8,0) 30%,rgba(26,16,8,.12) 100%)}
+.v54-cap{position:absolute;left:0;right:0;bottom:9px;margin:0;text-align:center;
+  font-family:var(--serif);font-size:11.5px;letter-spacing:.04em;color:rgba(248,236,214,.88);
+  text-shadow:0 1px 8px rgba(0,0,0,.65);z-index:1}
+
+/* 5대 테마 — 사진 카드 대신 밑줄 탭 */
+.v8-pick{display:flex;gap:0;padding:0;margin:16px 0 0;
+  border-bottom:1px solid rgba(92,70,48,.18)}
+.tp-card{flex:1 1 0;min-width:0;display:flex;align-items:flex-end;justify-content:center;gap:0;
+  background:none;border:0;border-radius:0;padding:0;box-shadow:none;transition:none}
+.tp-card .thumb{display:none}
+.tp-card .tx{gap:0;justify-content:flex-end}
+.tp-card .tx b{font-family:var(--serif);font-size:clamp(11.5px,3.3vw,14.5px);font-weight:400;
+  color:#6E5B44;letter-spacing:-.045em;line-height:1.3;white-space:nowrap;
+  padding:13px 0 10px;border-bottom:2.5px solid transparent;transition:color .18s,border-color .18s}
+.tp-card .tx i.ha{display:none}
+.tp-card:active .tx b{color:#2B2018}
+.tp-card.on{background:none;border:0;box-shadow:none}
+.tp-card.on .tx b{color:#2B2018;font-weight:700;border-bottom-color:#5A3C22}
+.tp-card.on .thumb img{filter:none}
+
+/* 세부 탭 — 가운데 정렬 알약 */
+.v8-tpanel{margin:16px 0 0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:center}
+.v8-tabs,.subtabs{display:flex;flex-wrap:nowrap;justify-content:center;align-items:stretch;gap:8px;padding:0;overflow:visible}
+.subtab{flex:1 1 0;min-width:0;display:inline-flex;align-items:center;justify-content:center;height:44px;
+  padding:0 6px;border-radius:11px;border:1px solid rgba(92,70,48,.10);
+  background:var(--bak);color:#5F4D38;font-family:var(--serif);font-size:14px;font-weight:400;
+  letter-spacing:-.03em;box-shadow:none}
+.subtab .tx{display:block;line-height:1;white-space:nowrap}
+.subtab.on{background:linear-gradient(160deg,#4E3520,#311E0E);border-color:transparent;color:#FBF3E3;font-weight:700;
+  box-shadow:0 8px 18px rgba(58,40,22,.24)}
+.subtab .dot{display:none}
+#subtabs.tabs-4{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:none;margin:0}
+#subtabs.tabs-4 .subtab{width:100%;padding:0 8px}
+.v8-tnote{margin:13px auto 0;max-width:344px;font-family:var(--serif);font-size:13.5px;font-weight:400;
+  line-height:1.72;color:#78654F;letter-spacing:-.01em;text-align:center}
+.v8-tnote b{color:#33261A;font-weight:700}
+
+/* 9:16 인트로 영상 — 밝은 바탕 위에 얇은 나무 테두리로 앉힌다 */
+.intro-card{width:min(430px,100%,calc(82vh * 9 / 16));margin:16px auto 0;gap:10px}
+.intro-frame{border-radius:18px;border:1px solid rgba(120,92,58,.26);background:var(--hanji3);
+  box-shadow:0 16px 34px rgba(90,70,44,.18),0 1px 0 rgba(255,255,255,.7) inset}
+.intro-shade{background:linear-gradient(180deg,rgba(20,12,6,.34) 0%,rgba(20,12,6,0) 24%,
+  rgba(20,12,6,0) 42%,rgba(20,12,6,.62) 72%,rgba(20,12,6,.9) 94%)}
+.intro-badge{background:rgba(252,247,238,.94);color:#3A2A18;border:1px solid rgba(176,138,70,.48);
+  font-size:12px;letter-spacing:.1em;padding:4px 10px;border-radius:999px}
+.intro-hook{color:#FFF8EA;font-size:19px;text-shadow:0 2px 12px rgba(0,0,0,.55)}
+.intro-hook b{color:#F3DCA9}
+.intro-cta{background:linear-gradient(135deg,#F0DCA8,#D9B36A 55%,#C9A45A);color:#241705;
+  box-shadow:0 10px 22px rgba(60,42,20,.3)}
+.intro-note{color:#8A7861}
+
+/* 입력 폼 — 한지 위의 흰 카드 */
+.panel{background:#FFFDF8;border-color:#E7DBC6;box-shadow:0 10px 24px rgba(104,80,50,.08)}
+
+@media (min-width:700px){
+  /* 데스크톱 : 머리 · 트랙 바 · 배너를 본문 폭(560)에 맞춰 한 줄로 세운다 */
+  .hd .wrap{max-width:560px}
+  .tracks .wrap{max-width:560px;padding:7px 24px}
+  .v54-banner{max-width:512px}
+  .tp-card .tx b{font-size:14.5px}
+  .intro-card{width:min(430px,100%,calc(74vh * 9 / 16))}
+}
+
+/* =====================================================================
+   v54 · 첫 대문(게이트) — 들어오면 9:16 영상이 먼저 펼쳐진다
+   ===================================================================== */
+html.gate-on,html.gate-on body{overflow:hidden}
+.gate{
+  position:fixed;inset:0;z-index:320;display:flex;align-items:center;justify-content:center;
+  background:#0A0705;opacity:0;animation:gateIn .55s ease-out forwards;
+}
+html.no-gate .gate{display:none}
+.gate-frame{position:relative;width:100%;height:100%;overflow:hidden;background:#0A0705;isolation:isolate}
+/* 화면이 영상(9:16)보다 넓으면 가운데 9:16 기둥으로 앉히고 좌우는 어두운 바탕 */
+@media (min-aspect-ratio:9/16){
+  .gate{background:radial-gradient(120% 80% at 50% 38%,#1B120A 0%,#0A0705 64%,#060403 100%)}
+  .gate-frame{width:calc(100vh * 9 / 16);height:100vh;max-width:100vw;
+    box-shadow:0 0 90px rgba(0,0,0,.8),0 0 0 1px rgba(216,179,106,.12)}
+}
+.gate-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0A0705}
+.gate-veil{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,7,4,.66) 0%,rgba(10,7,4,.16) 15%,rgba(10,7,4,0) 30%,
+    rgba(10,7,4,0) 46%,rgba(10,7,4,.40) 66%,rgba(10,7,4,.80) 80%,rgba(10,7,4,.96) 92%)}
+.gate-top{position:absolute;top:calc(18px + env(safe-area-inset-top));left:20px;z-index:2;
+  display:flex;align-items:center;gap:7px;pointer-events:none}
+.gate-seal{width:26px;height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(233,206,152,.72);border-radius:4px;font-family:var(--serif);font-size:15px;
+  color:#EFD9A9;line-height:1;padding-top:1px}
+.gate-brand{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:.1em;color:#FFF8EA;
+  text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.gate-han{font-family:var(--serif);font-size:9.5px;letter-spacing:.26em;color:rgba(233,206,152,.9);
+  margin-top:5px}
+.gate-skip{position:absolute;top:calc(17px + env(safe-area-inset-top));right:16px;z-index:3;
+  font-size:11.5px;letter-spacing:.05em;color:rgba(250,240,222,.74);
+  border:1px solid rgba(250,240,222,.22);border-radius:999px;padding:5px 12px;
+  background:rgba(10,7,4,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.gate-skip:active{background:rgba(10,7,4,.5)}
+.gate-in{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 20px calc(18px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:stretch;gap:9px;text-align:center;
+  animation:gateRise .9s .12s cubic-bezier(.2,.7,.2,1) both}
+.gate-copy{margin:0 0 3px;font-family:var(--serif);font-size:20.5px;line-height:1.5;letter-spacing:-.01em;
+  color:#FFF6E6;text-shadow:0 2px 16px rgba(0,0,0,.72)}
+.gate:focus{outline:none}
+.gate-cta:focus,.gate-life:focus,.gate-skip:focus,.gate-never:focus{outline:none}
+.gate-cta:focus-visible,.gate-life:focus-visible,.gate-skip:focus-visible,.gate-never:focus-visible{
+  outline:2px solid rgba(255,240,210,.8);outline-offset:2px}
+.gate-copy b{color:#F2D9A4;font-weight:700}
+.gate-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;
+  border-radius:13px;background:linear-gradient(135deg,#F2DCA6,#DCB76C 55%,#C9A45A);color:#241705;
+  font-size:16.5px;font-weight:800;letter-spacing:-.01em;box-shadow:0 12px 26px rgba(0,0,0,.45)}
+.gate-cta:active{transform:translateY(1px)}
+.gate-life{display:inline-flex;align-items:center;justify-content:center;gap:6px;align-self:center;
+  padding:3px 2px;font-size:13px;color:#EBD7AC;letter-spacing:-.01em}
+.gate-life:active{color:#FFF1D2}
+.gate-never{align-self:center;margin:1px 0 0;font-size:11px;letter-spacing:.02em;
+  color:rgba(250,240,222,.52);text-decoration:underline;text-underline-offset:3px}
+@keyframes gateIn{to{opacity:1}}
+@keyframes gateRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.gate.gate-out{opacity:0;transition:opacity .55s ease-out;pointer-events:none}
+@media (prefers-reduced-motion:reduce){
+  .gate,.gate-in{animation:none;opacity:1}
+  .gate.gate-out{transition:none}
+}

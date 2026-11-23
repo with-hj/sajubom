@@ -202,6 +202,9 @@ function init(){
   /* v53 · 우측 서랍 메뉴(≡) */
   initDrawer();
 
+  /* v54 · 첫 대문(게이트) */
+  initGate();
+
   /* URL 파라미터 */
   try{
     if(/[?&]admin=1/.test(location.search)) askAdminPassword(/[?&]book=sample/.test(location.search)?'sample':'list');
@@ -1943,6 +1946,44 @@ function initDrawer(){
     else if($('#mpModal').classList.contains('on')) closeMyPage();
     else if($('#ctModal').classList.contains('on')) closeContact();
   });
+}
+
+/* ---------------- v54 · 첫 대문(게이트) ----------------
+   들어오면 9:16 영상이 먼저 펼쳐지고, 버튼을 눌러 홈으로 들어간다.
+   ?admin=1 · ?gate=0 · #life · 이미 본 세션에서는 머리의 인라인 스크립트가 no-gate 를 붙여 아예 뜨지 않는다. */
+function initGate(){
+  var g=$('#gate'), html=document.documentElement;
+  if(!g) return;
+  if(html.classList.contains('no-gate')) return;
+  var vid=$('#gateVideo');
+  document.body.classList.add('lock');
+  try{
+    if(vid){ vid.currentTime=0; var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){}); }
+  }catch(e){}
+  var closed=false;
+  function close(opt){
+    if(closed) return; closed=true;
+    opt=opt||{};
+    if(opt.never){ try{ localStorage.setItem('cl_gate','off'); }catch(e){} }
+    try{ sessionStorage.setItem('cl_gate_seen','1'); }catch(e){}
+    try{ if(vid) vid.pause(); }catch(e){}
+    html.classList.remove('gate-on');
+    document.body.classList.remove('lock');
+    g.style.animation='none';
+    g.classList.add('gate-out');
+    g.setAttribute('aria-hidden','true');
+    setTimeout(function(){ g.style.display='none'; html.classList.add('no-gate'); },600);
+    if(opt.track==='life') setTimeout(function(){ setTrack('life'); },90);
+    else { try{ window.scrollTo(0,0); }catch(e){} }
+  }
+  var bEnter=$('#gateEnter'), bLife=$('#gateLife'), bSkip=$('#gateSkip'), bNever=$('#gateNever');
+  if(bEnter) bEnter.addEventListener('click',function(){ close(); });
+  if(bLife) bLife.addEventListener('click',function(){ close({track:'life'}); });
+  if(bSkip) bSkip.addEventListener('click',function(){ close(); });
+  if(bNever) bNever.addEventListener('click',function(){ close({never:true}); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+  g.addEventListener('click',function(e){ if(e.target===g) close(); });   /* 영상 바깥(좌우 여백)을 누르면 닫기 */
+  try{ g.focus({preventScroll:true}); }catch(e){}
 }
 
 window.APP={init:init,state:state};

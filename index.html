@@ -6,7 +6,7 @@
 <meta name="format-detection" content="telephone=no">
 <title>천령당 · 궁금한 물음 하나로 나의 계절을 읽다</title>
 <meta name="description" content="천령당(天靈堂) — 달빛 아래, 당신의 여덟 글자. 테마별 심층 풀이와, 타고난 기질부터 인생의 전환점·재물·직업·사랑·가족·노후까지 담은 프리미엄 인생사주 리포트.">
-<meta name="theme-color" content="#0A1421">
+<meta name="theme-color" content="#FAF7F2">
 <meta name="author" content="천령당 天靈堂">
 <link rel="canonical" href="https://with-hj.github.io/wolhadang-saju/">
 
@@ -34,9 +34,21 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="./styles.css?v=53c">
-<link rel="stylesheet" href="./book.css?v=53c">
+<link rel="stylesheet" href="./styles.css?v=54">
+<link rel="stylesheet" href="./book.css?v=54">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
+<!-- v54 · 첫 대문(게이트) 노출 여부를 첫 그림 전에 정한다 — 깜빡임 없이 바로 뜨거나 바로 건너뛴다 -->
+<script>
+(function(){
+  try{
+    var q=location.search||'', h=location.hash||'', off=false;
+    try{ off = localStorage.getItem('cl_gate')==='off' || sessionStorage.getItem('cl_gate_seen')==='1'; }catch(e){}
+    if(/[?&](admin=1|gate=0|skipgate=1)/.test(q)) off=true;
+    if(/[?&]track=life/.test(q) || /^#(life|track-life|life-buy|report)/.test(h)) off=true;
+    document.documentElement.classList.add(off?'no-gate':'gate-on');
+  }catch(e){ document.documentElement.classList.add('no-gate'); }
+})();
+</script>
 </head>
 <body>
 
@@ -66,14 +78,12 @@
 
   <!-- ================= 트랙1 : 5대 테마 ================= -->
   <section class="v8-screen screen on" id="track-read">
-    <div class="v8-sky" aria-hidden="true"></div>
+    <!-- v54 · 한옥 서재 배너 (밝은 한지 톤의 머리) -->
+    <div class="v54-banner">
+      <img src="./assets/hanok-banner.jpg" alt="한옥 서재 — 책장과 펼친 사주 책" width="941" height="510">
+      <p class="v54-cap">달빛 아래, 당신의 여덟 글자</p>
+    </div>
     <div class="wrap v8-wrap">
-
-      <div class="v8-hero">
-        <div class="v8-eyebrow">달빛 아래, 당신의 여덟 글자</div>
-        <h1>궁금한 물음 하나로<br><em>나의 계절</em>을 읽다</h1>
-        <p class="v8-lede">다섯 가지 주제 중 하나를 고르면,<br>그 자리에서 여덟 글자를 펼쳐 읽어드립니다.</p>
-      </div>
 
       <div id="themeListView" class="on">
         <div class="v8-pick" id="themeList" role="tablist" aria-label="운세 테마 선택"></div>
@@ -649,17 +659,42 @@
   <p id="loadingText">여덟 글자의 무게를 재고 있어요</p>
 </div>
 
-<script src="./engine.js?v=53c"></script>
-<script src="./deep-core.js?v=53c"></script>
-<script src="./content.js?v=53c"></script>
-<script src="./content-deep.js?v=53c"></script>
-<script src="./content-general.js?v=53c"></script>
-<script src="./content-love.js?v=53c"></script>
-<script src="./content-marriage.js?v=53c"></script>
-<script src="./content-baby.js?v=53c"></script>
-<script src="./content-wealth.js?v=53c"></script>
-<script src="./book.js?v=53c"></script>
-<script src="./book-more.js?v=53c"></script>
-<script src="./app.js?v=53c"></script>
+<!-- ================= v54 · 첫 대문(게이트) =================
+     들어오면 9:16 영상이 먼저 펼쳐지고, 아래 버튼을 눌러 홈으로 들어간다.
+     ?admin=1 · ?gate=0 · #life · 이미 본 세션에서는 뜨지 않는다(머리의 인라인 스크립트가 먼저 판단). -->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateBrand" tabindex="-1">
+  <div class="gate-frame">
+    <video id="gateVideo" class="gate-video" src="./assets/videos/gate.mp4" poster="./assets/gate-poster.jpg"
+      autoplay muted playsinline preload="auto"></video>
+    <span class="gate-veil" aria-hidden="true"></span>
+
+    <div class="gate-top">
+      <span class="gate-seal" aria-hidden="true">天</span>
+      <span class="gate-brand" id="gateBrand">천령당</span>
+      <span class="gate-han">天靈堂</span>
+    </div>
+    <button type="button" class="gate-skip" id="gateSkip">건너뛰기</button>
+
+    <div class="gate-in">
+      <p class="gate-copy">여덟 글자에 적힌, <b>나의 계절</b></p>
+      <button type="button" class="gate-cta" id="gateEnter">사주 보러 들어가기<span aria-hidden="true">→</span></button>
+      <button type="button" class="gate-life" id="gateLife">인생사주 리포트<span aria-hidden="true">→</span></button>
+      <button type="button" class="gate-never" id="gateNever">다시 보지 않기</button>
+    </div>
+  </div>
+</div>
+
+<script src="./engine.js?v=54"></script>
+<script src="./deep-core.js?v=54"></script>
+<script src="./content.js?v=54"></script>
+<script src="./content-deep.js?v=54"></script>
+<script src="./content-general.js?v=54"></script>
+<script src="./content-love.js?v=54"></script>
+<script src="./content-marriage.js?v=54"></script>
+<script src="./content-baby.js?v=54"></script>
+<script src="./content-wealth.js?v=54"></script>
+<script src="./book.js?v=54"></script>
+<script src="./book-more.js?v=54"></script>
+<script src="./app.js?v=54"></script>
 </body>
 </html>
