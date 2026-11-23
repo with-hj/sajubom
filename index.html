@@ -42,9 +42,10 @@
 (function(){
   try{
     var q=location.search||'', h=location.hash||'', off=false;
-    try{ off = localStorage.getItem('cl_gate')==='off' || sessionStorage.getItem('cl_gate_seen')==='1'; }catch(e){}
+    var force=/[?&]gate=1/.test(q);   /* ?gate=1 — 다시 보기의 경우에도 대문을 강제로 띄운다 */
+    try{ off = !force && (localStorage.getItem('cl_gate')==='off' || sessionStorage.getItem('cl_gate_seen')==='1'); }catch(e){}
     if(/[?&](admin=1|gate=0|skipgate=1)/.test(q)) off=true;
-    if(/[?&]track=life/.test(q) || /^#(life|track-life|life-buy|report)/.test(h)) off=true;
+    if(!force && (/[?&]track=life/.test(q) || /^#(life|track-life|life-buy|report)/.test(h))) off=true;
     document.documentElement.classList.add(off?'no-gate':'gate-on');
   }catch(e){ document.documentElement.classList.add('no-gate'); }
 })();
