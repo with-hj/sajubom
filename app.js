@@ -556,6 +556,7 @@ function setIntroCopy(T){
 function syncIntro(){
   var card=$('#introCard'), vid=$('#introVideo'), panel=$('#panelForm');
   if(!card||!vid||!panel) return;
+  lrArmTab();   /* v62 · 탭이 바뀌면 ‘한 바퀴 끝에 한 번’을 새로 준비한다 */
   var src=introSrc();
   setIntroCopy(CT.TABS[state.tab]);
   if(!src){
@@ -597,9 +598,64 @@ function resumeIntro(){
   if(tr&&!tr.classList.contains('on')) return;
   syncIntro();
 }
+/* ---------------- v62 · 영상 한 바퀴가 끝나는 순간 입력창이 스르륵 올라온다 ----------------
+   영상은 loop로 계속 도니까 ended 이벤트가 오지 않는다. 그래서 timeupdate에서
+   재생 위치가 0:00으로 되감기는 순간(직전보다 0.5초 이상 뒤로 점프)을 ‘한 바퀴 끝’으로 본다.
+   탭에 들어와 한 번만, 사용자가 이미 입력창으로 내려갔거나(CTA·스크롤·입력) 인생사주 리포트
+   트랙을 보는 중이거나 대문이 떠 있으면 움직이지 않는다. 다른 탭에 갔다 돌아오면 다시 한 번. */
+var lrLastSec=-1, lrLastTab=null, lrPulled={}, lrEngaged=false;
+function lrArmTab(){
+  if(lrLastTab===state.tab) return;
+  lrLastTab=state.tab;
+  lrPulled[state.tab]=false;
+  lrLastSec=-1;
+}
+function lrCanPull(){
+  if(lrEngaged) return false;
+  if(document.documentElement.classList.contains('gate-on')) return false;
+  var tr=$('#track-read');
+  if(!tr||!tr.classList.contains('on')) return false;
+  if(!introSrc()) return false;
+  if(state.introDone[state.tab]) return false;
+  if(lrPulled[state.tab]) return false;
+  return true;
+}
+function bindLoopPull(){
+  var vid=$('#introVideo');
+  if(!vid||vid.__loopPull) return;
+  vid.__loopPull=true;
+  /* 손으로 조금이라도 움직였거나 입력창을 건드렸으면 영상이 끝나도 끌어내리지 않는다 */
+  var engage=function(){ lrEngaged=true; };
+  try{
+    window.addEventListener('wheel',engage,{passive:true});
+    window.addEventListener('touchmove',engage,{passive:true});
+  }catch(e){}
+  var panel=$('#panelForm');
+  if(panel){
+    panel.addEventListener('focusin',engage);
+    panel.addEventListener('input',engage);
+    panel.addEventListener('change',engage);
+  }
+  vid.addEventListener('timeupdate',function(){
+    var t=vid.currentTime||0;
+    if(lrLastSec<0){ lrLastSec=t; return; }
+    if(lrLastSec>0.8&&t<lrLastSec-0.5){        /* 0:00으로 되감김 = 첫 바퀴가 끝난 지점 */
+      lrLastSec=t;
+      lrArmTab();
+      if(!lrCanPull()) return;
+      lrPulled[state.tab]=true;
+      try{ revealForm(true); }catch(e){}
+      return;
+    }
+    lrLastSec=t;
+  });
+  /* 영상이 다시 0:00부터 시작할 때(탭 전환·재생) 기준점을 맞춘다 */
+  vid.addEventListener('playing',function(){ if(vid.currentTime<0.8) lrLastSec=-1; });
+}
 function bindIntro(){
   var vid=$('#introVideo');
   if(!vid) return;
+  bindLoopPull();
   vid.addEventListener('ended',function(){
     if(!introSrc()) return;
     state.introDone[state.tab]=true;
