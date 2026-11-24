@@ -6,6 +6,8 @@
 'use strict';
 var S=window.SJ, B=window.BOOK;
 function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+S.STEM_HAN[st%10]+S.BR_HAN[br%12]+')'; }
+/* v66 · 표 안의 ‘갑인(甲寅)’이 괄호 안에서 쪼개지지 않게 (book.js와 같은 헬퍼, 이 파일은 별도 스코프) */
+function tw_(s){ return '<span class="tw">'+s+'</span>'; }
 var M={};
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function n2(n){return n<10?'0'+n:''+n;}
