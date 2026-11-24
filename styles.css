@@ -1555,3 +1555,24 @@ html.no-gate .gate{display:none}
 #track-life .lr-price b,#track-life .lr-price s,#track-life .pay-row b,#track-life .pay-row s,
 #track-life .fast-sum b,#track-life .note-box b{white-space:nowrap}
 #track-life .pay-row .sub{white-space:normal}
+
+/* v56d · 서랍의 ‘인생사주 리포트’를 카드처럼 도드라지게 */
+.drawer .dr-link[data-dr="life"]{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin:4px 0 3px;padding:12px 12px;border-radius:11px;
+  background:linear-gradient(135deg,rgba(244,226,184,.78),rgba(248,240,224,.55));
+  border:1px solid rgba(176,138,70,.52);
+  border-left:2.5px solid #6B2336;
+  color:#5C2434;font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.01em;
+  box-shadow:0 6px 14px rgba(120,90,50,.1),inset 0 1px 0 rgba(255,255,255,.6);
+}
+.drawer .dr-link[data-dr="life"]:active{
+  background:linear-gradient(135deg,rgba(238,216,166,.92),rgba(246,236,216,.7));
+  color:#4A1B29;
+}
+.drawer .dr-best{
+  flex:0 0 auto;display:inline-block;padding:2px 7px;border-radius:999px;
+  font-family:var(--sans);font-size:9.5px;font-weight:800;letter-spacing:.05em;font-style:normal;
+  color:#FBF3E3;background:linear-gradient(135deg,#8A4048,#6B2336);
+  box-shadow:0 2px 6px rgba(107,35,54,.24);
+}

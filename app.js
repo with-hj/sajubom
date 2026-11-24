@@ -1822,7 +1822,9 @@ function drJump(themeKey,tabKey){
 function drGo(what){
   closeDrawer(false);
   if(what==='home'){
+    /* v56d · ‘홈’은 맨 위로 스크롤이 아니라 첫 대문(인트로 영상) 화면을 다시 연다 */
     setTrack('read');
+    if(window.GATE&&window.GATE.open){ window.GATE.open(); return; }
     try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
   }else if(what==='life'){
     setTrack('life');
@@ -1956,13 +1958,26 @@ function initDrawer(){
 function initGate(){
   var g=$('#gate'), html=document.documentElement;
   if(!g) return;
-  if(html.classList.contains('no-gate')) return;
   var vid=$('#gateVideo');
-  document.body.classList.add('lock');
-  try{
-    if(vid){ vid.currentTime=0; var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){}); }
-  }catch(e){}
-  var closed=false;
+  var closed=true, hideTimer=0;
+
+  /* v56d · 서랍의 ‘홈’에서도 이 대문을 다시 연다 — 열기/닫기를 함수로 나눠 둔다 */
+  function open(){
+    if(!closed) return;
+    closed=false;
+    if(hideTimer){ clearTimeout(hideTimer); hideTimer=0; }
+    g.style.display='';
+    g.style.animation='';
+    g.classList.remove('gate-out');
+    g.setAttribute('aria-hidden','false');
+    html.classList.remove('no-gate');
+    html.classList.add('gate-on');
+    document.body.classList.add('lock');
+    try{
+      if(vid){ vid.currentTime=0; var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){}); }
+    }catch(e){}
+    try{ g.focus({preventScroll:true}); }catch(e){}
+  }
   function close(opt){
     if(closed) return; closed=true;
     opt=opt||{};
@@ -1974,7 +1989,8 @@ function initGate(){
     g.style.animation='none';
     g.classList.add('gate-out');
     g.setAttribute('aria-hidden','true');
-    setTimeout(function(){ g.style.display='none'; html.classList.add('no-gate'); },600);
+    if(hideTimer) clearTimeout(hideTimer);
+    hideTimer=setTimeout(function(){ g.style.display='none'; html.classList.add('no-gate'); hideTimer=0; },600);
     if(opt.track==='life') setTimeout(function(){ setTrack('life'); },90);
     else { try{ window.scrollTo(0,0); }catch(e){} }
   }
@@ -1985,7 +2001,9 @@ function initGate(){
   if(bNever) bNever.addEventListener('click',function(){ close({never:true}); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
   g.addEventListener('click',function(e){ if(e.target===g) close(); });   /* 영상 바깥(좌우 여백)을 누르면 닫기 */
-  try{ g.focus({preventScroll:true}); }catch(e){}
+  window.GATE={open:open,close:close};
+  /* 첫 방문(대문을 아직 안 본 경우)에만 자동으로 펼친다 */
+  if(!html.classList.contains('no-gate')) open();
 }
 
 window.APP={init:init,state:state};
