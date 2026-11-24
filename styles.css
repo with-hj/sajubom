@@ -1651,3 +1651,7 @@ html.no-gate .gate{display:none}
 .res-head .pillar [style*="#8E98A6"]{color:#DCE3EC !important}
 .res-head .pillar [style*="#537FBA"]{color:#9CC0F2 !important}
 .res-head .pillar [style*="#6b6255"]{color:#B7A791 !important}
+
+/* (11) 한지 바탕 위에서 묻히던 두 곳 — 무료 표시 라벨과 결과 머리 메타 줄 */
+.free-flag b,#track-read .free-flag b{color:#8A6524}
+.res-head .rh-meta{color:#C0AF94}
