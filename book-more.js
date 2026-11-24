@@ -156,7 +156,7 @@ function seunPages(){
       var mp=S.monthPillarOf(y,m), mg=S.tenGod(R.dStem,mp.stem);
       var mrel=S.branchRel(R.dBranch,mp.branch), mtag=S.monthTag(mrel);
       if(mtag==='합'||mtag==='충'){
-        mrows+='<tr><td class="k">'+m+'월</td><td>'+gzP(mp.stem,mp.branch)+' · '+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(((S.MONTH_TIPS.general||{})[S.GOD_GROUP[mg]]||[])[0]||'')+'</td></tr>';
+        mrows+='<tr><td class="k">'+m+'월</td><td>'+tw_(gzP(mp.stem,mp.branch))+'<br>'+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(((S.MONTH_TIPS.general||{})[S.GOD_GROUP[mg]]||[])[0]||'')+'</td></tr>';
       }
     }
     push(page('16 / SEWOON',secLabel('16','SEWOON · '+y+' 네 영역')+'<h2>'+y+'년, 영역별로</h2>'+

@@ -961,10 +961,10 @@ input,select,textarea,button{font-family:var(--sans)}
 .intro-card[hidden]{display:none}
 .intro-frame{
   position:relative;width:100%;aspect-ratio:9/16;border-radius:20px;overflow:hidden;
-  background:#0A1421;border:1px solid rgba(216,179,106,.62);
+  background:#1E1610;border:1px solid rgba(216,179,106,.62);
   box-shadow:0 18px 44px rgba(4,10,20,.5),inset 0 0 0 1px rgba(236,214,166,.16);
 }
-.intro-video{width:100%;height:100%;display:block;object-fit:cover;background:#0A1421}
+.intro-video{width:100%;height:100%;display:block;object-fit:cover;background:#1E1610}
 .intro-shade{
   position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(6,12,22,.40) 0%,rgba(6,12,22,0) 24%,rgba(6,12,22,0) 44%,rgba(6,12,22,.88) 92%);
@@ -1569,3 +1569,73 @@ html.no-gate .gate{display:none}
   color:#FBF3E3;background:linear-gradient(135deg,#8A4048,#6B2336);
   box-shadow:0 2px 6px rgba(107,35,54,.24);
 }
+
+/* =====================================================================
+   v64 · 남색 템플릿 마감 — 결과·리포트·모달의 남색을 먹갈색으로,
+   한지 바탕 위에서 묻히던 밝은 글자를 또렷하게.
+   ===================================================================== */
+
+/* (1) 장 목차 스티키 바 : 남색 → 한지 크림 + 금빛 알약 */
+.ch-tabs{
+  background:linear-gradient(180deg,#FAF7F2 0%,#F3ECE1 100%);
+  border-bottom:1px solid rgba(120,92,58,.22);
+  box-shadow:0 8px 16px -12px rgba(58,42,24,.4);
+}
+.ch-tab{background:rgba(255,255,255,.72);border-color:rgba(120,92,58,.26);color:#5C4630}
+.ch-tab b{color:#8A6524}
+.ch-tab.on{background:linear-gradient(180deg,#F0DCA8,#D5B36B);border-color:#D5B36B;color:#2D2218;
+  box-shadow:0 3px 10px rgba(150,116,54,.22)}
+.ch-tab.on b{color:#5A3F12}
+.ch-tab.lk{color:#8A7A63;border-color:rgba(120,92,58,.3);background:rgba(255,255,255,.5)}
+
+/* (2) 가림 막대 : 남색 → 진한 먹갈색 */
+.redact{background:linear-gradient(180deg,#4A3B2F,#3B2E24 55%,#332619);
+  box-shadow:inset 0 0 0 1px rgba(216,179,106,.5),0 1px 0 rgba(255,255,255,.55)}
+.redact:after{background:linear-gradient(90deg,rgba(235,211,154,.16),rgba(235,211,154,0) 55%)}
+
+/* (3) 결제 게이트(결제 후 전체 보기) : 남색 → 먹갈색 + 금 테두리 */
+.ch-gate.lead{background:linear-gradient(160deg,#2D2218,#1E1610 80%);
+  border-color:rgba(216,179,106,.46);box-shadow:0 14px 30px rgba(58,42,24,.26)}
+.ch-gate .gate-hook{color:#F7EACA}
+.ch-gate .gate-kicker{color:#CDBB9C}
+.ch-gate .gate-note{color:#A2937C}
+
+/* (4) 결과 머리 · PDF 표지 · 결제 카드 · 관리자 암호창 : 남색 → 먹갈색 */
+.res-head{background:linear-gradient(160deg,#33261A,#1E1610 72%);border-color:rgba(216,179,106,.28)}
+.pdf-hero{background:linear-gradient(155deg,#33261A,#1E1610 68%);border-color:rgba(216,179,106,.28)}
+.pw-card{background:linear-gradient(180deg,#33261A,#1E1610 80%);border-color:rgba(216,179,106,.36)}
+.pwbox{background:linear-gradient(180deg,#33261A,#1E1610 100%);border-color:rgba(216,179,106,.4);color:#F1E3C8}
+.pwbox .pw-sub{color:#C2B39B}
+.f-big{background:linear-gradient(135deg,#33261A,#1E1610)}
+.paygate{background:rgba(30,22,16,.84)}
+
+/* (5) 리포트 본문 글자 : 남색 → 먹갈색 */
+.rb-yr .yh .y,.rb-yr .yh b{color:#2D2218}
+.ch-bd h4{color:#2D2218}
+.lock-note{color:#8A7A63}
+.lock-note b{color:#2D2218}
+.ch-tab svg{opacity:.55}
+
+/* (6) 업셀 카드 : 한지 바탕 위에서 묻히던 밝은 글자를 먹갈색·테라코타로 */
+.upsell{background:linear-gradient(180deg,rgba(216,179,106,.16),rgba(216,179,106,.05));
+  border-color:rgba(176,138,70,.42)}
+.upsell .tt{color:#2D2218;font-weight:800;font-size:17.5px;letter-spacing:-.01em}
+.upsell .pp{color:#5C4A34}
+.upsell .pp b{color:#8A6524}
+.upsell .up-price s{color:#A99A86}
+.upsell .up-price b{color:#B44B34}
+.upsell .up-list span{color:#6E5B44;background:rgba(255,255,255,.66);border-color:rgba(176,138,70,.3)}
+.upsell .small{color:#8A7A63}
+
+/* (7) 금액은 어디서도 두 줄로 쪼개지지 않게 */
+.upsell .up-price s,.upsell .up-price b,.upsell .pp b,
+.price-line b,.price-line s,.pay-row b,.pay-row s,.pay-row .tot,
+.ch-gate .gate-price,.fast-box .lr-price b,.fast-box .lr-price s{white-space:nowrap}
+
+/* (8) 관리자 시트(인생사주 리포트 뷰어) 바탕 : 남색 → 먹갈색 */
+.sheet{background:#1E1610}
+.sheet-hd{background:rgba(30,22,16,.97);border-bottom:1px solid rgba(216,179,106,.2)}
+
+/* (9) 테마 풀이 표도 한자 괄호 안에서 끊기지 않게 */
+.tbl td,.tbl th{word-break:keep-all;overflow-wrap:normal}
+.tbl .tw,.ch-bd .tw{white-space:nowrap;display:inline-block}

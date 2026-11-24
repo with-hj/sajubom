@@ -116,6 +116,8 @@ function daeunStarsOf(R,grp){
 }
 /* v47 · 60갑자를 한글(한자)로 — 정미(丁未) */
 function gzP(st,br){ return S.STEM_KO[st%10]+S.BR_KO[br%12]+'('+S.STEM_HAN[st%10]+S.BR_HAN[br%12]+')'; }
+/* v64 · 표 안의 ‘수(水)·갑인(甲寅)’처럼 한자 괄호가 괄호 안에서 쪼개지지 않게 감싼다 */
+function tw_(s){ return '<span class="tw">'+s+'</span>'; }
 B.gzP=gzP;
 function seunTxt(o){ return '<b>'+o.y+'년('+S.STEM_KO[o.s]+S.BR_KO[o.b]+' · '+o.g+', '+o.age+'세)</b>'; }
 function monthTxt(o){ return '<b>'+o.y+'년 '+o.m+'월('+S.STEM_KO[o.s]+S.BR_KO[o.b]+' · '+o.g+(o.tag==='합'?' · 일지와 합':'')+')</b>'; }
@@ -213,16 +215,19 @@ function chartPage(){
     return s+'</tr>';
   };
   h+=row('십성',function(ix){ return ix===B.R.dIdx?'일간':S.tenGod(R.dStem,ix%10); });
-  h+=row('지지 오행',function(ix){ return S.EL_KO[S.BR_EL[ix%12]]+'('+S.EL_HAN[S.BR_EL[ix%12]]+')'; });
+  h+=row('지지 오행',function(ix){ return tw_(S.EL_KO[S.BR_EL[ix%12]]+'('+S.EL_HAN[S.BR_EL[ix%12]]+')'); });
   h+=row('십이운성',function(ix){ return unsung(R.dStem,ix%12); });
-  h+=row('지장간',function(ix){ return S.deep(R).pillars.filter(function(p){return p.ix===ix;})[0].hidden.map(function(x){return S.STEM_KO[x.stem]+'('+S.STEM_HAN[x.stem]+')';}).join('·'); });
-  h+=row('기둥 관계',function(ix){ var p=cells.filter(function(y){return y[1]===ix;})[0]; var rel=relsAt(S.deep(R),p[0]); return rel.length?rel.join('<br>'):'—'; });
+  /* v64 · 지장간은 한 글자씩 줄을 바꿔 세로로 쌓는다 (병(丙)·무(戊)·경(庚) → 세 줄) */
+  h+=row('지장간',function(ix){ return S.deep(R).pillars.filter(function(p){return p.ix===ix;})[0].hidden.map(function(x){return tw_(S.STEM_KO[x.stem]+'('+S.STEM_HAN[x.stem]+')');}).join('<br>'); });
+  /* v64 · ‘일주 충(巳亥)’ → ‘일주’ 다음 줄에 ‘충(巳亥)’ (괄호 안에서 끊기지 않게) */
+  h+=row('기둥 관계',function(ix){ var p=cells.filter(function(y){return y[1]===ix;})[0]; var rel=relsAt(S.deep(R),p[0]);
+    return rel.length?rel.map(function(s){ var i=s.indexOf(' '); return i<0?tw_(s):tw_(s.slice(0,i))+'<br>'+tw_(s.slice(i+1)); }).join('<br>'):'—'; });
   h+=row('공망·신살',function(ix){ var p=cells.filter(function(y){return y[1]===ix;})[0]; var g=(S.deep(R).gmHits.filter(function(x){return x.pos===p[0];}).length?'공망':'')+(salsAt(S.deep(R),p[0]).length?(S.deep(R).gmHits.filter(function(x){return x.pos===p[0];}).length?'·':'')+salsAt(S.deep(R),p[0]).join('·'):''); return g||'—'; });
   h+='</table>';
   var body=secLabel('02','ORIGINAL CHART · 원국')+
    '<h1>여덟 글자의 <span class="accent">지도</span></h1>'+
    '<p class="lead">'+R.y+'년 '+n2(R.m)+'월 '+n2(R.d)+'일'+(R.hasTime?' · 시주 기록':' · 시간 미상(육자)')+'. 일간은 '+stemS(R.dStem)+'이며, 일지를 기준으로 나머지 글자의 십성을 읽습니다.</p>'+h+
-   '<p>년주는 조상과 초년(0~15세), 월주는 부모와 청년(16~30세), 일주는 나와 배우자(31~45세), 시주는 자녀와 말년(46세 이후)을 상징합니다. 네 기둥 중 <b>일간</b>이 이 사주의 주인이고, <b>일지</b>는 배우자궁이자 내가 앉는 자리입니다.</p>'+
+   '<p>년주는 조상과 초년'+tw_('(0~15세)')+', 월주는 부모와 청년'+tw_('(16~30세)')+', 일주는 나와 배우자'+tw_('(31~45세)')+', 시주는 자녀와 말년'+tw_('(46세 이후)')+'을 상징합니다. 네 기둥 중 <b>일간</b>이 이 사주의 주인이고, <b>일지</b>는 배우자궁이자 내가 앉는 자리입니다.</p>'+
    callout('원국을 읽는 첫 문장','<p>이 사주는 <b>'+S.STEM_KO[R.dStem]+'('+S.STEM_HAN[R.dStem]+')</b> 일간이 '+brS(R.dBranch)+' 위에 앉아 <b>'+S.ILJU[R.dIdx][0]+'</b>의 결을 만들었습니다. '+S.ILJU[R.dIdx][1]+'</p>');
   chapter('chart','02','원국 · 여덟 글자','사주 원국표와 십성·운성');
   push(page('02 / CHART',body,{spread:true}));
@@ -276,7 +281,7 @@ function relationPage(){
   var R=B.R,d=S.deep(R),c=B.c;
   var rows='';
   d.branchRels.forEach(function(r){
-    rows+='<tr><td class="k">'+r.a+' '+brS(r.aBr)+' · '+r.b+' '+brS(r.bBr)+'</td><td>'+r.type+'</td><td style="font-size:12px">'+r.mean+'</td></tr>';
+    rows+='<tr><td class="k">'+tw_(r.a)+' '+tw_(brS(r.aBr))+'<br>'+tw_(r.b)+' '+tw_(brS(r.bBr))+'</td><td>'+r.type+'</td><td style="font-size:12px">'+r.mean+'</td></tr>';
   });
   d.stemRels.forEach(function(r){
     rows+='<tr><td class="k">'+r.a+' · '+r.b+' 천간</td><td>'+r.type+'</td><td style="font-size:12px">'+r.mean+'</td></tr>';
@@ -471,7 +476,7 @@ function moneyPages(){
     var g=S.tenGod(R.dStem,dn.idx%10), grp=S.GOD_GROUP[g];
     var note=({'정재':'쌓이는 돈의 구간. 저축·계약·자격처럼 남는 일이 재산이 됩니다.','편재':'큰 돈이 도는 구간. 판이 넓어지지만 씀씀이도 함께 커집니다.','비견':'내 힘으로 버는 구간. 동업은 몫을 먼저 정하세요.','겁재':'사람을 통해 버는 구간. 장부가 없으면 남지 않습니다.','식신':'좋아하는 일이 수입이 되는 구간.','상관':'재능이 돈이 되는 구간. 구설을 조심하세요.','편관':'압박이 커지는 구간. 자리를 지키는 것이 곧 돈입니다.','정관':'자리가 돈을 만드는 구간. 조직·자격이 곧 재산입니다.','편인':'혼자 깊어지는 구간. 준비에 돈을 씁니다.','정인':'배움에 돈을 쓰는 구간. 큰 투자보다 실력을 사는 쪽이 남습니다.'})[g]||'';
     var rel=S.relType(R.dBranch,dn.idx%12);
-    rows+='<tr><td class="k">'+dn.from+'~'+dn.to+'</td><td>'+gzP(dn.idx%10,dn.idx%12)+' · '+g+(rel&&rel!=='동일'?'<br><span style="font-size:11px">일지와 '+rel+'</span>':'')+'</td><td style="font-size:12px">'+note+'</td></tr>';
+    rows+='<tr><td class="k">'+dn.from+'~'+dn.to+'</td><td>'+tw_(gzP(dn.idx%10,dn.idx%12))+'<br>'+g+(rel&&rel!=='동일'?'<br><span style="font-size:11px">일지와 '+rel+'</span>':'')+'</td><td style="font-size:12px">'+note+'</td></tr>';
   });
   push(page('10 / WEALTH',secLabel('10','WEALTH · 재물 3')+'<h1>10년마다 바뀌는<br><span class="accent">돈의 그릇</span></h1>'+
     '<p class="lead">같은 노력도 대운의 결에 따라 결과가 달라집니다. 이 사주의 재물은 아래 구간에서 크기가 달라집니다.</p>'+
