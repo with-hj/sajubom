@@ -286,8 +286,12 @@ function setTrack(t){
   ['read','life'].forEach(function(k){
     var el=$('#track-'+k); if(el) el.classList.toggle('on',k===t);
   });
-  /* 대문을 ‘인생사주 리포트’로 닫았거나 다른 트랙에 있다가 운세 트랙으로 돌아오면, 그때 인트로 영상을 받는다 */
-  if(t==='read'){ state.deferIntro=false; try{ syncIntro(); }catch(e){} }
+  /* 대문을 ‘인생사주 리포트’로 닫았거나 다른 트랙에 있다가 운세 트랙으로 돌아오면, 아직 받지 않은 영상을 그때 받는다 */
+  if(t==='read'){
+    state.deferIntro=false;
+    var iv=$('#introVideo');
+    if(iv&&!iv.getAttribute('src')){ try{ syncIntro(); }catch(e){} }
+  }
   try{
     var sec=$('#track-'+t);
     var ty=sec?sec.getBoundingClientRect().top+window.pageYOffset-122:0;
