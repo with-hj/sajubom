@@ -1417,12 +1417,16 @@ html.no-gate .gate{display:none}
 
 .lr-intro{display:block}
 #track-life .lr-hero{
-  width:min(430px,100%,calc(80vh * 9 / 16));margin:14px auto 0;
-  aspect-ratio:9/16;min-height:0;max-height:min(50vh,480px);border-radius:20px;
+  /* v61 · 영상(720x1280)과 같은 9:16 칸을 그대로 준다.
+     예전 max-height:min(50vh,480px)가 높이를 잘라내 cover가 머리·수정구슬을 잘랐다. */
+  width:min(430px,100%,calc(82vh * 9 / 16));margin:14px auto 0;
+  aspect-ratio:9/16;height:auto;min-height:0;max-height:none;border-radius:20px;
   border:1px solid rgba(120,92,58,.28);background:var(--hanji3);
   box-shadow:0 16px 34px rgba(90,70,44,.18),0 1px 0 rgba(255,255,255,.7) inset;
 }
-#track-life .lr-art{object-position:50% 50%}
+#track-life .lr-art{object-fit:cover;object-position:50% 50%}
+/* v61 · 데스크톱 : 인트로 영상(.intro-card)과 같은 74vh 기준으로 폭을 잡아 화면 안에 앉힌다 */
+@media (min-width:700px){ #track-life .lr-hero{width:min(430px,100%,calc(74vh * 9 / 16))} }
 #track-life .lr-veil{background:linear-gradient(180deg,rgba(28,18,8,.26) 0%,rgba(28,18,8,0) 20%,
   rgba(28,18,8,0) 82%,rgba(28,18,8,.14) 100%)}
 /* v60 · 영상 위 흰 알약 배지(lr-chip) 삭제 — 수정구슬이 가려지지 않게 */
