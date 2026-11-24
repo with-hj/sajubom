@@ -279,7 +279,7 @@ function setTrack(t){
 
 /* 생년월일 입력 전에도 보이는 가격: 테마 결제 이력이 있으면 차감가를 함께 안내 */
 function lifePriceHTML(credit){
-  if(credit) return '<s>119,000원</s><em>75%</em><b>29,900원</b><span>테마 결제 9,900원 차감 적용</span>';
+  if(credit) return '<s>119,000원</s><b>29,900원</b><span>테마 결제 9,900원 차감 적용</span>';
   return '<s>119,000원</s><em>67%</em><b>39,800원</b><span>1부 · 프리미엄 소장본 PDF</span>';
 }
 function markThemeCredit(){
@@ -953,7 +953,7 @@ function upsellMarkup(){
   return '<p class="up-tag">테마 결제 9,900원 차감 적용</p>'+
     '<p class="tt">여기서 멈추면<br>내 인생의 큰 흐름은 못 봅니다</p>'+
     '<p class="pp">타고난 기질부터 평생 대운·앞으로 10년·문서와 부동산까지 한 권에 담았습니다.<br>정가 <b>119,000원</b>인 리포트를 지금 <b>39,800원</b>에, 방금 결제한 <b>9,900원</b>을 빼면 이 가격입니다.</p>'+
-    '<div class="up-price"><s>119,000원</s><b>29,900원</b><em>75% 할인</em></div>'+
+    '<div class="up-price"><s>119,000원</s><b>29,900원</b></div>'+
     '<div class="up-list"><span>평생 대운 9구간</span><span>앞으로 10년</span><span>문서·부동산</span><span>맞춤 질문 답변</span></div>'+
     '<button type="button" class="btn btn-gold btn-block" data-theme-upgrade>+29,900원으로 인생사주 리포트 받기</button>'+
     '<p class="small">방금 입력한 사주 정보 그대로 이어집니다</p>';
@@ -1230,7 +1230,7 @@ function payRowsHTML(o){
     h+='<div class="pay-row"><span>정가</span><b><s style="color:#8A93A4">'+won(reg)+'</s></b></div>';
     h+='<div class="pay-row"><span>특가</span><b>'+won(base)+' <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">67% 할인</em></b></div>';
     h+=row('테마 결제 차감','-'+won(9900),'discount');
-    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+' 대비 75% 할인 · 특가 '+won(base)+' - 테마 결제 차감 '+won(9900)+'</span></b></div>';
+    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+' · 특가 '+won(base)+' - 테마 결제 차감 '+won(9900)+'</span></b></div>';
   } else {
     h+='<div class="pay-row"><span>정가</span><b><s style="color:#8A93A4">'+won(reg)+'</s> <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">67% 할인</em></b></div>';
     h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+'에서 67% 할인</span></b></div>';
