@@ -629,6 +629,11 @@ function bindLoopPull(){
   try{
     window.addEventListener('wheel',engage,{passive:true});
     window.addEventListener('touchmove',engage,{passive:true});
+    /* 키보드로 내려간 경우도 ‘손으로 움직인 것’으로 본다 */
+    window.addEventListener('keydown',function(e){
+      var k=e.key;
+      if(k===' '||k==='PageDown'||k==='PageUp'||k==='ArrowDown'||k==='ArrowUp'||k==='End'||k==='Home') lrEngaged=true;
+    });
   }catch(e){}
   var panel=$('#panelForm');
   if(panel){
