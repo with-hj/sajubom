@@ -32,7 +32,8 @@ var state={
   theme:null, tab:null, gender:'f', cal:'solar', leap:false,
   ctx:false, pg:'m', pcal:'solar', stage:'', marry:'single', kid:'none',
   R:null, input:null, email:'',
-  introDone:{}            /* 영상 인트로를 이미 연 탭 (탭별로 기억) */
+  introDone:{},           /* 영상 인트로를 이미 연 탭 (탭별로 기억) */
+  deferIntro:false        /* v60 · ?track=life 로 바로 들어온 경우, 운세 트랙을 열기 전에는 인트로 영상을 받지 않는다 */
 };
 
 /* ---------------- 셀렉트 채우기 ---------------- */
@@ -165,6 +166,8 @@ function init(){
   });
   /* 테마 */
   renderThemes();
+  /* v60 · ?track=life 로 바로 들어오면 운세 트랙 인트로 영상은 받지 않는다 (인생사주 소개 영상만) */
+  try{ state.deferIntro=/[?&]track=life/.test(location.search); }catch(e){}
   var bk=$('#backThemes');
   if(bk) bk.addEventListener('click',function(){
     $('#themeView').classList.remove('on'); $('#themeListView').classList.add('on');
@@ -264,12 +267,27 @@ function bindChips(sel,get,on,opt){
 }
 
 /* ---------------- 트랙 ---------------- */
+/* v60 · 인생사주 리포트 소개 영상은 이 트랙을 열 때 그때 받아 재생한다.
+   첫 화면에서 대문·인트로 영상과 함께 3편이 한꺼번에 내려받지 않게 하기 위함이다. */
+function loadLrVideo(){
+  var v=$('#lrVideo'); if(!v) return;
+  var s=v.getAttribute('data-src')||'./assets/videos/report.mp4';
+  if(v.getAttribute('src')!==s){
+    v.setAttribute('src',s);
+    v.setAttribute('preload','auto');
+    try{ v.load(); }catch(e){}
+  }
+  try{ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){}
+}
 function setTrack(t){
   $$('.track-btn').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-track')===t); });
-  if(t==='life') markThemeCredit();
+  if(t==='life'){ markThemeCredit(); loadLrVideo(); }
+  else { var lv=$('#lrVideo'); if(lv){ try{ lv.pause(); }catch(e){} } }
   ['read','life'].forEach(function(k){
     var el=$('#track-'+k); if(el) el.classList.toggle('on',k===t);
   });
+  /* 대문을 ‘인생사주 리포트’로 닫았거나 다른 트랙에 있다가 운세 트랙으로 돌아오면, 그때 인트로 영상을 받는다 */
+  if(t==='read'){ state.deferIntro=false; try{ syncIntro(); }catch(e){} }
   try{
     var sec=$('#track-'+t);
     var ty=sec?sec.getBoundingClientRect().top+window.pageYOffset-122:0;
@@ -543,8 +561,20 @@ function syncIntro(){
     return;
   }
   card.hidden=false;
+  /* v60 · 첫 대문이 떠 있는 동안, 또는 ?track=life 로 바로 들어온 동안에는 인트로 영상을 내려받지 않는다.
+     받아야 할 주소만 data-src에 적어 두고, 대문을 닫을 때 resumeIntro()가 실제로 받아 재생한다.
+     그래야 첫 화면의 대역폭이 전부 대문 영상(gate.mp4)으로 간다. */
+  if(document.documentElement.classList.contains('gate-on')||state.deferIntro){
+    if(vid.getAttribute('src')){ try{ vid.pause(); }catch(e){} vid.removeAttribute('src'); try{ vid.load(); }catch(e){} }
+    vid.setAttribute('data-src',src);
+    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.add('reveal-settled'); }
+    return;
+  }
   if(vid.getAttribute('data-src')!==src){
     vid.setAttribute('data-src',src);
+    vid.setAttribute('src',src);
+    try{ vid.load(); }catch(e){}
+  }else if(!vid.getAttribute('src')){
     vid.setAttribute('src',src);
     try{ vid.load(); }catch(e){}
   }
@@ -554,6 +584,14 @@ function syncIntro(){
   if(state.introDone[state.tab]) return;
   try{ vid.currentTime=0; }catch(e){}
   var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){ /* 자동재생 차단 시 첫 프레임 유지, CTA로 진행 가능 */ });
+}
+/* v60 · 대문을 닫은 뒤에야 인트로 영상을 실제로 받아 재생한다.
+   지금 보고 있는 트랙이 ‘운세 보기’가 아니면(대문에서 인생사주 리포트로 바로 갔을 때) 건너뛰고,
+   나중에 운세 트랙을 열 때 setTrack이 다시 불러 받는다. */
+function resumeIntro(){
+  var tr=$('#track-read');
+  if(tr&&!tr.classList.contains('on')) return;
+  syncIntro();
 }
 function bindIntro(){
   var vid=$('#introVideo');
@@ -1973,7 +2011,17 @@ function initGate(){
     html.classList.add('gate-on');
     document.body.classList.add('lock');
     try{
-      if(vid){ vid.currentTime=0; var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){}); }
+      if(vid){
+        /* v60 · 대문 영상은 대문이 실제로 열릴 때만 받는다 (돌아온 손님이 보지도 않을 1MB를 미리 받지 않게) */
+        if(!vid.getAttribute('src')){
+          var gs=vid.getAttribute('data-src')||'./assets/videos/gate.mp4';
+          vid.setAttribute('src',gs);
+          vid.setAttribute('preload','auto');
+          try{ vid.load(); }catch(e){}
+        }
+        try{ vid.currentTime=0; }catch(e){}
+        var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){});
+      }
     }catch(e){}
     try{ g.focus({preventScroll:true}); }catch(e){}
   }
@@ -1990,8 +2038,14 @@ function initGate(){
     g.setAttribute('aria-hidden','true');
     if(hideTimer) clearTimeout(hideTimer);
     hideTimer=setTimeout(function(){ g.style.display='none'; html.classList.add('no-gate'); hideTimer=0; },600);
-    if(opt.track==='life') setTimeout(function(){ setTrack('life'); },90);
-    else { try{ window.scrollTo(0,0); }catch(e){} }
+    if(opt.track==='life'){
+      /* 인생사주 리포트로 바로 가면 인트로 영상은 받지 않는다 — 그쪽 소개 영상만 받는다 */
+      setTimeout(function(){ setTrack('life'); },90);
+    }else{
+      try{ window.scrollTo(0,0); }catch(e){}
+      /* v60 · 이제서야 인트로 영상에 대역폭을 준다 (게이트 클래스가 빠진 뒤에 불러야 실제로 받는다) */
+      try{ resumeIntro(); }catch(e){}
+    }
   }
   var bEnter=$('#gateEnter'), bLife=$('#gateLife'), bSkip=$('#gateSkip'), bNever=$('#gateNever');
   if(bEnter) bEnter.addEventListener('click',function(){ close(); });
