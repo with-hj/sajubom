@@ -80,9 +80,9 @@ function salsOf(R){
 /* ---------------- 페이지 조립 ---------------- */
 function page(label,body,opt){
   opt=opt||{};
-  return '<section class="pg"><div class="pg-hd"><span class="l">天靈堂 · LIFE SAJU REPORT</span><span class="r">'+label+'</span></div>'+
+  return '<section class="pg"><div class="pg-hd"><span class="l">천령당 · LIFE SAJU REPORT</span><span class="r">'+label+'</span></div>'+
     '<div class="pg-bd'+(opt.spread?' spread':'')+'">'+body+'</div>'+
-    '<div class="pg-ft"><span>天靈堂 · 인생사주 리포트</span><span class="pn">__PN__</span></div></section>';
+    '<div class="pg-ft"><span>천령당 · 인생사주 리포트</span><span class="pn">__PN__</span></div></section>';
 }
 function push(html){ B.pages.push(html); }
 function chapter(key,no,title,sub){
@@ -124,7 +124,7 @@ function monthTxt(o){ return '<b>'+o.y+'년 '+o.m+'월('+S.STEM_KO[o.s]+S.BR_KO[
 function coverPage(){
   var R=B.R;
   return '<section class="pg cover"><div class="art" style="background-image:url(./assets/cover-art.jpg)"></div><div class="veil"></div><div class="frame"><i></i></div>'+
-    '<div class="inner"><div><div class="seal">天</div><div class="cover-brand">天靈堂</div>'+
+    '<div class="inner"><div><div class="cover-brand">천령당</div>'+
     '<div class="han">인생사주 리포트</div><div class="rule"></div><div class="sub">PREMIUM LIFE REPORT</div></div>'+
     '<div class="epi"><span class="orn"></span><p>여덟 글자에 새겨진 하늘의 뜻을<br>한 사람의 설계도로 옮겼습니다</p></div>'+
     '<div class="box"><div class="nm">'+esc(B.name)+'</div>'+

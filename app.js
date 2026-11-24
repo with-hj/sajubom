@@ -1,5 +1,5 @@
 /* =====================================================================
-   천령당(天靈堂) — 화면 (홈·무료운세·타로·5대 테마·PDF 신청·관리자)
+   천령당 — 화면 (홈·무료운세·타로·5대 테마·PDF 신청·관리자)
    ===================================================================== */
 (function(){
 'use strict';
@@ -333,7 +333,7 @@ function renderTabs(){
   box.className='v8-tabs'+(th.tabs.length>=4?' tabs-4':'');
   box.innerHTML=th.tabs.map(function(k){
     var T=CT.TABS[k];
-    return '<button type="button" class="subtab'+(k===state.tab?' on':'')+'" role="tab" data-tab="'+k+'">'+(k===state.tab?'<span class="dot"></span>':'')+'<span class="tx">'+T.name+'</span></button>';
+    return '<button type="button" class="subtab'+(k===state.tab?' on':'')+'" role="tab" data-tab="'+k+'">'+(k===state.tab?'<span class="dot"></span>':'')+'<span class="tx">'+(T.pill||T.name)+'</span></button>';
   }).join('');
   $$('.subtab',box).forEach(function(b){
     b.addEventListener('click',function(){
@@ -522,7 +522,7 @@ function revealForm(scroll){
 function setIntroCopy(T){
   var IQ=T&&T.intro;
   var b=$('#introBadge'), hk=$('#introHook'), ct=$('#introCta'), vd=$('#introVideo');
-  if(b) b.textContent=IQ?IQ.badge:'2027 신년 · 天靈堂';
+  if(b) b.textContent=IQ?IQ.badge:'2027 정미년 신년운세';
   if(hk) hk.innerHTML=IQ?IQ.hook:'다가오는 한 해,<br>어느 달에 문이 열리고<br><b>무엇을 피해야 할지</b> 보고 가세요';
   if(ct) ct.innerHTML=(IQ?IQ.cta:('내 '+(T?T.name:'')+' · 사주 정보 입력하기'))+' <span aria-hidden="true">→</span>';
   if(vd){
@@ -1747,7 +1747,7 @@ function buildDrawerAcc(){
          '</button>'+
          '<ul class="dr-subs" id="drSub-'+k+'">'+
            th.tabs.map(function(t){
-             return '<li><button type="button" class="dr-sub" data-theme="'+k+'" data-tab="'+t+'" data-dr-sub="1">'+esc(CT.TABS[t].name)+'</button></li>';
+             return '<li><button type="button" class="dr-sub" data-theme="'+k+'" data-tab="'+t+'" data-dr-sub="1">'+esc(CT.TABS[t].pill||CT.TABS[t].name)+'</button></li>';
            }).join('')+
          '</ul></li>';
   }
