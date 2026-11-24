@@ -1639,3 +1639,15 @@ html.no-gate .gate{display:none}
 /* (9) 테마 풀이 표도 한자 괄호 안에서 끊기지 않게 */
 .tbl td,.tbl th{word-break:keep-all;overflow-wrap:normal}
 .tbl .tw,.ch-bd .tw{white-space:nowrap;display:inline-block}
+
+/* (10) 결과 머리(먹갈색) 위 원국 기둥 : 오행 색을 어두운 바탕용으로 밝게 */
+.res-head .pillar .pl{color:#CBB899}
+.res-head .pillar .pg{color:#C3B39A}
+.res-head .pillar .pk{color:#DACBB2}
+.res-head .pillar .pe{color:#C3B39A}
+.res-head .pillar [style*="#5F9673"]{color:#9BD8B0 !important}
+.res-head .pillar [style*="#BE5B4A"]{color:#F0A08C !important}
+.res-head .pillar [style*="#BE9245"]{color:#EFC98A !important}
+.res-head .pillar [style*="#8E98A6"]{color:#DCE3EC !important}
+.res-head .pillar [style*="#537FBA"]{color:#9CC0F2 !important}
+.res-head .pillar [style*="#6b6255"]{color:#B7A791 !important}
