@@ -465,9 +465,6 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 
 /* ---------- 푸터 ---------- */
 .ft{background:var(--ink);border-top:1px solid rgba(216,179,106,.18);padding:32px 0 40px;color:#8f96a6;font-size:12.5px;line-height:1.9}
-.ft .fb{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.ft .fb .seal{width:26px;height:26px;border:1px solid var(--gold-d);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;color:var(--gold)}
-.ft .fb b{font-family:var(--serif);font-size:15px;color:var(--gold-l);letter-spacing:.06em}
 .ft .ft-disc{font-size:12px;line-height:1.85;letter-spacing:-.01em}
 .ft a{color:#b9c0cc;text-decoration:underline;text-underline-offset:2px}
 .ft .adm-link{margin-top:14px;display:inline-block;font-size:12px;letter-spacing:.08em;color:#737d8e}
@@ -476,7 +473,6 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .ft .ft-adm:hover,.ft .ft-adm:active{color:#cbb98f}
 /* 하단 문구 — 전부 가운데 정렬 */
 .ft{text-align:center}
-.ft .fb{justify-content:center}
 .ft .ft-disc{margin-left:auto;margin-right:auto}
 .ft .wrap>*{text-align:center}
 
@@ -990,7 +986,6 @@ input,select,textarea,button{font-family:var(--sans)}
   box-shadow:0 10px 22px rgba(0,0,0,.35);animation:introCtaPulse 2.6s ease-in-out infinite;
 }
 .intro-cta:active{transform:translateY(1px)}
-.intro-note{margin:0;text-align:center;font-size:12.5px;color:#8C95A6;letter-spacing:-.01em}
 
 /* 입력창 열림 — v48 : 1.2초 ease-out으로 천천히 드러나며 살짝 올라온다 */
 #panelForm[hidden]{display:none}
@@ -1280,7 +1275,6 @@ body{background:var(--hanji)}
 .intro-hook b{color:#F3DCA9}
 .intro-cta{background:linear-gradient(135deg,#F0DCA8,#D9B36A 55%,#C9A45A);color:#241705;
   box-shadow:0 10px 22px rgba(60,42,20,.3)}
-.intro-note{color:#8A7861}
 
 /* 입력 폼 — 한지 위의 흰 카드 */
 .panel{background:#FFFDF8;border-color:#E7DBC6;box-shadow:0 10px 24px rgba(104,80,50,.08)}
@@ -1529,11 +1523,6 @@ html.no-gate .gate{display:none}
 }
 .brand-note p{color:#C6B49A}
 .ft{background:#2D2218;border-top:1px solid rgba(216,179,106,.16);color:#A9997F}
-.ft .fb{margin-bottom:10px}
-.ft .fb b{
-  font-family:'Yeon Sung',var(--serif);font-size:21px;font-weight:400;letter-spacing:.09em;
-  color:#F2E5CB;-webkit-text-stroke:.25px #F2E5CB;
-}
 .ft a{color:#D6C5A9}
 .ft .ft-disc{color:#A9997F}
 
