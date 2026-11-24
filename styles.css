@@ -1546,10 +1546,14 @@ html.no-gate .gate{display:none}
 /* 한지 바탕 위 선택 알약 — 남색 대신 먹갈색 (입력 폼·신청서 공통) */
 .chip.on{background:#2D2218;border-color:#2D2218;color:#F1DFB4}
 
-/* v56c · 리포트 소개 문단의 핵심 구절 — 한지 위에서 또렷하게 읽히는 깊은 자줏빛 */
-#track-life .lr-p b,#track-life .lr-p strong{color:#6B2336;font-weight:700}
-#track-life .lr-p strong{font-weight:700}
-#track-life .lr-tag b{color:#6B2336;font-weight:700}
+/* v56c · 리포트 소개 문단의 핵심 구절 — 한지 위에서 또렷하게 읽히는 깊은 자줏빛
+   v57 · 자줏빛이 먹갈색 본문에 묻혀 보인다는 지적에 더 진한 크림슨(#961E34) + 아주 옅은 바탕으로 올린다 */
+#track-life .lr-p b,#track-life .lr-p strong,#track-life .lr-tag b{
+  color:#961E34;font-weight:700;
+  background:rgba(150,30,52,.08);
+  padding:0 3px;border-radius:3px;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
+}
 /* 숫자가 줄 끝에서 쪼개지지 않게 (29,900원 → 29,/900원 금지) */
 #track-life .lr-tbl b,#track-life .lr-tbl s,#track-life .lr-tbl em,
 #track-life .lr-price b,#track-life .lr-price s,#track-life .pay-row b,#track-life .pay-row s,

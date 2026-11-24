@@ -548,11 +548,10 @@ function syncIntro(){
     vid.setAttribute('src',src);
     try{ vid.load(); }catch(e){}
   }
-  if(state.introDone[state.tab]){         /* 한 번 연 탭은 입력창을 계속 열어 둔다 */
-    if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.add('reveal-settled'); }
-    return;
-  }
-  panel.setAttribute('hidden','');
+  /* v57 · 영상은 끝나도 멈추지 않고 계속 반복 재생한다(loop).
+     그래서 입력창을 영상이 끝날 때까지 감춰두지 않고, 영상 카드 아래에 늘 열어 둔다. */
+  if(panel.hasAttribute('hidden')){ panel.removeAttribute('hidden'); panel.classList.add('reveal-settled'); }
+  if(state.introDone[state.tab]) return;
   try{ vid.currentTime=0; }catch(e){}
   var pr=vid.play(); if(pr&&pr.catch) pr.catch(function(){ /* 자동재생 차단 시 첫 프레임 유지, CTA로 진행 가능 */ });
 }
