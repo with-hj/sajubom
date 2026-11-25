@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>v72 preview · 390px</title>
+<style>
+html,body{margin:0;padding:0;background:#20242c}
+#stage{width:390px;height:844px;margin:0 auto;overflow:hidden;background:#2D2218}
+iframe{width:390px;height:844px;border:0;display:block}
+</style>
+</head>
+<body>
+<div id="stage"><iframe id="fr" src="./index.html?v=72&gate=0" scrolling="no"></iframe></div>
+<script>
+document.getElementById('fr').addEventListener('load', function(){
+  var fr = this;
+  setTimeout(function(){
+    try{
+      var w = fr.contentWindow, d = w.document;
+      var f = d.querySelector('footer.ft');
+      if (f) { w.scrollTo(0, Math.round(f.getBoundingClientRect().top + w.scrollY - (w.innerHeight - f.getBoundingClientRect().height) )); }
+      document.title = 'v72 preview · footer · innerW=' + w.innerWidth + ' footerH=' + Math.round(f.getBoundingClientRect().height);
+    }catch(e){ document.title = 'ERR ' + e.message; }
+  }, 1200);
+});
+</script>
+</body>
+</html>
