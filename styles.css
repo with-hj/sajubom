@@ -662,9 +662,9 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
   background:linear-gradient(135deg,#ECD6A6,#D8B36A);border-radius:5px;padding:3px 7px}
 .lr-part b{font-family:var(--serif);font-size:14.5px;font-weight:700;color:#33261A;letter-spacing:-.01em}
 .lr-part i{font-style:normal;font-size:10.5px;color:#8A7A63;letter-spacing:-.01em}
-.lr-toc>div{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.035);
+.lr-toc>div{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.035);
   border:1px solid rgba(216,179,106,.14);border-radius:12px;padding:10px 12px}
-.lr-toc>b{flex:0 0 20px;font-family:var(--serif);font-size:11px;color:var(--gold);letter-spacing:.02em}
+.lr-toc>b{flex:0 0 20px;font-family:var(--serif);font-size:11px;line-height:1.75;color:var(--gold);letter-spacing:.02em}
 .lr-toc strong{display:block;font-size:13.5px;font-weight:700;color:#EFE4CF;letter-spacing:-.01em}
 .lr-toc span{display:block;font-size:10.5px;color:#93A0B3;margin-top:2px;line-height:1.5}
 
