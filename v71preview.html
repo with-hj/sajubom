@@ -14,19 +14,23 @@
 <script>
 (function(){
   var f=document.getElementById('pv');
-  f.addEventListener('load',function(){
+  function attempt(n){
+    var d=f.contentDocument; if(!d) return;
+    var modal=d.getElementById('ctModal');
+    if(modal && modal.classList.contains('on')) return;
+    var c=d.querySelector('.dr-link[data-dr="contact"]');
+    if(c) c.click();
+    if(n<10) setTimeout(function(){ attempt(n+1); },500);
+  }
+  function start(){
     setTimeout(function(){
-      try{
-        var d=f.contentDocument;
-        var m=d.getElementById('menuBtn');
-        if(m) m.click();
-        setTimeout(function(){
-          var c=d.querySelector('.dr-link[data-dr="contact"]');
-          if(c) c.click();
-        },900);
-      }catch(e){}
-    },1200);
-  });
+      var d=f.contentDocument; if(!d) return;
+      var m=d.getElementById('menuBtn'); if(m) m.click();
+      setTimeout(function(){ attempt(0); },800);
+    },900);
+  }
+  if(f.contentDocument && f.contentDocument.readyState==='complete') start();
+  else f.addEventListener('load', start);
 })();
 </script>
 </body>
