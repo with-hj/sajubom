@@ -303,7 +303,7 @@ function relationPage(){
   d.stemRels.forEach(function(r){
     rows+='<tr><td class="k">'+r.a+' · '+r.b+' 천간</td><td>'+r.type+'</td><td style="font-size:12px">'+r.mean+'</td></tr>';
   });
-  var body=secLabel('02','INTERACTION · 합과 충')+
+  var body=secLabel('02-1','INTERACTION · 어울림과 부딪힘')+
    '<h1>여덟 글자가<br><span class="accent">서로 만나는 자리</span></h1>'+
    '<p class="lead">여덟 글자는 혼자 있지 않습니다. 서로 손을 잡기도 하고 어깨를 부딪히기도 합니다. 그래서 같은 글자라도 옆에 무엇이 있느냐가 결과를 바꿉니다.</p>'+
    (rows?'<table><tr><th>만나는 자리</th><th>관계</th><th>이 사주에서</th></tr>'+rows+'</table>'
@@ -627,7 +627,7 @@ function moneyPages(){
 /* ---------------- 7장 커리어 ---------------- */
 function docuPages(){
   var R=B.R,c=B.c,w=S.docu(R),d=S.deep(R);
-  chapter('docu','10-2','문서와 부동산','계약·등기·매매의 문');
+  chapter('docu','10-1','문서와 부동산','계약·등기·매매의 문');
   push(page('10 / DOCUMENT',secLabel('10','(5) 문서와 부동산 — 취득의 문')+'<h1>문서와 부동산<br><span class="accent">취득의 문</span></h1>'+
     '<p class="lead">집과 계약은 인생에서 몇 번뿐인 큰 결정입니다. 그 몇 번을 어디서 결정하느냐가 10년의 재산을 바꿉니다.</p>'+
     '<p>문서는 돈의 크기와 다른 축입니다. <b>문서·계약</b>, <b>명의·절차</b>, <b>실물·자금</b> 세 가지가 서로 받쳐주는지, 그중 하나가 비어 있는지로 봅니다.</p>'+
