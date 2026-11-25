@@ -183,6 +183,12 @@
 
 /* 목차 */
 .toc-list{column-count:1;margin-top:2mm}
+/* v68 · 직업 목록처럼 항목이 많은 목록은 두 단으로 — 한 지면에 담기게 */
+.pg ul.ul2{column-count:2;column-gap:6mm}
+.pg ul.ul2 li{break-inside:avoid;font-size:calc(var(--fs) * .92);margin-bottom:1.6mm}
+/* v68 · 목차 위 한 줄 안내와 ‘이어서’ 표제 */
+.toc-lede{font-family:var(--b-serif,serif);font-size:calc(var(--fs) * .92);line-height:1.8;color:#6E6353;margin:0 0 4mm}
+.toc-more{font-family:var(--b-serif,serif);font-size:calc(var(--fs) * 1.15);color:var(--b-navy);margin:0 0 3mm}
 .toc-r{display:flex;align-items:baseline;gap:3mm;padding:2.3mm 0;border-bottom:1px dotted rgba(221,208,184,.9);font-size:calc(var(--fs) * .9);cursor:pointer;transition:.15s}
 @media screen{.toc-r:hover .t,.toc-r:active .t{color:var(--b-orange)}}
 .toc-r .n{font-family:-apple-system,sans-serif;font-size:10.5px;color:var(--b-orange);font-weight:800;min-width:9mm}

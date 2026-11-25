@@ -130,14 +130,16 @@ function pillarDetail(R){
   });
   return h+'</table>';
 }
+/* 결과지 맨 위의 근거 상자 — 사주 용어 없이, 이 풀이가 무엇을 보고 쓴 글인지만 적는다 */
+var REL_WORD2={'육합':'어울림','삼합':'큰 어울림','방합':'한쪽으로 모임','충':'부딪힘','형':'얽힘','파':'끊김','해':'어긋남','원진':'서운함','동일':'같은 글자','무난':'무난함'};
 function facts(R){
   var d=S.deep(R), c=d.c;
-  var rel=d.branchRels.length?d.branchRels.map(function(r){return r.type+'('+r.pair+')';}).join(' · '):'없음';
-  var sal=d.sals.length?d.sals.map(function(s){return s.name;}).join(' · '):'없음';
-  var gm=d.gmHits.length?d.gmHits.map(function(x){return x.pos;}).join('·')+' 공망':'공망 없음';
-  return '<div class="ch-key" style="margin:2px 0 12px"><b>원국 증거</b><span>'+
-    S.STEM_KO[R.dStem]+S.BR_KO[R.dBranch]+'('+S.STEM_HAN[R.dStem]+S.BR_HAN[R.dBranch]+')일주 · '+(R.strength==='강'?'신강':(R.strength==='약'?'신약':'중화'))+
-    ' · 용신 '+S.EL_KO[d.yong]+' · 기신 '+S.EL_KO[d.gisin]+'<br>합충 '+rel+' · '+gm+' · 신살 '+sal+'</span></div>';
+  var rel=d.branchRels.length?d.branchRels.map(function(r){return (REL_WORD2[r.type]||r.type)+'('+r.a+'·'+r.b+')';}).join(' · '):'없음';
+  var sal=d.sals.length?d.sals.map(function(s){return s.name+'('+s.pos+')';}).join(' · '):'없음';
+  var gm=d.gmHits.length?d.gmHits.map(function(x){return x.pos;}).join('·')+' 자리가 비어 있음':'비어 있는 자리 없음';
+  return '<div class="ch-key" style="margin:2px 0 12px"><b>이 풀이가 본 것</b><span>'+
+    gzP(R.dStem,R.dBranch)+'일주 · 기운은 '+(R.strength==='강'?'강한 편':(R.strength==='약'?'약한 편':'고른 편'))+
+    ' · 채우면 좋은 기운 '+S.EL_KO[d.yong]+' · 조심할 기운 '+S.EL_KO[d.gisin]+'<br>기둥 사이 '+rel+' · '+gm+' · 타고난 표시 '+sal+'</span></div>';
 }
 function luckYears(R,n){
   var out=[];
@@ -185,77 +187,77 @@ var THEMES={
 var TABS={
   newyear:{theme:'general',name:'신년운세',tag:'2027 정미년, 어디로 문이 열리는지',
     note:'2027년 정미년 한 해의 흐름을 먼저 짚어요.',
-    video:'./assets/videos/newyear.mp4?v=60',poster:'./assets/videos/newyear-poster.jpg?v=60',
+    video:'./assets/videos/newyear.mp4?v=68',poster:'./assets/videos/newyear-poster.jpg?v=68',
     intro:{badge:'2027 정미년 신년운세',hook:'2027년 정미년,<br>어느 달에 문이 열리고<br><b>무엇을 피해야 할지</b> 보고 가세요',cta:'내 신년운세 · 사주 정보 입력하기'}},   /* v46 · 탭별 인트로 영상 (있으면 입력창 앞에 9:16 카드로 재생) */
   /* v50 · 영상 인트로를 6개 탭으로 넓힌다. intro 는 카드 문구, poster 는 영상 첫 프레임 대체 이미지 */
   life:{theme:'general',name:'평생사주',tag:'타고난 그릇과 평생의 결',
     note:'평생 따라다니는 바탕을 읽어요.',
-    video:'./assets/videos/life.mp4',poster:'./assets/videos/life-poster.jpg',
+    video:'./assets/videos/life.mp4?v=68',poster:'./assets/videos/life-poster.jpg?v=68',
     intro:{badge:'평생사주',hook:'타고난 여덟 글자에<br>평생의 결이 적혀 있습니다',cta:'내 평생사주 · 사주 정보 입력하기'}},
   daeunflow:{theme:'general',name:'대운 흐름',tag:'10년마다 바뀌는 판의 방향',
     note:'지금과 다음 대운의 전환점을 봐요.',
-    video:'./assets/videos/daeun.mp4',poster:'./assets/themes-web/t-general.jpg',
+    video:'./assets/videos/daeun.mp4?v=68',poster:'./assets/videos/daeun-poster.jpg?v=68',
     intro:{badge:'대운 흐름',hook:'10년마다 바뀌는<br>판의 방향을 먼저<br>보고 가세요',cta:'내 대운 흐름 · 사주 정보 입력하기'}},
 
   sseom:{theme:'love',name:'썸 속마음',tag:'그 사람이 나를 어떻게 보고 있는지',sub:'그 사람이 나와 잘 될지',
     note:'두 사람의 마음 온도를 함께 봐요.',
-    video:'./assets/videos/crush.mp4',poster:'./assets/themes-web/t-love.jpg',
+    video:'./assets/videos/crush.mp4?v=68',poster:'./assets/videos/crush-poster.jpg?v=68',
     intro:{badge:'썸 속마음',hook:'그 사람이 나를<br>어떻게 보고 있는지<br>지금 확인해 보세요',cta:'그 사람 속마음 · 사주 정보 입력하기'}},
   love:{theme:'love',name:'연애운',tag:'언제, 어떤 사람을 만나게 되는지',sub:'나는 언제 어떤 사람을 만나게 되는지',
     note:'만남이 열리는 때와 사람의 결을 봐요.',
-    video:'./assets/videos/love.mp4',poster:'./assets/themes-web/t-love.jpg',
+    video:'./assets/videos/love.mp4?v=68',poster:'./assets/videos/love-poster.jpg?v=68',
     intro:{badge:'연애운',hook:'나는 언제, 어떤 사람을<br>만나게 되는지<br>시기까지 보고 가세요',cta:'내 연애운 · 사주 정보 입력하기'}},
   reunion:{theme:'love',name:'재회운',tag:'끊어진 관계가 다시 이어질 수 있는지',sub:'끊어진 우리 관계 다시 이어질 수 있는지',
     note:'다시 이어질 수 있는지 시기까지 봐요.',
-    video:'./assets/videos/reunion.mp4',poster:'./assets/themes-web/t-love.jpg',
+    video:'./assets/videos/reunion.mp4?v=68',poster:'./assets/videos/reunion-poster.jpg?v=68',
     intro:{badge:'재회운',hook:'끊어진 우리 관계,<br>다시 이어질 수 있는지<br>연락의 문을 보고 가세요',cta:'재회운 · 사주 정보 입력하기'}},
   pattern:{theme:'love',name:'내 연애 패턴',tag:'왜 같은 사람에게 반복해서 끌리는지',
     note:'끌림과 이별의 이유를 여덟 글자에서 찾아요.'},
 
   couple:{theme:'marriage',name:'커플궁합',tag:'두 사람의 사주가 만나는 자리',sub:'두 사람의 사주가 만나는 자리',
     note:'두 사람의 궁합을 여덟 글자로 봐요.',
-    video:'./assets/videos/couple.mp4',poster:'./assets/themes-web/t-marriage.jpg',
+    video:'./assets/videos/couple.mp4?v=68',poster:'./assets/videos/couple-poster.jpg?v=68',
     intro:{badge:'커플궁합',hook:'두 사람의 사주가<br>어디서 만나고<br><b>어디서 부딪히는지</b>',cta:'우리 궁합 · 사주 정보 입력하기'}},
   wedding:{theme:'marriage',name:'결혼운',tag:'언제, 어떤 사람과 결혼하게 되는지',sub:'언제, 어떤 사람과 결혼하게 되는지',
     note:'결혼의 문이 열리는 때를 봐요.',
-    video:'./assets/videos/marriage.mp4',poster:'./assets/themes-web/t-marriage.jpg',
+    video:'./assets/videos/marriage.mp4?v=68',poster:'./assets/videos/marriage-poster.jpg?v=68',
     intro:{badge:'결혼운',hook:'언제, 어떤 사람과<br>결혼하게 되는지<br><b>시기까지</b> 보고 가세요',cta:'내 결혼운 · 사주 정보 입력하기'}},
   divorce:{theme:'marriage',name:'이혼 위기',tag:'갈등이 커지는 시기와 결정 기준',sub:'흔들리는 시기와 결정 기준을 짚어드려요',
     note:'흔들리는 시기와 결정 기준을 봐요.',
-    video:'./assets/videos/divorce.mp4',poster:'./assets/themes-web/t-marriage.jpg',
+    video:'./assets/videos/divorce.mp4?v=68',poster:'./assets/videos/divorce-poster.jpg?v=68',
     intro:{badge:'이혼 위기',hook:'흔들리는 시기와<br>결정의 기준을<br>먼저 알고 가세요',cta:'지금의 위기 · 사주 정보 입력하기'}},
 
   birth:{theme:'baby',name:'임신운',tag:'임신이 열리는 때부터 산후까지',sub:'내게 소중한 아이가 찾아오는 시기',
     note:'아이가 찾아오는 시기를 봐요.',
-    video:'./assets/videos/pregnancy.mp4',poster:'./assets/themes-web/t-baby.jpg',
+    video:'./assets/videos/pregnancy.mp4?v=68',poster:'./assets/videos/pregnancy-poster.jpg?v=68',
     intro:{badge:'임신운',hook:'내게 아이가<br>찾아오는 시기를<br>미리 보고 가세요',cta:'내 임신운 · 사주 정보 입력하기'}},
   child:{theme:'baby',name:'자녀 성장운',tag:'아이의 기질·재능·공부 방식',sub:'우리 아이의 타고난 재능과 성장의 흐름',
     note:'아이의 재능과 성장의 결을 봐요.',
-    video:'./assets/videos/child_growth.mp4',poster:'./assets/themes-web/t-baby.jpg',
+    video:'./assets/videos/child_growth.mp4?v=68',poster:'./assets/videos/child_growth-poster.jpg?v=68',
     intro:{badge:'자녀 성장운',hook:'우리 아이의 재능과<br>성장의 흐름을<br>사주로 읽어보세요',cta:'아이의 성장운 · 사주 정보 입력하기'}},
   parent:{theme:'baby',name:'부모·자녀 궁합',tag:'부모와 아이가 만나는 자리',sub:'부모와 아이, 사주로 알아보는 특별한 인연',
     note:'엄마·아빠·아이 세 사주를 함께 봐요.',
-    video:'./assets/videos/parent_child.mp4',poster:'./assets/themes-web/t-baby.jpg',
+    video:'./assets/videos/parent_child.mp4?v=68',poster:'./assets/videos/parent_child-poster.jpg?v=68',
     intro:{badge:'부모·자녀 궁합',hook:'엄마, 아빠, 아이<br>세 사주가 만나는<br>자리를 봐요',cta:'우리 가족 궁합 · 사주 정보 입력하기'}},
 
   money:{theme:'wealth',name:'재물·금전운',pill:'금전운',tag:'돈이 들어오는 문과 새는 곳',sub:'내게 재물이 들어오는 시기와 부의 흐름',
     note:'재물이 들어오는 시기를 봐요.',
     /* v54 · 재물·금전운 인트로 영상 */
-    video:'./assets/videos/money.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    video:'./assets/videos/money.mp4?v=68',poster:'./assets/videos/money-poster.jpg?v=68',
     intro:{badge:'재물·금전운',hook:'돈이 들어오는 문과<br>새는 곳을<br><b>먼저</b> 보고 가세요',cta:'내 재물·금전운 · 사주 정보 입력하기'}},
   /* v52 · 재물·직업 두 탭(직업·이직운, 부동산·문서운)에 인트로 영상을 붙인다 */
   job:{theme:'wealth',name:'직업·이직운',pill:'직업·이직운',tag:'천직과 옮겨야 할 시기',sub:'나에게 맞는 직업과 새로운 기회의 시기',
     note:'맞는 일과 옮길 시기를 봐요.',
-    video:'./assets/videos/job.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    video:'./assets/videos/job.mp4?v=68',poster:'./assets/videos/job-poster.jpg?v=68',
     intro:{badge:'직업·이직운',hook:'나에게 맞는 일과<br>자리를 옮길 시기를<br><b>먼저</b> 보고 가세요',cta:'내 직업·이직운 · 사주 정보 입력하기'}},
   startup:{theme:'wealth',name:'사업·부업운',pill:'사업운',tag:'시작해도 되는지, 무엇으로',sub:'내 사업의 성공 가능성과 재물이 따르는 시기',
     note:'사업과 부업의 가능성을 봐요.',
     /* v54 · 사업·부업운 인트로 영상 */
-    video:'./assets/videos/biz.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    video:'./assets/videos/biz.mp4?v=68',poster:'./assets/videos/biz-poster.jpg?v=68',
     intro:{badge:'사업·부업운',hook:'지금 시작해도 되는지,<br>무엇으로 시작할지<br><b>사주로</b> 짚어드립니다',cta:'내 사업·부업운 · 사주 정보 입력하기'}},
   estate:{theme:'wealth',name:'부동산·문서운',pill:'문서운',tag:'집과 계약, 문서가 움직이는 때',sub:'부동산과 계약, 재산이 움직이는 시기',
     note:'집과 계약의 시기를 봐요.',
-    video:'./assets/videos/estate.mp4',poster:'./assets/themes-web/t-wealth.jpg',
+    video:'./assets/videos/estate.mp4?v=68',poster:'./assets/videos/estate-poster.jpg?v=68',
     intro:{badge:'부동산·문서운',hook:'집과 계약, 문서가<br>움직이는 때를<br><b>미리</b> 보고 가세요',cta:'내 부동산운 · 사주 정보 입력하기'}}
 };
 

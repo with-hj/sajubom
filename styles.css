@@ -377,6 +377,11 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .ch-bd{margin-top:12px}
 .ch-bd p{margin:0 0 13px;font-size:17px;line-height:1.9;color:var(--body)}
 .ch-bd p:last-child{margin-bottom:0}
+/* v68 · 장을 여는 한 줄 — 결과지에서 가장 먼저 눈에 들어오는 문장 */
+.ch-bd p.ch-lead{font-family:var(--serif);font-size:18.5px;line-height:1.72;font-weight:700;color:#2E2318;
+  letter-spacing:-.012em;margin:0 0 16px;padding-bottom:13px;border-bottom:1px solid rgba(176,138,70,.28)}
+.ch-bd p.ch-lead b{color:#B3441F;font-weight:700}
+.ch-teaser p.ch-lead{margin-bottom:11px;padding-bottom:10px}
 .ch-bd h4{font-family:var(--serif);font-size:16px;margin:18px 0 7px;color:var(--ink2);padding-left:10px;border-left:3px solid var(--gold)}
 .ch-bd ul{margin:0 0 13px;padding-left:0;list-style:none}
 .ch-bd ul li{position:relative;padding-left:15px;margin-bottom:7px;font-size:16px;line-height:1.8}
@@ -650,6 +655,13 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .lr-cards span{display:block;font-size:9.5px;color:#94A0B3;line-height:1.55;margin-top:5px;letter-spacing:-.02em;white-space:nowrap}
 
 .lr-toc{display:grid;gap:6px}
+/* v68 · 리포트 목차를 부(部)별로 묶어, 사기 전에 구조가 한눈에 보이게 */
+.lr-part{display:flex;align-items:baseline;gap:8px;margin:15px 0 7px;padding-left:2px}
+.lr-part:first-of-type{margin-top:6px}
+.lr-part span{font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.06em;color:#1A1305;
+  background:linear-gradient(135deg,#ECD6A6,#D8B36A);border-radius:5px;padding:3px 7px}
+.lr-part b{font-family:var(--serif);font-size:14px;font-weight:700;color:#F3E6CE;letter-spacing:-.01em}
+.lr-part i{font-style:normal;font-size:10.5px;color:#8791A3;letter-spacing:-.01em}
 .lr-toc>div{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.035);
   border:1px solid rgba(216,179,106,.14);border-radius:12px;padding:10px 12px}
 .lr-toc>b{flex:0 0 20px;font-family:var(--serif);font-size:11px;color:var(--gold);letter-spacing:.02em}
@@ -1264,17 +1276,25 @@ body{background:var(--hanji)}
 .v8-tnote b{color:#33261A;font-weight:700}
 
 /* 9:16 인트로 영상 — 밝은 바탕 위에 얇은 나무 테두리로 앉힌다 */
-.intro-card{width:min(430px,100%,calc(82vh * 9 / 16));margin:16px auto 0;gap:10px}
+.intro-card{width:min(272px,100%,calc(56vh * 9 / 16));margin:14px auto 0;gap:9px}
 .intro-frame{border-radius:18px;border:1px solid rgba(120,92,58,.26);background:var(--hanji3);
+  background-size:cover;background-position:50% 50%;
   box-shadow:0 16px 34px rgba(90,70,44,.18),0 1px 0 rgba(255,255,255,.7) inset}
 .intro-shade{background:linear-gradient(180deg,rgba(20,12,6,.34) 0%,rgba(20,12,6,0) 24%,
   rgba(20,12,6,0) 42%,rgba(20,12,6,.62) 72%,rgba(20,12,6,.9) 94%)}
 .intro-badge{background:rgba(252,247,238,.94);color:#3A2A18;border:1px solid rgba(176,138,70,.48);
   font-size:12px;letter-spacing:.1em;padding:4px 10px;border-radius:999px}
-.intro-hook{color:#FFF8EA;font-size:19px;text-shadow:0 2px 12px rgba(0,0,0,.55)}
+.intro-hook{color:#FFF8EA;font-size:15.5px;line-height:1.52;text-shadow:0 2px 12px rgba(0,0,0,.55)}
 .intro-hook b{color:#F3DCA9}
 .intro-cta{background:linear-gradient(135deg,#F0DCA8,#D9B36A 55%,#C9A45A);color:#241705;
-  box-shadow:0 10px 22px rgba(60,42,20,.3)}
+  min-height:46px;font-size:14.5px;box-shadow:0 10px 22px rgba(60,42,20,.3)}
+.intro-badge{font-size:11px;padding:3px 9px}
+.intro-cap{padding:12px 12px 13px;gap:8px}
+/* v68 · 영상이 바뀔 때 이전 탭의 첫 프레임이 겹치지 않게 — 한 번 사라졌다가 새 영상이 뜬다 */
+.intro-video{opacity:0;transition:opacity .32s ease}
+.intro-video.ready{opacity:1}
+.intro-video[data-empty="1"]{opacity:0;visibility:hidden}
+@media (prefers-reduced-motion:reduce){.intro-video{transition:none}}
 
 /* 입력 폼 — 한지 위의 흰 카드 */
 .panel{background:#FFFDF8;border-color:#E7DBC6;box-shadow:0 10px 24px rgba(104,80,50,.08)}
@@ -1291,9 +1311,11 @@ body{background:var(--hanji)}
    v54 · 첫 대문(게이트) — 들어오면 9:16 영상이 먼저 펼쳐진다
    ===================================================================== */
 html.gate-on,html.gate-on body{overflow:hidden}
+/* v68 · 대문이 떠 있는 동안 본문은 아예 그리지 않는다 — 첫 0.3초에 홈 화면이 번짝 보이던 현상 제거 */
+html.gate-on .hd,html.gate-on main,html.gate-on .ft{visibility:hidden}
 .gate{
   position:fixed;inset:0;z-index:320;display:flex;align-items:center;justify-content:center;
-  background:#0A0705;opacity:0;animation:gateIn .55s ease-out forwards;
+  background:#0A0705;opacity:1;
 }
 html.no-gate .gate{display:none}
 .gate-frame{position:relative;width:100%;height:100%;overflow:hidden;background:#0A0705;isolation:isolate}

@@ -353,19 +353,19 @@ function chAct(R,c,input,name){
 
 /* ---------------- 조립 ---------------- */
 var CH={
-  ilju:{title:'일주 — 두 글자가 만든 자리',sub:'일간·일지·십이운성·신살',body:chIlju},
-  elem:{title:'오행의 저울 — 넘치는 것과 모자란 것',sub:'다섯 기운의 분포와 용신',body:chElem},
-  gaewun:{title:'기운을 채우는 생활 처방',sub:'색·방위·시간·사람',body:chGaewun},
-  decade:{title:'앞으로 10년의 문',sub:'지금 대운과 다섯 해의 날씨',body:chDecade},
-  life3:{title:'평생의 큰 흐름',sub:'청년·중년·노후',body:chLife3},
-  health:{title:'몸의 리듬',sub:'약한 자리와 계절의 신호',body:chHealth},
-  people:{title:'사람의 자리',sub:'가족·동료·귀인',body:chPeople},
-  act:{title:'서른 날의 실천',sub:'읽은 것을 습관으로',body:chAct}
+  ilju:{title:'일주 — 두 글자가 만든 자리',sub:'중심 글자와 나의 자리',lead:'사람의 첫인상은 얼굴이 아니라 그날의 기운이 만듭니다. 이 사주가 어떤 사람으로 기억되는지 봅니다.',body:chIlju},
+  elem:{title:'오행의 저울 — 넘치는 것과 모자란 것',sub:'다섯 기운의 분포',lead:'넘치는 기운은 무기가 되고, 모자란 기운은 숙제가 됩니다. 다섯 기운의 저울을 한 번 재어봅니다.',body:chElem},
+  gaewun:{title:'기운을 채우는 생활 처방',sub:'색·방위·시간·사람',lead:'운은 바꿀 수 없지만 오늘의 습관은 바꿀 수 있습니다. 색·방위·시간·사람으로 조금씩 기울이는 법.',body:chGaewun},
+  decade:{title:'앞으로 10년의 문',sub:'지금 대운과 다섯 해의 날씨',lead:'앞으로 10년의 날씨를 미리 알면 우산을 준비할 수 있습니다. 지금 서 있는 자리부터 봅니다.',body:chDecade},
+  life3:{title:'평생의 큰 흐름',sub:'청년·중년·노후',lead:'인생을 청년·중년·노후로 나누면 구간마다 다른 과제가 있습니다. 지금은 어느 구간인지.',body:chLife3},
+  health:{title:'몸의 리듬',sub:'약한 자리와 계절의 신호',lead:'몸이 먼저 보내는 신호는 늘 같습니다. 이 사주가 어디서 먼저 지치는지 봅니다.',body:chHealth},
+  people:{title:'사람의 자리',sub:'가족·동료·귀인',lead:'사람은 나를 비추는 거울입니다. 이 사주에게 어떤 사람이 오래 남고, 누가 약이 되는지.',body:chPeople},
+  act:{title:'서른 날의 실천',sub:'읽은 것을 습관으로',lead:'읽은 것을 오래 기억하는 방법은 하나뿐입니다. 몸에 순서를 새기는 것.',body:chAct}
 };
 
 /* 탭별로 붙는 심화 장 (테마 본문과 겹치지 않게 고른 조합) */
 var SETS={
-  newyear:['elem','people','life3','act'],
+  newyear:[],   /* v68 · 신년운세는 content-general.js 가 장을 직접 구성한다(중복 방지) */
   life:['ilju','elem','gaewun','decade','life3'],
   daeunflow:['ilju','elem','gaewun','life3','health','people','act'],
   sseom:['ilju','elem','gaewun','people','life3','act'],
@@ -389,7 +389,7 @@ window.DEEP={
     var list=SETS[tab]||['elem','gaewun','act'], out=[];
     for(var i=0;i<list.length;i++){
       var c=CH[list[i]];
-      if(c) out.push({title:c.title,sub:c.sub,body:c.body});
+      if(c) out.push({title:c.title,sub:c.sub,lead:c.lead,body:c.body});
     }
     return out;
   },

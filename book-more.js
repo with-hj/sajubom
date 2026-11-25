@@ -58,7 +58,7 @@ var SEUN_FIELD={
 function daeunIntro(){
   var R=B.R,c=B.c;
   push(page('15 / DAEWOON',secLabel('15','DAEWOON · 평생 대운')+'<h1>10년마다 바뀌는<br><span class="accent">판의 방향</span></h1>'+
-    '<p class="lead">대운은 10년 단위로 바뀌는 큰 흐름입니다. 사주의 그릇은 타고나는 것이고, 언제 그 그릇을 쓰게 되는지는 대운이 정합니다.</p>'+
+    '<p class="lead">인생에는 계절이 있습니다. 같은 사람도 어떤 10년에는 잘 자라고, 어떤 10년에는 뿌리를 내립니다. 이 장은 그 계절의 순서를 펼친 것입니다.</p>'+
     '<p>이 사주는 '+R.daeunSu+'세에 첫 대운을 시작으로 아홉 구간을 지납니다. 지금은 <b>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세</b> 구간, 그중 '+(R.age-R.daeun[R.curDaeun].from+1)+'년 차입니다.</p>'+
     '<table><tr><th>나이</th><th>간지</th><th>십성</th><th>이 10년에 남는 것</th></tr>'+
     (function(){var h='';R.daeun.forEach(function(d){
@@ -130,7 +130,7 @@ function seunIntro(){
   var R=B.R;
   var start=2027;
   push(page('16 / SEWOON',secLabel('16','SEWOON · 향후 5년')+'<h1>2027~2031<br><span class="accent">다섯 해의 문</span></h1>'+
-    '<p class="lead">세운은 한 해의 날씨입니다. 대운이라는 기후 위에 얹혀, 그해에 무엇을 하고 무엇을 미룰지를 정합니다.</p>'+
+    '<p class="lead">한 해의 운(運)은 날씨입니다. 비가 오는 해에 씨를 뿌리면 씻겨 내려가고, 볕이 드는 해에 뿌리면 그해에 싹이 납니다. 같은 노력도 어느 날씨에 두느냐로 결과가 갈립니다.</p>'+
     '<table><tr><th>해</th><th>간지</th><th>십성</th><th>일지</th><th>한 줄</th></tr>'+
     (function(){var h='';for(var y=start;y<start+5;y++){var idx=S.mod(y-4,60),g=S.tenGod(R.dStem,idx%10),diff=S.mod(idx%12-R.dBranch,12);
       var tag=(diff===6?'충':(diff===0?'동일':((diff===4||diff===8)?'합':'무난')));
@@ -285,7 +285,8 @@ function monthPages(){
       health:F.health+(tail.health?' '+tail.health:'')
     };
     push(page('17 / 2027',secLabel('17','2027 MONTHLY · '+m+'월')+'<h1><span class="accent">2027년 '+m+'월</span><br>'+gzP(mp.stem,mp.branch)+' · '+g+'</h1>'+
-      '<p class="lead">'+m+'월은 '+gzP(mp.stem,mp.branch)+'월, '+name_of_month(m)+'입니다. 십성은 <b>'+g+'</b>, 일지와의 관계는 <b>'+tag+'</b>입니다.</p>'+
+      '<p class="lead">'+m+'월 — '+name_of_month(m)+'. 같은 1월이라도 사람마다 열리는 문이 다릅니다. 이 달은 이 사람에게 <b>'+REL_SHORT[tag]+'</b>입니다.</p>'+
+      '<p>이 달의 글자는 '+gzP(mp.stem,mp.branch)+'이고, 중심 기운은 <b>'+g+'</b>입니다. 나의 자리와는 <b>'+tag+'</b>으로 만납니다.</p>'+
       '<p>'+season+' '+tip+(relNote?' '+relNote:'')+'</p>'+
       '<h3>이 달의 네 영역</h3>'+
       '<table><tr><th>영역</th><th>이 달의 결</th></tr>'+
@@ -308,7 +309,8 @@ function remedyPages(){
   chapter('remedy','18','개운 처방','색·생활·사람·1년');
   var R=B.R,c=B.c,d=S.EL_DEEP[c.yongEl];
   push(page('18 / REMEDY',secLabel('18','REMEDY · 개운 처방')+'<h1>색과 방위로<br><span class="accent">균형 잡기</span></h1>'+
-    '<p class="lead">이 사주에 필요한 기운은 '+elK(c.yongEl)+'입니다. 개운은 큰 의식이 아니라 매일의 작은 기울기입니다.</p>'+
+    '<p class="lead">개운은 부적이 아니라 습관입니다. 오늘 저녁에 바꿀 수 있는 것부터 시작합니다.</p>'+
+    '<p>이 사주에 필요한 기운은 '+elK(c.yongEl)+'입니다. 큰 의식이 아니라 매일의 작은 기울기가 사람을 바꿉니다.</p>'+
     '<table><tr><th>항목</th><th>처방</th><th>왜</th></tr>'+
     '<tr><td class="k">색</td><td>'+d.color+'</td><td>눈에 자주 닿는 것부터</td></tr>'+
     '<tr><td class="k">방위</td><td>'+d.dir+'</td><td>책상·침대 머리·자주 앉는 자리</td></tr>'+
@@ -329,7 +331,8 @@ function remedyPages(){
     '<li>혼자 결정하는 습관 — 필요한 기운이 사람에게서 오는 사주입니다</li></ul>'+
     callout('한 줄','<p>개운의 핵심은 <b>'+d.habit+'</b>입니다. 이것 하나를 3개월 지키면 나머지는 따라옵니다.</p>'),{spread:true}));
   push(page('18 / REMEDY',secLabel('18','REMEDY · 사람')+'<h1>사람과 환경의<br><span class="accent">처방</span></h1>'+
-    '<p class="lead">이 사주에게 필요한 기운은 '+elK(c.yongEl)+'입니다. 그래서 '+S.EL_KO[c.yongEl]+'의 결을 가진 사람 곁에서 편안해집니다.</p>'+
+    '<p class="lead">사람에게서 병이 나기도 하고, 사람에게서 병이 낫기도 합니다. 이 장은 이 사주에게 어떤 사람이 약이 되는지에 대한 글입니다.</p>'+
+    '<p>필요한 기운은 '+elK(c.yongEl)+'입니다. 그래서 '+S.EL_KO[c.yongEl]+'의 결을 가진 사람 곁에서 편안해집니다.</p>'+
     '<table><tr><th>구분</th><th>어떤 사람·환경</th></tr>'+
     '<tr><td class="k">귀인</td><td>'+S.EL_PERSON[c.yongEl]+'</td></tr>'+
     '<tr><td class="k">만나는 자리</td><td>'+d.dir+' 방향의 모임, '+d.color+' 계열의 공간</td></tr>'+
@@ -524,7 +527,7 @@ function signPages(){
     '<p>위 원국과 대운은 입력된 생년월일·시간·지역을 기준으로 계산되었습니다. 생년월일이 다르거나 시간이 추정이라면 책자의 1장(총평)과 15장(평생 대운)을 우선 확인하시고, 필요한 경우 재발행을 요청하세요.</p>'+
     '<div class="sign"><div class="row"><span>검수</span><span class="sig">천령당</span></div><div class="row"><span>판독</span><span>사주명리 기반 참고 해석</span></div><div class="row"><span>문의</span><span>with-hj@users.noreply.github.com</span></div></div>',{spread:true}));
   push(page('20 / REVIEW',secLabel('20','CLOSING · 맺음말')+'<h1>이 책을 덮으며</h1>'+
-    '<p class="lead">사주는 바꿀 수 없지만, 어느 쪽으로 기울여 살지는 매일 정할 수 있습니다.</p>'+
+    '<p class="lead">사주는 바꿀 수 없습니다. 하지만 오늘 저녁 무엇을 하는지는 바꿀 수 있습니다. 이 책은 그 한 칸을 위해 쓴 글입니다.</p>'+
     '<p>'+esc(B.name)+' 님의 여덟 글자는 '+gzP(R.dStem,R.dBranch)+'일주입니다. 이 책에서 가장 중요한 문장은 아마 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>에 대한 설명일 것입니다. 그 힘이 쓰이는 자리에서 이 사주는 오래 갑니다.</p>'+
     '<p>두 번째로 중요한 것은 '+elK(c.yongEl)+'입니다. '+S.EL_DEEP[c.yongEl].habit+' — 이 한 가지를 3개월 지켜보세요. 사주는 큰 사건으로 바뀌지 않고, 매일의 작은 기울기로 바뀝니다.</p>'+
     '<p>세 번째는 시간입니다. 가장 힘이 실리는 10년은 <b>'+R.daeun[S.bestDaeun(R,c).i].from+'~'+R.daeun[S.bestDaeun(R,c).i].to+'세</b>입니다. 그때까지 무엇을 심어두는지가 결과를 바꿉니다.</p>'+
@@ -560,7 +563,7 @@ function appendPages(){
     '<p class="note">천령당 · 2026 · with-hj@users.noreply.github.com</p>'+
     callout('기록','<p>이 책의 원국은 '+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시':'시간 미상')+' · '+gzP(R.dStem,R.dBranch)+'일주 기준입니다.</p>'),{spread:true}));
   var d=S.EL_DEEP[c.yongEl];
-  chapter('appendix2','22','서른 날의 실천','관찰·이행·경계·재독');
+  chapter('appendix2','22','30일 실천 가이드','관찰·이행·경계·재독');
   push(page('22 / 30 DAYS',secLabel('22','THIRTY DAYS · 실천')+'<h1>이 책을 덮은 뒤,<br><span class="accent">서른 번의 선택</span></h1>'+
     '<p class="lead">사주는 바뀌지 않습니다. 바뀌는 것은 매일 어느 쪽으로 조금씩 기우는가입니다. 이 책에서 읽은 결론을 마음이 아니라 <b>습관</b>에 옮기는 서른 날의 순서를 적어둡니다.</p>'+
     '<h3>1주 — 관찰</h3><p>이번 주에는 아무것도 바꾸지 않습니다. 대신 아침에 눈뜨자마자 몸의 상태를 세 단어로 적고, 저녁에 “오늘 에너지가 가장 오래 간 시간”을 한 줄로 남기세요. 이 사주는 느낌을 말로 옮길 때 스스로를 조금 다르게 읽습니다. 기록이 쌓이면 그것이 교정이 됩니다.</p>'+
