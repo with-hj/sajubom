@@ -981,7 +981,7 @@ input,select,textarea,button{font-family:var(--sans)}
   position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(6,12,22,.40) 0%,rgba(6,12,22,0) 24%,rgba(6,12,22,0) 44%,rgba(6,12,22,.88) 92%);
 }
-.intro-cap{position:absolute;left:0;right:0;bottom:0;padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px}
+.intro-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px}
 .intro-badge{
   align-self:flex-start;font-size:12.5px;font-weight:700;letter-spacing:.14em;color:#1A1305;
   background:linear-gradient(135deg,#ECD6A6,#D8B36A);padding:5px 11px;border-radius:999px;
@@ -1289,11 +1289,15 @@ body{background:var(--hanji)}
 .intro-cta{background:linear-gradient(135deg,#F0DCA8,#D9B36A 55%,#C9A45A);color:#241705;
   min-height:46px;font-size:14.5px;box-shadow:0 10px 22px rgba(60,42,20,.3)}
 .intro-badge{font-size:11px;padding:3px 9px}
-.intro-cap{padding:12px 12px 13px;gap:8px}
+.intro-cap{padding:12px 12px 13px;gap:8px;z-index:2}
 /* v68 · 영상이 바뀔 때 이전 탭의 첫 프레임이 겹치지 않게 — 한 번 사라졌다가 새 영상이 뜬다 */
-.intro-video{opacity:0;transition:opacity .32s ease}
-.intro-video.ready{opacity:1}
-.intro-video[data-empty="1"]{opacity:0;visibility:hidden}
+/* v68 · 영상이 비어 있는 동안은 아예 그리지 않는다 — 브라우저가 빈 영상 위에 그리는 표식이 첫 프레임을 가리지 않게 */
+.intro-video{opacity:1;transition:opacity .28s ease}
+/* v68 · 영상 왼쪽 위 모서리를 부드럽게 눌러 두는 비네트 (브라우저가 그리는 미디어 표식도 함께 가린다) */
+.intro-frame::after{content:'';position:absolute;left:0;top:0;width:96px;height:72px;pointer-events:none;z-index:1;
+  background:radial-gradient(130% 130% at 0% 0%,rgba(18,11,5,.62) 0%,rgba(18,11,5,.26) 52%,rgba(18,11,5,0) 76%);
+  border-radius:18px 0 0 0}
+.intro-video[data-empty="1"]{display:none}
 @media (prefers-reduced-motion:reduce){.intro-video{transition:none}}
 
 /* 입력 폼 — 한지 위의 흰 카드 */
@@ -1326,6 +1330,8 @@ html.no-gate .gate{display:none}
     box-shadow:0 0 90px rgba(0,0,0,.8),0 0 0 1px rgba(216,179,106,.12)}
 }
 .gate-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0A0705}
+.gate-frame::after{content:'';position:absolute;left:0;top:0;width:118px;height:86px;pointer-events:none;z-index:1;
+  background:radial-gradient(130% 130% at 0% 0%,rgba(8,5,3,.66) 0%,rgba(8,5,3,.28) 52%,rgba(8,5,3,0) 78%)}
 .gate-veil{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(10,7,4,.62) 0%,rgba(10,7,4,.12) 14%,rgba(10,7,4,0) 28%,
     rgba(10,7,4,0) 44%,rgba(10,7,4,.46) 64%,rgba(10,7,4,.84) 78%,rgba(10,7,4,.97) 90%)}
