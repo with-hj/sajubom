@@ -469,24 +469,27 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .trust span{font-size:13.5px;color:#b3a795;line-height:1.7}
 
 /* ---------- 푸터 ---------- */
-.ft{background:var(--ink);border-top:1px solid rgba(216,179,106,.18);padding:32px 0 40px;color:#8f96a6;font-size:12.5px;line-height:1.9}
-.ft .ft-disc{font-size:12px;line-height:1.85;letter-spacing:-.01em}
+.ft{background:var(--ink);border-top:1px solid rgba(216,179,106,.18);padding:20px 0 24px;color:#8f96a6;font-size:12px;line-height:1.8}
+.ft .ft-disc{font-size:11.5px;line-height:1.7;letter-spacing:-.01em}
 .ft a{color:#b9c0cc;text-decoration:underline;text-underline-offset:2px}
 .ft .adm-link{margin-top:14px;display:inline-block;font-size:12px;letter-spacing:.08em;color:#737d8e}
 /* 하단 [관리자] — 문의 메일 바로 아래, 눈에 띄지 않게 */
-.ft .ft-adm{display:block;margin:14px auto 0;padding:6px 10px;background:none;border:0;font:inherit;font-size:12px;letter-spacing:.18em;color:#6f7889;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ft .ft-adm{display:inline-block;padding:3px 2px;background:none;border:0;font:inherit;font-size:10px;letter-spacing:.14em;color:#7E7361;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .ft .ft-adm:hover,.ft .ft-adm:active{color:#cbb98f}
 /* 하단 문구 — 전부 가운데 정렬 */
 .ft{text-align:center}
 .ft .ft-disc{margin-left:auto;margin-right:auto}
 .ft .wrap>*{text-align:center}
-/* v71 · 사업자 정보 (전자상거래법 표기) — 라벨/값 두 열을 맞춰 가운데 정렬 */
-.ft .ft-biz{display:flex;justify-content:center;margin-top:16px;padding-top:13px;position:relative}
-.ft .ft-biz::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(262px,72%);height:1px;background:rgba(216,179,106,.17)}
-.ft .ft-biz dl{display:grid;grid-template-columns:auto auto;gap:1px 9px;margin:0;font-size:12px;line-height:1.8;letter-spacing:-.01em;text-align:left}
-.ft .ft-biz dt{color:#A0916F;white-space:nowrap;text-align:right}
-.ft .ft-biz dd{margin:0;color:#B3A38A}
-.ft .ft-mail{margin-top:12px}
+/* v72 · 사업자 정보 (전자상거래법 표기) — 390px에서 정확히 두 줄, 9px 밀집형 */
+.ft .ft-biz{margin-top:9px;padding-top:7px;position:relative}
+.ft .ft-biz::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(238px,64%);height:1px;background:rgba(216,179,106,.13)}
+.ft .ft-biz p{margin:0;font-size:9px;line-height:1.5;letter-spacing:-.02em;text-align:center;white-space:nowrap;color:#9C8D74}
+.ft .ft-biz i{font-style:normal;color:rgba(216,179,106,.32);padding:0 1px}
+.ft .ft-biz a{color:inherit;text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:.5px;text-decoration-color:rgba(216,179,106,.34)}
+.ft .ft-biz a:hover,.ft .ft-biz a:active{color:#C3B291}
+/* 관리자 + 저작권 — 한 줄로 더 아래 */
+.ft .ft-note{margin-top:7px;font-size:10px;line-height:1.5;letter-spacing:-.01em;color:#6E6353}
+.ft .ft-note span{margin-left:7px}
 
 /* ---------- 모달 · 관리자 ---------- */
 /* 관리자 비밀번호 */
