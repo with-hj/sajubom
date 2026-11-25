@@ -49,7 +49,7 @@ function plainYearWhy(R,r){
   var rel=r.rels.map(function(x){ return x.pos; }).join('·');
   var t=r.rels.map(function(x){ return x.type; }).join('·');
   var bits=[];
-  bits.push(NY+'년의 글자 '+r.gz+'은(는) 당신의 '+r.g+' 자리로 들어옵니다. '+(S.SEUN_DEEP[r.g]||''));
+  bits.push(NY+'년의 글자는 '+r.gz+'이고, 당신에게는 '+r.g+' 자리로 들어옵니다.');
   if(r.rels.length) bits.push('네 기둥과는 '+rel+'에서 '+t+'으로 만나, 그 자리의 일이 눈에 띄게 움직입니다.');
   else bits.push('네 기둥과 크게 부딪히지도 얽히지도 않아, 평소의 흐름이 그대로 이어집니다.');
   if(r.yong) bits.push('이 해에는 당신에게 힘이 되는 기운이 직접 들어옵니다. 미뤄둔 일이 풀리는 쪽으로 쓰세요.');
@@ -160,13 +160,12 @@ function nyDoor(R,c,input,name){
     ? '미뤄둔 것을 꺼내고 문을 두드리기 좋은 해입니다. 이 해에 시작한 일은 내년의 재료가 됩니다.'
     : (r.tone==='hold'?'벌이기보다 지키는 해입니다. 새 계약·새 대출·새 판은 다음 해로 미루는 편이 낫습니다.':'되는 일과 막히는 일이 번갈아 오는 해입니다. 한 번에 하나만 잡으세요.'));
   var h='';
-  h+='<p>2027년 정미년. 누군가에게는 준비의 해, 누군가에게는 문이 열리는 해입니다. 당신의 2027년이 어느 쪽인지, 달마다 짚어드립니다.</p>';
   h+='<p>'+plainYearWhy(R,r)+'</p>';
   h+='<p>그래서 2027년은 <b>'+r.short+'</b>입니다. '+toneLine+'</p>';
-  h+=H('이 해의 성격 — '+r.gz);
-  h+='<p>2027년의 하늘은 <b>'+r.gz+'</b>입니다. 당신의 여덟 글자와 만나면 <b>'+r.g+'</b> 자리가 됩니다. '+(S.SEUN_DEEP[r.g]||'')+'</p>';
+  h+=H('이 해의 공기 — '+r.gz);
+  h+='<p>'+S.SEUN_DEEP[r.g]+'</p>';
   h+='<p>'+S.SEUN_EL[S.BR_EL[r.branch]]+'</p>';
-  h+=H('2026년 남은 두 달은 어떻게 쓰나');
+  h+=H('2027년을 맞기 전, 남은 달');
   var rest='', nowY=new Date().getFullYear(), nowM=new Date().getMonth()+1;
   if(nowY<NY){
     for(var m=nowM;m<=12;m++){
@@ -175,7 +174,7 @@ function nyDoor(R,c,input,name){
     }
   }
   if(rest){
-    h+='<p>2027년을 맞기 전, 남은 달은 <b>비우는 시간</b>으로 쓰면 좋습니다. 새로 벌이기보다 정리하고, 미뤄둔 결정 하나를 끝내세요.</p>';
+    h+='<p>2027년을 맞기 전 남은 달은 <b>비우는 시간</b>으로 쓰면 좋습니다. 새로 벌이기보다 정리하고, 미뤄둔 결정 하나를 끝내세요.</p>';
     h+='<table class="tbl"><tr><th>달</th><th>간지</th><th>이 달에 할 일</th></tr>'+rest+'</table>';
   }
   h+=H('2027년, 어디에 문이 열리는가');
@@ -183,10 +182,17 @@ function nyDoor(R,c,input,name){
   var AREA=[['돈','재성','수입과 계약'],['일·자리','관성','직장과 책임'],['표현·재능','식상','만들고 알리는 일'],['문서·집','인성','계약·등기·공부']];
   h+='<table class="tbl"><tr><th>영역</th><th>2027년의 결</th></tr>';
   AREA.forEach(function(a){
-    h+='<tr><td><b>'+a[0]+'</b></td><td style="font-size:13px">'+(nyGrp===a[1]?'<b>이 해의 중심</b>입니다. '+a[2]+'에서 실제 일이 생깁니다.':'중심은 아니지만, 달마다 문이 열리는 때가 있습니다.')+'</td></tr>';
+    var months=months2027(R,function(x){ return S.GOD_GROUP[x.g]===a[1]; });
+    var mk=months.map(function(x){ return x.m+'월'; }).join('·');
+    var cell;
+    if(nyGrp===a[1]) cell='<b>이 해의 중심</b>입니다. '+a[2]+'에서 실제 일이 생깁니다.';
+    else if(mk) cell='중심은 아니지만 <b>'+mk+'</b>에 이 기운이 들어와 문이 열립니다.';
+    else cell='올해는 뚜렷한 달이 없습니다. 내년으로 미루고 준비하세요.';
+    h+='<tr><td><b>'+a[0]+'</b></td><td style="font-size:13px">'+cell+'</td></tr>';
   });
   h+='</table>';
-  h+='<p>2027년의 중심은 <b>'+(nyGrp==='재성'?'돈':(nyGrp==='관성'?'일과 자리':(nyGrp==='식상'?'표현과 재능':(nyGrp==='인성'?'배움과 문서':'나와 동료'))))+'</b>입니다. 그래서 아래에서 돈·일·사랑·몸을 하나씩, 달까지 짚어드립니다.</p>';
+  var nyName=(nyGrp==='재성'?'돈':(nyGrp==='관성'?'일과 자리':(nyGrp==='식상'?'표현과 재능':(nyGrp==='인성'?'배움과 문서':'나와 동료'))));
+  h+='<p>2027년의 중심은 <b>'+nyName+'</b>입니다. 그래서 아래에서 돈·일·사랑·몸을 하나씩, 달까지 짚어드립니다.</p>';
   h+=K('2027년의 한 줄','<b>'+S.SEUN_KEY[r.g]+'</b>의 해 — 이 방향에 얹히는 선택이 힘을 받습니다.');
   return h;
 }
