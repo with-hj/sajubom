@@ -525,7 +525,7 @@ function signPages(){
     '<tr><td class="k">현재 대운</td><td>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세 · '+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</td></tr>'+
     '<tr><td class="k">발행일</td><td>'+today.getFullYear()+'.'+n2(today.getMonth()+1)+'.'+n2(today.getDate())+'</td></tr></table>'+
     '<p>위 원국과 대운은 입력된 생년월일·시간·지역을 기준으로 계산되었습니다. 생년월일이 다르거나 시간이 추정이라면 책자의 1장(총평)과 15장(평생 대운)을 우선 확인하시고, 필요한 경우 재발행을 요청하세요.</p>'+
-    '<div class="sign"><div class="row"><span>검수</span><span class="sig">천령당</span></div><div class="row"><span>판독</span><span>사주명리 기반 참고 해석</span></div><div class="row"><span>문의</span><span>with-hj@users.noreply.github.com</span></div></div>',{spread:true}));
+    '<div class="sign"><div class="row"><span>검수</span><span class="sig">천령당</span></div><div class="row"><span>판독</span><span>사주명리 기반 참고 해석</span></div><div class="row"><span>문의</span><span>sajutome@gmail.com</span></div></div>',{spread:true}));
   push(page('20 / REVIEW',secLabel('20','CLOSING · 맺음말')+'<h1>이 책을 덮으며</h1>'+
     '<p class="lead">사주는 바꿀 수 없습니다. 하지만 오늘 저녁 무엇을 하는지는 바꿀 수 있습니다. 이 책은 그 한 칸을 위해 쓴 글입니다.</p>'+
     '<p>'+esc(B.name)+' 님의 여덟 글자는 '+gzP(R.dStem,R.dBranch)+'일주입니다. 이 책에서 가장 중요한 문장은 아마 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>에 대한 설명일 것입니다. 그 힘이 쓰이는 자리에서 이 사주는 오래 갑니다.</p>'+
@@ -560,7 +560,7 @@ function appendPages(){
     '<li>계산 방식 — 년주는 입춘, 월주는 절기, 일주는 1900년 1월 1일 갑술일 기준, 시주는 오자둔법. 출생 지역의 경도 차이는 시주 계산에 반영했습니다.</li>'+
     '<li>주의 — 의학적 진단, 법률·투자 판단, 결혼·이혼 등 중대한 결정의 근거로 사용할 수 없습니다.</li>'+
     '<li>재발행 — 생년월일·시간·지역이 달라지면 같은 책을 다시 만들 수 있습니다.</li></ul>'+
-    '<p class="note">천령당 · 2026 · with-hj@users.noreply.github.com</p>'+
+    '<p class="note">천령당 · 2026 · sajutome@gmail.com</p>'+
     callout('기록','<p>이 책의 원국은 '+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시':'시간 미상')+' · '+gzP(R.dStem,R.dBranch)+'일주 기준입니다.</p>'),{spread:true}));
   var d=S.EL_DEEP[c.yongEl];
   chapter('appendix2','22','30일 실천 가이드','관찰·이행·경계·재독');
