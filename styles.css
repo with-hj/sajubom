@@ -965,18 +965,19 @@ input,select,textarea,button{font-family:var(--sans)}
    영상이 끝나거나 CTA를 누르면 아래 사주 입력창이 열린다.
    ===================================================================== */
 .intro-card{
-  width:min(420px,100%,calc(78vh * 9 / 16));
+  width:min(340px,100%);
   margin:16px auto 0;
   display:flex;flex-direction:column;gap:9px;
   animation:introCardIn .55s cubic-bezier(.2,.7,.2,1) both;
 }
 .intro-card[hidden]{display:none}
 .intro-frame{
-  position:relative;width:100%;aspect-ratio:9/16;border-radius:20px;overflow:hidden;
+  /* v69 · 탭 인트로 영상 카드는 정사각형에 가깝게 — 영상 파일은 704px HD 그대로 두고 칸만 1:1로 잘라 보여준다 */
+  position:relative;width:100%;aspect-ratio:1/1;border-radius:20px;overflow:hidden;
   background:#1E1610;border:1px solid rgba(216,179,106,.62);
   box-shadow:0 18px 44px rgba(4,10,20,.5),inset 0 0 0 1px rgba(236,214,166,.16);
 }
-.intro-video{width:100%;height:100%;display:block;object-fit:cover;background:#1E1610}
+.intro-video{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 22%;background:#1E1610}
 .intro-shade{
   position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(6,12,22,.40) 0%,rgba(6,12,22,0) 24%,rgba(6,12,22,0) 44%,rgba(6,12,22,.88) 92%);
@@ -1014,7 +1015,7 @@ input,select,textarea,button{font-family:var(--sans)}
   .panel.reveal-in,.panel.reveal-settled{transition:none}
 }
 @media (max-width:420px){
-  .intro-card{width:min(100%,calc(78vh * 9 / 16))}
+  .intro-card{width:min(340px,100%)}
   .intro-hook{font-size:18px}
 }
 
@@ -1275,8 +1276,8 @@ body{background:var(--hanji)}
   line-height:1.72;color:#78654F;letter-spacing:-.01em;text-align:center}
 .v8-tnote b{color:#33261A;font-weight:700}
 
-/* 9:16 인트로 영상 — 밝은 바탕 위에 얇은 나무 테두리로 앉힌다 */
-.intro-card{width:min(272px,100%,calc(56vh * 9 / 16));margin:14px auto 0;gap:9px}
+/* 인트로 영상 카드 — 밝은 바탕 위에 얇은 나무 테두리로 앉힌다 (v69 · 1:1 정사각형) */
+.intro-card{width:min(340px,100%);margin:14px auto 0;gap:9px}
 .intro-frame{border-radius:18px;border:1px solid rgba(120,92,58,.26);background:var(--hanji3);
   background-size:cover;background-position:50% 50%;
   box-shadow:0 16px 34px rgba(90,70,44,.18),0 1px 0 rgba(255,255,255,.7) inset}
@@ -1308,7 +1309,7 @@ body{background:var(--hanji)}
   .hd .wrap{max-width:560px}
   .tracks .wrap{max-width:560px;padding:7px 24px}
   .tp-card .tx b{font-size:14.5px}
-  .intro-card{width:min(430px,100%,calc(74vh * 9 / 16))}
+  .intro-card{width:min(340px,100%)}
 }
 
 /* =====================================================================
@@ -1446,15 +1447,16 @@ html.no-gate .gate{display:none}
 .lr-intro{display:block}
 #track-life .lr-hero{
   /* v61 · 영상(720x1280)과 같은 9:16 칸을 그대로 준다.
-     예전 max-height:min(50vh,480px)가 높이를 잘라내 cover가 머리·수정구슬을 잘랐다. */
-  width:min(430px,100%,calc(82vh * 9 / 16));margin:14px auto 0;
-  aspect-ratio:9/16;height:auto;min-height:0;max-height:none;border-radius:20px;
+     예전 max-height:min(50vh,480px)가 높이를 잘라내 cover가 머리·수정구슬을 잘랐다.
+     v69 · 탭 인트로와 같이 정사각형에 가까운 칸으로 — 영상은 720px 그대로 둔다. */
+  width:min(340px,100%);margin:14px auto 0;
+  aspect-ratio:1/1;height:auto;min-height:0;max-height:none;border-radius:20px;
   border:1px solid rgba(120,92,58,.28);background:var(--hanji3);
   box-shadow:0 16px 34px rgba(90,70,44,.18),0 1px 0 rgba(255,255,255,.7) inset;
 }
-#track-life .lr-art{object-fit:cover;object-position:50% 50%}
+#track-life .lr-art{object-fit:cover;object-position:50% 22%}
 /* v61 · 데스크톱 : 인트로 영상(.intro-card)과 같은 74vh 기준으로 폭을 잡아 화면 안에 앉힌다 */
-@media (min-width:700px){ #track-life .lr-hero{width:min(430px,100%,calc(74vh * 9 / 16))} }
+@media (min-width:700px){ #track-life .lr-hero{width:min(340px,100%)} }
 #track-life .lr-veil{background:linear-gradient(180deg,rgba(28,18,8,.26) 0%,rgba(28,18,8,0) 20%,
   rgba(28,18,8,0) 82%,rgba(28,18,8,.14) 100%)}
 /* v60 · 영상 위 흰 알약 배지(lr-chip) 삭제 — 수정구슬이 가려지지 않게 */

@@ -306,7 +306,7 @@ function setTrack(t){
 
 /* 생년월일 입력 전에도 보이는 가격: 테마 결제 이력이 있으면 차감가를 함께 안내 */
 function lifePriceHTML(credit){
-  if(credit) return '<s>119,000원</s><b>36,800원</b><span>테마 결제 3,000원 할인 적용</span>';
+  if(credit) return '<s>119,000원</s><b>35,900원</b><span>테마 결제 3,900원 할인 적용</span>';
   return '<s>119,000원</s><em>67%</em><b>39,800원</b><span>1부 · 프리미엄 소장본 PDF</span>';
 }
 function markThemeCredit(){
@@ -846,7 +846,7 @@ function renderResult(R,input){
   }
   h+='<div class="panel" id="rdMore" style="margin-top:18px;text-align:center">'+
      '<h3 style="font-size:17px">'+(lockedTotal?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
-     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>3,000원</b> · 인생사주 리포트는 <s style="color:#A99A86">119,000원</s> <b>39,800원</b>(67% 할인)입니다.</p>'+
+     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>3,900원</b> · 인생사주 리포트는 <s style="color:#A99A86">119,000원</s> <b>39,800원</b>(67% 할인)입니다.</p>'+
      '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
      '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
   /* 이름을 비워 두면 '당신'으로 부르는데, '당신 님'처럼 겹치지 않게 ' 님'을 덜어낸다 (굵게 감싼 경우 포함) */
@@ -908,12 +908,12 @@ function gateHTML(lead){
     return '<div class="ch-gate lead">'+
       '<p class="gate-hook">'+hk.t+'</p>'+
       '<p class="gate-kicker">전체 풀이를 열면 정확한 시기와 구체적 이유, 피해야 할 함정까지 모두 확인됩니다.</p>'+
-      '<div class="gate-price">3,000원 · 전체 풀이</div>'+
+      '<div class="gate-price">3,900원 · 전체 풀이</div>'+
       '<button type="button" class="btn btn-gold btn-block gate-btn" data-pw-open>결제 후 전체 보기</button>'+
       '<p class="gate-note">테스트 사이트 — 결제 없이 전체 풀이가 열립니다</p></div>';
   }
   return '<div class="ch-gate mini">'+
-    '<div class="gm-tx"><b>이 장의 결론과 시기</b><span>3,000원 · 전체 풀이</span></div>'+
+    '<div class="gm-tx"><b>이 장의 결론과 시기</b><span>3,900원 · 전체 풀이</span></div>'+
     '<button type="button" class="btn-gate" data-pw-open>결제 후 전체 보기</button></div>';
 }
 /* ---------- 첫 문장만 보여주고, 결론이 되는 대목은 가린다 ---------- */
@@ -1045,7 +1045,7 @@ function bindChapterUI(total){
 function payCardMarkup(){
   var info=window.__pwInfo||{total:0,tab:''};
   var rest=info.total>FREE_CH?info.total-FREE_CH:6;
-  return '<div class="pw-price">3,000원 · 전체 풀이</div>'+
+  return '<div class="pw-price">3,900원 · 전체 풀이</div>'+
     '<h3>결제 없이 열어볼까요?</h3>'+
     '<p>지금은 PG 연동 전 테스트 사이트입니다. <b>실제 결제는 이루어지지 않습니다.</b><br>확인을 누르면 남은 '+rest+'장이 바로 열립니다.</p>'+
     '<button type="button" class="btn btn-gold btn-block" id="pwDo">테스트로 전체 풀이 열기</button>'+
@@ -1095,12 +1095,12 @@ function setThemeCredit(v){
   try{ if(v) localStorage.setItem('wlh_theme_paid','1'); else localStorage.removeItem('wlh_theme_paid'); }catch(e){}
 }
 function upsellMarkup(){
-  return '<p class="up-tag">테마 결제 3,000원 할인 적용</p>'+
+  return '<p class="up-tag">테마 결제 3,900원 할인 적용</p>'+
     '<p class="tt">여기서 멈추면<br>내 인생의 큰 흐름은 못 봅니다</p>'+
-    '<p class="pp">타고난 기질부터 평생 대운·앞으로 10년·문서와 부동산까지 한 권에 담았습니다.<br>정가 <b>119,000원</b>인 리포트를 지금 <b>39,800원</b>에, 방금 결제한 <b>3,000원</b>을 빼면 이 가격입니다.</p>'+
-    '<div class="up-price"><s>119,000원</s><b>36,800원</b></div>'+
+    '<p class="pp">타고난 기질부터 평생 대운·앞으로 10년·문서와 부동산까지 한 권에 담았습니다.<br>정가 <b>119,000원</b>인 리포트를 지금 <b>39,800원</b>에, 방금 결제한 <b>3,900원</b>을 빼면 이 가격입니다.</p>'+
+    '<div class="up-price"><s>119,000원</s><b>35,900원</b></div>'+
     '<div class="up-list"><span>평생 대운 9구간</span><span>앞으로 10년</span><span>문서·부동산</span><span>맞춤 질문 답변</span></div>'+
-    '<button type="button" class="btn btn-gold btn-block" data-theme-upgrade>+36,800원으로 인생사주 리포트 받기</button>'+
+    '<button type="button" class="btn btn-gold btn-block" data-theme-upgrade>+35,900원으로 인생사주 리포트 받기</button>'+
     '<p class="small">방금 입력한 사주 정보 그대로 이어집니다</p>';
 }
 function addUpsellCard(host){
@@ -1113,7 +1113,7 @@ function addUpsellCard(host){
   });
   host.appendChild(up);
 }
-/* 테마 결제 정보를 인생사주 리포트 신청서로 옮기고, 36,800원 할인가로 넘긴다 */
+/* 테마 결제 정보를 인생사주 리포트 신청서로 옮기고, 35,900원 할인가로 넘긴다 */
 function themeUpgradeToLife(){
   var inp=state.input;
   setThemeCredit(true);
@@ -1146,7 +1146,7 @@ function themeUpgradeToLife(){
   openFastConfirm();
 }
 
-/* 테마 결제 후 업셀 : 4단계 신청서를 건너뛰고 이메일만 확인해 36,800원 결제(#pdfPay)로 직행 */
+/* 테마 결제 후 업셀 : 4단계 신청서를 건너뛰고 이메일만 확인해 35,900원 결제(#pdfPay)로 직행 */
 var fastPay=false;
 function savedEmail(){ try{ return localStorage.getItem('wlh_email_v1')||''; }catch(e){ return ''; } }
 function savedPhone(){ try{ return localStorage.getItem('wlh_phone_v1')||''; }catch(e){ return ''; } }
@@ -1261,7 +1261,7 @@ function unlockReading(){
   if(first&&!$('.pw-open-flag')){
     var flag=document.createElement('div');
     flag.className='pw-open-flag';
-    flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · 테스트 결제 3,000원';
+    flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · 테스트 결제 3,900원';
     first.insertBefore(flag,first.firstChild);
   }
   var more=$('#rdMore'); if(more){ more.style.display='none'; }
@@ -1345,7 +1345,7 @@ function makeOrder(b,email,phone,from){
     gender:b.gender,tsoff:b.tsoff,regionName:b.regionName,regionKey:b.regionKey,cal:state.pcal,
     stage:stage?stage.getAttribute('data-s'):'',marry:marry?marry.getAttribute('data-m'):'single',
     kid:kid?kid.getAttribute('data-c'):'none',q:($('#lz-q').value||'').trim(),email:email,phone:phone||'',
-    product:'천령당 인생사주 리포트',priceRegular:119000,price:themeCredit()?36800:39800,
+    product:'천령당 인생사주 리포트',priceRegular:119000,price:themeCredit()?35900:39800,
     themePaid:themeCredit(),status:'결제대기',from:from||'form'};
 }
 function submitPdf(){
@@ -1374,8 +1374,8 @@ function payRowsHTML(o){
   if(o.themePaid){
     h+='<div class="pay-row"><span>정가</span><b><s style="color:#A99A86">'+won(reg)+'</s></b></div>';
     h+='<div class="pay-row"><span>특가</span><b>'+won(base)+' <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">67% 할인</em></b></div>';
-    h+=row('테마 결제 할인','-'+won(3000),'discount');
-    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+' · 특가 '+won(base)+' - 테마 결제 할인 '+won(3000)+'</span></b></div>';
+    h+=row('테마 결제 할인','-'+won(3900),'discount');
+    h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+' · 특가 '+won(base)+' - 테마 결제 할인 '+won(3900)+'</span></b></div>';
   } else {
     h+='<div class="pay-row"><span>정가</span><b><s style="color:#A99A86">'+won(reg)+'</s> <em style="font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px">67% 할인</em></b></div>';
     h+='<div class="pay-row total"><span>결제 금액</span><b>'+won(price)+'<span class="sub">정가 '+won(reg)+'에서 67% 할인</span></b></div>';
@@ -2006,7 +2006,7 @@ function myPageHTML(){
 
   h+='<div class="mp-sec"><h4>테마 풀이</h4>'+
      '<p class="mp-line"><span>테마 풀이 이용권</span><b class="'+(paid?'gold':'')+'">'+(paid?'보유 중':'없음')+'</b></p>'+
-     (paid?'<p class="mp-line"><span>인생사주 리포트 결제가</span><b class="gold">36,800원</b></p>':'')+
+     (paid?'<p class="mp-line"><span>인생사주 리포트 결제가</span><b class="gold">35,900원</b></p>':'')+
      '</div>';
 
   h+='<div class="mp-sec"><h4>저장된 연락처</h4>';
