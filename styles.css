@@ -1716,11 +1716,10 @@ html.no-gate .gate{display:none}
   #subtabs.tabs-4{gap:6px}
   .v8-tnote{margin-top:6px;font-size:13px;line-height:1.5}
 
-  /* 9:16 영상 카드 */
+  /* 9:16 영상 카드 — 카드 높이는 비율이 정하므로 캡션은 안쪽에서만 살짝 조인다 */
   .intro-card{margin-top:5px;gap:7px}
-  .intro-cap{padding:10px 12px 10px;gap:7px}
-  .intro-hook{font-size:15px;line-height:1.45}
-  .intro-cta{min-height:42px;font-size:14px}
+  .intro-cap{padding:10px 12px 11px;gap:7px}
+  .intro-cta{min-height:44px}
 
   /* 인생사주 리포트 트랙도 같은 결로 */
   #track-life{padding-top:10px}
