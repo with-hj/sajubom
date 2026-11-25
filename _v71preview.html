@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v71 preview</title>
+<style>
+  html,body{margin:0;padding:0;background:#0b1120}
+  #pv{display:block;width:390px;height:844px;border:0;margin:0}
+</style>
+</head>
+<body>
+<iframe id="pv" src="./?gate=0&v=71" title="preview"></iframe>
+<script>
+(function(){
+  var f=document.getElementById('pv');
+  f.addEventListener('load',function(){
+    setTimeout(function(){
+      try{
+        var d=f.contentDocument;
+        var m=d.getElementById('menuBtn');
+        if(m) m.click();
+        setTimeout(function(){
+          var c=d.querySelector('.dr-link[data-dr="contact"]');
+          if(c) c.click();
+        },900);
+      }catch(e){}
+    },1200);
+  });
+})();
+</script>
+</body>
+</html>
