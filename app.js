@@ -792,7 +792,7 @@ function pillarCells(R){
     var s=ix%10,b=ix%12;
     h+='<div class="pillar'+(i===2?' me':'')+'">'+
       '<div class="pl">'+cols[i][0]+'</div>'+
-      '<div class="pg">'+(i===2?'일간':S.tenGod(R.dStem,s))+'</div>'+
+      '<div class="pg">'+(i===2?'나':S.SEUN_KEY[S.tenGod(R.dStem,s)])+'</div>'+
       '<div class="pc" style="color:'+S.EL_COLOR[S.STEM_EL[s]]+'">'+S.STEM_HAN[s]+'</div>'+
       '<div class="pk">'+S.STEM_KO[s]+'</div>'+
       '<div class="pc" style="color:'+S.EL_COLOR[S.BR_EL[b]]+'">'+S.BR_HAN[b]+'</div>'+
