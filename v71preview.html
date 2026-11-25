@@ -19,6 +19,11 @@
     try{
       var w=f.contentWindow, d=f.contentDocument;
       if(!w||!d) return;
+      if(!d.getElementById('pv-nosb')){
+        var s=d.createElement('style'); s.id='pv-nosb';
+        s.textContent='html{scrollbar-width:none!important}html::-webkit-scrollbar{width:0!important;display:none!important}';
+        (d.head||d.documentElement).appendChild(s);
+      }
       w.scrollTo(0, (d.body&&d.body.scrollHeight)||99999);
     }catch(e){}
   }
