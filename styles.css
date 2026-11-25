@@ -483,8 +483,8 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 /* v71 · 사업자 정보 (전자상거래법 표기) — 라벨/값 두 열을 맞춰 가운데 정렬 */
 .ft .ft-biz{display:flex;justify-content:center;margin-top:16px;padding-top:13px;position:relative}
 .ft .ft-biz::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(262px,72%);height:1px;background:rgba(216,179,106,.17)}
-.ft .ft-biz dl{display:grid;grid-template-columns:auto auto;gap:1px 9px;margin:0;font-size:11.5px;line-height:1.8;letter-spacing:-.01em;text-align:left}
-.ft .ft-biz dt{color:#97866C;white-space:nowrap;text-align:right}
+.ft .ft-biz dl{display:grid;grid-template-columns:auto auto;gap:1px 9px;margin:0;font-size:12px;line-height:1.8;letter-spacing:-.01em;text-align:left}
+.ft .ft-biz dt{color:#A0916F;white-space:nowrap;text-align:right}
 .ft .ft-biz dd{margin:0;color:#B3A38A}
 .ft .ft-mail{margin-top:12px}
 

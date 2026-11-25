@@ -14,19 +14,23 @@
 <script>
 (function(){
   var f=document.getElementById('pv');
-  function attempt(n){
-    var d=f.contentDocument; if(!d) return;
-    var modal=d.getElementById('ctModal');
-    if(modal && modal.classList.contains('on')) return;
-    var c=d.querySelector('.dr-link[data-dr="contact"]');
-    if(c) c.click();
-    if(n<10) setTimeout(function(){ attempt(n+1); },500);
+  var mode=(location.hash||'').replace('#','');
+  function scrollBottom(){
+    try{
+      var w=f.contentWindow, d=f.contentDocument;
+      if(!w||!d) return;
+      w.scrollTo(0, (d.body&&d.body.scrollHeight)||99999);
+    }catch(e){}
   }
   function start(){
     setTimeout(function(){
+      if(mode==='footer'){ scrollBottom(); setTimeout(scrollBottom,600); setTimeout(scrollBottom,1500); return; }
       var d=f.contentDocument; if(!d) return;
       var m=d.getElementById('menuBtn'); if(m) m.click();
-      setTimeout(function(){ attempt(0); },800);
+      setTimeout(function(){
+        var c=d.querySelector('.dr-link[data-dr="contact"]');
+        if(c) c.click();
+      },800);
     },900);
   }
   if(f.contentDocument && f.contentDocument.readyState==='complete') start();
