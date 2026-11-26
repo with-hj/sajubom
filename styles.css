@@ -1667,7 +1667,19 @@ html.no-gate .gate{display:none}
 /* (7) 금액은 어디서도 두 줄로 쪼개지지 않게 */
 .upsell .up-price s,.upsell .up-price b,.upsell .pp b,
 .price-line b,.price-line s,.pay-row b,.pay-row s,.pay-row .tot,
-.ch-gate .gate-price,.fast-box .lr-price b,.fast-box .lr-price s{white-space:nowrap}
+.ch-gate .gate-price,.fast-box .lr-price b,.fast-box .lr-price s,
+.panel .ph b,.panel .ph s,.panel .ph .mnw,
+.lr-price b,.lr-price s,.lr-price em,.lr-price span{white-space:nowrap}
+/* v78 · 금액은 JS에서도 한 덩어리로 묶는다(wrapMoney) */
+.mnw{white-space:nowrap;overflow-wrap:normal;word-break:keep-all}
+
+/* v78 · 결과 맨 아래 업셀 카드 : 테마 이름과 금액이 또렷하게, 줄은 정갈하게 */
+#rdMore h3{line-height:1.45;margin:2px 0 9px}
+#rdMore .ph{line-height:1.78;margin-left:auto;margin-right:auto}
+#rdMore .up-copy b{color:#8A6524;font-size:13.5px}
+#rdMore .up-sum{font-size:12px;color:#8A7A63;margin-top:3px}
+#rdMore .up-sum b{color:#B44B34;font-size:13px}
+#rdMore .up-sum .up-eq{font-size:11px;color:#9C8B72;word-break:keep-all}
 
 /* (8) 관리자 시트(인생사주 리포트 뷰어) 바탕 : 남색 → 먹갈색 */
 .sheet{background:#1E1610}

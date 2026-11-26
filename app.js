@@ -46,6 +46,38 @@ function wrapParens(root){
   }
 }
 
+/* v78 · 금액은 어디서도 두 줄로 쪼개지지 않게 — '23,800원'을 통째로 묶는다 */
+function wrapMoney(root){
+  if(!root||!document.createTreeWalker) return;
+  var RE=/(\d{1,3}(?:,\d{3})+원|\d+원)/g;
+  var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null), nodes=[], n;
+  while((n=walker.nextNode())) nodes.push(n);
+  for(var i=0;i<nodes.length;i++){
+    var node=nodes[i], par=node.parentNode;
+    if(!par) continue;
+    var tag=par.nodeName;
+    if(tag==='SCRIPT'||tag==='STYLE'||tag==='TEXTAREA'||tag==='OPTION'||tag==='TITLE') continue;
+    if(par.closest&&par.closest('.mnw')) continue;
+    var t=node.nodeValue||'';
+    if(t.indexOf('원')<0) continue;
+    RE.lastIndex=0;
+    var m, last=0, frag=null;
+    while((m=RE.exec(t))!==null){
+      if(!frag) frag=document.createDocumentFragment();
+      if(m.index>last) frag.appendChild(document.createTextNode(t.slice(last,m.index)));
+      var sp=document.createElement('span');
+      sp.className='mnw';
+      sp.textContent=m[0];
+      frag.appendChild(sp);
+      last=m.index+m[0].length;
+    }
+    if(!frag) continue;
+    if(last<t.length) frag.appendChild(document.createTextNode(t.slice(last)));
+    par.replaceChild(frag,node);
+  }
+}
+function tidyText(root){ wrapParens(root); wrapMoney(root); }
+
 var REGIONS=[
  {k:'seoul',name:'서울 · 인천 · 경기',off:-32},
  {k:'daejeon',name:'대전 · 세종 · 충청',off:-30},
@@ -353,6 +385,7 @@ function markThemeCredit(){
   var box=document.querySelector('#track-life .lr-price');
   if(!box) return;
   box.innerHTML=lifePriceHTML(themeCredit());
+  wrapMoney(box);
 }
 /* ---------------- 테마 · 탭 ---------------- */
 /* v48 · 테마 카드 아래 표식을 01~05 숫자에서 원래의 한자로 되돌린다 */
@@ -898,16 +931,12 @@ function renderResult(R,input){
     h+='<div class="lock-note" id="lockNote">'+ICON_LOCK+'<span>흐릿하게 번지는 문장이 바로 당신의 시기와 결론입니다 · <b>남은 '+lockedTotal+'장</b>은 결제 후에 열립니다</span></div>';
     for(i=FREE;i<total;i++) h+=chapterSection(chapters,i,bodies[i],true,total);
   }
-  h+='<div class="panel" id="rdMore" style="margin-top:18px;text-align:center">'+
-     '<h3 style="font-size:17px">'+(lockedTotal?'평생의 흐름까지 이어서 보시겠어요':'여기까지가 '+esc(T.name)+'의 결입니다')+'</h3>'+
-     '<p class="ph" style="margin-bottom:6px">테마별 풀이는 <b>3,900원</b> · 인생사주 리포트는 <s style="color:#A99A86">99,000원</s> <b>23,800원</b>(76% 할인)입니다.</p>'+
-     '<p class="ph" style="margin-bottom:14px">같은 주제를 평생의 큰 흐름과 앞으로 10년·노후까지 풀어내면 <b>인생사주 리포트</b>로 이어서 보실 수 있습니다.</p>'+
-     '<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button></div>';
+  h+=rdMoreMarkup(T,lockedTotal);
   /* 이름을 비워 두면 '당신'으로 부르는데, '당신 님'처럼 겹치지 않게 ' 님'을 덜어낸다 (굵게 감싼 경우 포함) */
   h=h.replace(/(<b[^>]*>)?당신(<\/b>)?\s*님/g,function(m,a,b){ return (a||'')+'당신'+(b||''); });
   if(S.fixPost) h=S.fixPost(h);
   $('#resultView').innerHTML=h;
-  wrapParens($('#resultView'));
+  tidyText($('#resultView'));
   bindChapterUI(total);
   $$('[data-goto-pdf]').forEach(function(b){ b.addEventListener('click',function(){ setTrack('life'); }); });
   try{ var rv=$('#resultView'); var y=rv.getBoundingClientRect().top+window.pageYOffset-146; window.scrollTo({top:y,behavior:'smooth'}); }catch(e){}
@@ -1275,7 +1304,7 @@ function openPayGate(){
     });
   }
   el.innerHTML='<div class="pw-card pay-card">'+payCardMarkup()+'</div>';
-  wrapParens(el);
+  tidyText(el);
   syncPayBtn(el);
   el.classList.add('on'); document.body.classList.add('lock');
   var b=$('[data-pay-go]',el); if(b&&b.focus){ try{ b.focus(); }catch(e){} }
@@ -1378,6 +1407,19 @@ var PW_HOOK={
           p:'문서·부동산 취득 타이밍,<br>계약을 피해야 할 달까지 있습니다.'}
 };
 /* ---------------- 테마 결제 → 인생사주 리포트 업셀 ---------------- */
+/* v78 · 결과 맨 아래 업셀 카드 : 지금 보고 있는 테마 이름을 그대로 부르고, 안내 금액은 실제 결제액과 맞춘다 */
+function rdMoreMarkup(T,locked){
+  var tn=esc(T.name), paid=themeCredit();
+  var h='<div class="panel" id="rdMore" style="margin-top:18px;text-align:center">';
+  h+='<h3 style="font-size:17px">'+(locked?'한 장면이 아닌,<br>평생을 읽어보시겠어요':'여기까지가 '+tn+'의 결입니다')+'</h3>';
+  h+='<p class="ph up-copy" style="margin-bottom:8px"><span class="pnw">'+tn+' 풀이는 <b>3,900원</b>.</span><br>'+
+     '하지만 당신 인생의 봄날이 담긴<br>평생 이야기는 <b>19,900원</b>만 더하면<br>인생사주 리포트로 받아보실 수 있어요.</p>';
+  h+='<p class="ph up-sum" style="margin-bottom:14px">정가 <s>99,000원</s> → <b>23,800원</b>'+(paid
+      ? '<br><span class="up-eq">테마 결제 3,900원을 빼면 19,900원</span>'
+      : '<br><span class="up-eq">테마 풀이 3,900원 + 19,900원</span>')+'</p>';
+  h+='<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button>';
+  return h+'</div>';
+}
 function themeCredit(){
   try{ return localStorage.getItem('wlh_theme_paid')==='1'; }catch(e){ return false; }
 }
@@ -1398,7 +1440,7 @@ function addUpsellCard(host){
   var up=document.createElement('div');
   up.className='upsell fade-in'; up.id='rdUpsell';
   up.innerHTML=upsellMarkup();
-  wrapParens(up);
+  tidyText(up);
   up.addEventListener('click',function(e){
     if(e.target.closest('[data-theme-upgrade]')) themeUpgradeToLife();
   });
@@ -1539,7 +1581,7 @@ function unlockReading(mode){
       var chs=window.__chapters||[]; var leadTxt=chs[idx]?chs[idx].lead:'';
       bd.className='ch-bd';
       bd.innerHTML=stripLeadDup(fulls[idx],leadTxt)||'<p class="hint">이 장은 준비 중입니다.</p>';
-      wrapParens(bd);
+      tidyText(bd);
       teaser.parentNode.replaceChild(bd,teaser);
     }
     var gate=sec.querySelector('.ch-gate'); if(gate) gate.parentNode.removeChild(gate);
@@ -1699,7 +1741,7 @@ function showPayStep(o){
     '<p class="pay-note">결제를 마치면 리포트를 바로 펼쳐보고 PDF로 저장하실 수 있습니다.</p>'+
     '</div>';
   bindPayUI(p,function(){ onLifePay(p); });
-  wrapParens(p);
+  tidyText(p);
   syncPayBtn(p);
   var back=$('#payBack');
   if(back) back.addEventListener('click',function(){
@@ -1757,7 +1799,7 @@ function showDone(order){
     '<button type="button" class="btn btn-verm btn-block" style="margin-top:8px" data-cust-pdf>PDF 파일 다운로드</button>'+
     '<p class="pdf-note">PDF는 이 기기의 다운로드 폴더로 저장됩니다. 인앱 브라우저에서 저장이 안 될 경우 Safari/Chrome으로 열어주세요.</p>'+
     '<button type="button" class="btn btn-line btn-block" style="margin-top:10px" data-goto-top>처음으로</button></div>';
-  wrapParens(d);
+  tidyText(d);
   $$('[data-cust-view]').forEach(function(x){ x.addEventListener('click',function(){ openCustomerReport(); }); });
   $$('[data-cust-pdf]').forEach(function(x){ x.addEventListener('click',function(){ openCustomerReport(function(){ downloadBookPdf(); }); }); });
   $$('[data-goto-top]').forEach(function(x){ x.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); }); });
@@ -2354,7 +2396,7 @@ function openMyPage(){
   var m=$('#mpModal'), body=$('#mpBody');
   if(!m) return;
   if(body) body.innerHTML=myPageHTML();
-  wrapParens(body);
+  tidyText(body);
   m.classList.add('on'); m.setAttribute('aria-hidden','false');
   drSyncLock(); bindMyPage();
   try{ $('#mpClose').focus({preventScroll:true}); }catch(e){}
@@ -2390,7 +2432,7 @@ function openLegal(key){
   var m=$('#lgModal'), body=$('#lgBody'), tpl=document.getElementById(d.tpl);
   if(!m||!body||!tpl) return;
   body.innerHTML=tpl.innerHTML;
-  wrapParens(body);
+  tidyText(body);
   body.scrollTop=0;
   if($('#lgCap')) $('#lgCap').textContent=d.cap;
   if($('#lgTitle')) $('#lgTitle').textContent=d.title;
