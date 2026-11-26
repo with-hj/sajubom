@@ -1,5 +1,5 @@
 /* =====================================================================
-   천령당 인생사주 리포트 — 시간의 지도 (평생 대운 · 5년 세운 · 12개월 월력)
+   사주봄 인생사주 리포트 — 시간의 지도 (평생 대운 · 5년 세운 · 12개월 월력)
    + 개운 처방 · 맞춤 질문 · 검수 서명 · 부록
    ===================================================================== */
 (function(){
@@ -18,9 +18,9 @@ function stemS(s){return S.STEM_KO[s]+'('+S.STEM_HAN[s]+')';}
 function brS(b){return S.BR_KO[b]+'('+S.BR_HAN[b]+')';}
 function page(label,body,opt){
   opt=opt||{};
-  return '<section class="pg"><div class="pg-hd"><span class="l">천령당 · LIFE SAJU REPORT</span><span class="r">'+label+'</span></div>'+
+  return '<section class="pg"><div class="pg-hd"><span class="l">사주봄 · LIFE SAJU REPORT</span><span class="r">'+label+'</span></div>'+
     '<div class="pg-bd'+(opt.spread?' spread':'')+'">'+body+'</div>'+
-    '<div class="pg-ft"><span>천령당 · 인생사주 리포트</span><span class="pn">__PN__</span></div></section>';
+    '<div class="pg-ft"><span>사주봄 · 인생사주 리포트</span><span class="pn">__PN__</span></div></section>';
 }
 function push(h){ B.pages.push(h); }
 function chapter(key,no,title,sub){ B.chapters.push({key:key,no:no,title:title,sub:sub,page:B.pages.length+1}); }
@@ -525,14 +525,14 @@ function signPages(){
     '<tr><td class="k">현재 대운</td><td>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세 · '+S.tenGod(R.dStem,R.daeun[R.curDaeun].idx%10)+'</td></tr>'+
     '<tr><td class="k">발행일</td><td>'+today.getFullYear()+'.'+n2(today.getMonth()+1)+'.'+n2(today.getDate())+'</td></tr></table>'+
     '<p>위 원국과 대운은 입력된 생년월일·시간·지역을 기준으로 계산되었습니다. 생년월일이 다르거나 시간이 추정이라면 책자의 1장(총평)과 15장(평생 대운)을 우선 확인하시고, 필요한 경우 재발행을 요청하세요.</p>'+
-    '<div class="sign"><div class="row"><span>검수</span><span class="sig">천령당</span></div><div class="row"><span>판독</span><span>사주명리 기반 참고 해석</span></div><div class="row"><span>문의</span><span>sajutome@gmail.com</span></div></div>',{spread:true}));
+    '<div class="sign"><div class="row"><span>검수</span><span class="sig">사주봄</span></div><div class="row"><span>판독</span><span>사주명리 기반 참고 해석</span></div><div class="row"><span>문의</span><span>sajutome@gmail.com</span></div></div>',{spread:true}));
   push(page('20 / REVIEW',secLabel('20','CLOSING · 맺음말')+'<h1>이 책을 덮으며</h1>'+
     '<p class="lead">사주는 바꿀 수 없습니다. 하지만 오늘 저녁 무엇을 하는지는 바꿀 수 있습니다. 이 책은 그 한 칸을 위해 쓴 글입니다.</p>'+
     '<p>'+esc(B.name)+' 님의 여덟 글자는 '+gzP(R.dStem,R.dBranch)+'일주입니다. 이 책에서 가장 중요한 문장은 아마 <b>'+S.GOD_KEY[c.topGodInGrp]+'</b>에 대한 설명일 것입니다. 그 힘이 쓰이는 자리에서 이 사주는 오래 갑니다.</p>'+
     '<p>두 번째로 중요한 것은 '+elK(c.yongEl)+'입니다. '+S.EL_DEEP[c.yongEl].habit+' — 이 한 가지를 3개월 지켜보세요. 사주는 큰 사건으로 바뀌지 않고, 매일의 작은 기울기로 바뀝니다.</p>'+
     '<p>세 번째는 시간입니다. 가장 힘이 실리는 10년은 <b>'+R.daeun[S.bestDaeun(R,c).i].from+'~'+R.daeun[S.bestDaeun(R,c).i].to+'세</b>입니다. 그때까지 무엇을 심어두는지가 결과를 바꿉니다.</p>'+
     callout('마지막 한 줄','<p>좋은 삶은 좋은 운에서 오지 않습니다. 좋은 <b>순서</b>에서 옵니다. 이 책이 그 순서를 정하는 데 쓰이길 바랍니다.</p>')+
-    '<p style="text-align:right;margin-top:8mm;color:#6E6353">천령당 드림</p>',{spread:true}));
+    '<p style="text-align:right;margin-top:8mm;color:#6E6353">사주봄 드림</p>',{spread:true}));
 }
 
 /* ---------------- 부록 ---------------- */
@@ -555,12 +555,12 @@ function appendPages(){
     '<tr><td class="k">양</td><td>받아들이고 돌보는 힘</td></tr></table>'+
     '<h3>오행의 상생과 상극</h3><p>목생화 · 화생토 · 토생금 · 금생수 · 수생목 — 이 순서로 기운이 흐릅니다. 반대로 목극토 · 토극수 · 수극화 · 화극금 · 금극목은 서로를 누르는 관계입니다.</p>',{spread:true}));
   push(page('21 / APPENDIX',secLabel('21','APPENDIX · 이용 안내')+'<h1>이 책에 대하여</h1>'+
-    '<p class="lead">이 책자는 천령당이 사주명리 상징을 생활의 언어로 옮겨 만든 참고 해석입니다.</p>'+
+    '<p class="lead">이 책자는 사주봄이 사주명리 상징을 생활의 언어로 옮겨 만든 참고 해석입니다.</p>'+
     '<ul><li>수록 범위 — 원국·오행·십성·십이운성·신살·격국, 8개 삶의 영역, 평생 대운 9구간, 2027~2031 세운, 2027년 월력, 개운 처방, 맞춤 질문 답변</li>'+
     '<li>계산 방식 — 년주는 입춘, 월주는 절기, 일주는 1900년 1월 1일 갑술일 기준, 시주는 오자둔법. 출생 지역의 경도 차이는 시주 계산에 반영했습니다.</li>'+
     '<li>주의 — 의학적 진단, 법률·투자 판단, 결혼·이혼 등 중대한 결정의 근거로 사용할 수 없습니다.</li>'+
     '<li>재발행 — 생년월일·시간·지역이 달라지면 같은 책을 다시 만들 수 있습니다.</li></ul>'+
-    '<p class="note">천령당 · 2026 · sajutome@gmail.com</p>'+
+    '<p class="note">사주봄 · 2026 · sajutome@gmail.com</p>'+
     callout('기록','<p>이 책의 원국은 '+R.y+'.'+n2(R.m)+'.'+n2(R.d)+' '+(R.hIdxP!=null?S.BR_HAN[R.hIdxP%12]+'시':'시간 미상')+' · '+gzP(R.dStem,R.dBranch)+'일주 기준입니다.</p>'),{spread:true}));
   var d=S.EL_DEEP[c.yongEl];
   chapter('appendix2','22','30일 실천 가이드','관찰·이행·경계·재독');

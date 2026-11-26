@@ -1,5 +1,5 @@
 /* =====================================================================
-   천령당 — 화면 (홈·무료운세·타로·5대 테마·PDF 신청·관리자)
+   사주봄 — 화면 (홈·무료운세·타로·5대 테마·PDF 신청·관리자)
    ===================================================================== */
 (function(){
 'use strict';
@@ -1348,7 +1348,7 @@ function makeOrder(b,email,phone,from){
     gender:b.gender,tsoff:b.tsoff,regionName:b.regionName,regionKey:b.regionKey,cal:state.pcal,
     stage:stage?stage.getAttribute('data-s'):'',marry:marry?marry.getAttribute('data-m'):'single',
     kid:kid?kid.getAttribute('data-c'):'none',q:($('#lz-q').value||'').trim(),email:email,phone:phone||'',
-    product:'천령당 인생사주 리포트',priceRegular:119000,price:themeCredit()?35900:39800,
+    product:'사주봄 인생사주 리포트',priceRegular:119000,price:themeCredit()?35900:39800,
     themePaid:themeCredit(),status:'결제대기',from:from||'form'};
 }
 function submitPdf(){
@@ -1395,7 +1395,7 @@ function showPayStep(o){
   p.classList.add('on');
   p.innerHTML='<div class="pay-box fade-in">'+
     '<div class="pay-tag">주문 확인</div>'+
-    '<h3>천령당 인생사주 리포트</h3>'+
+    '<h3>사주봄 인생사주 리포트</h3>'+
     '<p class="pay-sub">검수 후 이메일로 보내드리는 A4 책자형 PDF입니다.</p>'+
     '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
     '<p class="pay-test">테스트 모드 · 실제 결제는 청구되지 않습니다</p>'+
@@ -1464,7 +1464,7 @@ function setSheetMode(mode){
   mode=(mode==='admin')?'admin':'cust';
   sh.setAttribute('data-mode',mode);
   var t=$('#sheetTitle');
-  if(t) t.textContent=(mode==='admin')?'관리자 검수함':'천령당 · 내 인생사주 리포트';
+  if(t) t.textContent=(mode==='admin')?'관리자 검수함':'사주봄 · 내 인생사주 리포트';
   var lv=$('#admListView'); if(lv) lv.style.display=(mode==='admin')?'block':'none';
   var bk=$('#admBack'); if(bk) bk.style.display=(mode==='admin')?'':'none';
 }
@@ -1835,7 +1835,7 @@ function makePdf(host,name){
       restoreDom();
       prog('파일을 저장하고 있어요…',0.99,'');
       setTimeout(function(){
-        try{ doc.save('천령당-인생사주-'+safeName(name)+'.pdf'); }
+        try{ doc.save('사주봄-인생사주-'+safeName(name)+'.pdf'); }
         catch(e){ reject(e); return; }
         prog('PDF가 저장되었습니다',1,'다운로드 폴더에서 확인해 주세요. 인앱 브라우저에서는 저장 위치가 다를 수 있습니다.');
         setTimeout(progOff,1500);

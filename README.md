@@ -1,4 +1,4 @@
-# 천령당 天靈堂 · 사주명리 웹앱 (v21)
+# 사주봄 天靈堂 · 사주명리 웹앱 (v21)
 
 달빛 아래, 당신의 여덟 글자. 사주명리 사이트. 정적 페이지(GitHub Pages)로 배포됩니다.
 
@@ -17,7 +17,7 @@
 - `content-general.js` / `content-love.js` / `content-marriage.js` / `content-baby.js` / `content-wealth.js` — 탭별 전용 챕터
 - `content-deep.js` — 모든 탭 뒤에 붙는 심화 장(일주·오행·개운·10년·평생·몸·사람·실천). 탭마다 조합이 달라 한 편이 9,000~11,000자가 됨
 - `assets/themes-web/` — 5대 테마 일러스트 (배너 `general/love/marriage/baby/wealth.jpg`, 카드 `t-*.jpg`)
-- `assets/cover-art.jpg` — PDF 표지 (천령당 대문 아트)
+- `assets/cover-art.jpg` — PDF 표지 (사주봄 대문 아트)
 - `assets/life-report-hero.jpg` — 인생사주 리포트 랜딩 표지 (평생 여정 캐릭터 · 남색 밤하늘)
 - `assets/preview/` — 미리보기 3장 (총평·평생 대운·12개월)
 - `book.js` / `book-more.js` — 인생사주 리포트 생성기 (표지·목차·원국·영역별·평생 대운 9구간·5년 세운·12개월 월력·개운·Q&A·검수·서른 날의 실천). 104쪽, 본문 15.5px 기반 자동 맞춤(장마다 A4 한 장에 맞춰 미세 조정), 푸터는 흐름 배치라 본문과 겹치지 않음, 목차 줄을 누르면 해당 장으로 이동

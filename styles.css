@@ -1,5 +1,5 @@
 /* =====================================================================
-   천령당 — v9 스타일
+   사주봄 — v9 스타일
    먹빛(ink) + 금(gold) + 주홍(vermilion) / 모바일 가독성 우선
    ===================================================================== */
 :root{
@@ -1556,7 +1556,7 @@ html.no-gate .gate{display:none}
 .drawer .dr-sub:active{background:rgba(92,70,48,.09);color:#2D2218}
 .drawer .dr-ft{border-top:1px solid rgba(92,70,48,.12);color:#9A8A72}
 
-/* ---------- 5) 브랜드 · 푸터 : 먹갈색 + 붓글씨 천령당 ---------- */
+/* ---------- 5) 브랜드 · 푸터 : 먹갈색 + 붓글씨 사주봄 ---------- */
 .sec-brand{background:#2D2218;padding:34px 0 30px}
 .brand-note .no{
   font-family:'Yeon Sung',var(--serif);font-size:20px;font-weight:400;letter-spacing:.1em;
