@@ -888,6 +888,7 @@ function renderResult(R,input){
     bodies.push(body);
   }
   window.__chBodies=bodies;
+  window.__chapters=chapters;
   lockedTotal=Math.max(0,total-FREE);
   h+=chapterTabs(chapters,FREE);
   if(FREE>0) h+='<div class="free-flag"><b>무료로 읽는 '+Math.min(FREE,total)+'장</b> · 사주 원국과 첫 풀이</div>';
@@ -946,8 +947,19 @@ function chapterSection(chapters,i,body,locked,total){
      (locked?'<span class="ch-lk" aria-label="결제 후 공개">'+ICON_LOCK+'</span>':'')+'</div>';
   var lead=ch.lead?('<p class="ch-lead">'+ch.lead+'</p>'):'';
   if(locked) h+='<div class="ch-bd ch-teaser">'+lead+teaserHTML(body,ch.lead)+'</div>'+gateHTML(i===FREE_CUR);
-  else h+='<div class="ch-bd">'+lead+body+'</div>';
+  else h+='<div class="ch-bd">'+lead+stripLeadDup(body,ch.lead)+'</div>';
   return h+chapterNav(chapters,n,total)+'</section>';
+}
+/* 장 머리(lead)와 같은 말로 시작하는 첫 문단은 두 번 읽히지 않게 한다 */
+function stripLeadDup(html,lead){
+  html=html||'';
+  var key=String(lead||'').replace(/\s+/g,' ').trim().slice(0,18);
+  if(!key) return html;
+  var m=/^\s*<p\b[^>]*>([\s\S]*?)<\/p>/.exec(html);
+  if(!m) return html;
+  var t=m[1].replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
+  if(t.slice(0,18)!==key) return html;
+  return html.slice(m[0].length);
 }
 function chapterNav(chapters,n,total){
   var h='<div class="ch-nav">';
@@ -1513,8 +1525,9 @@ function unlockReading(mode){
     var teaser=sec.querySelector('.ch-teaser');
     if(teaser){
       var bd=document.createElement('div');
+      var chs=window.__chapters||[]; var leadTxt=chs[idx]?chs[idx].lead:'';
       bd.className='ch-bd';
-      bd.innerHTML=fulls[idx]||'<p class="hint">이 장은 준비 중입니다.</p>';
+      bd.innerHTML=stripLeadDup(fulls[idx],leadTxt)||'<p class="hint">이 장은 준비 중입니다.</p>';
       wrapParens(bd);
       teaser.parentNode.replaceChild(bd,teaser);
     }
