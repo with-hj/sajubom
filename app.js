@@ -1094,7 +1094,7 @@ function bindChapterUI(total){
    ===================================================================== */
 var PG_STORE='store-c8e476ea-fb1d-4f0e-8a47-ede1b790ffe2';
 var PG_CHANNEL='channel-key-bbb6cc64-49e6-4757-bd6d-688b835898c4';
-var PG_VER='76';
+var PG_VER='77';
 function pgReady(){ return !!(window.PortOne&&typeof window.PortOne.requestPayment==='function'); }
 function pgPayId(kind){ return 'sajubom-'+kind+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7); }
 /* 모바일 리디렉션으로 돌아올 주소 — 대문(gate)은 건너뛰고 바로 결과를 다시 그린다 */
@@ -1133,6 +1133,17 @@ function payConsentHTML(){
     '<button type="button" data-pay-doc="refund">환불규정</button></div>';
 }
 function payErrHTML(){ return '<p class="pc-err" data-pay-err hidden></p>'; }
+/* v77 · KG이니시스 사전심사 필수 항목 — 서비스 제공기간·교환/환불/취소를 결제 창 안에서 바로 보이게 */
+function paySpecHTML(kind){
+  var rows=(kind==='life')
+    ? [['제공기간','결제 완료 즉시 열람 · PDF는 검수 후 영업일 2~3일'],
+       ['교환·환불','제작 착수 전 전액 환불 · 착수 후 청약철회 제한']]
+    : [['제공기간','결제 완료 즉시 온라인 열람'],
+       ['교환·환불','열람 시작 전 전액 환불 · 시작 후 청약철회 제한']];
+  return '<dl class="pc-svc">'+rows.map(function(r){
+    return '<div><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>';
+  }).join('')+'</dl>';
+}
 /* 이니시스 V2는 구매자 이메일·휴대폰이 필수 — 결제 창에서 함께 받는다 */
 function payContactHTML(email,phone,cap){
   return '<div class="pc-contact">'+
@@ -1226,7 +1237,7 @@ function payCardMarkup(){
   return '<div class="pw-price">3,900원 · 남은 장 전체</div>'+
     '<h3>가려진 '+rest+'장에<br>당신의 시기가 적혀 있습니다</h3>'+
     '<p>결제가 끝나면 <b>'+esc(info.tab||'테마별 풀이')+'</b>의 남은 '+rest+'장이<br>바로 펼쳐집니다.</p>'+
-    (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payContactHTML(savedEmail(),savedPhone())+payConsentHTML()+payErrHTML()))+
+    (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payContactHTML(savedEmail(),savedPhone())+paySpecHTML('theme')+payConsentHTML()+payErrHTML()))+
     '<button type="button" class="btn btn-gold btn-block" data-pay-go>'+(admin?'결제 없이 전체 풀이 열기':'3,900원 결제하고 전체 보기')+'</button>'+
     '<button type="button" class="pw-x" data-pay-cancel>취소</button>'+
     (admin?'':'<p class="pc-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>');
@@ -1681,7 +1692,7 @@ function showPayStep(o){
     '<p class="pay-sub">검수 후 이메일로 보내드리는 책자형 PDF입니다.</p>'+
     '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
     (ADMIN_OK?'':'<p class="pay-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>')+
-    (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':((needContact?'<p class="pc-cap">결제 확인서를 받으실 이메일과 휴대폰</p>':'')+(needContact?payContactHTML(o.email,o.phone):'')+payConsentHTML()))+
+    (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':((needContact?'<p class="pc-cap">결제 확인서를 받으실 이메일과 휴대폰</p>':'')+(needContact?payContactHTML(o.email,o.phone):'')+paySpecHTML('life')+payConsentHTML()))+
     payErrHTML()+
     '<button type="button" class="btn btn-verm btn-block" data-pay-go>'+won(o.price||23800)+' 결제하기</button>'+
     '<button type="button" class="btn btn-line btn-block" id="payBack" style="margin-top:8px">이전으로</button>'+

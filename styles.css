@@ -1828,3 +1828,12 @@ html.no-gate .gate{display:none}
 #payGate .pc-in::placeholder{color:#8C8272}
 #payGate .pc-in:focus{border-color:rgba(216,179,106,.75);box-shadow:0 0 0 2px rgba(216,179,106,.16)}
 #payGate .pc-cap{color:#A2937C}
+/* v77 · 제공기간 · 교환/환불 안내 (결제 창 안 약관 동의 바로 위) */
+.pc-svc{margin:0 0 9px;padding:7px 10px;border-radius:10px;border:1px solid rgba(120,92,58,.16);background:rgba(255,255,255,.5)}
+.pc-svc div{display:flex;align-items:flex-start;gap:7px;font-family:var(--sans);font-size:11px;line-height:1.55;letter-spacing:-.01em;text-align:left}
+.pc-svc div+div{margin-top:3px}
+.pc-svc dt{flex:0 0 auto;min-width:44px;font-weight:700;color:#8A7A63}
+.pc-svc dd{margin:0;color:#574B3A;word-break:keep-all}
+#payGate .pc-svc{border-color:rgba(216,179,106,.24);background:rgba(255,255,255,.04)}
+#payGate .pc-svc dt{color:#A2937C}
+#payGate .pc-svc dd{color:#D5C6A9}
