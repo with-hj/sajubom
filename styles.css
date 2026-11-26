@@ -1736,3 +1736,60 @@ html.no-gate .gate{display:none}
   #track-life .lr-hero{margin-top:7px}
   #track-life .lr-title{margin-top:9px}
 }
+
+/* =====================================================================
+   v73 · 이용약관 · 개인정보처리방침 · 환불규정 (PG 심사 대응)
+   — 푸터 관리자 바로 위에 한 줄 링크, 누르면 먹갈색 모달로 열린다.
+   ===================================================================== */
+
+/* (1) 푸터 정책 링크 — 10px 안팎, 390px에서 한 줄 */
+.ft .ft-legal{
+  margin-top:7px;display:flex;align-items:center;justify-content:center;
+  flex-wrap:nowrap;white-space:nowrap;
+}
+.ft .ft-lk{
+  padding:5px 6px;margin:0;background:none;border:0;font:inherit;
+  font-size:min(10px,2.56vw);line-height:1.4;letter-spacing:.01em;
+  color:#8E8069;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.ft .ft-lk:hover,.ft .ft-lk:active{color:#CBB98F;text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:.5px}
+.ft .ft-legal i{font-style:normal;font-size:min(9px,2.3vw);line-height:1;color:rgba(216,179,106,.26)}
+
+/* (2) 정책 모달 — 기존 마이페이지 모달과 같은 결, 먹갈색 바탕 */
+.mpbox-lg{
+  width:min(94vw,440px);max-height:min(86vh,760px);
+  border-color:rgba(216,179,106,.32);
+  background:linear-gradient(180deg,#33261A 0%,#1E1610 100%);
+}
+.mpbox-lg .mp-hd{border-bottom-color:rgba(216,179,106,.18);padding:15px 18px 11px}
+.mpbox-lg .mp-cap{color:rgba(216,184,120,.62);font-size:9px;letter-spacing:.22em}
+.mpbox-lg .mp-bd{padding:14px 18px 6px;line-height:1.6}
+.mpbox-lg .mp-note{
+  font-size:10.5px;line-height:1.6;letter-spacing:-.01em;text-align:center;
+  color:#8A7C67;border-top-color:rgba(216,179,106,.14);
+}
+
+/* (3) 약관 본문 */
+.lg-doc{font-size:12.5px;line-height:1.78;letter-spacing:-.01em;color:#D6CAB5;text-align:left}
+.lg-doc p{margin:0 0 6px;word-break:keep-all;overflow-wrap:anywhere}
+.lg-doc b{color:#EEDFBF;font-weight:600}
+.lg-doc a{color:#E2C48C;text-decoration:underline;text-underline-offset:2px}
+.lg-doc h4{
+  margin:15px 0 6px;font-family:var(--sans);font-size:12px;font-weight:700;
+  line-height:1.5;letter-spacing:.02em;color:#E3C589;
+}
+.lg-doc h4:first-of-type{margin-top:4px}
+.lg-doc .lg-t{
+  margin:0 0 12px;padding:10px 12px;border:1px solid rgba(216,179,106,.20);border-radius:11px;
+  background:rgba(216,179,106,.06);font-size:11.8px;line-height:1.72;color:#CBBEA7;letter-spacing:-.01em;
+}
+.lg-doc .lg-ul{margin:0 0 7px;padding:0;list-style:none}
+.lg-doc .lg-ul li{position:relative;padding-left:9px;margin:0 0 3px;word-break:keep-all}
+.lg-doc .lg-ul li:before{content:"·";position:absolute;left:0;color:rgba(216,184,120,.62)}
+.lg-doc .lg-biz{margin:0 0 8px;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.035);color:#C6B99F;font-size:11.8px;line-height:1.8}
+.lg-doc .lg-sign{margin:14px 0 4px;padding-top:10px;border-top:1px solid rgba(216,179,106,.16);font-size:11.5px;color:#A99B84;letter-spacing:-.01em}
+@media (max-width:360px){
+  .lg-doc{font-size:12px}
+  .lg-doc .lg-t{font-size:11.4px}
+  .mpbox-lg .mp-bd{padding-left:15px;padding-right:15px}
+}

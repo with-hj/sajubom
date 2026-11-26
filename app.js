@@ -210,6 +210,9 @@ function init(){
   /* v53 · 우측 서랍 메뉴(≡) */
   initDrawer();
 
+  /* v73 · 이용약관 · 개인정보처리방침 · 환불규정 */
+  initLegal();
+
   /* v54 · 첫 대문(게이트) */
   initGate();
 
@@ -1875,7 +1878,7 @@ function makePdf(host,name){
 var drFocus=null;
 function drSyncLock(){
   var any=false;
-  ['#drawer','#mpModal','#ctModal'].forEach(function(s){ var e=$(s); if(e&&e.classList.contains('on')) any=true; });
+  ['#drawer','#mpModal','#ctModal','#lgModal'].forEach(function(s){ var e=$(s); if(e&&e.classList.contains('on')) any=true; });
   document.body.classList.toggle('dr-open',any);
 }
 /* 5대 테마 아코디언 — content.js의 테마·탭 순서를 그대로 따른다 */
@@ -2057,6 +2060,50 @@ function closeContact(focusBack){
   m.classList.remove('on'); m.setAttribute('aria-hidden','true');
   drSyncLock();
   if(focusBack!==false){ try{ $('#menuBtn').focus({preventScroll:true}); }catch(e){} }
+}
+/* ---------------- v73 · 이용약관 · 개인정보처리방침 · 환불규정 ---------------- */
+var LG_DOCS={
+  terms:{cap:'TERMS OF SERVICE',title:'이용약관',tpl:'lgTerms'},
+  privacy:{cap:'PRIVACY POLICY',title:'개인정보처리방침',tpl:'lgPrivacy'},
+  refund:{cap:'REFUND POLICY',title:'환불규정',tpl:'lgRefund'}
+};
+var lgReturnFocus=null;
+function openLegal(key){
+  var d=LG_DOCS[key]; if(!d) return;
+  var m=$('#lgModal'), body=$('#lgBody'), tpl=document.getElementById(d.tpl);
+  if(!m||!body||!tpl) return;
+  body.innerHTML=tpl.innerHTML;
+  body.scrollTop=0;
+  if($('#lgCap')) $('#lgCap').textContent=d.cap;
+  if($('#lgTitle')) $('#lgTitle').textContent=d.title;
+  m.classList.add('on'); m.setAttribute('aria-hidden','false');
+  drSyncLock();
+  try{ $('#lgClose').focus({preventScroll:true}); }catch(e){}
+}
+function closeLegal(focusBack){
+  var m=$('#lgModal'); if(!m||!m.classList.contains('on')) return;
+  m.classList.remove('on'); m.setAttribute('aria-hidden','true');
+  drSyncLock();
+  if(focusBack!==false&&lgReturnFocus&&lgReturnFocus.focus){
+    try{ lgReturnFocus.focus({preventScroll:true}); }catch(e){}
+  }
+}
+function initLegal(){
+  var m=$('#lgModal'); if(!m) return;
+  $$('.ft-lk').forEach(function(b){
+    b.addEventListener('click',function(){ lgReturnFocus=b; openLegal(b.getAttribute('data-doc')); });
+  });
+  if($('#lgClose')) $('#lgClose').addEventListener('click',function(){ closeLegal(); });
+  m.addEventListener('click',function(e){ if(e.target&&e.target.id==='lgModal') closeLegal(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape') return;
+    if(m.classList.contains('on')) closeLegal();
+  });
+  /* ?doc=terms|privacy|refund — 심사·공유용 직렬 링크 */
+  try{
+    var mt=(location.search||'').match(/[?&]doc=(terms|privacy|refund)/);
+    if(mt) setTimeout(function(){ openLegal(mt[1]); },80);
+  }catch(e){}
 }
 function initDrawer(){
   var dr=$('#drawer'), mb=$('#menuBtn'), veil=$('#drVeil');

@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://with-hj.github.io/wolhadang-saju/">
 <meta property="og:title" content="천령당 · 당신의 여덟 글자를 읽다">
 <meta property="og:description" content="당신이 태어난 날의 여덟 글자, 그 안에 담긴 인생을 사주로 풀어드립니다.">
-<meta property="og:image" content="https://with-hj.github.io/wolhadang-saju/assets/og-card.jpg?v=72">
+<meta property="og:image" content="https://with-hj.github.io/wolhadang-saju/assets/og-card.jpg?v=73">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -24,7 +24,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="천령당 · 당신의 여덟 글자를 읽다">
 <meta name="twitter:description" content="당신이 태어난 날의 여덟 글자, 그 안에 담긴 인생을 사주로 풀어드립니다.">
-<meta name="twitter:image" content="https://with-hj.github.io/wolhadang-saju/assets/og-card.jpg?v=72">
+<meta name="twitter:image" content="https://with-hj.github.io/wolhadang-saju/assets/og-card.jpg?v=73">
 
 <link rel="icon" type="image/png" sizes="180x180" href="./assets/icon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon.png">
@@ -34,8 +34,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Yeon+Sung&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="./styles.css?v=72">
-<link rel="stylesheet" href="./book.css?v=72">
+<link rel="stylesheet" href="./styles.css?v=73">
+<link rel="stylesheet" href="./book.css?v=73">
 <script>window.__errs=[];addEventListener('error',function(e){__errs.push(e.message||String(e))});addEventListener('unhandledrejection',function(e){__errs.push('promise:'+e.reason)});</script>
 <!-- v54 · 첫 대문(게이트) 노출 여부를 첫 그림 전에 정한다 — 깜빡임 없이 바로 뜨거나 바로 건너뛴다 -->
 <script>
@@ -44,7 +44,7 @@
     var q=location.search||'', h=location.hash||'', off=false;
     var force=/[?&]gate=1/.test(q);   /* ?gate=1 — 다시 보기의 경우에도 대문을 강제로 띄운다 */
     try{ off = !force && (localStorage.getItem('cl_gate')==='off' || sessionStorage.getItem('cl_gate_seen')==='1'); }catch(e){}
-    if(/[?&](admin=1|gate=0|skipgate=1)/.test(q)) off=true;
+    if(/[?&](admin=1|gate=0|skipgate=1|doc=(terms|privacy|refund))/.test(q)) off=true;
     if(!force && (/[?&]track=life/.test(q) || /^#(life|track-life|life-buy|report)/.test(h))) off=true;
     document.documentElement.classList.add(off?'no-gate':'gate-on');
   }catch(e){ document.documentElement.classList.add('no-gate'); }
@@ -274,7 +274,7 @@
       <div class="lr-intro">
         <div class="lr-hero" id="lrHero">
           <!-- v60 · 첫 화면에서 함께 받지 않는다. 인생사주 리포트 트랙을 열 때 스크립트가 data-src를 실제 src로 옮겨 재생한다. -->
-          <video class="lr-art" id="lrVideo" data-src="./assets/videos/report.mp4?v=72" poster="./assets/videos/report-poster.jpg?v=72"
+          <video class="lr-art" id="lrVideo" data-src="./assets/videos/report.mp4?v=73" poster="./assets/videos/report-poster.jpg?v=73"
             muted playsinline loop preload="none" aria-label="인생사주 리포트 소개 영상"></video>
           <span class="lr-veil" aria-hidden="true"></span>
         </div>
@@ -546,6 +546,10 @@
       <p>상호 스앤빅 <i>|</i> 대표 황효진 <i>|</i> 사업자번호 870-17-02481 <i>|</i> 통신판매업 제2026-화성병점-2471호</p>
       <p>경기도 화성시 병점구 효행로 1068 <i>|</i> 010-2621-0110 <i>|</i> <a href="mailto:sajutome@gmail.com">sajutome@gmail.com</a></p>
     </div>
+    <!-- v73 · 정책 링크 (PG 심사 대응) — 관리자 바로 위, 한 줄 -->
+    <div class="ft-legal">
+      <button type="button" class="ft-lk" data-doc="terms" aria-haspopup="dialog">이용약관</button><i aria-hidden="true">|</i><button type="button" class="ft-lk" data-doc="privacy" aria-haspopup="dialog">개인정보처리방침</button><i aria-hidden="true">|</i><button type="button" class="ft-lk" data-doc="refund" aria-haspopup="dialog">환불규정</button>
+    </div>
     <div class="ft-note">
       <button type="button" class="ft-adm" id="ftAdmin" aria-haspopup="dialog">관리자</button><span>© 2026 천령당 · All rights reserved.</span>
     </div>
@@ -612,6 +616,257 @@
     <p class="mp-note">운영 스앤빅 · 확인하는 대로 답장드립니다</p>
   </div>
 </div>
+
+<!-- ================= v73 · 이용약관 · 개인정보처리방침 · 환불규정 (모달) ================= -->
+<div class="mpmodal" id="lgModal" role="dialog" aria-modal="true" aria-labelledby="lgTitle" aria-hidden="true">
+  <div class="mpbox mpbox-lg">
+    <div class="mp-hd">
+      <div>
+        <p class="mp-cap" id="lgCap">POLICY</p>
+        <h3 id="lgTitle">이용약관</h3>
+      </div>
+      <button type="button" class="mp-x" id="lgClose" aria-label="약관 닫기">✕</button>
+    </div>
+    <div class="mp-bd" id="lgBody"></div>
+    <p class="mp-note">스앤빅 · 대표 황효진 · 문의 sajutome@gmail.com · 010-2621-0110</p>
+  </div>
+</div>
+
+<template id="lgTerms">
+<div class="lg-doc">
+  <p class="lg-t">이 약관은 스앤빅(이하 “회사”)이 운영하는 천령당(이하 “서비스”)의 이용 조건과 절차, 회사와 이용자의 권리·의무를 정합니다. 결제 전에 꼭 읽어 주세요.</p>
+
+  <h4>제1조 (목적)</h4>
+  <p>이 약관은 회사가 제공하는 사주명리 기반 디지털 콘텐츠의 이용과 관련하여 회사와 이용자 사이의 권리·의무 및 책임 사항, 이용 조건과 절차를 정하는 것을 목적으로 합니다.</p>
+
+  <h4>제2조 (정의)</h4>
+  <ul class="lg-ul">
+    <li>“서비스”란 회사가 천령당 웹사이트를 통해 제공하는 사주명리 해석 콘텐츠와 이에 부수하는 일체의 서비스를 말합니다.</li>
+    <li>“이용자”란 이 약관에 따라 서비스를 이용하는 자를 말합니다.</li>
+    <li>“유료 콘텐츠”란 대금을 지급하고 이용하는 콘텐츠로서 테마별 풀이(3,900원)와 인생사주 리포트(정가 119,000원, 판매가 39,800원, 테마별 풀이를 결제한 경우 35,900원)를 말합니다.</li>
+    <li>“접수번호”란 유료 콘텐츠 신청 시 회사가 부여하는 식별 번호를 말합니다.</li>
+  </ul>
+
+  <h4>제3조 (약관의 게시와 개정)</h4>
+  <p>① 회사는 이 약관을 서비스 화면 하단에 게시하여 이용자가 언제든지 확인할 수 있도록 합니다.</p>
+  <p>② 회사는 「약관의 규제에 관한 법률」, 「전자상거래 등에서의 소비자보호에 관한 법률」 등 관련 법령을 위반하지 않는 범위에서 이 약관을 개정할 수 있습니다.</p>
+  <p>③ 약관을 개정하는 경우 시행일과 개정 사유를 명시하여 시행일 7일 전부터 공지합니다. 다만 이용자에게 불리한 변경은 30일 전부터 공지합니다.</p>
+  <p>④ 개정 약관의 시행일 이후 서비스를 계속 이용하는 경우 개정 약관에 동의한 것으로 봅니다. 동의하지 않는 이용자는 이용을 중단할 수 있으며, 이미 결제한 유료 콘텐츠는 제10조와 「환불규정」에 따릅니다.</p>
+
+  <h4>제4조 (서비스의 제공 및 변경)</h4>
+  <p>① 회사는 연중 24시간 서비스를 제공하기 위해 노력합니다. 다만 시스템 점검, 설비의 보수·교체, 통신 장애, 천재지변 등 불가피한 사유가 있으면 서비스의 전부 또는 일부를 일시 중단할 수 있습니다.</p>
+  <p>② 회사는 서비스의 내용과 구성을 변경할 수 있습니다. 유료 콘텐츠의 내용이나 가격을 변경하는 경우, 변경 전에 결제한 건에는 결제 당시의 조건을 적용합니다.</p>
+  <p>③ 회사는 더 나은 해석을 위해 풀이의 기준과 표현을 계속 보완합니다.</p>
+
+  <h4>제5조 (서비스의 내용과 제공 절차)</h4>
+  <p>① 테마별 풀이 — 이용자가 생년월일·출생시간·성별 등을 입력하면 해당 테마(총운, 애정, 결혼, 임신·자녀, 재물 등)의 풀이를 화면에서 열람할 수 있습니다. 결제 후 ‘전체 풀이 보기’를 누르면 전체 내용이 열립니다.</p>
+  <p>② 인생사주 리포트 — 신청서를 접수하면 회사가 원국을 검수하고, 영업일 2~3일 이내에 책자형 PDF 리포트를 제작하여 신청 시 입력한 이메일로 보내드립니다.</p>
+  <p>③ 신청 내용이 사실과 다르거나 원국 확인이 어려운 경우 이메일로 추가 확인을 요청할 수 있으며, 이 경우 제작 기간이 늘어날 수 있습니다.</p>
+  <p>④ 서비스는 사주명리 이론에 근거한 참고 해석이며, 제6조에서 정한 범위를 넘어 특정한 결과를 보장하지 않습니다.</p>
+
+  <h4>제6조 (면책 — 참고 해석)</h4>
+  <p>① 서비스가 제공하는 모든 풀이는 사주명리 이론에 기반한 <b>참고 해석</b>입니다. 의학적 진단이나 치료, 법률 자문, 투자·금융 판단을 대신하지 않습니다.</p>
+  <p>② 이용자는 풀이를 참고 자료로 활용하여 스스로 판단하고 결정해야 하며, 이를 근거로 한 결정과 그 결과에 대한 책임은 이용자에게 있습니다.</p>
+  <p>③ 회사는 천재지변, 통신 장애, 이용자의 기기·브라우저 환경, 이용자의 귀책 사유로 발생한 손해에 대하여 책임을 지지 않습니다.</p>
+  <p>④ 생년월일·출생시간·성별 등 입력 정보의 오류로 달라진 풀이 결과에 대해서는 회사가 책임을 지지 않습니다.</p>
+
+  <h4>제7조 (이용자의 의무)</h4>
+  <p>① 이용자는 다음 각 호의 행위를 하여서는 안 됩니다.</p>
+  <ul class="lg-ul">
+    <li>타인의 정보를 도용하거나 허위 정보를 입력하는 행위</li>
+    <li>콘텐츠를 자동화된 수단으로 수집·복제·배포·전송하는 행위</li>
+    <li>콘텐츠를 재판매하거나 상업적으로 이용하는 행위</li>
+    <li>서비스 운영을 방해하거나 서버에 과도한 부하를 주는 행위</li>
+    <li>관련 법령 또는 공서양속에 반하는 행위</li>
+  </ul>
+  <p>② 이용자는 본인의 결제 수단을 정당하게 사용해야 하며, 결제와 관련한 분쟁은 카드사·간편결제 사업자와 함께 해결합니다.</p>
+  <p>③ 만 14세 미만 아동은 유료 콘텐츠를 결제할 수 없습니다. 만 19세 미만 미성년자가 결제하는 경우 법정대리인의 동의가 필요합니다.</p>
+
+  <h4>제8조 (회사의 의무)</h4>
+  <p>① 회사는 관련 법령과 이 약관에 따라 서비스를 안정적으로 제공하고, 이용자의 문의에 성실히 응대합니다.</p>
+  <p>② 회사는 이용자의 개인정보를 「개인정보처리방침」에 따라 안전하게 보호합니다.</p>
+  <p>③ 회사는 유료 콘텐츠의 가격·내용·제작 기간·환불 조건을 결제 전에 정확히 표시합니다.</p>
+
+  <h4>제9조 (지식재산권)</h4>
+  <p>① 서비스에 포함된 풀이 문장, 표, 이미지, PDF 리포트의 구성과 편집, 디자인, 상표 등 모든 콘텐츠의 저작권과 지식재산권은 회사에 귀속됩니다.</p>
+  <p>② 이용자는 유료 콘텐츠를 개인적 열람 목적으로만 사용할 수 있으며, 회사의 사전 동의 없이 복제·전송·배포·출판하거나 2차적 저작물을 작성·상업적으로 이용할 수 없습니다.</p>
+  <p>③ 자신의 리포트를 가족·지인에게 개인적으로 보여주는 것은 허용됩니다.</p>
+
+  <h4>제10조 (청약철회 및 환불)</h4>
+  <p>유료 콘텐츠의 청약철회와 환불은 「환불규정」에서 정한 바에 따르며, 「환불규정」은 이 약관의 일부를 구성합니다.</p>
+
+  <h4>제11조 (손해배상)</h4>
+  <p>회사 또는 이용자가 이 약관을 위반하여 상대방에게 손해를 입힌 경우 그 손해를 배상할 책임이 있습니다. 다만 회사의 고의 또는 중대한 과실이 없는 경우 배상 책임은 관련 법령이 정한 범위로 제한됩니다.</p>
+
+  <h4>제12조 (분쟁의 해결)</h4>
+  <p>① 회사와 이용자는 서비스 이용과 관련한 분쟁을 원만하게 해결하기 위해 성실히 협의합니다.</p>
+  <p>② 협의가 이루어지지 않는 경우 「전자상거래 등에서의 소비자보호에 관한 법률」 및 공정거래위원회가 고시한 「소비자분쟁해결기준」에 따릅니다.</p>
+  <p>③ 소송은 관련 법령에 따른 관할법원에 제기합니다.</p>
+
+  <h4>제13조 (사업자 정보 및 문의)</h4>
+  <p class="lg-biz">상호 <b>스앤빅</b> · 대표 <b>황효진</b><br>사업자등록번호 870-17-02481<br>통신판매업 신고 제2026-화성병점-2471호<br>경기도 화성시 병점구 효행로 1068<br>전화 010-2621-0110 · 이메일 <a href="mailto:sajutome@gmail.com">sajutome@gmail.com</a></p>
+
+  <p class="lg-sign">부칙 — 이 약관은 2026년 11월 26일부터 시행합니다.</p>
+</div>
+</template>
+
+<template id="lgPrivacy">
+<div class="lg-doc">
+  <p class="lg-t">스앤빅은 「개인정보 보호법」 등 관련 법령을 지키며 이용자의 개인정보를 안전하게 처리합니다. 아래에서 어떤 정보를 어떤 목적으로 얼마 동안 보관하는지 확인하실 수 있습니다.</p>
+
+  <h4>1. 처리하는 개인정보 항목과 수집 방법</h4>
+  <p><b>가. 사주 풀이·리포트 제작 (필수)</b></p>
+  <ul class="lg-ul">
+    <li>이름 또는 별칭, 성별, 생년월일, 출생시간(모르는 경우 ‘시간 모름’ 선택), 양력·음력 구분, 출생 지역(선택)</li>
+    <li>인생사주 리포트 신청 시: 이메일 주소, 연락처(선택), 신청 메모(선택)</li>
+  </ul>
+  <p><b>나. 결제 시</b></p>
+  <ul class="lg-ul">
+    <li>결제 수단 종류, 결제 승인번호, 결제 금액·일시, 접수번호</li>
+    <li>카드번호·계좌번호 같은 결제 정보는 결제대행사(PG)가 직접 처리하며 회사는 저장하지 않습니다.</li>
+  </ul>
+  <p><b>다. 서비스 이용 과정에서 자동으로 생성·수집되는 정보</b></p>
+  <ul class="lg-ul">
+    <li>접속 기기 정보, 브라우저 종류, 접속 일시, 서비스 이용 기록, 오류 기록</li>
+    <li>브라우저에 저장되는 정보(로컬스토리지·쿠키): 입력한 생년월일 정보, 결제·신청 내역, 첫 화면 확인 여부</li>
+  </ul>
+  <p><b>라. 수집 방법</b> — 이용자가 화면에 직접 입력, 결제 과정에서 결제대행사로부터 전달받음, 서비스 이용 중 자동 생성</p>
+  <p>회사는 만 14세 미만 아동의 개인정보를 수집하지 않습니다.</p>
+
+  <h4>2. 개인정보의 처리 목적</h4>
+  <ul class="lg-ul">
+    <li>사주 원국 산출과 풀이 생성, 인생사주 리포트 제작·발송</li>
+    <li>본인 확인, 결제·환불 처리, 접수 내역 확인</li>
+    <li>문의·불만 접수와 답변, 분쟁 처리</li>
+    <li>서비스 개선(오류 분석·이용 통계), 부정 이용 방지</li>
+    <li>법령상 의무 이행</li>
+  </ul>
+  <p>회사는 이 목적 이외의 용도로 개인정보를 이용하지 않으며, 목적이 바뀌면 필요한 조치를 합니다.</p>
+
+  <h4>3. 보유 및 이용 기간</h4>
+  <p>처리 목적이 달성되면 지체 없이 파기합니다. 다만 관련 법령에 따라 아래 기록은 기간을 정하여 보관합니다.</p>
+  <ul class="lg-ul">
+    <li>계약 또는 청약철회 등에 관한 기록: <b>5년</b> (전자상거래법)</li>
+    <li>대금 결제 및 재화 등의 공급에 관한 기록: <b>5년</b> (전자상거래법)</li>
+    <li>소비자의 불만 또는 분쟁 처리에 관한 기록: <b>3년</b> (전자상거래법)</li>
+    <li>표시·광고에 관한 기록: <b>6개월</b> (전자상거래법)</li>
+    <li>서비스 접속 기록: <b>3개월</b> (보안 및 장애 대응)</li>
+  </ul>
+  <p>입력하신 생년월일·출생시간 정보는 리포트 제작·발송 후 지체 없이 파기합니다. 브라우저에 저장된 정보는 이용자가 브라우저 데이터를 삭제할 때 함께 지워지며, 이 기기 밖으로 나가지 않는 항목이 있습니다.</p>
+
+  <h4>4. 개인정보의 제3자 제공</h4>
+  <p>회사는 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다만 이용자가 미리 동의한 경우, 법령에 따라 적법한 절차로 요구받은 경우는 예외입니다.</p>
+
+  <h4>5. 개인정보 처리의 위탁</h4>
+  <p>회사는 원활한 서비스 제공을 위해 아래 업무를 위탁할 수 있으며, 관련 법령에 따라 안전하게 관리되도록 감독합니다.</p>
+  <ul class="lg-ul">
+    <li>결제 대행: 간편결제·카드 결제 처리와 취소 (결제대행사)</li>
+    <li>이메일 발송: 리포트·안내 메일 발송 (메일 발송 서비스)</li>
+    <li>서비스 운영: 웹사이트 호스팅과 데이터 보관 (호스팅 사업자)</li>
+  </ul>
+  <p>위탁하는 업무의 내용이나 수탁자가 바뀌면 이 방침을 통해 공개합니다.</p>
+
+  <h4>6. 개인정보의 파기 절차와 방법</h4>
+  <p>목적이 달성된 개인정보는 내부 방침과 관련 법령에 따라 파기하며, 법령에 따라 보관하는 정보는 별도로 분리해 보관합니다. 전자적 파일은 복구할 수 없는 방법으로 삭제하고, 종이 문서는 분쇄하거나 소각합니다.</p>
+
+  <h4>7. 이용자와 법정대리인의 권리·행사 방법</h4>
+  <ul class="lg-ul">
+    <li>이용자는 언제든지 자신의 개인정보 열람·정정·삭제·처리정지를 요구할 수 있습니다.</li>
+    <li>이메일(sajutome@gmail.com) 또는 전화(010-2621-0110)로 요구하실 수 있으며, 회사는 본인 확인 후 지체 없이 조치합니다.</li>
+    <li>법정대리인이나 위임을 받은 자를 통해서도 권리를 행사할 수 있습니다. 이 경우 위임장 등 확인 자료를 요청할 수 있습니다.</li>
+    <li>이미 제작·발송이 끝난 디지털 콘텐츠는 삭제 요구가 제한될 수 있습니다(「환불규정」 참고).</li>
+  </ul>
+
+  <h4>8. 개인정보의 안전성 확보조치</h4>
+  <ul class="lg-ul">
+    <li>개인정보 접근 권한의 최소화와 접근 통제</li>
+    <li>전송 구간 암호화(HTTPS)</li>
+    <li>접속 기록의 보관과 점검</li>
+    <li>정기적인 백업과 보안 점검</li>
+    <li>개인정보를 다루는 사람에 대한 교육</li>
+  </ul>
+
+  <h4>9. 쿠키와 브라우저 저장소</h4>
+  <p>① 회사는 이용자의 편의를 위해 쿠키와 브라우저 저장소(로컬스토리지)를 사용합니다. 이를 통해 입력한 정보, 결제 내역, 첫 화면 확인 여부를 기기에 저장합니다.</p>
+  <p>② 이 정보는 이용자의 기기에 저장되어 다른 기기에서는 보이지 않습니다.</p>
+  <p>③ 브라우저 설정에서 쿠키와 사이트 데이터를 삭제하거나 저장을 거부할 수 있습니다. 다만 저장을 거부하면 정보를 다시 입력해야 하거나 일부 기능이 제한될 수 있습니다.</p>
+
+  <h4>10. 개인정보 보호책임자</h4>
+  <p class="lg-biz">성명 <b>황효진</b> (대표)<br>이메일 <a href="mailto:sajutome@gmail.com">sajutome@gmail.com</a><br>전화 010-2621-0110</p>
+  <p>서비스 이용 중 생긴 개인정보 관련 문의·불만·피해 구제는 위 책임자에게 요청하실 수 있습니다.</p>
+
+  <h4>11. 권익침해 구제 방법</h4>
+  <ul class="lg-ul">
+    <li>개인정보침해신고센터: 국번 없이 118 · privacy.kisa.or.kr</li>
+    <li>개인정보분쟁조정위원회: 1833-6972 · www.kopico.go.kr</li>
+    <li>대검찰청 사이버수사과: 1301 · www.spo.go.kr</li>
+    <li>경찰청 사이버수사국: 182 · ecrm.police.go.kr</li>
+  </ul>
+
+  <h4>12. 고지의 의무</h4>
+  <p>이 방침의 내용이 추가·삭제·수정되면 시행일 7일 전부터 서비스 화면을 통해 공지합니다. 다만 이용자의 권리에 중요한 변경은 30일 전에 공지합니다.</p>
+
+  <p class="lg-sign">부칙 — 이 방침은 2026년 11월 26일부터 시행합니다.</p>
+</div>
+</template>
+
+<template id="lgRefund">
+<div class="lg-doc">
+  <p class="lg-t">사주 풀이와 PDF 리포트는 결제 후 바로 만들어지거나 열리는 <b>디지털 콘텐츠</b>입니다. 열람·제작이 시작되면 청약철회가 제한됩니다. 결제 전에 아래 내용을 확인해 주세요.</p>
+
+  <h4>1. 청약철회 가능 기간</h4>
+  <p>① 이용자는 유료 콘텐츠를 결제한 날부터 <b>7일 이내</b>에 청약철회를 요청할 수 있습니다.</p>
+  <p>② 다만 디지털 콘텐츠의 특성상 콘텐츠의 제공(열람·다운로드)이 시작된 경우에는 「전자상거래 등에서의 소비자보호에 관한 법률」 제17조 제2항 제5호에 따라 청약철회가 제한됩니다. 회사는 결제 전에 이 사실을 알립니다.</p>
+  <p>③ 회사는 청약철회가 제한되는 사실을 결제 전에 알리고, 무료로 열리는 장(무료 미리보기)과 샘플 리포트를 제공하여 콘텐츠를 미리 확인하실 수 있게 합니다.</p>
+
+  <h4>2. 상품별 환불 기준</h4>
+  <p><b>가. 테마별 풀이 (3,900원)</b></p>
+  <ul class="lg-ul">
+    <li>결제 후 ‘전체 풀이 보기’를 누르기 전(열람 시작 전): <b>전액 환불</b></li>
+    <li>‘전체 풀이 보기’를 눌러 열람을 시작한 후: 청약철회 제한(환불 불가)</li>
+  </ul>
+  <p><b>나. 인생사주 리포트 (39,800원 / 테마별 풀이 결제 시 35,900원)</b></p>
+  <ul class="lg-ul">
+    <li>신청 접수 후 회사가 원국 검수와 제작에 착수하기 전: <b>전액 환불</b></li>
+    <li>제작에 착수한 후(원국 검수·구성·편집 진행): 청약철회 제한(환불 불가)</li>
+    <li>PDF 리포트를 발송한 후: 환불 불가</li>
+  </ul>
+  <p><b>다. 약속한 기간을 넘긴 경우</b></p>
+  <ul class="lg-ul">
+    <li>회사가 약속한 제작 기간(원국 검수 후 영업일 2~3일) 안에 리포트를 보내지 못하면, 이용자는 제작을 취소하고 전액 환불을 요청할 수 있습니다.</li>
+    <li>다만 이용자가 추가 확인 요청에 응하지 않아 제작이 늦어진 경우는 제외됩니다.</li>
+  </ul>
+
+  <h4>3. 회사 책임으로 인한 환불</h4>
+  <p>다음의 경우에는 열람·발송 여부와 상관없이 전액 환불합니다.</p>
+  <ul class="lg-ul">
+    <li>시스템 오류로 결제는 되었으나 콘텐츠가 정상적으로 제공되지 않은 경우</li>
+    <li>중복 결제가 이루어진 경우(중복분 전액 환불)</li>
+    <li>결제 금액이 표시된 금액과 다른 경우</li>
+    <li>다른 사람의 원국으로 제작되는 등 콘텐츠에 중대한 오류가 있는 경우 — 회사가 다시 제작하거나 전액 환불합니다.</li>
+  </ul>
+
+  <h4>4. 환불 신청 방법</h4>
+  <p>① 이메일(<a href="mailto:sajutome@gmail.com">sajutome@gmail.com</a>) 또는 전화(010-2621-0110)로 신청합니다.</p>
+  <p>② 함께 알려주시면 좋은 내용: 접수번호(또는 결제 일시), 결제 수단, 환불 사유, 환불받을 수단</p>
+  <p>③ 회사는 신청을 받은 뒤 영업일 3일 이내에 접수 사실과 처리 결과를 알려드립니다.</p>
+  <p>④ 환불은 「전자상거래법」 제18조에 따라 대금을 받은 날부터 <b>3영업일 이내</b>에 처리합니다. 카드사·간편결제 사업자의 승인 취소는 각 사의 처리 기간에 따라 영업일 3~5일 정도 더 걸릴 수 있습니다.</p>
+
+  <h4>5. 환불 수단</h4>
+  <p>환불은 결제에 사용한 수단으로 처리하는 것을 원칙으로 합니다(카드 승인 취소, 간편결제 취소). 다른 수단을 원하는 경우 본인 확인 후 협의하여 처리할 수 있습니다.</p>
+
+  <h4>6. 교환·재발송</h4>
+  <p>디지털 콘텐츠의 특성상 단순 변심에 의한 교환은 제공하지 않습니다. 다만 PDF 파일이 열리지 않거나 글자가 깨지는 등 기술적인 문제가 있으면 같은 내용의 파일을 다시 보내드리며, 오류로 인한 재제작은 무상입니다.</p>
+
+  <h4>7. 분쟁 해결</h4>
+  <p>환불과 관련한 분쟁은 회사와 이용자가 협의하여 해결합니다. 협의가 어려우면 「소비자분쟁해결기준」과 관계 기관(한국소비자원 1372, 공정거래위원회)의 절차를 따를 수 있습니다.</p>
+
+  <h4>8. 사업자 정보 및 문의</h4>
+  <p class="lg-biz">상호 <b>스앤빅</b> · 대표 <b>황효진</b><br>사업자등록번호 870-17-02481 · 통신판매업 제2026-화성병점-2471호<br>경기도 화성시 병점구 효행로 1068<br>전화 010-2621-0110 · 이메일 <a href="mailto:sajutome@gmail.com">sajutome@gmail.com</a></p>
+
+  <p class="lg-sign">부칙 — 이 규정은 2026년 11월 26일부터 시행합니다.</p>
+</div>
+</template>
 
 <!-- ================= 관리자 비밀번호 ================= -->
 <div class="pwmodal" id="pwModal" role="dialog" aria-modal="true" aria-labelledby="pwTitle" aria-hidden="true">
@@ -690,7 +945,7 @@
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateBrand" tabindex="-1">
   <div class="gate-frame">
     <!-- v60 · 대문이 실제로 뜰 때만 대문 영상을 받는다(돌아온 손님은 받지 않음). 아래 인라인 스크립트가 곧바로 src를 붙인다. -->
-    <video id="gateVideo" class="gate-video" data-src="./assets/videos/gate.mp4?v=72" poster="./assets/gate-poster.jpg?v=72"
+    <video id="gateVideo" class="gate-video" data-src="./assets/videos/gate.mp4?v=73" poster="./assets/gate-poster.jpg?v=73"
       autoplay muted playsinline loop preload="none"></video>
     <script>
     (function(){
@@ -716,17 +971,17 @@
   </div>
 </div>
 
-<script src="./engine.js?v=72"></script>
-<script src="./deep-core.js?v=72"></script>
-<script src="./content.js?v=72"></script>
-<script src="./content-deep.js?v=72"></script>
-<script src="./content-general.js?v=72"></script>
-<script src="./content-love.js?v=72"></script>
-<script src="./content-marriage.js?v=72"></script>
-<script src="./content-baby.js?v=72"></script>
-<script src="./content-wealth.js?v=72"></script>
-<script src="./book.js?v=72"></script>
-<script src="./book-more.js?v=72"></script>
-<script src="./app.js?v=72"></script>
+<script src="./engine.js?v=73"></script>
+<script src="./deep-core.js?v=73"></script>
+<script src="./content.js?v=73"></script>
+<script src="./content-deep.js?v=73"></script>
+<script src="./content-general.js?v=73"></script>
+<script src="./content-love.js?v=73"></script>
+<script src="./content-marriage.js?v=73"></script>
+<script src="./content-baby.js?v=73"></script>
+<script src="./content-wealth.js?v=73"></script>
+<script src="./book.js?v=73"></script>
+<script src="./book-more.js?v=73"></script>
+<script src="./app.js?v=73"></script>
 </body>
 </html>
