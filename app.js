@@ -1204,7 +1204,7 @@ function payCardMarkup(){
     (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payContactHTML(savedEmail(),savedPhone())+payConsentHTML()+payErrHTML()))+
     '<button type="button" class="btn btn-gold btn-block" data-pay-go>'+(admin?'결제 없이 전체 풀이 열기':'3,900원 결제하고 전체 보기')+'</button>'+
     '<button type="button" class="pw-x" data-pay-cancel>취소</button>'+
-    '<p class="pc-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>';
+    (admin?'':'<p class="pc-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>');
 }
 function onThemePay(el){
   var ck=$('[data-pay-consent]',el);
@@ -1621,7 +1621,7 @@ function showPayStep(o){
     '<h3>사주봄 인생사주 리포트</h3>'+
     '<p class="pay-sub">검수 후 이메일로 보내드리는 책자형 PDF입니다.</p>'+
     '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
-    '<p class="pay-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>'+
+    (ADMIN_OK?'':'<p class="pay-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>')+
     (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':((needContact?'<p class="pc-cap">결제 확인서를 받으실 이메일과 휴대폰</p>':'')+(needContact?payContactHTML(o.email,o.phone):'')+payConsentHTML()))+
     payErrHTML()+
     '<button type="button" class="btn btn-verm btn-block" data-pay-go>'+won(o.price||39800)+' 결제하기</button>'+
