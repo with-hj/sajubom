@@ -1830,3 +1830,13 @@ html.no-gate .gate{display:none}
 #payGate .pc-err{background:rgba(201,66,40,.16);border-color:rgba(201,66,40,.42);color:#F0BDAF}
 #payGate .pc-admin{background:rgba(216,179,106,.14);border-color:rgba(216,179,106,.4);color:#F7EACA}
 #payGate .pc-test{color:#8C8272;margin:9px 0 0 !important}
+.pc-contact{display:flex;flex-direction:column;gap:6px;margin:0 0 10px}
+.pc-cap{margin:0 0 1px !important;font-family:var(--sans);font-size:11px;color:#8A7A63;line-height:1.5;text-align:left}
+.pc-in{width:100%;box-sizing:border-box;padding:9px 11px;border-radius:10px;border:1px solid rgba(120,92,58,.22);
+  background:#fff;font-family:var(--sans);font-size:12.5px;color:#2A241D;line-height:1.3}
+.pc-in::placeholder{color:#B3A692}
+.pc-in:focus{outline:none;border-color:#B08A3E;box-shadow:0 0 0 2px rgba(176,138,62,.16)}
+#payGate .pc-in{border-color:rgba(216,179,106,.32);background:rgba(255,255,255,.06);color:#F1E3C8}
+#payGate .pc-in::placeholder{color:#8C8272}
+#payGate .pc-in:focus{border-color:rgba(216,179,106,.75);box-shadow:0 0 0 2px rgba(216,179,106,.16)}
+#payGate .pc-cap{color:#A2937C}

@@ -1111,6 +1111,22 @@ function payConsentHTML(){
     '<button type="button" data-pay-doc="refund">환불규정</button></div>';
 }
 function payErrHTML(){ return '<p class="pc-err" data-pay-err hidden></p>'; }
+/* 이니시스 V2는 구매자 이메일·휴대폰이 필수 — 결제 창에서 함께 받는다 */
+function payContactHTML(email,phone,cap){
+  return '<div class="pc-contact">'+
+    (cap?'<p class="pc-cap">'+cap+'</p>':'')+
+    '<input type="email" class="pc-in" data-pay-email inputmode="email" autocomplete="email" aria-label="이메일" placeholder="이메일 you@example.com" value="'+esc(email||'')+'">'+
+    '<input type="tel" class="pc-in" data-pay-phone inputmode="tel" autocomplete="tel" aria-label="휴대폰 번호" placeholder="휴대폰 010-0000-0000" value="'+esc(phone||'')+'">'+
+    '</div>';
+}
+function payContactOf(host,fallback){
+  var e=$('[data-pay-email]',host), p=$('[data-pay-phone]',host);
+  var email=String((e?e.value:(fallback&&fallback.email))||'').trim();
+  var phone=String((p?p.value:(fallback&&fallback.phone))||'').trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return {err:'결제 확인서를 받으실 이메일을 확인해 주세요.',focus:e};
+  if(!pgPhone(phone)) return {err:'결제 확인서를 받으실 휴대폰 번호를 확인해 주세요.',focus:p};
+  return {email:email,phone:phone};
+}
 function payMethodOf(host){
   var b=$('[data-pay-method].on',host);
   return b?b.getAttribute('data-pay-method'):'CARD';
@@ -1191,7 +1207,7 @@ function payCardMarkup(){
   return '<div class="pw-price">3,900원 · 전체 풀이</div>'+
     '<h3>남은 '+rest+'장을<br>지금 열어볼까요?</h3>'+
     '<p>결제가 끝나면 <b>'+esc(info.tab||'테마별 풀이')+'</b>의 남은 '+rest+'장이<br>바로 열립니다.</p>'+
-    (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payMethodHTML()+payConsentHTML()+payErrHTML()))+
+    (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payMethodHTML()+payContactHTML(savedEmail(),savedPhone())+payConsentHTML()+payErrHTML()))+
     '<button type="button" class="btn btn-gold btn-block" data-pay-go>'+(admin?'결제 없이 전체 풀이 열기':'3,900원 결제하고 전체 보기')+'</button>'+
     '<button type="button" class="pw-x" data-pay-cancel>취소</button>'+
     '<p class="pc-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>';
@@ -1200,10 +1216,13 @@ function onThemePay(el){
   var ck=$('[data-pay-consent]',el);
   if(!ADMIN_OK&&!(ck&&ck.checked)){ payErr(el,'약관과 환불 제한 동의에 체크해 주세요.'); return; }
   if(ADMIN_OK){ closePayGate(); unlockReading('admin'); return; }
+  var c=payContactOf(el);
+  if(c.err){ payErr(el,c.err); if(c.focus){ try{ c.focus(); }catch(e){} } return; }
+  saveContact(c.email,c.phone);
   var inp=state.input||{};
   startPay({
     kind:'theme', host:el, amount:3900, orderName:'사주봄 테마별 풀이',
-    customer:pgCustomer(inp.name,savedEmail(),savedPhone()),
+    customer:pgCustomer(inp.name,c.email,c.phone),
     onSuccess:function(r){
       closePayGate();
       setThemeCredit(true);
@@ -1601,6 +1620,7 @@ function showPayStep(o){
   try{ $('#pdfSteps').style.display='none'; }catch(e){}
   var fb=$('#lzFast'); if(fb) fb.classList.remove('on');
   var p=$('#pdfPay'); if(!p) return;
+  var needContact=!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(o.email||''))||!pgPhone(o.phone);
   p.classList.add('on');
   p.innerHTML='<div class="pay-box fade-in">'+
     '<div class="pay-tag">주문 확인</div>'+
@@ -1608,7 +1628,7 @@ function showPayStep(o){
     '<p class="pay-sub">검수 후 이메일로 보내드리는 책자형 PDF입니다.</p>'+
     '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
     '<p class="pay-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>'+
-    (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':(payMethodHTML()+payConsentHTML()))+
+    (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':(payMethodHTML()+(needContact?'<p class="pc-cap">결제 확인서를 받으실 이메일과 휴대폰</p>':'')+(needContact?payContactHTML(o.email,o.phone):'')+payConsentHTML()))+
     payErrHTML()+
     '<button type="button" class="btn btn-verm btn-block" data-pay-go>'+won(o.price||39800)+' 결제하기</button>'+
     '<button type="button" class="btn btn-line btn-block" id="payBack" style="margin-top:8px">이전으로</button>'+
@@ -1632,9 +1652,12 @@ function onLifePay(host){
   var ck=$('[data-pay-consent]',host);
   if(!ADMIN_OK&&!(ck&&ck.checked)){ payErr(host,'약관과 환불 제한 동의에 체크해 주세요.'); return; }
   if(ADMIN_OK){ o.payMode='admin'; completePayment(); return; }
+  var c=payContactOf(host,o);
+  if(c.err){ payErr(host,c.err); if(c.focus){ try{ c.focus(); }catch(e){} } return; }
+  o.email=c.email; o.phone=c.phone; saveContact(c.email,c.phone);
   startPay({
     kind:'life', host:host, amount:o.price||39800, orderName:'사주봄 인생사주 리포트', order:o,
-    customer:pgCustomer(o.name,o.email,o.phone),
+    customer:pgCustomer(o.name,c.email,c.phone),
     onSuccess:function(r){
       o.paymentId=r.paymentId||''; o.txId=r.txId||''; o.payMode='pg';
       completePayment();
