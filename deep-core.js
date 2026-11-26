@@ -412,11 +412,12 @@ function yearRead(R,y){
   if(isGong) score-=1.2;
   var tone=score>=3?'open':(score<=-1.5?'hold':'mixed');
   var bits=[];
-  bits.push(y+'년 '+ganzhiOf(ix)+' — 천간 '+stT(s)+j(STEM_KO[s],'은는')+' '+elTxt(sel)+'의 기운으로 <b>'+g+'</b>, 지지 '+brT(b)+j(BR_KO[b],'은는')+' '+elTxt(bel)+'의 기운으로 <b>'+S.tenGod(R.dStem,(S.BR_MAIN?S.BR_MAIN[b]:[9,5,0,1,4,2,3,5,6,7,4,8][b]))+'</b>입니다.');
-  if(rels.length){ var lastT=rels[rels.length-1].type; bits.push('네 기둥과는 '+rels.map(function(r){ return r.pos+'와 '+r.type; }).join(', ')+j(lastT,'으로로')+' 만납니다.'); }
-  else bits.push('네 기둥과는 크게 부딪히지도 묶이지도 않습니다.');
+  bits.push(y+'년 '+ganzhiOf(ix)+' — '+stT(s)+j(STEM_KO[s],'은는')+' '+elTxt(sel)+'의 기운으로 <b>'+g+'</b>, '+brT(b)+j(BR_KO[b],'은는')+' '+elTxt(bel)+'의 기운으로 <b>'+S.tenGod(R.dStem,(S.BR_MAIN?S.BR_MAIN[b]:[9,5,0,1,4,2,3,5,6,7,4,8][b]))+'</b>입니다.');
+  if(rels.length){ var POSN={'년주':'태어난 해','월주':'태어난 달','일주':'나','시주':'태어난 시간'};
+    bits.push('내 사주에서는 '+rels.map(function(r){ var pn=POSN[r.pos]||'다른'; return pn+(pn==='나'?'':' 자리')+'와 '+r.type; }).join(', ')+'으로 만납니다.'); }
+  else bits.push('내 사주 안에서 크게 부딪히는 자리는 없습니다.');
   bits.push(yong?'용신 '+EL_KO[d.yong]+j(EL_KO[d.yong],'이가')+' 직접 들어와 막힌 것이 풀리는 해입니다.':(hee?'희신 '+EL_KO[d.heesin]+j(EL_KO[d.heesin],'이가')+' 들어와 용신을 받쳐줍니다.':(gi?'기신 '+EL_KO[d.gisin]+j(EL_KO[d.gisin],'이가')+' 들어오는 해라 벌인 일이 늦게 정리됩니다.':(gu?'구신 '+EL_KO[d.gusin]+j(EL_KO[d.gusin],'이가')+' 들어와 애쓴 만큼 남지 않기 쉬운 해입니다.':'용신도 기신도 직접 들어오지 않아 평소의 구조가 그대로 이어집니다.'))));
-  if(isGong) bits.push('이 해의 지지 '+brT(b)+j(BR_KO[b],'은는')+' 공망이라 약속이 미뤄지거나 문서가 늦어질 수 있습니다.');
+  if(isGong) bits.push('이 해의 '+brT(b)+j(BR_KO[b],'은는')+' 비어 있는 자리라 약속이 미뤄지거나 문서가 늦어질 수 있습니다.');
   return {y:y,ix:ix,gz:ganzhiOf(ix),stem:s,branch:b,g:g,grp:grp,sEl:sel,bEl:bel,
     rels:rels,isGong:isGong,yong:yong,hee:hee,gi:gi,gu:gu,score:score,tone:tone,
     why:bits.join(' '),
@@ -685,6 +686,29 @@ var PLAIN_WORDS=[
   ['\uCDA9(\u6C96)','부딪힘(沖)'],
   ['\uD569(\u5408)','어울림(合)']
 ];
+/* v78 · 사주 용어를 일상어로 바꾸면서 생기는 조사 오류(‘기운가’, ‘편라’)를 바로잡는다 */
+var JOSA_HARD=['기운','흐름','틀','결','어울림','서운함','문','편'];
+var JOSA_SOFT=['자리','표시'];
+function fixJosa(t){
+  for(var i=0;i<JOSA_HARD.length;i++){
+    var w=JOSA_HARD[i];
+    t=t.replace(new RegExp(w+'가(?![가-힣])','g'),w+'이');
+    t=t.replace(new RegExp(w+'는(?![가-힣])','g'),w+'은');
+    t=t.replace(new RegExp(w+'를(?![가-힣])','g'),w+'을');
+    t=t.replace(new RegExp(w+'와(?![가-힣])','g'),w+'과');
+    t=t.replace(new RegExp(w+'로(?![가-힣])','g'),w+'으로');
+    t=t.replace(new RegExp(w+'라(?![가-힣])','g'),w+'이라');
+  }
+  for(var j=0;j<JOSA_SOFT.length;j++){
+    var k=JOSA_SOFT[j];
+    t=t.replace(new RegExp(k+'이(?![가-힣])','g'),k+'가');
+    t=t.replace(new RegExp(k+'은(?![가-힣])','g'),k+'는');
+    t=t.replace(new RegExp(k+'을(?![가-힣])','g'),k+'를');
+    t=t.replace(new RegExp(k+'과(?![가-힣])','g'),k+'와');
+  }
+  return t;
+}
+
 /* 조사까지 함께 바꿔야 하는 말 — 받침이 없는 말로 끝나기 때문 */
 var PLAIN_JOSA=[
   ['\uACF5\uB9DD','비어 있는 자리',{'이':'가','가':'가','은':'는','는':'는','을':'를','를':'를','과':'와','와':'와','으로':'로','이라':'라'}],
@@ -695,6 +719,10 @@ var PLAIN_JOSA=[
   ['\uC790\uB140\uC131','자녀의 문',{'이':'가','가':'가','은':'는','는':'는','을':'를','를':'를','과':'와','와':'와','이라':'라'}]   /* 자녀성 */
 ];
 var PLAIN_PHRASES=[
+  /* v78 · ‘일지’를 한꺼번에 바꾸면서 생긴 ‘내 나의 자리’·‘두 사람의 나의 자리’를 막는다 */
+  ['내 일지','내 자리'],
+  ['두 사람의 일지','두 자리'],
+  ['일지·일간','타고난 자리와 중심 글자'],
   ['합·충·형·파·해','어울림과 부딪힘'],
   ['합/충/형/파/해','어울림과 부딪힘'],
   ['합과 충','어울림과 부딪힘'],
@@ -713,8 +741,6 @@ var PLAIN_PHRASES=[
 function plainPass(html){
   var t=String(html);
   for(var pi=0;pi<PLAIN_PHRASES.length;pi++){ t=t.split(PLAIN_PHRASES[pi][0]).join(PLAIN_PHRASES[pi][1]); }
-  /* ‘결으로 살 때’는 ‘결로 살 때’가 맞다 (받침 ㄹ 뒤에는 ‘로’) */
-  t=t.replace(/결으로/g,'결로').replace(/별으로/g,'별로');
   for(var i=0;i<PLAIN_WORDS.length;i++){
     var w0=PLAIN_WORDS[i][0];
     /* ‘상관없이’처럼 다른 뜻으로 쓰이는 말은 건드리지 않는다 */
@@ -730,6 +756,30 @@ function plainPass(html){
       return to+(map[jo]||jo);
     });
   }
+  /* v78 · 표 머리글·태그에 남은 사주 용어를 일상어로 (20~30대가 바로 읽히게)
+     — 낱말 안에서 우연히 겹치는 경우(정해지지만)를 피하려고 앞뒤를 확인한다 */
+  t=t.replace(/무난(?![가-힣])/g,'잔잔한 흐름');
+  t=t.replace(/간지/g,'글자');
+  t=t.replace(/십성/g,'기운');
+  t=t.replace(/천간충/g,'위 글자끼리 부딪힘');
+  t=t.replace(/천간합/g,'위 글자끼리 어울림');
+  t=t.replace(/천간/g,'위 글자');
+  t=t.replace(/(^|[^가-힣])지지/g,'$1아래 글자');
+  t=t.replace(/(^|[^가-힣])기둥/g,'$1자리');
+  /* 부딪힘·어울림 — ‘충’, ‘합’ 한 글자만 던지지 않는다 (충분·합의 같은 낱말은 건드리지 않게 앞뒤를 확인) */
+  t=t.replace(/충\(/g,'부딪힘(').replace(/합\(/g,'어울림(');
+  t=t.replace(/(^|[^가-힣])충(?=이|을|은|과|의|으로|이라|입니다|[\s,.·])/g,'$1부딪힘');
+  t=t.replace(/(^|[^가-힣])합(?=이|을|은|과|의|으로|이라|입니다|[\s,.·])/g,'$1어울림');
+  /* 달·해의 관계 표시 — ‘해(害)’ 같은 한자를 그대로 두지 않는다 */
+  t=t.replace(/해\(害\)/g,'마음이 상하는 자리').replace(/파\(破\)/g,'관계가 흔들리는 자리');
+  t=t.replace(/형\(刑\)/g,'서로 예민해지는 자리').replace(/충\(沖\)/g,'부딪히는 자리').replace(/합\(合\)/g,'어울리는 자리');
+  t=t.replace(/(^|[^가-힣])년주/g,'$1태어난 해');
+  t=t.replace(/(^|[^가-힣])월주/g,'$1태어난 달');
+  t=t.replace(/(^|[^가-힣])시주/g,'$1태어난 시간');
+  /* ‘결으로 살 때’는 ‘결로 살 때’가 맞다 (받침 ㄹ 뒤에는 ‘로’) */
+  t=t.replace(/결으로/g,'결로').replace(/별으로/g,'별로');
+  /* 바꾼 말에 붙은 조사를 바로잡는다 (기운가 → 기운이, 편라 → 편이라) */
+  t=fixJosa(t);
   return t;
 }
 S.fixPost=function(html){

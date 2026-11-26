@@ -60,11 +60,12 @@ function daeunIntro(){
   push(page('15 / DAEWOON',secLabel('15','DAEWOON · 평생 대운')+'<h1>10년마다 바뀌는<br><span class="accent">판의 방향</span></h1>'+
     '<p class="lead">인생에는 계절이 있습니다. 같은 사람도 어떤 10년에는 잘 자라고, 어떤 10년에는 뿌리를 내립니다. 이 장은 그 계절의 순서를 펼친 것입니다.</p>'+
     '<p>이 사주는 '+R.daeunSu+'세에 첫 대운을 시작으로 아홉 구간을 지납니다. 지금은 <b>'+R.daeun[R.curDaeun].from+'~'+R.daeun[R.curDaeun].to+'세</b> 구간, 그중 '+(R.age-R.daeun[R.curDaeun].from+1)+'년 차입니다.</p>'+
-    '<table><tr><th>나이</th><th>간지</th><th>십성</th><th>이 10년에 남는 것</th></tr>'+
+    '<table><colgroup><col style="width:14%"><col style="width:26%"><col style="width:22%"><col></colgroup>'+
+    '<tr><th>나이</th><th>10년의 글자</th><th>이 10년의 기운</th><th>이 10년에 남는 것</th></tr>'+
     (function(){var h='';R.daeun.forEach(function(d){
       var g=S.tenGod(R.dStem,d.idx%10);
-      var keep={'비겁':'내 이름으로 만든 것','식상':'작품과 기록','재성':'현금흐름과 자산','관성':'직함과 신뢰','인성':'실력과 사람'}[S.GOD_GROUP[g]];
-      h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+gzP(d.idx%10,d.idx%12)+'</td><td>'+g+'</td><td>'+keep+'</td></tr>';});return h;})()+'</table>'+
+      var keep=((S.DAEUN10||{})[g]||{}).keep||'내 이름으로 만든 것';
+      h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td><span class="tw">'+gzP(d.idx%10,d.idx%12)+'</span></td><td><span class="tw">'+g+'</span></td><td>'+keep+'</td></tr>';});return h;})()+'</table>'+
     '<p>대운이 바뀌는 실제 변화는 <b>그 전후 2년</b>에 걸쳐 옵니다. 그래서 표의 나이는 “몇 살에 딱 바뀐다”기보다 “그 무렵부터 판이 달라진다”로 읽으세요.</p>'+
     callout('대운을 읽는 순서','<p>1. 지금 구간의 십성을 확인한다. 2. 그 십성이 내 사주에서 어떤 재료인지 본다. 3. 다음 구간의 재료를 미리 준비한다. 이 세 단계면 충분합니다.</p>'),{spread:true}));
   chapter('daeun','15','평생 대운','9구간 · 10년마다');
@@ -72,49 +73,56 @@ function daeunIntro(){
 function daeunCycle(i){
   var R=B.R,c=B.c,d=R.daeun[i],g=S.tenGod(R.dStem,d.idx%10),grp=S.GOD_GROUP[g];
   var el=S.STEM_EL[d.idx%10], brEl=S.BR_EL[d.idx%12];
-  var F=DAEUN_FIELD[grp];
+  var D10=(S.DAEUN10||{})[g]||{field:DAEUN_FIELD[grp],keep:'',todo:[]};
+  var F=D10.field||DAEUN_FIELD[grp];
   var rel=S.branchRel(R.dBranch,d.idx%12);
+  var rl=(S.rel10?S.rel10(rel.k):{chip:rel.k,t:rel.t});
+  var KEY=(S.DAEUN_KEY||{})[g]||D10.keep;
   var label='15 / DAEWOON';
   /* A */
   push(page(label,secLabel('15','DAEWOON · '+(i+1)+' / 9')+
     '<h1><span class="accent">'+d.from+'~'+d.to+'세</span><br>'+gzP(d.idx%10,d.idx%12)+' · '+g+'</h1>'+
     '<p class="lead">'+(S.GOD_DAEUN[g]||'')+'</p>'+
-    '<div style="margin:2mm 0 4mm"><span class="tag">'+grp+'</span><span class="tag navy">'+elK(el)+'</span><span class="tag navy">지지 '+elK(brEl)+'</span><span class="tag soft">일지와 '+rel.k+'</span>'+(i===R.curDaeun?'<span class="tag">지금</span>':'')+'</div>'+
-    '<h3>이 10년의 재료</h3><p>'+DAEUN_GROUP[grp]+'</p>'+
-    '<p>'+S.GROUP_MEAN[grp]+' 천간 '+stemS(d.idx%10)+'은 '+S.EL_DEEP[el].over+'</p>'+
-    '<p>'+S.BR_INNER[d.idx%12]+'</p>'+
-    '<h3>일지와의 관계</h3><p>이 대운의 지지는 내 일지 '+brS(R.dBranch)+'와 <b>'+rel.k+'</b>입니다. '+rel.t+'</p>'+
-    '<p>다른 기둥과는 '+(function(){ var dd=S.deep(R), out=[]; dd.live.forEach(function(p){ var t=S.relType(p.branch,d.idx%12); if(t&&t!=='동일') out.push(p.pos+'와 '+t); }); return out.length?out.join(', ')+'으로 만납니다. ':'크게 얽히지 않습니다. '; })()+
-      '천간은 '+elK(el)+', 지지 '+brS(d.idx%12)+'은 '+elK(brEl)+'입니다. '+
-      ((el===S.deep(R).yong||brEl===S.deep(R).yong)?'<b>용신이 걸린 10년</b>이라 막힌 것이 풀립니다.':((el===S.deep(R).gisin||brEl===S.deep(R).gisin)?'<b>기신이 걸린 10년</b>이라 벌이기보다 지키는 쪽이 남습니다.':'용신도 기신도 걸리지 않아, 심은 만큼 거둡니다.'))+'</p>'+
-    callout('이 10년의 한 줄','<p>'+S.GOD_KEY[g]+'의 10년 — '+({비겁:'내 이름으로 만든 것',식상:'작품과 기록',재성:'현금흐름과 자산',관성:'직함과 신뢰',인성:'실력과 사람'}[grp])+'이 남습니다.</p>'),{spread:true}));
+    '<div style="margin:2mm 0 4mm"><span class="tag">'+g+'</span><span class="tag navy">'+elK(el)+' 기운</span><span class="tag navy">'+elK(brEl)+' 기운</span><span class="tag soft">'+rl.chip+'</span>'+(i===R.curDaeun?'<span class="tag">지금</span>':'')+'</div>'+
+    '<h3>이 10년은 어떤 시기인가</h3><p>'+D10.body+'</p>'+
+    '<p><b>'+stemS(d.idx%10)+'</b>의 결 — '+((S.STEM10||[])[d.idx%10]||S.EL_DEEP[el].over)+'</p>'+
+    '<p>'+((S.BR10||[])[d.idx%12]||S.BR_INNER[d.idx%12])+'</p>'+
+    '<h3>내 사주와의 관계</h3><p>'+d.from+'~'+d.to+'세 이 10년은 타고난 내 자리 '+brS(R.dBranch)+'와 '+rl.t+'. '+D10.hint+'</p>'+
+    '<p>'+d.from+'~'+d.to+'세의 바탕은 <b>'+g+'</b>이고, '+elK(el)+'과 '+elK(brEl)+'가 함께 흐릅니다. '+
+      (function(){ var dd=S.deep(R), hard=[], good=[]; var NM=[['년주','태어난 해'],['월주','태어난 달'],['일주','나'],['시주','태어난 시간']];
+        dd.live.forEach(function(p){ var t=S.relType(p.branch,d.idx%12), nm='다른 자리';
+          for(var q=0;q<NM.length;q++){ if(String(p.pos).indexOf(NM[q][0])>=0) nm=NM[q][1]; }
+          if(t==='충'||t==='형'||t==='파'||t==='해') hard.push(nm); else if(t==='합'||t==='육합'||t==='삼합') good.push(nm); });
+        var ag=d.from+'~'+d.to+'세에는 ';
+        return (hard.length? ag+'그중 '+hard.join('·')+' 자리와 부딪히니 그 자리의 일은 한 번 더 확인하게 됩니다. ':(good.length? ag+'그중 '+good.join('·')+' 자리와 잘 맞아 사람을 통해 일이 풀립니다. ':ag+'내 사주 안에서 크게 부딪히는 자리가 없어, 흐름이 한결 편합니다. ')); })()+
+      ((el===S.deep(R).yong||brEl===S.deep(R).yong)?'<b>지금 내게 필요한 기운</b>이 걸린 <b>'+KEY+'</b>의 10년이라, 막혀 있던 일이 풀립니다.':((el===S.deep(R).gisin||brEl===S.deep(R).gisin)?'<b>조심해야 할 기운</b>이 걸린 <b>'+KEY+'</b>의 10년이라, 벌이기보다 지키는 쪽이 남습니다.':'필요한 기운도 조심할 기운도 걸리지 않은 <b>'+KEY+'</b>의 10년이라, 심은 만큼 거둡니다.'))+'</p>'+
+    callout('이 10년의 한 줄','<p>이 10년은 <b>'+S.GOD_KEY[g]+'</b>입니다. 손에 남는 것은 '+D10.keep+' — 서두르지 않으면 이 한 가지가 다음 10년을 받쳐 줍니다.</p>'),{spread:true}));
   /* B */
   var years='';
   for(var y=R.y+d.from;y<=R.y+d.to;y++){
     var idx=S.mod(y-4,60), gg=S.tenGod(R.dStem,idx%10);
     var diff=S.mod(idx%12-R.dBranch,12);
     var tag=(diff===6?'충':(diff===0?'동일':((diff===4||diff===8)?'합':'무난')));
-    years+='<tr><td class="k">'+y+'</td><td>'+(y-R.y)+'세</td><td>'+gzP(idx%10,idx%12)+' · '+gg+'</td><td>'+tag+'</td><td style="font-size:11.5px">'+S.SEUN_KEY[gg]+'</td></tr>';
+    years+='<tr><td class="k">'+y+'</td><td>'+(y-R.y)+'세</td><td><span class="tw">'+gzP(idx%10,idx%12)+' · '+gg+'</span></td><td style="font-size:11.5px">'+(S.relChip?S.relChip(tag):tag)+'</td><td style="font-size:11.5px">'+S.SEUN_KEY[gg]+'</td></tr>';
   }
   push(page(label,secLabel('15','DAEWOON · 네 영역')+'<h2>이 10년, 영역별로</h2>'+
     '<table><tr><th>영역</th><th>이 10년의 결</th></tr>'+
     '<tr><td class="k">돈</td><td>'+F.money+'</td></tr>'+
     '<tr><td class="k">일</td><td>'+F.work+'</td></tr>'+
     '<tr><td class="k">사랑</td><td>'+F.love+'</td></tr>'+
-    '<tr><td class="k">문서·부동산</td><td>'+docuField(grp)+' '+docuFieldEl(el)+'</td></tr>'+
+    '<tr><td class="k">문서·부동산</td><td>'+F.docu+'</td></tr>'+
     '<tr><td class="k">건강</td><td>'+F.health+'</td></tr></table>'+
     '<h3>해마다의 결</h3>'+
-    '<table><tr><th>해</th><th>나이</th><th>간지 · 십성</th><th>일지</th><th>키워드</th></tr>'+years+'</table>'+
-    '<p>같은 10년이라도 해마다 날씨가 다릅니다. <b>충</b>이 붙은 해는 판이 바뀌고, <b>합</b>이 붙은 해는 사람을 통해 일이 풀립니다.</p>',{spread:true}));
+    '<table><colgroup><col style="width:11%"><col style="width:10%"><col style="width:33%"><col style="width:20%"><col></colgroup>'+
+    '<tr><th>해</th><th>나이</th><th>그 해의 글자</th><th>내 자리와</th><th>키워드</th></tr>'+years+'</table>'+
+    '<p>해마다 날씨가 다르니, <b>'+D10.phase.t+'</b>인 이 10년 안에서도 <b>변화·이동 많음</b>이 붙은 해는 판이 바뀌고 <b>잘 맞는 흐름</b>이 붙은 해는 사람을 통해 일이 풀립니다.</p>',{spread:true}));
   /* C */
   push(page(label,secLabel('15','DAEWOON · 사용법')+'<h2>이 10년을 쓰는 법</h2>'+
     '<h3>먼저 할 세 가지</h3><ol>'+
-    '<li>'+({비겁:'내 이름을 걸 수 있는 일 하나를 정하기',식상:'만든 것을 밖으로 꺼내는 창구 만들기',재성:'수입과 지출의 구조를 문서로 정리하기',관성:'자격·직함·계약 중 하나를 확보하기',인성:'배움에 기한을 정해 하나를 끝내기'}[grp])+'</li>'+
-    '<li>'+({비겁:'동료와의 몫을 글로 남기기',식상:'결과물을 기록으로 남기기',재성:'통장을 셋으로 나누기',관성:'보고와 절차를 문서화하기',인성:'배운 것을 가르치거나 정리하기'}[grp])+'</li>'+
-    '<li>'+({비겁:'혼자 결정하는 습관을 하나 줄이기',식상:'말의 속도를 반 박자 늦추기',재성:'큰 지출 전 하루 쉬기',관성:'압박을 혼자 안고 있지 않기',인성:'결정을 사흘 안에 내리기'}[grp])+'</li></ol>'+
+    (D10.todo&&D10.todo.length?D10.todo:['오늘 할 일 하나를 정해 끝내기','도와줄 사람에게 먼저 말 걸기','큰 결정은 하루 뒤에 하기']).map(function(t){return '<li>'+t+'</li>';}).join('')+'</ol>'+
     '<h3>조심할 해</h3><p>'+riskYears(R,d)+'</p>'+
-    '<h3>이 10년의 건강</h3><p>'+S.EL_DEEP[el].over+' 그래서 '+S.EL_DEEP[el].part+' 쪽이 먼저 피로를 알립니다. '+S.EL_DEEP[el].habit+'</p>'+
-    callout('이 10년을 남기는 법','<p>대운은 지나가지만 <b>남긴 것</b>은 남습니다. 이 10년에 남길 것은 '+({비겁:'내 이름으로 만든 일',식상:'작품과 기록',재성:'현금흐름과 자산',관성:'직함과 신뢰',인성:'실력과 사람'}[grp])+'입니다.</p>'),{spread:true}));
+    '<h3>이 10년의 몸</h3><p>'+d.from+'~'+d.to+'세에는 특히 <b>'+S.EL_DEEP[el].part+'</b> 쪽이 먼저 피로를 알립니다 — '+S.EL_DEEP[el].habit+'.</p>'+
+    callout('이 10년을 남기는 법','<p><b>'+D10.keep+'</b> — '+D10.closing+'</p>'),{spread:true}));
 }
 function riskYears(R,d){
   var out=[];
@@ -122,7 +130,7 @@ function riskYears(R,d){
     var idx=S.mod(y-4,60);
     if(S.mod(idx%12-R.dBranch,12)===6) out.push(y+'년');
   }
-  return out.length?out.join(', ')+' — 일지와 충하는 해입니다. 이사·이직·계약을 한꺼번에 몰지 마세요.':'이 10년에는 일지와 정면으로 충하는 해가 없습니다. 대신 판이 급하게 바뀌지 않으니 쌓는 흐름으로 쓰세요.';
+  return out.length?out.join(', ')+' — 내 자리와 부딪히는 해라 이사·이직·계약처럼 큰일이 겹치기 쉬우니, 한꺼번에 몰지 마세요.':'이 10년에는 내 자리와 크게 부딪히는 해가 없어, 판이 급하게 바뀌지 않고 쌓는 흐름으로 쓰기 좋습니다.';
 }
 
 /* ---------------- 10장 세운 (2027~2031) ---------------- */
@@ -147,18 +155,19 @@ function seunPages(){
     var F=SEUN_FIELD[g]||SEUN_FIELD[grp]||SEUN_FIELD['비겁'];
     push(page('16 / SEWOON',secLabel('16','SEWOON · '+y)+'<h1><span class="accent">'+y+'년</span> · '+gzP(s,b)+'</h1>'+
       '<p class="lead">'+S.SEUN_DEEP[g]+'</p>'+
-      '<div style="margin:2mm 0 4mm"><span class="tag">'+g+'</span><span class="tag navy">'+grp+'</span><span class="tag navy">일지 '+rel+'</span><span class="tag soft">'+S.SEUN_KEY[g]+'</span></div>'+
+      '<div style="margin:2mm 0 4mm"><span class="tag">'+g+'</span><span class="tag navy">'+grp+'</span><span class="tag navy">'+(S.relChip?S.relChip(S.monthTag(S.branchRel(R.dBranch,b))):rel)+'</span><span class="tag soft">'+S.SEUN_KEY[g]+'</span></div>'+
       '<h3>이 해의 기운</h3><p>'+S.SEUN_EL[S.BR_EL[b]]+'</p>'+
-      '<p>'+S.GROUP_MEAN[grp]+' 이 해는 그 재료가 <b>세운</b>으로 한 번 더 들어오는 때입니다. 그래서 평소보다 그 영역의 일이 눈에 띄게 많아집니다.</p>'+
-      '<h3>일지와의 관계</h3><p>이 해의 지지 '+brS(b)+'는 내 일지 '+brS(R.dBranch)+'와 <b>'+rel+'</b>입니다. '+
-        (diff===6?'판이 바뀌는 해입니다. 이사·이직·관계 변화가 겹치기 쉬우니 큰 결정은 3개월 단위로 나눠 확인하세요.':(diff===0?'같은 기운이 다시 도는 해입니다. 미뤄둔 일이 다시 올라오고, 같은 선택을 반복할 기회도 옵니다.':((diff===4||diff===8)?'사람을 통해 일이 풀리는 해입니다. 혼자 밀기보다 누군가를 거치면 빨라집니다.':'크게 부딪히지 않는 해입니다. 정한 방향으로 쌓아가기 좋습니다.')))+'</p>',{spread:true}));
+      '<p>'+S.GROUP_MEAN[grp]+' '+y+'년에는 이 기운이 한 해의 재료로 한 번 더 들어와, '+g+'의 일이 눈에 띄게 많아집니다.</p>'+
+      '<h3>내 사주와의 관계</h3><p>'+y+'년은 타고난 내 자리 '+brS(R.dBranch)+'와 '+
+        (diff===6?'부딪히는 해라 이사·이직·관계 변화가 겹치기 쉬우니, 큰 결정은 3개월 단위로 나눠 확인하세요.':(diff===0?'같은 기운이 다시 도는 해라, 미뤄둔 일이 다시 올라오고 예전 선택을 되풀이할 기회도 옵니다.':((diff===4||diff===8)?'잘 맞는 해라, 사람을 거치면 일이 빨라집니다. 혼자 밀지 마세요.':'잔잔한 해라, 판이 급하게 바뀌지 않으니 정한 방향으로 쌓아가기 좋습니다.')))+'</p>',{spread:true}));
     /* B: 영역 + 월 */
     var mrows='';
     for(var m=1;m<=12;m+=1){
       var mp=S.monthPillarOf(y,m), mg=S.tenGod(R.dStem,mp.stem);
       var mrel=S.branchRel(R.dBranch,mp.branch), mtag=S.monthTag(mrel);
       if(mtag==='합'||mtag==='충'){
-        mrows+='<tr><td class="k">'+m+'월</td><td>'+tw_(gzP(mp.stem,mp.branch))+'<br>'+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(((S.MONTH_TIPS.general||{})[S.GOD_GROUP[mg]]||[])[0]||'')+'</td></tr>';
+        var mtips=(S.MONTH_TIPS.general||{})[S.GOD_GROUP[mg]]||[];
+        mrows+='<tr><td class="k">'+m+'월</td><td>'+tw_(gzP(mp.stem,mp.branch))+'<br>'+mg+'</td><td>'+mtag+'</td><td style="font-size:11.5px">'+(mtips.length?mtips[(m+mp.stem)%mtips.length]:'')+'</td></tr>';
       }
     }
     push(page('16 / SEWOON',secLabel('16','SEWOON · '+y+' 네 영역')+'<h2>'+y+'년, 영역별로</h2>'+
@@ -166,15 +175,15 @@ function seunPages(){
       '<tr><td class="k">돈</td><td>'+F.money+'</td></tr>'+
       '<tr><td class="k">일</td><td>'+F.work+'</td></tr>'+
       '<tr><td class="k">사랑</td><td>'+F.love+'</td></tr>'+
-      '<tr><td class="k">문서·부동산</td><td>'+docuField(grp)+' '+docuFieldEl(S.BR_EL[b])+'</td></tr>'+
+      '<tr><td class="k">문서·부동산</td><td>'+(((S.DAEUN10||{})[g]||{}).field||{}).docu+'</td></tr>'+
       '<tr><td class="k">건강</td><td>'+F.health+'</td></tr></table>'+
       '<h3>이 해에 눈여겨볼 달</h3>'+
       (mrows?'<table><tr><th>달</th><th>월주 · 십성</th><th>관계</th><th>할 일</th></tr>'+mrows+'</table>':'<p>이 해에는 일지와 크게 부딪히거나 어울리는 달이 뚜렷하지 않습니다. 달보다 분기의 흐름으로 보세요.</p>')+
       '<h3>이 해의 세 가지</h3><ul>'+
       '<li><b>할 일</b> — '+({비견:'내 이름을 걸 일 하나 시작',겁재:'함께하는 일의 몫을 문서로',식신:'만든 것을 밖으로 내놓기',상관:'말을 다듬어 발표하기',편재:'큰 지출의 한도 정하기',정재:'저축·계약 하나 끝내기',편관:'압박의 원인을 문서로 정리',정관:'자격·절차 하나 준비',편인:'배움 하나를 끝내기',정인:'도움을 받아들이기'}[g])+'</li>'+
       '<li><b>피할 일</b> — '+({비견:'자존심 싸움',겁재:'서류 없는 동업',식신:'편한 것만 하기',상관:'윗사람과의 감정 대화',편재:'충동 결제',정재:'큰 모험',편관:'혼자 안고 버티기',정관:'형식만 갖추기',편인:'결정 미루기',정인:'참기만 하기'}[g])+'</li>'+
-      '<li><b>남길 것</b> — 기록 한 줄. 이 사주는 기록이 다음 해의 문을 엽니다.</li></ul>'+
-      callout(y+'년의 한 줄','<p>'+S.SEUN_KEY[g]+'의 해 — '+S.GOD_DEEP[g].split('.')[0]+'. 이 방향에 얹히는 선택이 힘을 받습니다.</p>'),{spread:true}));
+      '<li><b>남길 것</b> — '+y+'년에 남긴 기록 한 줄. 그 기록이 다음 해의 문을 엽니다.</li></ul>'+
+      callout(y+'년의 한 줄','<p>'+S.SEUN_KEY[g]+'의 해 — '+S.GOD_DEEP[g].split('.')[0]+'. '+y+'년에는 이 방향에 얹히는 선택이 힘을 받습니다.</p>'),{spread:true}));
   }
 }
 
@@ -285,7 +294,7 @@ function monthPages(){
       health:F.health+(tail.health?' '+tail.health:'')
     };
     push(page('17 / 2027',secLabel('17','2027 MONTHLY · '+m+'월')+'<h1><span class="accent">2027년 '+m+'월</span><br>'+gzP(mp.stem,mp.branch)+' · '+g+'</h1>'+
-      '<p class="lead">'+m+'월 — '+name_of_month(m)+'. 같은 1월이라도 사람마다 열리는 문이 다릅니다. 이 달은 이 사람에게 <b>'+REL_SHORT[tag]+'</b>입니다.</p>'+
+      '<p class="lead">'+m+'월 — '+name_of_month(m)+'. 이 달은 이 사람에게 <b>'+REL_SHORT[tag]+'</b>이고, 중심 기운은 <b>'+g+'</b>입니다.</p>'+
       '<p>이 달의 글자는 '+gzP(mp.stem,mp.branch)+'이고, 중심 기운은 <b>'+g+'</b>입니다. 나의 자리와는 <b>'+tag+'</b>으로 만납니다.</p>'+
       '<p>'+season+' '+tip+(relNote?' '+relNote:'')+'</p>'+
       '<h3>이 달의 네 영역</h3>'+

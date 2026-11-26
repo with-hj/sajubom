@@ -602,13 +602,13 @@ function moneyPages(){
   var rows='';
   R.daeun.forEach(function(dn,i){
     var g=S.tenGod(R.dStem,dn.idx%10), grp=S.GOD_GROUP[g];
-    var note=({'정재':'쌓이는 돈의 구간. 저축·계약·자격처럼 남는 일이 재산이 됩니다.','편재':'큰 돈이 도는 구간. 판이 넓어지지만 씀씀이도 함께 커집니다.','비견':'내 힘으로 버는 구간. 동업은 몫을 먼저 정하세요.','겁재':'사람을 통해 버는 구간. 장부가 없으면 남지 않습니다.','식신':'좋아하는 일이 수입이 되는 구간.','상관':'재능이 돈이 되는 구간. 구설을 조심하세요.','편관':'압박이 커지는 구간. 자리를 지키는 것이 곧 돈입니다.','정관':'자리가 돈을 만드는 구간. 조직·자격이 곧 재산입니다.','편인':'혼자 깊어지는 구간. 준비에 돈을 씁니다.','정인':'배움에 돈을 쓰는 구간. 큰 투자보다 실력을 사는 쪽이 남습니다.'})[g]||'';
+    var note=((S.DAEUN10||{})[g]||{}).wealth||({'정재':'쌓이는 돈의 구간. 저축·계약·자격처럼 남는 일이 재산이 됩니다.','편재':'큰 돈이 도는 구간. 판이 넓어지지만 씀씀이도 함께 커집니다.','비견':'내 힘으로 버는 구간. 동업은 몫을 먼저 정하세요.','겁재':'사람을 통해 버는 구간. 장부가 없으면 남지 않습니다.','식신':'좋아하는 일이 수입이 되는 구간.','상관':'재능이 돈이 되는 구간. 말 때문에 새는 돈을 조심하세요.','편관':'압박이 커지는 구간. 자리를 지키는 것이 곧 돈입니다.','정관':'자리가 돈을 만드는 구간. 직함·자격이 곧 재산입니다.','편인':'혼자 깊어지는 구간. 준비에 돈을 씁니다.','정인':'배움에 돈을 쓰는 구간. 큰 투자보다 실력을 사는 쪽이 남습니다.'})[g]||'';
     var rel=S.relType(R.dBranch,dn.idx%12);
-    rows+='<tr><td class="k">'+dn.from+'~'+dn.to+'</td><td>'+tw_(gzP(dn.idx%10,dn.idx%12))+'<br>'+g+(rel&&rel!=='동일'?'<br><span style="font-size:11px">일지와 '+rel+'</span>':'')+'</td><td style="font-size:12px">'+note+'</td></tr>';
+    rows+='<tr><td class="k">'+dn.from+'~'+dn.to+'</td><td><span class="tw">'+gzP(dn.idx%10,dn.idx%12)+'</span><br><span class="tw">'+g+'</span>'+(rel&&rel!=='무난'?'<br><span class="nw" style="font-size:11px">'+(S.relChip?S.relChip(rel):rel)+'</span>':'')+'</td><td style="font-size:12px">'+note+'</td></tr>';
   });
   push(page('10 / WEALTH',secLabel('10','(3) 10년마다 바뀌는 돈의 크기')+'<h1>10년마다 바뀌는<br><span class="accent">돈의 그릇</span></h1>'+
     '<p class="lead">같은 노력도 대운의 결에 따라 결과가 달라집니다. 이 사주의 재물은 아래 구간에서 크기가 달라집니다.</p>'+
-    '<table><tr><th>나이</th><th>대운</th><th>재물의 결</th></tr>'+rows+'</table>'+
+    '<table><colgroup><col style="width:14%"><col style="width:26%"><col></colgroup><tr><th>나이</th><th>10년의 글자</th><th>재물의 결</th></tr>'+rows+'</table>'+
     '<p>이 사주에게 가장 중요한 것은 <b>들어오는 구간에 무엇을 남기느냐</b>입니다. 재성이 오는 10년에 벌어도, 인성의 10년에 지키지 못하면 남지 않습니다.</p>'+
     callout('10년의 규칙','<p>재성이 오는 10년에는 <b>벌이는 크게, 지출은 작게</b>. 인성이 오는 10년에는 <b>실력과 문서에 투자</b>. 비겁이 오는 10년에는 <b>내 이름을 걸되 몫을 문서로</b>.</p>'),{spread:true}));
   push(page('10 / WEALTH',secLabel('10','(4) 한 달의 금전 루틴')+'<h1>한 달의<br><span class="accent">금전 루틴</span></h1>'+
@@ -810,10 +810,10 @@ function familyPages(){
   }
   push(page('13 / FAMILY',secLabel('13','FAMILY · 가족의 시간')+'<h1>가족의<br><span class="accent">10년</span></h1>'+
     '<p class="lead">가족의 흐름도 대운을 탑니다. 이 사주는 아래 구간에서 가족의 역할이 달라집니다.</p>'+
-    '<table><tr><th>나이</th><th>대운</th><th>가족의 결</th></tr>'+
+    '<table><colgroup><col style="width:14%"><col style="width:24%"><col></colgroup><tr><th>나이</th><th>기운</th><th>가족의 결</th></tr>'+
     (function(){var h='';R.daeun.forEach(function(d){var g=S.tenGod(R.dStem,d.idx%10),grp=S.GOD_GROUP[g];
-      var note={'인성':'부모·자녀와의 정이 깊어지고 돌봄이 늘어납니다.','관성':'가족의 책임과 역할이 무거워집니다.','식상':'자녀가 자기 색을 드러내고, 부모는 기다리는 법을 배웁니다.','재성':'살림의 현실(돈·집)이 중심이 됩니다.','비겁':'가족 안에서 각자의 자리를 확인하는 시기입니다.'}[grp];
-      h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td>'+g+'</td><td style="font-size:12px">'+note+'</td></tr>';});return h;})()+'</table>'+
+      var note=((S.DAEUN10||{})[g]||{}).family||{'인성':'부모·자녀와의 정이 깊어지고 돌봄이 늘어납니다.','관성':'가족의 책임과 역할이 무거워집니다.','식상':'자녀가 자기 색을 드러내고, 부모는 기다리는 법을 배웁니다.','재성':'살림의 현실(돈·집)이 중심이 됩니다.','비겁':'가족 안에서 각자의 자리를 확인하는 시기입니다.'}[grp];
+      h+='<tr><td class="k">'+d.from+'~'+d.to+'</td><td><span class="tw">'+g+'</span></td><td style="font-size:12px">'+note+'</td></tr>';});return h;})()+'</table>'+
     '<p>가족은 <b>역할</b>로 유지되고 <b>감정</b>으로 깊어집니다. 이 사주는 역할을 잘하지만 감정을 말로 옮기는 데 서툽니다. 한 달에 한 번, 가족에게 고마운 일을 한 가지씩 말해보세요.</p>',{spread:true}));
 }
 
