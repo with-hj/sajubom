@@ -870,17 +870,15 @@ input,select,textarea,button{font-family:var(--sans)}
 .ch-tab svg{width:9px;height:9px;flex:0 0 auto;opacity:.6}
 .ch-tab.on svg{opacity:.9}
 
-/* 가림 막대 : 남색 바탕 + 금빛 실선 */
-.redact{
-  display:inline-block;height:.9em;vertical-align:-.08em;border-radius:3px;margin:0 .1em;
-  position:relative;overflow:hidden;background:linear-gradient(180deg,#2C374C,#161F2E 55%,#232D3E);
-  box-shadow:inset 0 0 0 1px rgba(216,179,106,.44),0 1px 0 rgba(255,255,255,.05);
-}
-.redact:after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(235,211,154,.14),rgba(235,211,154,0) 55%);
-}
+/* v76 · 가림 막대 대신 ‘읽히지 않을 만큼만 흐린’ 실제 문장 — 뒤에 내 풀이가 있다는 게 보인다 */
 .ch-teaser .teaser-p{margin:0;font-size:16.5px;line-height:1.95;color:#2b2620}
+.ch-teaser .teaser-blur{
+  margin-top:3px;color:#3B3229;
+  -webkit-filter:blur(4.6px);filter:blur(4.6px);
+  -webkit-user-select:none;user-select:none;pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 52%,rgba(0,0,0,.5) 84%,rgba(0,0,0,.14) 100%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 52%,rgba(0,0,0,.5) 84%,rgba(0,0,0,.14) 100%);
+}
 .ch-teaser{padding-bottom:0}
 
 .ch-lk{
@@ -1584,7 +1582,7 @@ html.no-gate .gate{display:none}
   padding:0 3px;border-radius:3px;
   -webkit-box-decoration-break:clone;box-decoration-break:clone;
 }
-/* 숫자가 줄 끝에서 쪼개지지 않게 (29,900원 → 29,/900원 금지) */
+/* 숫자가 줄 끝에서 쪼개지지 않게 (23,800원 → 23,/800원 금지) */
 #track-life .lr-tbl b,#track-life .lr-tbl s,#track-life .lr-tbl em,
 #track-life .lr-price b,#track-life .lr-price s,#track-life .pay-row b,#track-life .pay-row s,
 #track-life .fast-sum b,#track-life .note-box b{white-space:nowrap}
@@ -1629,10 +1627,8 @@ html.no-gate .gate{display:none}
 .ch-tab.on b{color:#5A3F12}
 .ch-tab.lk{color:#8A7A63;border-color:rgba(120,92,58,.3);background:rgba(255,255,255,.5)}
 
-/* (2) 가림 막대 : 남색 → 진한 먹갈색 */
-.redact{background:linear-gradient(180deg,#4A3B2F,#3B2E24 55%,#332619);
-  box-shadow:inset 0 0 0 1px rgba(216,179,106,.5),0 1px 0 rgba(255,255,255,.55)}
-.redact:after{background:linear-gradient(90deg,rgba(235,211,154,.16),rgba(235,211,154,0) 55%)}
+/* (2) 흐린 미리보기 문장은 밝은 한지 바탕 위에서 먹갈래 글씨로 */
+.ch-teaser .teaser-blur{color:#3B3229}
 
 /* (3) 결제 게이트(결제 후 전체 보기) : 남색 → 먹갈색 + 금 테두리 */
 .ch-gate.lead{background:linear-gradient(160deg,#2D2218,#1E1610 80%);
@@ -1680,6 +1676,8 @@ html.no-gate .gate{display:none}
 /* (9) 테마 풀이 표도 한자 괄호 안에서 끊기지 않게 */
 .tbl td,.tbl th{word-break:keep-all;overflow-wrap:normal}
 .tbl .tw,.ch-bd .tw{white-space:nowrap;display:inline-block}
+/* v76 · ‘수(水)’, ‘갑인(甲寅)’처럼 짧은 괄호는 한 덩어리로 붙여 ‘)’만 줄 아래로 떨어지지 않게 */
+.pnw{white-space:nowrap;overflow-wrap:normal;word-break:keep-all}
 
 /* (10) 결과 머리(먹갈색) 위 원국 기둥 : 오행 색을 어두운 바탕용으로 밝게 */
 .res-head .pillar .pl{color:#CBB899}
