@@ -1093,16 +1093,13 @@ function pgCustomer(name,email,phone){
 function pgErrMsg(r){
   if(!r) return '결제가 완료되지 않았습니다. 다시 시도해 주세요.';
   var m=r.pgMessage||r.message||'';
+  if(/취소/.test(m)) return '결제를 취소하셨습니다. 바로 열어야 하면 다시 시도해 주세요.';
   var base=/CANCEL/i.test(String(r.code||''))?'결제를 취소하셨습니다.':'결제가 완료되지 않았습니다.';
   return base+(m?' ('+m+')':'');
 }
-/* ---------- 결제 공통 UI : 결제수단 · 동의 · 오류 ---------- */
-function payMethodHTML(){
-  return '<div class="pc-method" role="group" aria-label="결제수단">'+
-    '<button type="button" class="pc-m on" data-pay-method="CARD" aria-pressed="true">신용·체크카드</button>'+
-    '<button type="button" class="pc-m" data-pay-method="EASY_PAY" aria-pressed="false">간편결제</button>'+
-    '</div>';
-}
+/* ---------- 결제 공통 UI : 동의 · 오류 ---------- */
+/* 이니시스 V2 테스트 채널은 카드 결제창 하나로 연다 — 결제창 안에서 카카오페이·네이버페이·토스페이도 고를 수 있다 */
+function payMethodOf(){ return 'CARD'; }
 function payConsentHTML(){
   return '<label class="pc-consent"><input type="checkbox" data-pay-consent>'+
     '<span>이용약관, 개인정보처리방침 및 디지털 콘텐츠 열람·제작 개시 후 청약철회(환불) 제한에 동의합니다.</span></label>'+
@@ -1126,10 +1123,6 @@ function payContactOf(host,fallback){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return {err:'결제 확인서를 받으실 이메일을 확인해 주세요.',focus:e};
   if(!pgPhone(phone)) return {err:'결제 확인서를 받으실 휴대폰 번호를 확인해 주세요.',focus:p};
   return {email:email,phone:phone};
-}
-function payMethodOf(host){
-  var b=$('[data-pay-method].on',host);
-  return b?b.getAttribute('data-pay-method'):'CARD';
 }
 function payErr(host,msg){
   var el=host?$('[data-pay-err]',host):null;
@@ -1175,7 +1168,7 @@ function startPay(cfg){
   var req={
     storeId:PG_STORE, channelKey:PG_CHANNEL, paymentId:paymentId,
     orderName:cfg.orderName, totalAmount:cfg.amount, currency:'CURRENCY_KRW',
-    payMethod:payMethodOf(host), customer:cfg.customer||{fullName:'사주봄 이용자'},
+    payMethod:payMethodOf(), customer:cfg.customer||{fullName:'사주봄 이용자'},
     redirectUrl:pgReturnURL()
   };
   try{ sessionStorage.setItem('wlh_pay_pending',JSON.stringify({paymentId:paymentId,kind:cfg.kind,amount:cfg.amount,order:cfg.order||null,at:Date.now()})); }catch(e){}
@@ -1195,7 +1188,8 @@ function startPay(cfg){
     try{ cfg.onSuccess(r); }catch(ex){ if(window.console) console.error(ex); }
   }).catch(function(ex){
     restore();
-    payErr(host,'결제를 진행하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+    var m=(ex&&ex.message)?String(ex.message).replace(/^결제 창 호출에 실패하였습니다\.?\s*/,''):'';
+    payErr(host,m?('결제를 진행하지 못했습니다. '+m):'결제를 진행하지 못했습니다. 잠시 후 다시 시도해 주세요.');
     if(window.console) console.error(ex);
   });
 }
@@ -1207,7 +1201,7 @@ function payCardMarkup(){
   return '<div class="pw-price">3,900원 · 전체 풀이</div>'+
     '<h3>남은 '+rest+'장을<br>지금 열어볼까요?</h3>'+
     '<p>결제가 끝나면 <b>'+esc(info.tab||'테마별 풀이')+'</b>의 남은 '+rest+'장이<br>바로 열립니다.</p>'+
-    (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payMethodHTML()+payContactHTML(savedEmail(),savedPhone())+payConsentHTML()+payErrHTML()))+
+    (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payContactHTML(savedEmail(),savedPhone())+payConsentHTML()+payErrHTML()))+
     '<button type="button" class="btn btn-gold btn-block" data-pay-go>'+(admin?'결제 없이 전체 풀이 열기':'3,900원 결제하고 전체 보기')+'</button>'+
     '<button type="button" class="pw-x" data-pay-cancel>취소</button>'+
     '<p class="pc-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>';
@@ -1628,7 +1622,7 @@ function showPayStep(o){
     '<p class="pay-sub">검수 후 이메일로 보내드리는 책자형 PDF입니다.</p>'+
     '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
     '<p class="pay-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>'+
-    (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':(payMethodHTML()+(needContact?'<p class="pc-cap">결제 확인서를 받으실 이메일과 휴대폰</p>':'')+(needContact?payContactHTML(o.email,o.phone):'')+payConsentHTML()))+
+    (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':((needContact?'<p class="pc-cap">결제 확인서를 받으실 이메일과 휴대폰</p>':'')+(needContact?payContactHTML(o.email,o.phone):'')+payConsentHTML()))+
     payErrHTML()+
     '<button type="button" class="btn btn-verm btn-block" data-pay-go>'+won(o.price||39800)+' 결제하기</button>'+
     '<button type="button" class="btn btn-line btn-block" id="payBack" style="margin-top:8px">이전으로</button>'+
