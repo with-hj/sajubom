@@ -1793,3 +1793,40 @@ html.no-gate .gate{display:none}
   .lg-doc .lg-t{font-size:11.4px}
   .mpbox-lg .mp-bd{padding-left:15px;padding-right:15px}
 }
+
+/* =====================================================================
+   v75 · 포트원(PortOne) V2 테스트 결제 — 결제수단 · 동의 · 안내
+   밝은 결제 단계(.pay-box)와 어두운 게이트 카드(#payGate .pw-card) 두 곳에서 쓴다.
+   ===================================================================== */
+.pc-method{display:flex;gap:6px;margin:0 0 10px}
+.pc-m{flex:1 1 0;min-width:0;padding:10px 6px;border-radius:11px;border:1px solid rgba(120,92,58,.22);
+  background:#fff;color:#5C5145;font-family:var(--sans);font-size:12.5px;font-weight:600;
+  letter-spacing:-.01em;line-height:1.2;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .15s,border-color .15s,color .15s}
+.pc-m.on{border-color:#B08A3E;background:#FBF3E2;color:#7A5A1E;box-shadow:inset 0 0 0 1px rgba(176,138,62,.32)}
+.pc-m:active{opacity:.75}
+.pc-consent{display:flex;align-items:flex-start;gap:7px;text-align:left;margin:0 0 3px;
+  font-family:var(--sans);font-size:11.5px;line-height:1.65;color:#6B6155;letter-spacing:-.01em;cursor:pointer}
+.pc-consent input{flex:0 0 auto;width:15px;height:15px;margin:1px 0 0;accent-color:var(--verm2);cursor:pointer}
+.pc-docs{display:flex;align-items:center;gap:5px;margin:0 0 12px;padding-left:22px}
+.pc-docs button{background:none;border:0;padding:0;font-family:var(--sans);font-size:11px;color:#8A7A63;
+  text-decoration:underline;text-underline-offset:2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pc-docs button:active{opacity:.6}
+.pc-docs i{font-style:normal;color:#C4B69F;font-size:10px;line-height:1}
+.pc-err{margin:0 0 9px !important;padding:8px 10px;border-radius:9px;background:#FDF1EE;
+  border:1px solid #F0D3CA;color:#B03A24;font-family:var(--sans);font-size:11.5px;line-height:1.55;text-align:left}
+.pc-admin{margin:0 0 11px !important;padding:8px 10px;border-radius:9px;background:#FBF3E2;
+  border:1px solid #EBDCBC;color:#7A5A1E;font-family:var(--sans);font-size:11.5px;line-height:1.5;text-align:center}
+.pc-test{margin:10px 0 0 !important;font-family:var(--sans);font-size:10.5px;letter-spacing:-.01em;
+  color:#9A8A73;line-height:1.5;text-align:center}
+[data-pay-go][disabled]{opacity:.45;cursor:not-allowed}
+#payGate .pay-card{max-height:calc(100vh - 40px);overflow-y:auto}
+#payGate .pc-m{border-color:rgba(216,179,106,.34);background:rgba(255,255,255,.05);color:#CDBB9C}
+#payGate .pc-m.on{border-color:rgba(216,179,106,.72);background:rgba(216,179,106,.16);color:#F7EACA;
+  box-shadow:inset 0 0 0 1px rgba(216,179,106,.22)}
+#payGate .pc-consent{color:#C2B39B}
+#payGate .pc-docs button{color:#B6A588}
+#payGate .pc-docs i{color:#7E7263}
+#payGate .pc-err{background:rgba(201,66,40,.16);border-color:rgba(201,66,40,.42);color:#F0BDAF}
+#payGate .pc-admin{background:rgba(216,179,106,.14);border-color:rgba(216,179,106,.4);color:#F7EACA}
+#payGate .pc-test{color:#8C8272;margin:9px 0 0 !important}

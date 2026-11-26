@@ -222,6 +222,9 @@ function init(){
     else if(adminUnlocked()) ADMIN_OK=true;
     if(/[?&]track=life/.test(location.search)) setTrack('life');
   }catch(e){}
+
+  /* v75 · 휴대폰에서 결제하고 돌아온 경우 */
+  try{ handlePayReturn(); }catch(e){ if(window.console) console.error('payReturn',e); }
 }
 /* ---------------- 미리보기 크게 보기(라이트박스) ---------------- */
 function initLightbox(){
@@ -804,7 +807,22 @@ function pillarCells(R){
   }
   return h;
 }
+/* v75 · 결제 후 돌아왔을 때 결과를 다시 그리기 위해 마지막 입력을 세션에 남긴다 */
+function saveLastInput(inp){
+  try{
+    if(!inp||inp.err) return;
+    var c={};
+    if(inp.ctx){ for(var k in inp.ctx){ if(k!=='R') c[k]=inp.ctx[k]; } }
+    sessionStorage.setItem('wlh_last_input',JSON.stringify({
+      inp:{y:inp.y,m:inp.m,d:inp.d,hasTime:inp.hasTime,hourIndex:inp.hourIndex,gender:inp.gender,
+        tsoff:inp.tsoff,regionName:inp.regionName,regionKey:inp.regionKey,name:inp.name,
+        theme:inp.theme,tab:inp.tab,cal:inp.cal,lunar:inp.lunar,ctx:c},
+      theme:state.theme,tab:state.tab
+    }));
+  }catch(e){}
+}
 function renderResult(R,input){
+  saveLastInput(input);
   var c=S.chartCtx(R);
   var T=CT.TABS[input.tab], th=CT.THEMES[input.theme];
   var chapters=CT.chaptersOf(input.tab);
@@ -913,7 +931,7 @@ function gateHTML(lead){
       '<p class="gate-kicker">전체 풀이를 열면 정확한 시기와 구체적 이유, 피해야 할 함정까지 모두 확인됩니다.</p>'+
       '<div class="gate-price">3,900원 · 전체 풀이</div>'+
       '<button type="button" class="btn btn-gold btn-block gate-btn" data-pw-open>결제 후 전체 보기</button>'+
-      '<p class="gate-note">테스트 사이트 — 결제 없이 전체 풀이가 열립니다</p></div>';
+      '<p class="gate-note">결제가 끝나면 남은 장이 바로 열립니다</p></div>';
   }
   return '<div class="ch-gate mini">'+
     '<div class="gm-tx"><b>이 장의 결론과 시기</b><span>3,900원 · 전체 풀이</span></div>'+
@@ -1044,39 +1062,228 @@ function bindChapterUI(total){
   if(tabs&&hd) tabs.style.top=((hd.offsetHeight||60)+((tr&&tr.offsetHeight)||0))+'px';
   updateChapterTab();
 }
-/* ---------- 테스트 결제 확인 창 ---------- */
+/* =====================================================================
+   v75 · 포트원(PortOne) V2 테스트 결제
+   — 테마별 풀이 3,900원 / 인생사주 리포트 39,800원(테마 결제 시 35,900원)
+   — KG이니시스 V2 테스트 채널(inicis_v2 · MID INIpayTest)
+   ===================================================================== */
+var PG_STORE='store-c8e476ea-fb1d-4f0e-8a47-ede1b790ffe2';
+var PG_CHANNEL='channel-key-bbb6cc64-49e6-4757-bd6d-688b835898c4';
+var PG_VER='75';
+function pgReady(){ return !!(window.PortOne&&typeof window.PortOne.requestPayment==='function'); }
+function pgPayId(kind){ return 'sajubom-'+kind+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7); }
+/* 모바일 리디렉션으로 돌아올 주소 — 대문(gate)은 건너뛰고 바로 결과를 다시 그린다 */
+function pgReturnURL(){
+  try{ return location.origin+location.pathname+'?v='+PG_VER+'&gate=0'; }catch(e){ return location.href; }
+}
+function pgPhone(v){
+  var d=String(v||'').replace(/[^0-9]/g,'');
+  if(d.length===11) return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7);
+  if(d.length===10) return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);
+  return '';
+}
+/* KG이니시스는 fullName 필수, PC에서는 이메일·연락처도 필요하다 */
+function pgCustomer(name,email,phone){
+  var n=String(name||'').trim();
+  var c={fullName:(n&&n!=='당신')?n:'사주봄 이용자'};
+  if(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email||'').trim())) c.email=String(email).trim();
+  var p=pgPhone(phone); if(p) c.phoneNumber=p;
+  return c;
+}
+function pgErrMsg(r){
+  if(!r) return '결제가 완료되지 않았습니다. 다시 시도해 주세요.';
+  var m=r.pgMessage||r.message||'';
+  var base=/CANCEL/i.test(String(r.code||''))?'결제를 취소하셨습니다.':'결제가 완료되지 않았습니다.';
+  return base+(m?' ('+m+')':'');
+}
+/* ---------- 결제 공통 UI : 결제수단 · 동의 · 오류 ---------- */
+function payMethodHTML(){
+  return '<div class="pc-method" role="group" aria-label="결제수단">'+
+    '<button type="button" class="pc-m on" data-pay-method="CARD" aria-pressed="true">신용·체크카드</button>'+
+    '<button type="button" class="pc-m" data-pay-method="EASY_PAY" aria-pressed="false">간편결제</button>'+
+    '</div>';
+}
+function payConsentHTML(){
+  return '<label class="pc-consent"><input type="checkbox" data-pay-consent>'+
+    '<span>이용약관, 개인정보처리방침 및 디지털 콘텐츠 열람·제작 개시 후 청약철회(환불) 제한에 동의합니다.</span></label>'+
+    '<div class="pc-docs"><button type="button" data-pay-doc="terms">이용약관</button><i aria-hidden="true">·</i>'+
+    '<button type="button" data-pay-doc="privacy">개인정보처리방침</button><i aria-hidden="true">·</i>'+
+    '<button type="button" data-pay-doc="refund">환불규정</button></div>';
+}
+function payErrHTML(){ return '<p class="pc-err" data-pay-err hidden></p>'; }
+function payMethodOf(host){
+  var b=$('[data-pay-method].on',host);
+  return b?b.getAttribute('data-pay-method'):'CARD';
+}
+function payErr(host,msg){
+  var el=host?$('[data-pay-err]',host):null;
+  if(!el){ if(msg) alert(msg); return; }
+  if(msg){ el.textContent=msg; el.hidden=false; }
+  else { el.textContent=''; el.hidden=true; }
+}
+function syncPayBtn(host){
+  var go=$('[data-pay-go]',host); if(!go) return;
+  var ck=$('[data-pay-consent]',host);
+  var ok=ADMIN_OK||!!(ck&&ck.checked);
+  go.disabled=!ok;
+  go.setAttribute('aria-disabled',ok?'false':'true');
+}
+function bindPayUI(host,onPay){
+  if(!host||host.__pg) return;
+  host.__pg=1;
+  host.addEventListener('click',function(e){
+    var doc=e.target.closest?e.target.closest('[data-pay-doc]'):null;
+    if(doc){ e.preventDefault(); openLegal(doc.getAttribute('data-pay-doc')); return; }
+    var m=e.target.closest?e.target.closest('[data-pay-method]'):null;
+    if(m){
+      $$('[data-pay-method]',host).forEach(function(b){
+        var on=(b===m); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false');
+      });
+      return;
+    }
+    if(e.target.closest&&e.target.closest('[data-pay-go]')) onPay();
+  });
+  host.addEventListener('change',function(e){
+    if(e.target&&e.target.hasAttribute&&e.target.hasAttribute('data-pay-consent')) syncPayBtn(host);
+  });
+  syncPayBtn(host);
+}
+/* 실제 결제 요청 — 성공하면 onSuccess, 아니면 창 안에 사유를 남긴다 */
+function startPay(cfg){
+  var host=cfg.host;
+  payErr(host,'');
+  var go=host?$('[data-pay-go]',host):null;
+  var label=go?go.textContent:'';
+  if(!pgReady()){ payErr(host,'결제 모듈을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.'); return; }
+  var paymentId=pgPayId(cfg.kind);
+  var req={
+    storeId:PG_STORE, channelKey:PG_CHANNEL, paymentId:paymentId,
+    orderName:cfg.orderName, totalAmount:cfg.amount, currency:'CURRENCY_KRW',
+    payMethod:payMethodOf(host), customer:cfg.customer||{fullName:'사주봄 이용자'},
+    redirectUrl:pgReturnURL()
+  };
+  try{ sessionStorage.setItem('wlh_pay_pending',JSON.stringify({paymentId:paymentId,kind:cfg.kind,amount:cfg.amount,order:cfg.order||null,at:Date.now()})); }catch(e){}
+  if(go){ go.disabled=true; go.textContent='결제창을 여는 중…'; }
+  function restore(){ if(go){ go.textContent=label; syncPayBtn(host); } }
+  var pr;
+  try{ pr=window.PortOne.requestPayment(req); }
+  catch(ex){ restore(); payErr(host,'결제를 시작하지 못했습니다. 잠시 후 다시 시도해 주세요.'); if(window.console) console.error(ex); return; }
+  Promise.resolve(pr).then(function(r){
+    restore();
+    if(!r||r.code){
+      payErr(host,pgErrMsg(r));
+      try{ sessionStorage.removeItem('wlh_pay_pending'); }catch(e){}
+      return;
+    }
+    try{ sessionStorage.removeItem('wlh_pay_pending'); }catch(e){}
+    try{ cfg.onSuccess(r); }catch(ex){ if(window.console) console.error(ex); }
+  }).catch(function(ex){
+    restore();
+    payErr(host,'결제를 진행하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+    if(window.console) console.error(ex);
+  });
+}
+/* ---------- 테마별 풀이 3,900원 결제 창 ---------- */
 function payCardMarkup(){
   var info=window.__pwInfo||{total:0,tab:''};
-  var rest=info.total>FREE_CH?info.total-FREE_CH:6;
+  var rest=info.total>FREE_CUR?info.total-FREE_CUR:6;
+  var admin=ADMIN_OK;
   return '<div class="pw-price">3,900원 · 전체 풀이</div>'+
-    '<h3>결제 없이 열어볼까요?</h3>'+
-    '<p>지금은 PG 연동 전 테스트 사이트입니다. <b>실제 결제는 이루어지지 않습니다.</b><br>확인을 누르면 남은 '+rest+'장이 바로 열립니다.</p>'+
-    '<button type="button" class="btn btn-gold btn-block" id="pwDo">테스트로 전체 풀이 열기</button>'+
-    '<button type="button" class="pw-x" id="pwCancel">취소</button>';
+    '<h3>남은 '+rest+'장을<br>지금 열어볼까요?</h3>'+
+    '<p>결제가 끝나면 <b>'+esc(info.tab||'테마별 풀이')+'</b>의 남은 '+rest+'장이<br>바로 열립니다.</p>'+
+    (admin?'<p class="pc-admin">관리자 모드 · 결제 없이 열람합니다</p>':(payMethodHTML()+payConsentHTML()+payErrHTML()))+
+    '<button type="button" class="btn btn-gold btn-block" data-pay-go>'+(admin?'결제 없이 전체 풀이 열기':'3,900원 결제하고 전체 보기')+'</button>'+
+    '<button type="button" class="pw-x" data-pay-cancel>취소</button>'+
+    '<p class="pc-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>';
+}
+function onThemePay(el){
+  var ck=$('[data-pay-consent]',el);
+  if(!ADMIN_OK&&!(ck&&ck.checked)){ payErr(el,'약관과 환불 제한 동의에 체크해 주세요.'); return; }
+  if(ADMIN_OK){ closePayGate(); unlockReading('admin'); return; }
+  var inp=state.input||{};
+  startPay({
+    kind:'theme', host:el, amount:3900, orderName:'사주봄 테마별 풀이',
+    customer:pgCustomer(inp.name,savedEmail(),savedPhone()),
+    onSuccess:function(r){
+      closePayGate();
+      setThemeCredit(true);
+      try{ localStorage.setItem('wlh_theme_paid_pid',String(r.paymentId||'')); }catch(e){}
+      unlockReading('pay');
+    }
+  });
 }
 function openPayGate(){
   var el=$('#payGate');
   if(!el){
     el=document.createElement('div');
     el.id='payGate'; el.className='paygate';
-    el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','전체 풀이 열기');
-    el.innerHTML='<div class="pw-card pay-card">'+payCardMarkup()+'</div>';
+    el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','전체 풀이 결제');
+    document.body.appendChild(el);
+    bindPayUI(el,function(){ onThemePay(el); });
     el.addEventListener('click',function(e){
       if(e.target===el){ closePayGate(); return; }
-      var t=e.target.closest('button'); if(!t) return;
-      if(t.id==='pwDo'){ closePayGate(); unlockReading(); }
-      else if(t.id==='pwCancel'){ closePayGate(); }
+      if(e.target.closest&&e.target.closest('[data-pay-cancel]')) closePayGate();
     });
-    document.body.appendChild(el);
   }
+  el.innerHTML='<div class="pw-card pay-card">'+payCardMarkup()+'</div>';
+  syncPayBtn(el);
   el.classList.add('on'); document.body.classList.add('lock');
-  var b=$('#pwDo',el); if(b&&b.focus){ try{ b.focus(); }catch(e){} }
+  var b=$('[data-pay-go]',el); if(b&&b.focus){ try{ b.focus(); }catch(e){} }
 }
 function closePayGate(){
   var el=$('#payGate'); if(el) el.classList.remove('on');
   document.body.classList.remove('lock');
 }
-document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePayGate(); });
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape') return;
+  var lg=$('#lgModal'); if(lg&&lg.classList.contains('on')) return;   /* 약관 창이 위에 떠 있으면 그것만 닫는다 */
+  closePayGate();
+});
+/* 모바일은 결제 후 페이지로 되돌아온다 — 주소의 결과를 읽어 바로 열어준다 */
+function handlePayReturn(){
+  var q='';
+  try{ q=location.search||''; }catch(e){ return; }
+  if(!/[?&](paymentId|txId)=/.test(q)) return;
+  var p={};
+  q.replace(/^[?]/,'').split('&').forEach(function(kv){
+    if(!kv) return;
+    var i=kv.indexOf('='); if(i<0) return;
+    try{ p[decodeURIComponent(kv.slice(0,i))]=decodeURIComponent(kv.slice(i+1).replace(/\+/g,' ')); }catch(e){}
+  });
+  var pid=p.paymentId||'', code=p.code||'';
+  var pend=null;
+  try{ pend=JSON.parse(sessionStorage.getItem('wlh_pay_pending')||'null'); }catch(e){}
+  var kind=(pend&&pend.paymentId&&pend.paymentId===pid)?pend.kind:(/^sajubom-theme-/.test(pid)?'theme':(/^sajubom-life-/.test(pid)?'life':''));
+  try{ history.replaceState(null,'',location.pathname); }catch(e){}
+  if(code){ setTimeout(function(){ alert('결제가 완료되지 않았습니다. 다시 시도해 주세요.'); },200); return; }
+  if(!kind) return;
+  try{ sessionStorage.removeItem('wlh_pay_pending'); }catch(e){}
+  if(kind==='theme'){
+    setThemeCredit(true);
+    var restored=false, raw=null;
+    try{ raw=sessionStorage.getItem('wlh_last_input'); }catch(e){}
+    if(raw){
+      try{
+        var o=JSON.parse(raw), inp=o.inp;
+        inp.ctx=inp.ctx||{};
+        var R=S.computeSaju(inp); inp.ctx.R=R;
+        state.R=R; state.input=inp; state.theme=o.theme||inp.theme; state.tab=o.tab||inp.tab;
+        renderResult(R,inp); unlockReading('pay'); restored=true;
+      }catch(e){ restored=false; }
+    }
+    if(!restored) setTimeout(function(){ alert('결제가 완료되었습니다. 보시던 테마의 생년월일을 다시 넣으시면 전체 풀이가 열립니다.'); },200);
+    return;
+  }
+  if(kind==='life'){
+    var ord=(pend&&pend.order)?pend.order:null;
+    if(ord){
+      ord.payMode='pg'; if(pid) ord.paymentId=pid; if(p.txId) ord.txId=p.txId;
+      pendingOrder=ord; completePayment();
+    }else{
+      setTimeout(function(){ alert('결제가 완료되었습니다. 신청 내역은 마이페이지에서 확인하실 수 있습니다.'); },200);
+    }
+  }
+}
 /* 테마별 페이월 문구 — 무엇이 남아 있는지 궁금하게 만드는 한 줄 */
 var PW_HOOK={
   general:{t:'올해 터지는 달과<br>피해야 할 달이 남아 있습니다',
@@ -1236,8 +1443,9 @@ function fastSubmit(){
   showPayStep(makeOrder(b,email,savedPhone(),'fast'));
 }
 
-/* v45 : 가려 둔 장을 실제 본문으로 바꾸고 잠금 표시를 걷어낸다 */
-function unlockReading(){
+/* v45 : 가려 둔 장을 실제 본문으로 바꾸고 잠금 표시를 걷어낸다
+   mode — 'pay'(포트원 결제 완료) · 'admin'(관리자 미리보기) · 없음 */
+function unlockReading(mode){
   var fulls=window.__chBodies||[];
   var lockSecs=$$('#resultView .ch[data-lock="1"]');
   var first=null;
@@ -1264,7 +1472,8 @@ function unlockReading(){
   if(first&&!$('.pw-open-flag')){
     var flag=document.createElement('div');
     flag.className='pw-open-flag';
-    flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · 테스트 결제 3,900원';
+    var ft=(mode==='admin')?'관리자 모드 · 결제 없이 열렸습니다':(mode==='pay'?'결제 완료 · 3,900원':'테스트 결제 3,900원');
+    flag.innerHTML='<b>전체 풀이가 열렸습니다</b> · '+ft;
     first.insertBefore(flag,first.firstChild);
   }
   var more=$('#rdMore'); if(more){ more.style.display='none'; }
@@ -1396,15 +1605,18 @@ function showPayStep(o){
   p.innerHTML='<div class="pay-box fade-in">'+
     '<div class="pay-tag">주문 확인</div>'+
     '<h3>사주봄 인생사주 리포트</h3>'+
-    '<p class="pay-sub">검수 후 이메일로 보내드리는 A4 책자형 PDF입니다.</p>'+
+    '<p class="pay-sub">검수 후 이메일로 보내드리는 책자형 PDF입니다.</p>'+
     '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
-    '<p class="pay-test">테스트 모드 · 실제 결제는 청구되지 않습니다</p>'+
-    '<button type="button" class="btn btn-verm btn-block" id="payGo">결제하기 (테스트)</button>'+
+    '<p class="pay-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>'+
+    (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':(payMethodHTML()+payConsentHTML()))+
+    payErrHTML()+
+    '<button type="button" class="btn btn-verm btn-block" data-pay-go>'+won(o.price||39800)+' 결제하기</button>'+
     '<button type="button" class="btn btn-line btn-block" id="payBack" style="margin-top:8px">이전으로</button>'+
     '<p class="pay-note">결제를 마치면 리포트를 바로 펼쳐보고 PDF로 저장하실 수 있습니다.</p>'+
     '</div>';
-  var go=$('#payGo'), back=$('#payBack');
-  if(go) go.addEventListener('click',function(){ completePayment(); });
+  bindPayUI(p,function(){ onLifePay(p); });
+  syncPayBtn(p);
+  var back=$('#payBack');
   if(back) back.addEventListener('click',function(){
     p.classList.remove('on'); p.innerHTML='';
     var from=o.from||'form'; pendingOrder=null;
@@ -1414,6 +1626,20 @@ function showPayStep(o){
     gotoPdf(4);
   });
   try{ var py=p.getBoundingClientRect().top+window.pageYOffset-130; window.scrollTo({top:py<0?0:py,behavior:'smooth'}); }catch(e){}
+}
+function onLifePay(host){
+  var o=pendingOrder; if(!o) return;
+  var ck=$('[data-pay-consent]',host);
+  if(!ADMIN_OK&&!(ck&&ck.checked)){ payErr(host,'약관과 환불 제한 동의에 체크해 주세요.'); return; }
+  if(ADMIN_OK){ o.payMode='admin'; completePayment(); return; }
+  startPay({
+    kind:'life', host:host, amount:o.price||39800, orderName:'사주봄 인생사주 리포트', order:o,
+    customer:pgCustomer(o.name,o.email,o.phone),
+    onSuccess:function(r){
+      o.paymentId=r.paymentId||''; o.txId=r.txId||''; o.payMode='pg';
+      completePayment();
+    }
+  });
 }
 function completePayment(){
   var o=pendingOrder; if(!o) return;
@@ -1436,7 +1662,7 @@ function showDone(order){
   d.classList.add('on');
   lastOrder=order;
   d.innerHTML='<div class="done-box fade-in"><div class="ok">✓</div><h3>결제 및 접수가 완료되었습니다</h3>'+
-    '<div class="num">접수번호 '+order.id+' · 테스트 결제 '+won(order.price||39800)+'</div>'+
+    '<div class="num">접수번호 '+order.id+' · '+(order.payMode==='admin'?'관리자 접수':'결제 완료 '+won(order.price||39800))+'</div>'+
     '<p>'+esc(b.name)+' 님의 원국을 검수한 뒤, 영업일 2~3일 안에 책자형 PDF를 '+esc(order.email||'신청하신 이메일')+'으로 보내드립니다.</p>'+
     '<p>지금 바로 리포트를 펼쳐보고 PDF 파일로 저장하실 수 있습니다.</p>'+
     '<button type="button" class="btn btn-gold btn-block" style="margin-top:14px" data-cust-view>내 인생사주 리포트 보기</button>'+
