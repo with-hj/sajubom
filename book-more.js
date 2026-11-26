@@ -87,7 +87,7 @@ function daeunCycle(i){
     '<h3>이 10년은 어떤 시기인가</h3><p>'+D10.body+'</p>'+
     '<p><b>'+stemS(d.idx%10)+'</b>의 결 — '+((S.STEM10||[])[d.idx%10]||S.EL_DEEP[el].over)+'</p>'+
     '<p>'+((S.BR10||[])[d.idx%12]||S.BR_INNER[d.idx%12])+'</p>'+
-    '<h3>내 사주와의 관계</h3><p>'+d.from+'~'+d.to+'세 이 10년은 타고난 내 자리 '+brS(R.dBranch)+'와 '+rl.t+'. '+D10.hint+'</p>'+
+    '<h3>내 사주와의 관계</h3><p>'+d.from+'~'+d.to+'세의 10년은 타고난 내 자리 '+brS(R.dBranch)+'와 '+rl.t+'. '+D10.hint+'</p>'+
     '<p>'+d.from+'~'+d.to+'세의 바탕은 <b>'+g+'</b>이고, '+elK(el)+'과 '+elK(brEl)+'가 함께 흐릅니다. '+
       (function(){ var dd=S.deep(R), hard=[], good=[]; var NM=[['년주','태어난 해'],['월주','태어난 달'],['일주','나'],['시주','태어난 시간']];
         dd.live.forEach(function(p){ var t=S.relType(p.branch,d.idx%12), nm='다른 자리';
