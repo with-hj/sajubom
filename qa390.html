@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QA 390</title>
 <style>
-  body{margin:0;background:#ddd;font:12px/1.4 sans-serif}
-  .lbl{padding:6px 10px;background:#222;color:#fff}
-  iframe{width:390px;height:1400px;border:0;display:block;background:#fff}
+  html,body{margin:0;padding:0;background:#ddd;font:12px/1.4 sans-serif}
+  iframe{position:absolute;left:0;top:0;width:390px;height:844px;border:0;margin:0;padding:0;background:#fff}
+  .lbl{position:absolute;left:410px;top:8px;padding:6px 10px;background:#222;color:#fff;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -21,8 +21,30 @@ try{
   if(seed==='legacy') localStorage.setItem('wlh_theme_paid','1');
   if(seed==='paid') localStorage.setItem('sajubom_theme_paid_v1','1');
 }catch(e){}
-document.getElementById('lbl').textContent='seed='+seed+'  · new='+localStorage.getItem('sajubom_theme_paid_v1')+' · old='+localStorage.getItem('wlh_theme_paid');
-document.getElementById('fr').src='./index.html?v=79&gate=0';
+document.getElementById('lbl').textContent='seed='+seed+' · new='+localStorage.getItem('sajubom_theme_paid_v1')+' · old='+localStorage.getItem('wlh_theme_paid');
+var fr=document.getElementById('fr');
+fr.addEventListener('load',function(){
+  setTimeout(function(){
+    try{
+      var d=fr.contentWindow.document;
+      var t=d.querySelector('[data-track="life"]');
+      if(t) t.click();
+      setTimeout(function(){
+        try{
+          var w=fr.contentWindow, box=d.querySelector('#lifeApplyCta')||d.querySelector('.lr-buy');
+          if(box){ var y=box.getBoundingClientRect().top+w.pageYOffset; w.scrollTo(0,y-12); }
+          setTimeout(function(){
+            try{
+              var pb=d.querySelector('.lr-price b');
+              document.getElementById('lbl').textContent+=' · hero='+(pb?pb.textContent:'?');
+            }catch(e){}
+          },300);
+        }catch(e){}
+      },900);
+    }catch(e){}
+  },700);
+});
+fr.src='./index.html?v=79&gate=0';
 </script>
 </body>
 </html>
