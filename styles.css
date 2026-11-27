@@ -429,7 +429,7 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .pdf-hero p{color:#bfb3a0;font-size:14.5px;margin:8px auto 0;max-width:400px;line-height:1.75}
 .pdf-hero .price{display:flex;align-items:baseline;justify-content:center;gap:8px;margin:14px 0 2px}
 .pdf-hero .price b{font-family:var(--serif);font-size:30px;color:var(--gold-l)}
-.pdf-hero .price span{font-size:13px;color:#a89b86}
+.pdf-hero .price > span{font-size:13px;color:#a89b86}
 .pdf-list{display:grid;gap:9px;margin-top:16px;text-align:left}
 .pdf-list div{display:flex;gap:9px;font-size:14.5px;line-height:1.65;color:#ded3bf}
 .pdf-list div b{color:var(--gold);flex:0 0 auto}
@@ -454,10 +454,10 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .pay-sub{font-size:13px;color:var(--mute);margin:0 0 14px;line-height:1.6}
 .pay-rows{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px 0;margin:0 0 13px}
 .pay-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:7px 0;font-size:14px;line-height:1.6}
-.pay-row span{color:var(--mute);flex:0 0 auto}
+.pay-row > span{color:var(--mute);flex:0 0 auto}
 .pay-row b{font-weight:700;color:#1A1714;text-align:right;word-break:break-all}
 .pay-row.total{margin-top:2px;padding-top:11px;border-top:1px dashed var(--line)}
-.pay-row.total span{color:var(--body2);font-weight:700}
+.pay-row.total > span{color:var(--body2);font-weight:700}
 .pay-row.total b{font-size:20px;color:var(--verm2)}
 .pay-test{font-size:12px;color:#8a6a2e;background:#fdf6e6;border:1px solid #f0e2c4;border-radius:10px;padding:9px 11px;margin:0 0 13px;text-align:center;line-height:1.5}
 .pay-note{font-size:11.5px;color:var(--mute2);margin:10px 0 0;text-align:center;line-height:1.6}
@@ -633,7 +633,9 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .lr-price s{font-size:14px;color:#8A93A4;text-decoration:line-through;text-decoration-thickness:1px}
 .lr-price em{font-style:normal;font-size:11px;font-weight:800;color:#0A1421;background:#E4B96A;border-radius:5px;padding:2px 6px;letter-spacing:.02em}
 .lr-price b{font-family:var(--serif);font-size:25px;color:var(--gold-l);letter-spacing:-.01em}
-.lr-price span{font-size:11px;color:#A9A290;flex:0 0 100%;text-align:center;margin-top:2px}
+/* v80 · 아래 안내 한 줄은 .lr-price의 바로 아래 span만. (자손 선택자였을 때 wrapMoney가 <b> 안에 넣은
+   span.mnw까지 11px 회색·전폭으로 만들어 23,800원이 쪼개졌다) */
+.lr-price > span{font-size:11px;color:#A9A290;flex:0 0 100%;text-align:center;margin-top:2px}
 /* 가격 안내 · 업셀 카드 */
 .price-line{display:flex;align-items:baseline;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 5px}
 .price-line s{font-size:13px;color:#8A93A4;text-decoration:line-through}
@@ -709,7 +711,7 @@ select.is-off{opacity:.62;background-color:var(--paper3);color:var(--body2);curs
 .fast-box .lr-price s{color:#8A8172}
 .fast-box .lr-price em{background:#E4B96A;color:#0A1421}
 .fast-box .lr-price b{color:var(--verm2);font-size:28px}
-.fast-box .lr-price span{color:var(--mute2)}
+.fast-box .lr-price > span{color:var(--mute2)}
 .fast-lead{font-size:12.5px;color:var(--mute);text-align:center;line-height:1.6;margin:8px 0 12px}
 .fast-sum{background:var(--paper3);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin:0 0 14px}
 .fast-sum .fs-line{font-size:13.5px;color:var(--body2);line-height:1.7;letter-spacing:-.01em}
@@ -1488,7 +1490,7 @@ html.no-gate .gate{display:none}
 #track-life .lr-price b{color:#B5472C}
 #track-life .lr-price s{color:#A99A86}
 #track-life .lr-price em{background:linear-gradient(135deg,#EFD9A6,#CDA961);color:#3A2A18}
-#track-life .lr-price span{color:#8A7A63}
+#track-life .lr-price > span{color:#8A7A63}
 #track-life .lr-micro{color:#8A7A63}
 #track-life .lr-buy .btn-gold{box-shadow:0 10px 22px rgba(150,116,54,.24),inset 0 1px 0 rgba(255,247,222,.55)}
 
@@ -1669,9 +1671,15 @@ html.no-gate .gate{display:none}
 .price-line b,.price-line s,.pay-row b,.pay-row s,.pay-row .tot,
 .ch-gate .gate-price,.fast-box .lr-price b,.fast-box .lr-price s,
 .panel .ph b,.panel .ph s,.panel .ph .mnw,
-.lr-price b,.lr-price s,.lr-price em,.lr-price span{white-space:nowrap}
+.lr-price b,.lr-price s,.lr-price em,.lr-price > span{white-space:nowrap}
 /* v78 · 금액은 JS에서도 한 덩어리로 묶는다(wrapMoney) */
 .mnw{white-space:nowrap;overflow-wrap:normal;word-break:keep-all}
+/* v80 · wrapMoney가 감싼 금액(span.mnw)은 어떤 부모 안에서도 부모의 크기·색·글꼴을 그대로 물려받고,
+   flex·여백·바탕 같은 배치 규칙에 끼어들지 않는다. (예: <b>23,800원</b> 안의 span이
+   가격 줄의 안내 문구용 span 규칙을 받아 11px 회색으로 줄어들던 문제) */
+span.mnw{display:inline;font-size:inherit;color:inherit;font-weight:inherit;font-family:inherit;
+  font-style:inherit;letter-spacing:inherit;line-height:inherit;text-align:inherit;
+  flex:0 1 auto;margin:0;padding:0;background:none;border:0;white-space:nowrap}
 
 /* v78 · 결과 맨 아래 업셀 카드 : 테마 이름과 금액이 또렷하게, 줄은 정갈하게 */
 #rdMore h3{line-height:1.45;margin:2px 0 9px}

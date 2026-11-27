@@ -1129,7 +1129,7 @@ function bindChapterUI(total){
    ===================================================================== */
 var PG_STORE='store-c8e476ea-fb1d-4f0e-8a47-ede1b790ffe2';
 var PG_CHANNEL='channel-key-bbb6cc64-49e6-4757-bd6d-688b835898c4';
-var PG_VER='79';
+var PG_VER='80';
 function pgReady(){ return !!(window.PortOne&&typeof window.PortOne.requestPayment==='function'); }
 function pgPayId(kind){ return 'sajubom-'+kind+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7); }
 /* 모바일 리디렉션으로 돌아올 주소 — 대문(gate)은 건너뛰고 바로 결과를 다시 그린다 */
