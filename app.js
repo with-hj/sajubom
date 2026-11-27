@@ -1123,7 +1123,7 @@ function bindChapterUI(total){
    ===================================================================== */
 var PG_STORE='store-c8e476ea-fb1d-4f0e-8a47-ede1b790ffe2';
 var PG_CHANNEL='channel-key-bbb6cc64-49e6-4757-bd6d-688b835898c4';
-var PG_VER='77';
+var PG_VER='79';
 function pgReady(){ return !!(window.PortOne&&typeof window.PortOne.requestPayment==='function'); }
 function pgPayId(kind){ return 'sajubom-'+kind+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7); }
 /* 모바일 리디렉션으로 돌아올 주소 — 대문(gate)은 건너뛰고 바로 결과를 다시 그린다 */
@@ -1165,8 +1165,8 @@ function payErrHTML(){ return '<p class="pc-err" data-pay-err hidden></p>'; }
 /* v77 · KG이니시스 사전심사 필수 항목 — 서비스 제공기간·교환/환불/취소를 결제 창 안에서 바로 보이게 */
 function paySpecHTML(kind){
   var rows=(kind==='life')
-    ? [['제공기간','결제 완료 즉시 열람 · PDF는 검수 후 영업일 2~3일'],
-       ['교환·환불','제작 착수 전 전액 환불 · 착수 후 청약철회 제한']]
+    ? [['제공기간','결제 완료 즉시 전체 열람 · PDF 소장본 저장'],
+       ['교환·환불','열람 시작 전 전액 환불 · 시작 후 청약철회 제한']]
     : [['제공기간','결제 완료 즉시 온라인 열람'],
        ['교환·환불','열람 시작 전 전액 환불 · 시작 후 청약철회 제한']];
   return '<dl class="pc-svc">'+rows.map(function(r){
@@ -1285,7 +1285,7 @@ function onThemePay(el){
     onSuccess:function(r){
       closePayGate();
       setThemeCredit(true);
-      try{ localStorage.setItem('wlh_theme_paid_pid',String(r.paymentId||'')); }catch(e){}
+      try{ localStorage.setItem('sajubom_theme_pid_v1',String(r.paymentId||'')); }catch(e){}
       unlockReading('pay');
     }
   });
@@ -1420,11 +1420,15 @@ function rdMoreMarkup(T,locked){
   h+='<button type="button" class="btn btn-gold btn-block" data-goto-pdf>📜 인생사주 리포트 받아보기</button>';
   return h+'</div>';
 }
+/* v79 · 테마 결제 이용권은 새 키(sajubom_theme_paid_v1)만 본다.
+   예전 테스트 시절 키(wlh_theme_paid)에는 '1'이 남아 있어, 결제하지 않은 사람에게도
+   인생사주 리포트가 19,900원으로 보이는 문제가 있었다. 옛 키는 읽지도 지우지도 않는다. */
+var THEME_PAID_KEY='sajubom_theme_paid_v1';
 function themeCredit(){
-  try{ return localStorage.getItem('wlh_theme_paid')==='1'; }catch(e){ return false; }
+  try{ return localStorage.getItem(THEME_PAID_KEY)==='1'; }catch(e){ return false; }
 }
 function setThemeCredit(v){
-  try{ if(v) localStorage.setItem('wlh_theme_paid','1'); else localStorage.removeItem('wlh_theme_paid'); }catch(e){}
+  try{ if(v) localStorage.setItem(THEME_PAID_KEY,'1'); else localStorage.removeItem(THEME_PAID_KEY); }catch(e){}
 }
 function upsellMarkup(){
   return '<p class="up-tag">테마 결제 3,900원 할인 적용</p>'+
@@ -1731,7 +1735,7 @@ function showPayStep(o){
   p.innerHTML='<div class="pay-box fade-in">'+
     '<div class="pay-tag">주문 확인</div>'+
     '<h3>사주봄 인생사주 리포트</h3>'+
-    '<p class="pay-sub">검수 후 이메일로 보내드리는 책자형 PDF입니다.</p>'+
+    '<p class="pay-sub">결제 즉시 화면에서 전체를 열람하고 PDF 소장본으로 저장하는 리포트입니다.</p>'+
     '<div class="pay-rows">'+payRowsHTML(o)+'</div>'+
     (ADMIN_OK?'':'<p class="pay-test">테스트 결제 모드 · 실제 금액은 청구되지 않습니다</p>')+
     (ADMIN_OK?'<p class="pc-admin">관리자 모드 · 결제 없이 접수합니다</p>':((needContact?'<p class="pc-cap">결제 확인서를 받으실 이메일과 휴대폰</p>':'')+(needContact?payContactHTML(o.email,o.phone):'')+paySpecHTML('life')+payConsentHTML()))+
@@ -1793,8 +1797,7 @@ function showDone(order){
   lastOrder=order;
   d.innerHTML='<div class="done-box fade-in"><div class="ok">✓</div><h3>결제 및 접수가 완료되었습니다</h3>'+
     '<div class="num">접수번호 '+order.id+' · '+(order.payMode==='admin'?'관리자 접수':'결제 완료 '+won(order.price||23800))+'</div>'+
-    '<p>'+esc(b.name)+' 님의 원국을 검수한 뒤, 영업일 2~3일 안에 책자형 PDF를 '+esc(order.email||'신청하신 이메일')+'으로 보내드립니다.</p>'+
-    '<p>지금 바로 리포트를 펼쳐보고 PDF 파일로 저장하실 수 있습니다.</p>'+
+    '<p>'+esc(b.name)+' 님의 인생사주 리포트가 완성되었습니다. 지금 바로 전체를 펼쳐보고 PDF 소장본으로 저장하실 수 있습니다.</p>'+
     '<button type="button" class="btn btn-gold btn-block" style="margin-top:14px" data-cust-view>내 인생사주 리포트 보기</button>'+
     '<button type="button" class="btn btn-verm btn-block" style="margin-top:8px" data-cust-pdf>PDF 파일 다운로드</button>'+
     '<p class="pdf-note">PDF는 이 기기의 다운로드 폴더로 저장됩니다. 인앱 브라우저에서 저장이 안 될 경우 Safari/Chrome으로 열어주세요.</p>'+
@@ -1821,7 +1824,7 @@ function setSheetMode(mode){
   mode=(mode==='admin')?'admin':'cust';
   sh.setAttribute('data-mode',mode);
   var t=$('#sheetTitle');
-  if(t) t.textContent=(mode==='admin')?'관리자 검수함':'사주봄 · 내 인생사주 리포트';
+  if(t) t.textContent=(mode==='admin')?'관리자 · 접수 내역':'사주봄 · 내 인생사주 리포트';
   var lv=$('#admListView'); if(lv) lv.style.display=(mode==='admin')?'block':'none';
   var bk=$('#admBack'); if(bk) bk.style.display=(mode==='admin')?'':'none';
 }
