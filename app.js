@@ -382,10 +382,16 @@ function lifePriceHTML(credit){
 function markThemeCredit(){
   var old=document.getElementById('lrCreditNote');
   if(old&&old.parentNode) old.parentNode.removeChild(old);
-  var box=document.querySelector('#track-life .lr-price');
-  if(!box) return;
-  box.innerHTML=lifePriceHTML(themeCredit());
-  wrapMoney(box);
+  /* v79 · 테마 결제 이용권이 있으면 리포트 트랙의 가격 줄을 모두 차감가(19,900원)로 맞춘다.
+     테마 결제 직행 상자(#lzFast)는 이미 자기 가격을 적고 있어 건드리지 않는다. */
+  var credit=themeCredit();
+  var boxes=$$('#track-life .lr-price');
+  if(!boxes.length) return;
+  boxes.forEach(function(box){
+    if(box.closest&&box.closest('#lzFast')) return;
+    box.innerHTML=lifePriceHTML(credit);
+    wrapMoney(box);
+  });
 }
 /* ---------------- 테마 · 탭 ---------------- */
 /* v48 · 테마 카드 아래 표식을 01~05 숫자에서 원래의 한자로 되돌린다 */
